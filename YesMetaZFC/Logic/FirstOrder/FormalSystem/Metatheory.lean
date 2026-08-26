@@ -1,0 +1,114 @@
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.OperatorReadability
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.DefinitionContracts
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.GodelQuotation
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.GodelQuotation.FormalSystemNumbering
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.GodelQuotation.SyntaxCoding
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.GodelQuotation.FiniteSequence
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.GodelQuotation.StandardTokenSequence
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.GodelQuotation.FormulaCode
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.GodelQuotation.FormulaCodeInversion
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.GodelQuotation.Token
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.GodelQuotation.Substitution
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.GodelQuotation.Diagonal
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.CertifiedProofCode
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.CertifiedProofCodeEncoding
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.RosserFinite
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.NumeralArithmetic
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.Core
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ObjectReplay
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.SequenceInversion
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.CheckedSyntax
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.CheckedSubstitution
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.CheckedLine
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ProofTerminal
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ProofRows
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.PairingInversion
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.CertifiedProofRejection
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.Hierarchy
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.Delta0Encoding
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.CanonicalDelta0
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FixedAxiomTable
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.SchemaPlugin
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.Delta1ProofPresentation
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.Rosser
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.Hilbertization
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ConstantElimination
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ConstantElimination.EmptySet
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Presentation
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Closure
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Formula
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Proof
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Elimination
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Substitution
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Substitution.Equality
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Substitution.Formula
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Substitution.Connective
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Substitution.Quantifier
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Substitution.CompilerFreshness
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Substitution.Induction
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Hilbert
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Canonical
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.PowerSet
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.UnorderedPair
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Singleton
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.OrderedPair
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Union
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.BinaryUnion
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.BinaryIntersection
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.BinaryIntersectionChain
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.CartesianProduct
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.CartesianProductBaseChain
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.CartesianProductChain
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Successor
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.FunctionApplication
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Delta0
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.RelationDomain
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.FunctionApplicationChain
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.InternalEncodingChain
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.PairingChain
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.SuccessorChain
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.BinaryUnionChain
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.FunctionGraphElimination.Omega
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.CheckedReplay
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.CheckedCompleteness
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.TerminalReplay
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.RecursiveEnumeration
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFC
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ZFC.Core
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ZFC.SupportElimination
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ZFC.CheckedSyntax
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ZFC.CheckedLine
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ZFC.SequenceInversion
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFCEnumeration
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFCObjectVerifier
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.SchemaHierarchy
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFCCheckedReplay
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFCLogicalAxiomReplay
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFCEqAxiomReplay
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFCSchemaCertificateReplay
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFCSeparationVerifier
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFCCollectionVerifier
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFCCollectionCertificateReplay
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFCObjectCertificateReplay
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.InternalTheory.ZFCReplacementSchemaReplay
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ZFC.RosserIncompleteness
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.ZFCRep.Delta1ProofPresentation
+import YesMetaZFC.SetTheory.Ord.PrimePowerSequence
+/-!
+# 一阶形式系统编码元理论入口
+该入口导出编码运算符的 raw 语法反演、定义公理合同、通用 Gödel quotation、对角化
+接口以及内部 FormalSystem 构造器。纯数值证明序列编码与证书化 Hilbert 轨迹位于
+独立的 `ProofCode`/`CertifiedProofCode` 层：理论公理行携带枚举证书，不把
+`formula ∈ theory` 直接作为证明码合法性判据。
+
+公开证明表示接口为 `ProofT.Delta1ProofPresentation`，底层 canonical checked 关系由
+`fs_terminal_checked_hilbertized_proof_code_for` 提供；对象侧统一封装成功内部化与失败拒绝。
+`ProofT.Delta0ProofGraph` 则单独记录正式 Lévy `Delta0` 证明图，并自动导出普通
+可证性及 Rosser 比较的 `Sigma1/Pi1` 分类。
+`ProofT.Sigma1ProofGraph` 只承诺正向证明图与一元可证谓词的 `Sigma1/Pi1`
+分类，不越权承担 Rosser 比较所需的 `Delta0` 反证体；`ProofT.Sigma1Encoding`
+负责把 verifier 的 `Sigma1` 条件沿 checked replay 骨架向上传播。
+`ProofT.RosserPresentation` 在 checked proof graph 与有限比较装配之上自动构造
+Rosser 对角句并推出抽象不完备定理；当前 ZFC 终局只是该接口的一个实例。
+-/
