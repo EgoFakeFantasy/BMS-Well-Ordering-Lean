@@ -1,231 +1,210 @@
 import YesMetaZFC.Logic.FirstOrder.Metatheory.Quantifier.Prenex
+
 /-!
-# 量词重排与约束变量改名
-本模块处理双量词交换、alpha-renaming 与重复量词消去。交换定理允许两个变量来自
-不同 sort；约束变量改名要求目标自由变量对原公式新鲜，从而避免把原有自由出现
-一并捕获。
+# 量词重排
+
+本模块在内在类型 free 上下文上处理相邻量词交换与重复量词消去。约束变量没有名字，
+因此旧架构中的 alpha-renaming 定理及其 freshness 旁证不再形成任何接口。
 -/
+
 namespace YesMetaZFC
 namespace Logic
 namespace FirstOrder
 namespace Metatheory
-universe u v w
 namespace Derives
-private theorem fresh_exists_named {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {sort : σ.SortSymbol}
-    {eigen : FreeVarId} {body : Formula σ} : (sort, eigen) freshForₘ (∃ₘ[sort, eigen], body) := by
-  simpa [Formula.freeSupport] using
-    Formula.not_mem_freeSupport_closeFreeAt sort eigen 0 body
-private theorem fresh_forall_named {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {sort : σ.SortSymbol}
-    {eigen : FreeVarId} {body : Formula σ} : (sort, eigen) freshForₘ (∀ₘ[sort, eigen], body) := by
-  simpa [Formula.freeSupport] using
-    Formula.not_mem_freeSupport_closeFreeAt sort eigen 0 body
-private theorem fresh_exists_named_of_fresh {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol]
-    {freeVariable : σ.SortSymbol × FreeVarId}
-    {sort : σ.SortSymbol} {eigen : FreeVarId} {body : Formula σ} (hFresh : freeVariable freshForₘ body) :
-    freeVariable freshForₘ (∃ₘ[sort, eigen], body) := by
-  simpa [Formula.freeSupport] using
-    Formula.not_mem_freeSupport_closeFreeAt_of_not_mem
-      freeVariable sort eigen 0 body hFresh
-private theorem fresh_forall_named_of_fresh {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol]
-    {freeVariable : σ.SortSymbol × FreeVarId}
-    {sort : σ.SortSymbol} {eigen : FreeVarId} {body : Formula σ} (hFresh : freeVariable freshForₘ body) :
-    freeVariable freshForₘ (∀ₘ[sort, eigen], body) := by
-  simpa [Formula.freeSupport] using
-    Formula.not_mem_freeSupport_closeFreeAt_of_not_mem
-      freeVariable sort eigen 0 body hFresh
-/-- 两个存在量词可以交换顺序。 -/
+
+universe u v w
+
+/-- 在双 fresh 上下文中，把存在量词目标按交换后的槽位顺序重新封闭。 -/
+private theorem exists_exchange_payload {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {first second : σ.SortSymbol}
+    {Γ : Context σ (first :: second :: free)}
+    {body : OpenFormula σ (first :: second :: free)}
+    (hBody : Γ ⊢ₘ[T] body) :
+    Γ ⊢ₘ[T]
+      (((body.swapFreeTop.existsFreeTop second).existsFreeTop first)
+        |>.weakenFree second |>.weakenFree first) := by
+  have hSwapped := FirstOrder.Derives.free_renaming
+    (VariableRenaming.swapTop :
+      VariableRenaming (first :: second :: free)
+        (second :: first :: free)) hBody
+  have hInner := FirstOrder.Derives.exists_intro_newest hSwapped
+  have hTargetSwapped :
+      Γ.map (Formula.renameFree VariableRenaming.swapTop) ⊢ₘ[T]
+        (((body.swapFreeTop.existsFreeTop second).existsFreeTop first)
+          |>.weakenFree first |>.weakenFree second) := by
+    simp only [Formula.existsFreeTop, Formula.weakenFree_existsE]
+    apply FirstOrder.Derives.exists_intro (.fvar (.there .here))
+    change
+      Γ.map (Formula.renameFree VariableRenaming.swapTop) ⊢ₘ[T]
+        (Formula.instantiateTop
+          ((Term.newestFree first).weakenFree second)
+          (Formula.weakenFree second
+            (Formula.weakenFree first
+              ((body.swapFreeTop.existsFreeTop second).abstractFreeTop))))
+    rw [Formula.instantiateTop_two_weakenings_abstractFreeTop]
+    simpa [Formula.swapFreeTop, FreshVariable.newest] using hInner
+  have hBack := FirstOrder.Derives.free_renaming
+    (VariableRenaming.swapTop :
+      VariableRenaming (second :: first :: free)
+        (first :: second :: free)) hTargetSwapped
+  have hContext :
+      (Γ.map (Formula.renameFree
+        (VariableRenaming.swapTop :
+          VariableRenaming (first :: second :: free)
+            (second :: first :: free)))).map
+        (Formula.renameFree
+          (VariableRenaming.swapTop :
+            VariableRenaming (second :: first :: free)
+              (first :: second :: free))) = Γ := by
+    rw [List.map_map]
+    have hFunction :
+        (Formula.renameFree
+            (VariableRenaming.swapTop :
+              VariableRenaming (second :: first :: free)
+                (first :: second :: free))) ∘
+          Formula.renameFree
+            (VariableRenaming.swapTop :
+              VariableRenaming (first :: second :: free)
+                (second :: first :: free)) =
+        (fun formula : OpenFormula σ (first :: second :: free) => formula) := by
+      funext formula
+      exact Formula.renameFree_swapTop_swapTop formula
+    rw [hFunction]
+    simp
+  rw [hContext] at hBack
+  simpa [Formula.swapFreeTop] using hBack
+
+/-- 两个相邻存在量词可以交换顺序。 -/
 theorem exists_exchange_imp {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {firstSort secondSort : σ.SortSymbol}
-    {first second : FreeVarId} {body : Formula σ} (hBodyAdmissible : Formula.Admissible body) :
-    Γ ⊢ₘ[T] (∃ₘ[firstSort, first], ∃ₘ[secondSort, second], body) ⟶ₘ (∃ₘ[secondSort, second], ∃ₘ[firstSort, first], body) := by
-  have hExistsSecond :
-      Formula.Admissible (∃ₘ[secondSort, second], body) :=
-    Formula.Admissible.exists_closeFreeAt
-      secondSort second hBodyAdmissible
-  have hSource :
-      Formula.Admissible (∃ₘ[firstSort, first], ∃ₘ[secondSort, second], body) :=
-    Formula.Admissible.exists_closeFreeAt
-      firstSort first hExistsSecond
-  have hExistsFirst :
-      Formula.Admissible (∃ₘ[firstSort, first], body) :=
-    Formula.Admissible.exists_closeFreeAt
-      firstSort first hBodyAdmissible
-  have hTarget :
-      Formula.Admissible (∃ₘ[secondSort, second], ∃ₘ[firstSort, first], body) :=
-    Formula.Admissible.exists_closeFreeAt
-      secondSort second hExistsFirst
-  apply FirstOrder.Derives.of_empty
-  nd_apply FirstOrder.Derives.impIntro
-  have hOuter :
-      [(∃ₘ[firstSort, first], ∃ₘ[secondSort, second], body)] ⊢ₘ
-        ∃ₘ[firstSort, first], ∃ₘ[secondSort, second], body :=
-    .assumption (by simp)
-  refine FirstOrder.Derives.exists_elim
-    (T := (Theory.empty : Theory σ))
-    (Γ := [(∃ₘ[firstSort, first], ∃ₘ[secondSort, second], body)])
-    (sort := firstSort) (eigen := first)
-    (body := ∃ₘ[secondSort, second], body)
-    (conclusion := ∃ₘ[secondSort, second], ∃ₘ[firstSort, first], body)
-    ?_ ?_ ?_ ?_ ?_
-  · intro formula hFormula
-    cases hFormula
-  · intro formula hFormula
-    rcases List.mem_singleton.mp hFormula with rfl
-    exact fresh_exists_named
-  · exact fresh_exists_named_of_fresh (freeVariable := (firstSort, first)) (sort := secondSort) (eigen := second) (body := ∃ₘ[firstSort, first], body)
-      fresh_exists_named
-  · exact hOuter
-  · have hInner : ((∃ₘ[secondSort, second], body) ::
-          [(∃ₘ[firstSort, first], ∃ₘ[secondSort, second], body)]) ⊢ₘ
-          ∃ₘ[secondSort, second], body :=
-      .assumption (by simp)
-    refine FirstOrder.Derives.exists_elim
-      (T := (Theory.empty : Theory σ)) (Γ :=
-          [(∃ₘ[secondSort, second], body), (∃ₘ[firstSort, first], ∃ₘ[secondSort, second], body)]) (sort := secondSort) (eigen := second) (body := body)
-        (conclusion :=
-          ∃ₘ[secondSort, second], ∃ₘ[firstSort, first], body)
-      ?_ ?_ ?_ ?_ ?_
-    · intro formula hFormula
-      cases hFormula
-    · intro formula hFormula
-      rcases List.mem_cons.mp hFormula with rfl | hFormula
-      · exact fresh_exists_named
-      · rcases List.mem_singleton.mp hFormula with rfl
-        exact fresh_exists_named_of_fresh (freeVariable := (secondSort, second)) (sort := firstSort) (eigen := first) (body := ∃ₘ[secondSort, second], body)
-          fresh_exists_named
-    · exact fresh_exists_named
-    · exact hInner
-    · have hBody : (body ::
-            [(∃ₘ[secondSort, second], body), (∃ₘ[firstSort, first],
-                ∃ₘ[secondSort, second], body)]) ⊢ₘ body :=
-        .assumption (by simp)
-      have hFirst : (body ::
-            [(∃ₘ[secondSort, second], body), (∃ₘ[firstSort, first],
-                ∃ₘ[secondSort, second], body)]) ⊢ₘ
-            ∃ₘ[firstSort, first], body := by
-        nd_apply FirstOrder.Derives.exists_intro
-          (term := v#[firstSort, first])
-        simpa [Formula.openAt_closeFreeAt firstSort first 0 body] using hBody
-      nd_apply FirstOrder.Derives.exists_intro
-        (term := v#[secondSort, second])
-      simpa [Formula.openAt_closeFreeAt secondSort second 0 (∃ₘ[firstSort, first], body)] using hFirst
-/-- 两个存在量词交换顺序的双向形式。 -/
+    {T : Theory σ} {free : SortContext σ}
+    {first second : σ.SortSymbol} {Γ : Context σ free}
+    {body : OpenFormula σ (first :: second :: free)} :
+    Γ ⊢ₘ[T]
+      ((body.existsFreeTop first).existsFreeTop second ⟶ₘ
+        (body.swapFreeTop.existsFreeTop second).existsFreeTop first) := by
+  apply FirstOrder.Derives.imp_intro
+  have hOuter := FirstOrder.Derives.assumption
+    (T := T) (Γ :=
+      ((body.existsFreeTop first).existsFreeTop second :: Γ))
+    List.mem_cons_self
+  apply FirstOrder.Derives.exists_elim hOuter
+  have hInner :
+      (body.existsFreeTop first ::
+        FreshVariable.extendContext second
+          ((body.existsFreeTop first).existsFreeTop second :: Γ)) ⊢ₘ[T]
+        body.existsFreeTop first :=
+    FirstOrder.Derives.assumption List.mem_cons_self
+  apply FirstOrder.Derives.exists_elim hInner
+  exact exists_exchange_payload
+    (FirstOrder.Derives.assumption List.mem_cons_self)
+
+/-- 两个相邻存在量词交换顺序的双向形式。 -/
 theorem exists_exchange_iff {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {firstSort secondSort : σ.SortSymbol}
-    {first second : FreeVarId} {body : Formula σ} (hBodyAdmissible : Formula.Admissible body) :
-    Γ ⊢ₘ[T] (∃ₘ[firstSort, first], ∃ₘ[secondSort, second], body) ↔ₘ (∃ₘ[secondSort, second], ∃ₘ[firstSort, first], body) := by
-  exact .iffIntro (FirstOrder.Derives.imp_elim_assumption (exists_exchange_imp (T := T) (Γ := Γ) (firstSort := firstSort) (secondSort := secondSort)
-        (first := first) (second := second) (body := body)
-        hBodyAdmissible)) (FirstOrder.Derives.imp_elim_assumption (exists_exchange_imp (T := T) (Γ := Γ) (firstSort := secondSort) (secondSort := firstSort)
-        (first := second) (second := first) (body := body)
-        hBodyAdmissible))
-/-- 两个全称量词可以交换顺序。 -/
+    {T : Theory σ} {free : SortContext σ}
+    {first second : σ.SortSymbol} {Γ : Context σ free}
+    {body : OpenFormula σ (first :: second :: free)} :
+    Γ ⊢ₘ[T]
+      ((body.existsFreeTop first).existsFreeTop second ↔ₘ
+        (body.swapFreeTop.existsFreeTop second).existsFreeTop first) := by
+  apply FirstOrder.Derives.iff_intro
+  · exact FirstOrder.Derives.imp_elim
+      (FirstOrder.Derives.context_weaken_cons
+        (exists_exchange_imp
+          (T := T) (Γ := Γ) (first := first) (second := second)
+          (body := body)))
+      (FirstOrder.Derives.assumption List.mem_cons_self)
+  · have hReverse := FirstOrder.Derives.imp_elim
+      (FirstOrder.Derives.context_weaken_cons
+        (exists_exchange_imp
+          (T := T) (Γ := Γ) (first := second) (second := first)
+          (body := body.swapFreeTop)))
+      (FirstOrder.Derives.assumption List.mem_cons_self)
+    simpa [Formula.swapFreeTop] using hReverse
+
+/-- 两个相邻全称量词可以交换顺序。 -/
 theorem forall_exchange_imp {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {firstSort secondSort : σ.SortSymbol}
-    {first second : FreeVarId} {body : Formula σ} (hBodyAdmissible : Formula.Admissible body) :
-    Γ ⊢ₘ[T] (∀ₘ[firstSort, first], ∀ₘ[secondSort, second], body) ⟶ₘ (∀ₘ[secondSort, second], ∀ₘ[firstSort, first], body) := by
-  have hForallSecond :
-      Formula.Admissible (∀ₘ[secondSort, second], body) :=
-    Formula.Admissible.forall_closeFreeAt
-      secondSort second hBodyAdmissible
-  have hSourceAdmissible :
-      Formula.Admissible (∀ₘ[firstSort, first], ∀ₘ[secondSort, second], body) :=
-    Formula.Admissible.forall_closeFreeAt
-      firstSort first hForallSecond
-  apply FirstOrder.Derives.of_empty
-  nd_apply FirstOrder.Derives.impIntro
-  apply FirstOrder.Derives.forall_intro (T := (Theory.empty : Theory σ)) (Γ := [(∀ₘ[firstSort, first], ∀ₘ[secondSort, second], body)])
-      (sort := secondSort) (eigen := second) (body := ∀ₘ[firstSort, first], body)
-  · intro formula hFormula
-    cases hFormula
-  · intro formula hFormula
-    rcases List.mem_singleton.mp hFormula with rfl
-    exact fresh_forall_named_of_fresh (freeVariable := (secondSort, second)) (sort := firstSort) (eigen := first) (body := ∀ₘ[secondSort, second], body)
-      fresh_forall_named
-  · apply FirstOrder.Derives.forall_intro (T := (Theory.empty : Theory σ)) (Γ := [(∀ₘ[firstSort, first], ∀ₘ[secondSort, second], body)])
-        (sort := firstSort) (eigen := first) (body := body)
-    · intro formula hFormula
-      cases hFormula
-    · intro formula hFormula
-      rcases List.mem_singleton.mp hFormula with rfl
-      exact fresh_forall_named
-    · have hSource :
-          [(∀ₘ[firstSort, first],
-            ∀ₘ[secondSort, second], body)] ⊢ₘ
-            ∀ₘ[firstSort, first],
-              ∀ₘ[secondSort, second], body :=
-        .assumption (by simp)
-      have hOpenedFirst :=
-        FirstOrder.Derives.forall_elim
-          (term := v#[firstSort, first]) hSource
-      have hInner :
-          [(∀ₘ[firstSort, first],
-            ∀ₘ[secondSort, second], body)] ⊢ₘ
-            ∀ₘ[secondSort, second], body := by
-        simpa [Formula.openAt_closeFreeAt firstSort first 0 (∀ₘ[secondSort, second], body)] using hOpenedFirst
-      have hOpenedSecond :=
-        FirstOrder.Derives.forall_elim
-          (term := v#[secondSort, second]) hInner
-      simpa [Formula.openAt_closeFreeAt secondSort second 0 body] using
-        hOpenedSecond
-/-- 两个全称量词交换顺序的双向形式。 -/
+    {T : Theory σ} {free : SortContext σ}
+    {first second : σ.SortSymbol} {Γ : Context σ free}
+    {body : OpenFormula σ (first :: second :: free)} :
+    Γ ⊢ₘ[T]
+      ((body.forallFreeTop first).forallFreeTop second ⟶ₘ
+        (body.swapFreeTop.forallFreeTop second).forallFreeTop first) := by
+  apply FirstOrder.Derives.imp_intro
+  have hSource :
+      ((body.forallFreeTop first).forallFreeTop second :: Γ) ⊢ₘ[T]
+        (body.forallFreeTop first).forallFreeTop second :=
+    FirstOrder.Derives.assumption List.mem_cons_self
+  have hInner := FirstOrder.Derives.forall_elim_newest hSource
+  have hBody := FirstOrder.Derives.forall_elim_newest hInner
+  have hSwapped := FirstOrder.Derives.free_renaming
+    (VariableRenaming.swapTop :
+      VariableRenaming (first :: second :: free)
+        (second :: first :: free)) hBody
+  have hContext :
+      (FreshVariable.extendContext first
+        (FreshVariable.extendContext second
+          ((body.forallFreeTop first).forallFreeTop second :: Γ))).map
+        (Formula.renameFree
+          (VariableRenaming.swapTop :
+            VariableRenaming (first :: second :: free)
+              (second :: first :: free))) =
+      FreshVariable.extendContext second
+        (FreshVariable.extendContext first
+          ((body.forallFreeTop first).forallFreeTop second :: Γ)) := by
+    simp [FreshVariable.extendContext, List.map_map,
+      Function.comp_def]
+  rw [hContext] at hSwapped
+  exact FirstOrder.Derives.forall_intro
+    (FirstOrder.Derives.forall_intro
+      (by simpa [Formula.swapFreeTop] using hSwapped))
+
+/-- 两个相邻全称量词交换顺序的双向形式。 -/
 theorem forall_exchange_iff {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {firstSort secondSort : σ.SortSymbol}
-    {first second : FreeVarId} {body : Formula σ} (hBodyAdmissible : Formula.Admissible body) :
-    Γ ⊢ₘ[T] (∀ₘ[firstSort, first], ∀ₘ[secondSort, second], body) ↔ₘ (∀ₘ[secondSort, second], ∀ₘ[firstSort, first], body) := by
-  exact .iffIntro (FirstOrder.Derives.imp_elim_assumption (forall_exchange_imp (T := T) (Γ := Γ) (firstSort := firstSort) (secondSort := secondSort)
-        (first := first) (second := second) (body := body)
-        hBodyAdmissible)) (FirstOrder.Derives.imp_elim_assumption (forall_exchange_imp (T := T) (Γ := Γ) (firstSort := secondSort) (secondSort := firstSort)
-        (first := second) (second := first) (body := body)
-        hBodyAdmissible))
-/-- 新鲜自由变量可以替换存在量词的约束变量名。 -/
-theorem exists_rename_bound_iff {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {sort : σ.SortSymbol} {source target : FreeVarId}
-    {body : Formula σ} (hBodyAdmissible : Formula.Admissible body) (hTargetFresh : (sort, target) freshForₘ body) :
-    Γ ⊢ₘ[T] (∃ₘ[sort, source], body) ↔ₘ (∃ₘ[sort, target],
-          body⟪sort, source ↦ v#[sort, target]⟫ₘ) := by
-  have hRename :=
-    Formula.closeFreeAt_substituteFree_rename
-      sort source target 0 body hTargetFresh
-  simpa only [hRename] using (iff_refl_m (T := T) (Γ := Γ) (φ := ∃ₘ[sort, source], body) (Formula.Admissible.exists_closeFreeAt
-        sort source hBodyAdmissible))
-/-- 新鲜自由变量可以替换全称量词的约束变量名。 -/
-theorem forall_rename_bound_iff {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {sort : σ.SortSymbol} {source target : FreeVarId}
-    {body : Formula σ} (hBodyAdmissible : Formula.Admissible body) (hTargetFresh : (sort, target) freshForₘ body) :
-    Γ ⊢ₘ[T] (∀ₘ[sort, source], body) ↔ₘ (∀ₘ[sort, target],
-          body⟪sort, source ↦ v#[sort, target]⟫ₘ) := by
-  have hRename :=
-    Formula.closeFreeAt_substituteFree_rename
-      sort source target 0 body hTargetFresh
-  simpa only [hRename] using (iff_refl_m (T := T) (Γ := Γ) (φ := ∀ₘ[sort, source], body) (Formula.Admissible.forall_closeFreeAt
-        sort source hBodyAdmissible))
-/-- 重复存在量词等价于单个存在量词。 -/
+    {T : Theory σ} {free : SortContext σ}
+    {first second : σ.SortSymbol} {Γ : Context σ free}
+    {body : OpenFormula σ (first :: second :: free)} :
+    Γ ⊢ₘ[T]
+      ((body.forallFreeTop first).forallFreeTop second ↔ₘ
+        (body.swapFreeTop.forallFreeTop second).forallFreeTop first) := by
+  apply FirstOrder.Derives.iff_intro
+  · exact FirstOrder.Derives.imp_elim
+      (FirstOrder.Derives.context_weaken_cons
+        (forall_exchange_imp
+          (T := T) (Γ := Γ) (first := first) (second := second)
+          (body := body)))
+      (FirstOrder.Derives.assumption List.mem_cons_self)
+  · have hReverse := FirstOrder.Derives.imp_elim
+      (FirstOrder.Derives.context_weaken_cons
+        (forall_exchange_imp
+          (T := T) (Γ := Γ) (first := second) (second := first)
+          (body := body.swapFreeTop)))
+      (FirstOrder.Derives.assumption List.mem_cons_self)
+    simpa [Formula.swapFreeTop] using hReverse
+
+/-- 在同一 sort 上重复量化存在式只增加一个 vacuous 外层量词。 -/
 theorem exists_repeat_iff {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {sort : σ.SortSymbol} {eigen : FreeVarId} {body : Formula σ} (hBodyAdmissible : Formula.Admissible body) :
-    Γ ⊢ₘ[T] (∃ₘ[sort, eigen], ∃ₘ[sort, eigen], body) ↔ₘ (∃ₘ[sort, eigen], body) :=
-  exists_vacuous_iff (T := T) (Γ := Γ) (sort := sort) (eigen := eigen) (body := ∃ₘ[sort, eigen], body) (Formula.Admissible.exists_closeFreeAt
-      sort eigen hBodyAdmissible)
-    fresh_exists_named
-/-- 重复全称量词等价于单个全称量词。 -/
+    {T : Theory σ} {free : SortContext σ} {sort : σ.SortSymbol}
+    {Γ : Context σ free} {body : OpenFormula σ (sort :: free)} :
+    Γ ⊢ₘ[T]
+      (((body.existsFreeTop sort).weakenFree sort).existsFreeTop sort ↔ₘ
+        body.existsFreeTop sort) :=
+  exists_vacuous_iff
+    (T := T) (Γ := Γ) (sort := sort)
+    (body := body.existsFreeTop sort)
+
+/-- 在同一 sort 上重复量化全称式只增加一个 vacuous 外层量词。 -/
 theorem forall_repeat_iff {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {sort : σ.SortSymbol} {eigen : FreeVarId} {body : Formula σ} (hBodyAdmissible : Formula.Admissible body) :
-    Γ ⊢ₘ[T] (∀ₘ[sort, eigen], ∀ₘ[sort, eigen], body) ↔ₘ (∀ₘ[sort, eigen], body) :=
-  forall_vacuous_iff (T := T) (Γ := Γ) (sort := sort) (eigen := eigen) (body := ∀ₘ[sort, eigen], body) (Formula.Admissible.forall_closeFreeAt
-      sort eigen hBodyAdmissible)
-    fresh_forall_named
+    {T : Theory σ} {free : SortContext σ} {sort : σ.SortSymbol}
+    {Γ : Context σ free} {body : OpenFormula σ (sort :: free)} :
+    Γ ⊢ₘ[T]
+      (((body.forallFreeTop sort).weakenFree sort).forallFreeTop sort ↔ₘ
+        body.forallFreeTop sort) :=
+  forall_vacuous_iff
+    (T := T) (Γ := Γ) (sort := sort)
+    (body := body.forallFreeTop sort)
+
 end Derives
 end Metatheory
 end FirstOrder

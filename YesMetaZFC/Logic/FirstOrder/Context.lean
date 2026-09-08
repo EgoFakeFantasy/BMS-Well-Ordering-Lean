@@ -16,21 +16,24 @@ universe u v w x
 
 namespace Context
 
-/-- 环境满足上下文中的每一个公式。 -/
-def Satisfied {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} (env : Env M) (context : Context σ) : Prop :=
+/-- 环境满足上下文中的每一个开放公式。 -/
+def Satisfied {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ} {free : SortContext σ}
+    (env : Env M [] free) (context : Context σ free) : Prop :=
   ∀ formula, formula ∈ context → Formula.satisfies env formula
 
-theorem sat_mem_m {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} {env : Env M}
-    {context : Context σ} (hContext : Satisfied env context)
-    {formula : Formula σ} (hMem : formula ∈ context) :
+theorem sat_mem_m {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ} {free : SortContext σ}
+    {env : Env M [] free} {context : Context σ free}
+    (hContext : Satisfied env context)
+    {formula : OpenFormula σ free} (hMem : formula ∈ context) :
     Formula.satisfies env formula :=
   hContext formula hMem
 
-theorem sat_cons_iff_m {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} {env : Env M}
-    {formula : Formula σ} {context : Context σ} :
+theorem sat_cons_iff_m {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ} {free : SortContext σ}
+    {env : Env M [] free}
+    {formula : OpenFormula σ free} {context : Context σ free} :
     Satisfied env (formula :: context) ↔
       Formula.satisfies env formula ∧ Satisfied env context := by
   constructor
@@ -43,9 +46,9 @@ theorem sat_cons_iff_m {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
     · exact hFormula
     · exact hContext ψ hMem
 
-theorem sat_weaken_m {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} {env : Env M}
-    {small large : Context σ}
+theorem sat_weaken_m {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ} {free : SortContext σ}
+    {env : Env M [] free} {small large : Context σ free}
     (hSubset : ∀ formula, formula ∈ small → formula ∈ large)
     (hLarge : Satisfied env large) :
     Satisfied env small :=

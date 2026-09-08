@@ -70,6 +70,8 @@ def ordinalAdditionOperator (𝒞 : OrderedPairConvention) : BinarySchema 1 wher
       Formula.existsMem, Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest,
       Term.weaken]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 由超限递归得到的序数加法类关系。 -/
 def ordinalAddition (𝒞 : OrderedPairConvention) :
     BinarySchema 1 :=
@@ -113,6 +115,8 @@ def ordinalMultiplicationOperator (𝒞 : OrderedPairConvention) : BinarySchema 
       Formula.existsMem, Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest,
       TermVector.singleton, Term.weaken]
+    repeat' apply And.intro
+    all_goals first | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl | skip
     exact Formula.related_freeClosed_of_closed (relation := ordinalAddition 𝒞) (parameters := TermVector.ofFn fun _ => Term.newest)
       (left := .bound 3) (right := .bound 1) (by intro entry; simp) (by simp) (by simp)
 /-- 由超限递归得到的序数乘法类关系。 -/
@@ -154,6 +158,8 @@ def ordinalExponentiationOperator (𝒞 : OrderedPairConvention) : BinarySchema 
       Formula.existsMem, Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest,
       TermVector.singleton, Term.weaken]
+    repeat' apply And.intro
+    all_goals first | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl | skip
     exact Formula.related_freeClosed_of_closed (relation := ordinalMultiplication 𝒞) (parameters := TermVector.ofFn fun _ => Term.newest)
       (left := .bound 3) (right := .bound 1) (by intro entry; simp) (by simp) (by simp)
 /-- 由超限递归得到的序数幂类关系。 -/

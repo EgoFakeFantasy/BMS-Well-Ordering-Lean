@@ -1,335 +1,398 @@
 import YesMetaZFC.Logic.Semantics
 import YesMetaZFC.Logic.FreeVariableSupport.Basic
-/-!
-# 一阶自由变量支持的语义接口
 
-纯语法支持计算位于 `FreeVariableSupport.Basic`。本模块只提供环境一致、解释不变性与
-环境合并接口。
-有限环境合并采用有序 overlay：较早条目的支持优先。两两不交时，合并环境在每个条目
-的支持上都投影回该条目的环境；这正是 AVATAR component 语义分解后续需要的公共基础。
+/-!
+# 自由变量支持的语义接口
+
+本模块把上下文内在的支持掩码连接到类型化环境：
+
+* 环境一致性只比较真实存在的类型化变量；
+* 项解释与公式满足性只依赖各自的自由变量支持；
+* overlay 与有限 merge 保持可计算，不需要经典选择；
+* bound 上下文由类型索引固定，压栈保持性只需结构归纳。
 -/
+
 namespace YesMetaZFC
 namespace Logic
 namespace FirstOrder
+
 universe u v w x
+
 namespace Env
-/-- 两个环境具有相同的 LN bound stack。 -/
-def SameBoundStack {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ} (left right : Env M) : Prop :=
-  ∀ sort index, left.boundVal sort index = right.boundVal sort index
+
+/-- 两个环境在完整 bound 上下文上逐点一致。 -/
+def SameBoundStack {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    (left right : Env M bound free) : Prop :=
+  ∀ {sort} (entry : Variable bound sort),
+    left.boundVal entry = right.boundVal entry
+
 namespace SameBoundStack
-/-- bound stack 一致性的自反性。 -/
-theorem refl {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ} (env : Env M) : SameBoundStack env env :=
-  fun _ _ => rfl
-/-- bound stack 一致性的对称性。 -/
-theorem symm {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ}
-    {left right : Env M} (hBound : SameBoundStack left right) :
+
+/-- bound 环境一致性的自反性。 -/
+theorem refl {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} (env : Env M bound free) :
+    SameBoundStack env env :=
+  fun _ => rfl
+
+/-- bound 环境一致性的对称性。 -/
+theorem symm {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {left right : Env M bound free}
+    (hBound : SameBoundStack left right) :
     SameBoundStack right left :=
-  fun sort index => (hBound sort index).symm
-/-- bound stack 一致性的传递性。 -/
-theorem trans {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ}
-    {left middle right : Env M} (hLeft : SameBoundStack left middle) (hRight : SameBoundStack middle right) : SameBoundStack left right :=
-  fun sort index => (hLeft sort index).trans (hRight sort index)
-/- 两个环境同时压入同一个 bound 值后仍具有相同的 bound stack。 -/
-theorem pushBound {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} {left right : Env M} (hBound : SameBoundStack left right) (sort : σ.SortSymbol) (value : M.Domain)
-    (hValue : M.sortInterp sort value) :
-    SameBoundStack (left.pushBound sort value hValue) (right.pushBound sort value hValue) := by
-  intro target index
-  by_cases hTarget : target = sort
-  · subst hTarget
-    cases index with
-    | zero => simp [Env.pushBound]
-    | succ previous =>
-        simpa [Env.pushBound] using hBound target previous
-  · simpa [Env.pushBound, hTarget] using hBound target index
+  fun entry => (hBound entry).symm
+
+/-- bound 环境一致性的传递性。 -/
+theorem trans {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {left middle right : Env M bound free}
+    (hLeft : SameBoundStack left middle)
+    (hRight : SameBoundStack middle right) :
+    SameBoundStack left right :=
+  fun entry => (hLeft entry).trans (hRight entry)
+
+/-- 两侧压入同一个 bound 值后仍逐点一致。 -/
+theorem pushBound {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    {left right : Env M bound free}
+    (hBound : SameBoundStack left right) (value : M.Carrier sort) :
+    SameBoundStack (left.pushBound value) (right.pushBound value) := by
+  intro target entry
+  cases entry with
+  | here =>
+      rfl
+  | there previous =>
+      exact hBound previous
+
 end SameBoundStack
+
 /--
 两个环境在给定自由变量支持上一致。
-bound stack 始终整体一致；free assignment 只要求在支持成员上相等。
+bound 赋值整体一致；free 赋值只比较支持中的上下文位置。
 -/
-def AgreesOn {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ} (support : FreeVariable.Support σ) (left right : Env M) : Prop :=
+def AgreesOn {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    (support : FreeSupport σ free)
+    (left right : Env M bound free) : Prop :=
   SameBoundStack left right ∧
-    ∀ fv, fv ∈ support →
-      left.freeVal fv.1 fv.2 = right.freeVal fv.1 fv.2
+    ∀ {sort} (entry : Variable free sort),
+      support.Contains entry.position →
+        left.freeVal entry = right.freeVal entry
+
 namespace AgreesOn
+
 /-- 环境在任意支持上与自身一致。 -/
-theorem refl {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ} (support : FreeVariable.Support σ) (env : Env M) : AgreesOn support env env :=
+theorem refl {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    (support : FreeSupport σ free) (env : Env M bound free) :
+    AgreesOn support env env :=
   ⟨SameBoundStack.refl env, fun _ _ => rfl⟩
+
 /-- 支持上一致性是对称的。 -/
-theorem symm {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ}
-    {support : FreeVariable.Support σ} {left right : Env M} (hEnv : AgreesOn support left right) : AgreesOn support right left :=
-  ⟨hEnv.1.symm, fun fv hMem => (hEnv.2 fv hMem).symm⟩
+theorem symm {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    {support : FreeSupport σ free} {left right : Env M bound free}
+    (hEnv : AgreesOn support left right) :
+    AgreesOn support right left :=
+  ⟨Env.SameBoundStack.symm hEnv.1,
+    fun entry hMem => (hEnv.2 entry hMem).symm⟩
+
 /-- 支持上一致性是传递的。 -/
-theorem trans {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ}
-    {support : FreeVariable.Support σ} {left middle right : Env M} (hLeft : AgreesOn support left middle) (hRight : AgreesOn support middle right) :
+theorem trans {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    {support : FreeSupport σ free}
+    {left middle right : Env M bound free}
+    (hLeft : AgreesOn support left middle)
+    (hRight : AgreesOn support middle right) :
     AgreesOn support left right :=
-  ⟨hLeft.1.trans hRight.1,
-    fun fv hMem => (hLeft.2 fv hMem).trans (hRight.2 fv hMem)⟩
+  ⟨Env.SameBoundStack.trans hLeft.1 hRight.1,
+    fun entry hMem => (hLeft.2 entry hMem).trans (hRight.2 entry hMem)⟩
+
 /-- 在大支持上一致可限制到任意子支持。 -/
-theorem mono {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ}
-    {small large : FreeVariable.Support σ} {left right : Env M} (hEnv : AgreesOn large left right) (hSubset : ∀ fv, fv ∈ small → fv ∈ large) :
+theorem mono {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    {small large : FreeSupport σ free}
+    {left right : Env M bound free}
+    (hEnv : AgreesOn large left right)
+    (hSubset : FreeSupport.Subset small large) :
     AgreesOn small left right :=
-  ⟨hEnv.1, fun fv hMem => hEnv.2 fv (hSubset fv hMem)⟩
-/-- 两侧压入同一个 bound 值后，原自由变量支持上的一致性保持。 -/
-theorem pushBound {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} {support : FreeVariable.Support σ}
-    {left right : Env M} (hEnv : AgreesOn support left right) (sort : σ.SortSymbol) (value : M.Domain) (hValue : M.sortInterp sort value) :
-    AgreesOn support (left.pushBound sort value hValue) (right.pushBound sort value hValue) := by
-  constructor
-  · intro target index
-    by_cases hTarget : target = sort
-    · subst hTarget
-      cases index with
-      | zero =>
-          simp [Env.pushBound]
-      | succ previous =>
-          simpa [Env.pushBound] using hEnv.1 target previous
-    · simpa [Env.pushBound, hTarget] using hEnv.1 target index
-  · intro fv hMem
-    simpa [Env.pushBound] using hEnv.2 fv hMem
+  ⟨hEnv.1, fun entry hMem => hEnv.2 entry (hSubset entry.position hMem)⟩
+
+/-- 两侧压入同一个 bound 值后，free 支持上一致性保持。 -/
+theorem pushBound {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    {support : FreeSupport σ free}
+    {left right : Env M bound free}
+    (hEnv : AgreesOn support left right) (value : M.Carrier sort) :
+    AgreesOn support (left.pushBound value) (right.pushBound value) :=
+  ⟨Env.SameBoundStack.pushBound hEnv.1 value,
+    fun entry hMem => hEnv.2 entry hMem⟩
+
 end AgreesOn
 end Env
-namespace Term
-/-- 项解释只依赖其自由变量支持和完整 bound stack。 -/
-theorem eval_eq_of_agreesOn {σ : Signature.{u, v, w}}
-    {M : Structure.{u, v, w, x} σ} {left right : Env M} :
-    ∀ term : Term σ, Env.AgreesOn (freeSupport term) left right →
-      eval left term = eval right term := by
-  refine Term.rec (motive_1 := fun term =>
-      Env.AgreesOn (freeSupport term) left right →
-        eval left term = eval right term) (motive_2 := fun terms =>
-      Env.AgreesOn (freeSupportList terms) left right →
-        terms.map (eval left) = terms.map (eval right))
-    ?_ ?_ ?_ ?_
-  · intro fv hEnv
-    cases fv with
-    | bvar sort index =>
-        simpa [freeSupport, eval] using hEnv.1 sort index
-    | fvar sort id =>
-        simpa [freeSupport, eval] using
-          hEnv.2 (sort, id) (by simp [freeSupport])
-  · intro function args ihArgs hEnv
-    simpa [eval] using congrArg (M.funcInterp function) (ihArgs hEnv)
-  · intro _hEnv
-    rfl
-  · intro head tail ihHead ihTail hEnv
-    have hHead : Env.AgreesOn (freeSupport head) left right :=
-      hEnv.mono (by
-        intro fv hMem
-        simp [freeSupportList, hMem])
-    have hTail : Env.AgreesOn (freeSupportList tail) left right :=
-      hEnv.mono (by
-        intro fv hMem
-        simp [freeSupportList, hMem])
-    simp [ihHead hHead, ihTail hTail]
-/-- 项列表的逐项解释只依赖该列表的自由变量支持。 -/
-theorem evalList_eq_of_agreesOn {σ : Signature.{u, v, w}}
-    {M : Structure.{u, v, w, x} σ} {left right : Env M} (terms : List (Term σ)) (hEnv : Env.AgreesOn (freeSupportList terms) left right) :
-    terms.map (eval left) = terms.map (eval right) := by
-  induction terms with
+
+mutual
+
+/-- 项解释只依赖其自由变量支持和完整 bound 赋值。 -/
+theorem Term.eval_eq_of_agreesOn {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    {left right : Env M bound free} (term : Term σ bound free sort)
+    (hEnv : Env.AgreesOn term.freeSupport left right) :
+    term.eval left = term.eval right := by
+  cases term with
+  | bvar entry =>
+      exact hEnv.1 entry
+  | fvar entry =>
+      exact hEnv.2 entry (by
+        simp [Term.freeSupport])
+  | app function arguments =>
+      exact congrArg (M.funcInterp function)
+        (Arguments.eval_eq_of_agreesOn arguments hEnv)
+
+/-- 异质参数列的解释只依赖其自由变量支持。 -/
+theorem Arguments.eval_eq_of_agreesOn {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sorts : List σ.SortSymbol}
+    {left right : Env M bound free}
+    (arguments : Arguments σ bound free sorts)
+    (hEnv : Env.AgreesOn arguments.freeSupport left right) :
+    arguments.eval left = arguments.eval right := by
+  cases arguments with
   | nil =>
       rfl
-  | cons head tail ih =>
-      have hHead : Env.AgreesOn (freeSupport head) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupportList, hMem])
-      have hTail : Env.AgreesOn (freeSupportList tail) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupportList, hMem])
-      simp [eval_eq_of_agreesOn head hHead, ih hTail]
-end Term
+  | cons term rest =>
+      have hTerm : Env.AgreesOn term.freeSupport left right :=
+        hEnv.mono (fun position hMem =>
+          FreeSupport.contains_union.mpr (Or.inl hMem))
+      have hRest : Env.AgreesOn rest.freeSupport left right :=
+        hEnv.mono (fun position hMem =>
+          FreeSupport.contains_union.mpr (Or.inr hMem))
+      simp [Arguments.eval, Term.eval_eq_of_agreesOn term hTerm,
+        Arguments.eval_eq_of_agreesOn rest hRest]
+
+end
+
 namespace Formula
-/-- 公式满足性只依赖其自由变量支持和完整 bound stack。 -/
+
+/-- 公式满足性只依赖其自由变量支持和完整 bound 赋值。 -/
 theorem satisfies_iff_of_agreesOn {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ}
-    {left right : Env M} (φ : Formula σ) (hEnv : Env.AgreesOn (freeSupport φ) left right) :
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    {left right : Env M bound free} (φ : Formula σ bound free)
+    (hEnv : Env.AgreesOn φ.freeSupport left right) :
     satisfies left φ ↔ satisfies right φ := by
-  induction φ generalizing left right with
+  induction φ with
   | falsum =>
       simp [satisfies]
   | truth =>
       simp [satisfies]
-  | rel relation args =>
-      have hArgs := Term.evalList_eq_of_agreesOn args (by simpa [freeSupport] using hEnv)
-      simp [satisfies, hArgs]
+  | rel relation arguments =>
+      simp [satisfies, Arguments.eval_eq_of_agreesOn arguments hEnv]
   | equal leftTerm rightTerm =>
-      have hLeft : Env.AgreesOn (Term.freeSupport leftTerm) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupport, hMem])
-      have hRight : Env.AgreesOn (Term.freeSupport rightTerm) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupport, hMem])
+      have hLeft : Env.AgreesOn leftTerm.freeSupport left right :=
+        hEnv.mono (fun position hMem =>
+          FreeSupport.contains_union.mpr (Or.inl hMem))
+      have hRight : Env.AgreesOn rightTerm.freeSupport left right :=
+        hEnv.mono (fun position hMem =>
+          FreeSupport.contains_union.mpr (Or.inr hMem))
       simp [satisfies, Term.eval_eq_of_agreesOn leftTerm hLeft,
         Term.eval_eq_of_agreesOn rightTerm hRight]
-  | neg φ ih =>
+  | neg body ih =>
       simpa [satisfies] using not_congr (ih hEnv)
-  | conj φ ψ ihφ ihψ =>
-      have hφ : Env.AgreesOn (freeSupport φ) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupport, hMem])
-      have hψ : Env.AgreesOn (freeSupport ψ) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupport, hMem])
-      simp [satisfies, ihφ hφ, ihψ hψ]
-  | disj φ ψ ihφ ihψ =>
-      have hφ : Env.AgreesOn (freeSupport φ) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupport, hMem])
-      have hψ : Env.AgreesOn (freeSupport ψ) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupport, hMem])
-      simp [satisfies, ihφ hφ, ihψ hψ]
-  | imp φ ψ ihφ ihψ =>
-      have hφ : Env.AgreesOn (freeSupport φ) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupport, hMem])
-      have hψ : Env.AgreesOn (freeSupport ψ) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupport, hMem])
-      simp [satisfies, ihφ hφ, ihψ hψ]
-  | iff φ ψ ihφ ihψ =>
-      have hφ : Env.AgreesOn (freeSupport φ) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupport, hMem])
-      have hψ : Env.AgreesOn (freeSupport ψ) left right :=
-        hEnv.mono (by
-          intro fv hMem
-          simp [freeSupport, hMem])
-      simp [satisfies, ihφ hφ, ihψ hψ]
+  | conj leftFormula rightFormula ihLeft ihRight
+  | disj leftFormula rightFormula ihLeft ihRight
+  | imp leftFormula rightFormula ihLeft ihRight
+  | iff leftFormula rightFormula ihLeft ihRight =>
+      have hLeft : Env.AgreesOn leftFormula.freeSupport left right :=
+        hEnv.mono (fun position hMem =>
+          FreeSupport.contains_union.mpr (Or.inl hMem))
+      have hRight : Env.AgreesOn rightFormula.freeSupport left right :=
+        hEnv.mono (fun position hMem =>
+          FreeSupport.contains_union.mpr (Or.inr hMem))
+      simp [satisfies, ihLeft hLeft, ihRight hRight]
   | forallE sort body ih =>
       constructor
-      · intro hSat value hValue
-        exact (ih (hEnv.pushBound sort value hValue)).mp (hSat value hValue)
-      · intro hSat value hValue
-        exact (ih (hEnv.pushBound sort value hValue)).mpr (hSat value hValue)
+      · intro hSat value
+        exact (ih (hEnv.pushBound value)).mp (hSat value)
+      · intro hSat value
+        exact (ih (hEnv.pushBound value)).mpr (hSat value)
   | existsE sort body ih =>
       constructor
-      · rintro ⟨value, hValue, hBody⟩
-        exact
-          ⟨value, hValue, (ih (hEnv.pushBound sort value hValue)).mp hBody⟩
-      · rintro ⟨value, hValue, hBody⟩
-        exact
-          ⟨value, hValue, (ih (hEnv.pushBound sort value hValue)).mpr hBody⟩
+      · rintro ⟨value, hBody⟩
+        exact ⟨value, (ih (hEnv.pushBound value)).mp hBody⟩
+      · rintro ⟨value, hBody⟩
+        exact ⟨value, (ih (hEnv.pushBound value)).mpr hBody⟩
+
 end Formula
+
 namespace Env
-/-- 一个带有局部自由变量支持的环境。 -/
-structure Supported {σ : Signature.{u, v, w}} (M : Structure.{u, v, w, x} σ) where
-  support : FreeVariable.Support σ
-  env : Env M
+
+/-- 一个带局部 free 支持的类型化环境。 -/
+structure Supported {σ : Signature.{u, v, w}}
+    (M : Structure.{u, v, w, x} σ)
+    (bound free : SortContext σ) where
+  support : FreeSupport σ free
+  env : Env M bound free
+
 namespace Supported
+
 /-- 有限环境族中的支持两两不交。 -/
-def PairwiseDisjoint {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ} :
-    List (Supported M) → Prop
+def PairwiseDisjoint {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} :
+    List (Supported M bound free) → Prop
   | [] => True
   | entry :: rest =>
       (∀ other, other ∈ rest →
-        FreeVariable.Support.Disjoint entry.support other.support) ∧
+        FreeSupport.Disjoint entry.support other.support) ∧
       PairwiseDisjoint rest
-/-- 有限环境族与基环境共享同一个 bound stack。 -/
-def AllSameBoundStack {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ} (base : Env M) (entries : List (Supported M)) : Prop :=
+
+/-- 有限环境族与基环境共享完整 bound 赋值。 -/
+def AllSameBoundStack {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    (base : Env M bound free)
+    (entries : List (Supported M bound free)) : Prop :=
   ∀ entry, entry ∈ entries → SameBoundStack base entry.env
+
 end Supported
-/--
-在给定支持上用 `source` 覆盖 `base` 的 free assignment。
-bound stack 始终来自 `base`。
--/
-def overlay {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} (support : FreeVariable.Support σ) (source base : Env M) : Env M where
+
+/-- 在给定支持上用 source 覆盖 base 的 free 赋值。 -/
+def overlay {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    (support : FreeSupport σ free)
+    (source base : Env M bound free) : Env M bound free where
   boundVal := base.boundVal
-  freeVal := fun sort id =>
-    if (sort, id) ∈ support then
-      source.freeVal sort id
-    else
-      base.freeVal sort id
-  boundSort := base.boundSort
-  freeSort := by
-    intro sort id
-    by_cases hMem : (sort, id) ∈ support
-    · simpa [hMem] using source.freeSort sort id
-    · simpa [hMem] using base.freeSort sort id
+  freeVal := fun entry =>
+    match support entry.position with
+    | true => source.freeVal entry
+    | false => base.freeVal entry
+
 /-- overlay 在覆盖支持上投影回源环境。 -/
 theorem overlay_agreesOn_source {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ}
-    {support : FreeVariable.Support σ} {source base : Env M} (hBound : SameBoundStack base source) :
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    {support : FreeSupport σ free}
+    {source base : Env M bound free}
+    (hBound : SameBoundStack base source) :
     AgreesOn support (overlay support source base) source := by
   constructor
-  · simpa [overlay] using hBound
-  · intro fv hMem
+  · exact hBound
+  · intro sort entry hMem
+    change support entry.position = true at hMem
     simp [overlay, hMem]
-/-- 若局部支持与覆盖支持不交，overlay 在局部支持上仍投影回基环境。 -/
+
+/-- 若局部支持与覆盖支持不交，overlay 在局部支持上投影回基环境。 -/
 theorem overlay_agreesOn_base_of_disjoint {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ}
-    {overlaySupport support : FreeVariable.Support σ} {source base : Env M} (hDisjoint : FreeVariable.Support.Disjoint overlaySupport support) :
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    {overlaySupport support : FreeSupport σ free}
+    {source base : Env M bound free}
+    (hDisjoint : FreeSupport.Disjoint overlaySupport support) :
     AgreesOn support (overlay overlaySupport source base) base := by
   constructor
-  · intro sort index
-    rfl
-  · intro fv hMem
-    have hNotMem : fv ∉ overlaySupport :=
-      fun hOverlay => hDisjoint fv hOverlay hMem
-    simp [overlay, hNotMem]
-/--
-按列表顺序合并有限支持环境。
-较早条目的支持优先；两两不交时该顺序不影响各支持上的投影定理。
--/
-def merge {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} (base : Env M) :
-    List (Supported M) → Env M
+  · exact SameBoundStack.refl base
+  · intro sort entry hMem
+    have hNotMem : ¬ overlaySupport.Contains entry.position :=
+      fun hOverlay => hDisjoint entry.position hOverlay hMem
+    change ¬ overlaySupport entry.position = true at hNotMem
+    cases hValue : overlaySupport entry.position with
+    | false =>
+        simp [overlay, hValue]
+    | true =>
+        exact False.elim (hNotMem hValue)
+
+/-- 按列表顺序合并有限支持环境；较早条目的支持优先。 -/
+def merge {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    (base : Env M bound free) :
+    List (Supported M bound free) → Env M bound free
   | [] => base
   | entry :: rest => overlay entry.support entry.env (merge base rest)
-/-- 合并环境保留基环境的完整 bound stack。 -/
+
+/-- 合并环境保留基环境的完整 bound 赋值。 -/
 theorem merge_sameBoundStack {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (base : Env M) (entries : List (Supported M)) :
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    (base : Env M bound free) (entries : List (Supported M bound free)) :
     SameBoundStack (merge base entries) base := by
   induction entries with
   | nil =>
-      intro sort index
-      rfl
+      exact SameBoundStack.refl base
   | cons entry rest ih =>
-      simpa [merge, overlay] using ih
-/-- 若没有条目负责某个自由变量，合并环境保留基环境的值。 -/
+      exact ih
+
+/-- 若没有条目负责某个位置，合并环境保留基环境的值。 -/
 theorem merge_freeVal_of_not_mem {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (base : Env M) (entries : List (Supported M)) (sort : σ.SortSymbol) (id : FreeVarId)
-    (hMissing : ∀ entry, entry ∈ entries → (sort, id) ∉ entry.support) : (merge base entries).freeVal sort id = base.freeVal sort id := by
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    (base : Env M bound free) (entries : List (Supported M bound free))
+    {sort : σ.SortSymbol} (freeEntry : Variable free sort)
+    (hMissing : ∀ entry, entry ∈ entries →
+      ¬ entry.support.Contains freeEntry.position) :
+    (merge base entries).freeVal freeEntry = base.freeVal freeEntry := by
   induction entries with
   | nil =>
       rfl
   | cons entry rest ih =>
-      have hHead : (sort, id) ∉ entry.support :=
+      have hHead : ¬ entry.support.Contains freeEntry.position :=
         hMissing entry List.mem_cons_self
-      have hRest : ∀ other, other ∈ rest → (sort, id) ∉ other.support := by
+      have hRest : ∀ other, other ∈ rest →
+          ¬ other.support.Contains freeEntry.position := by
         intro other hMem
         exact hMissing other (List.mem_cons_of_mem entry hMem)
-      simp [merge, overlay, hHead, ih hRest]
-private theorem agreesOn_merge_cons_of_disjoint {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ}
-    {base source : Env M} {support : FreeVariable.Support σ}
-    {first : Supported M} {rest : List (Supported M)} (hDisjoint : FreeVariable.Support.Disjoint first.support support)
+      change ¬ entry.support freeEntry.position = true at hHead
+      cases hValue : entry.support freeEntry.position with
+      | false =>
+          simpa [merge, overlay, hValue] using ih hRest
+      | true =>
+          exact False.elim (hHead hValue)
+
+private theorem agreesOn_merge_cons_of_disjoint
+    {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    {base source : Env M bound free}
+    {support : FreeSupport σ free}
+    {first : Supported M bound free}
+    {rest : List (Supported M bound free)}
+    (hDisjoint : FreeSupport.Disjoint first.support support)
     (hEnv : AgreesOn support (merge base rest) source) :
     AgreesOn support (merge base (first :: rest)) source := by
   constructor
-  · simpa [merge, overlay] using hEnv.1
-  · intro fv hMem
-    have hNotMem : fv ∉ first.support :=
-      fun hFirst => hDisjoint fv hFirst hMem
-    simpa [merge, overlay, hNotMem] using hEnv.2 fv hMem
+  · exact hEnv.1
+  · intro sort entry hMem
+    have hNotMem : ¬ first.support.Contains entry.position :=
+      fun hFirst => hDisjoint entry.position hFirst hMem
+    change ¬ first.support entry.position = true at hNotMem
+    cases hValue : first.support entry.position with
+    | false =>
+        simpa [merge, overlay, hValue] using hEnv.2 entry hMem
+    | true =>
+        exact False.elim (hNotMem hValue)
+
 /--
-两两不交且共享 bound stack 的有限环境族可同时合并。
+两两不交且共享 bound 赋值的有限环境族可同时合并。
 结果在每个条目的支持上都与该条目的源环境一致。
 -/
 theorem merge_agreesOn {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (base : Env M) (entries : List (Supported M)) (hDisjoint : Supported.PairwiseDisjoint entries)
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    (base : Env M bound free) (entries : List (Supported M bound free))
+    (hDisjoint : Supported.PairwiseDisjoint entries)
     (hBound : Supported.AllSameBoundStack base entries) :
     ∀ entry, entry ∈ entries →
       AgreesOn entry.support (merge base entries) entry.env := by
@@ -341,17 +404,21 @@ theorem merge_agreesOn {σ : Signature.{u, v, w}}
       rcases hDisjoint with ⟨hFirstDisjoint, hRestDisjoint⟩
       have hRestBound : Supported.AllSameBoundStack base rest := by
         intro other hOther
-        exact hBound other (List.mem_cons_of_mem _ hOther)
+        exact hBound other (List.mem_cons_of_mem first hOther)
       intro entry hMem
       rcases List.mem_cons.mp hMem with hEq | hRestMem
       · cases hEq
         constructor
-        · intro sort index
-          exact (merge_sameBoundStack base (first :: rest) sort index).trans (hBound first List.mem_cons_self sort index)
-        · intro fv hSupport
+        · exact Env.SameBoundStack.trans
+            (merge_sameBoundStack base (first :: rest))
+            (hBound first List.mem_cons_self)
+        · intro sort freeEntry hSupport
+          change first.support freeEntry.position = true at hSupport
           simp [merge, overlay, hSupport]
-      · apply agreesOn_merge_cons_of_disjoint (hFirstDisjoint entry hRestMem)
+      · apply agreesOn_merge_cons_of_disjoint
+          (hFirstDisjoint entry hRestMem)
         exact ih hRestDisjoint hRestBound entry hRestMem
+
 end Env
 end FirstOrder
 end Logic

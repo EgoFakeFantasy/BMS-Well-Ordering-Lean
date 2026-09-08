@@ -34,6 +34,8 @@ private def leastFamilyBoundValue (𝒞 : OrderedPairConvention) : BinarySchema 
       Formula.isOrdinalUpperBound, Formula.forallMem,
       Formula.extensionalEq, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end BinarySchema
 namespace Formula
 /-- 序数上界公式与“每个成员不超过给定界”一致。 -/

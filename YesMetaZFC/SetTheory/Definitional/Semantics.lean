@@ -283,7 +283,7 @@ theorem satisfies_forallClosure_iff {σ : AtomSignature.{u}} (interpretation : I
         have hBound : bound = Fin.elim0 := by
           funext entry
           exact Fin.elim0 entry
-        simpa [hBound] using h
+        simpa only [Formula.forallClosure, hBound] using h
       · intro h
         exact h Fin.elim0
   | succ depth ih =>

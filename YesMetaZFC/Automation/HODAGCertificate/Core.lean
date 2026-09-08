@@ -15,6 +15,8 @@ namespace Automation
 namespace HODAGCertificate
 open Logic.HigherOrder
 universe u v w x
+-- 各字段（或其签名别名）保留独立宇宙；结构类型的 max 不是冗余参数。
+set_option linter.checkUnivs false in
 abbrev Signature := Logic.HigherOrder.Signature
 abbrev SimpleType (σ : Signature) := Logic.HigherOrder.SimpleType σ.BaseSort
 abbrev Term (σ : Signature) := Logic.HigherOrder.Term σ
@@ -56,7 +58,7 @@ theorem term_sound (left : Term σ) :
     (motive_2 := fun lefts => ∀ right, termList lefts right = true → lefts = right)
     ?_ ?_ ?_ ?_ ?_ ?_ left
   · intro value right h
-    cases right <;> simp [term] at h
+    cases right <;> try simp [term] at h
     case var other =>
       cases value <;> cases other <;> simp [term] at h
       all_goals
@@ -65,20 +67,20 @@ theorem term_sound (left : Term σ) :
         cases hIndex
         rfl
   · intro symbol arguments ihArguments right h
-    cases right <;> simp [term] at h
+    cases right <;> try simp [term] at h
     case app otherSymbol otherArguments =>
       rcases h with ⟨hSymbol, hArguments⟩
       cases hSymbol
       exact congrArg (Term.app symbol) (ihArguments _ hArguments)
   · intro function argument ihFunction ihArgument right h
-    cases right <;> simp [term] at h
+    cases right <;> try simp [term] at h
     case apply otherFunction otherArgument =>
       rcases h with ⟨hFunction, hArgument⟩
       cases ihFunction _ hFunction
       cases ihArgument _ hArgument
       rfl
   · intro domain codomain body ihBody right h
-    cases right <;> simp [term] at h
+    cases right <;> try simp [term] at h
     case lam otherDomain otherCodomain otherBody =>
       have hFields : (domain = otherDomain ∧ codomain = otherCodomain) ∧
             term body otherBody = true := by
@@ -107,7 +109,7 @@ theorem termList_sound (left : List (Term σ)) :
     (motive_2 := fun lefts => ∀ right, termList lefts right = true → lefts = right)
     ?_ ?_ ?_ ?_ ?_ ?_ left
   · intro value right h
-    cases right <;> simp [term] at h
+    cases right <;> try simp [term] at h
     case var other =>
       cases value <;> cases other <;> simp [term] at h
       all_goals
@@ -116,20 +118,20 @@ theorem termList_sound (left : List (Term σ)) :
         cases hIndex
         rfl
   · intro symbol arguments ihArguments right h
-    cases right <;> simp [term] at h
+    cases right <;> try simp [term] at h
     case app otherSymbol otherArguments =>
       rcases h with ⟨hSymbol, hArguments⟩
       cases hSymbol
       exact congrArg (Term.app symbol) (ihArguments _ hArguments)
   · intro function argument ihFunction ihArgument right h
-    cases right <;> simp [term] at h
+    cases right <;> try simp [term] at h
     case apply otherFunction otherArgument =>
       rcases h with ⟨hFunction, hArgument⟩
       cases ihFunction _ hFunction
       cases ihArgument _ hArgument
       rfl
   · intro domain codomain body ihBody right h
-    cases right <;> simp [term] at h
+    cases right <;> try simp [term] at h
     case lam otherDomain otherCodomain otherBody =>
       have hFields : (domain = otherDomain ∧ codomain = otherCodomain) ∧
             term body otherBody = true := by

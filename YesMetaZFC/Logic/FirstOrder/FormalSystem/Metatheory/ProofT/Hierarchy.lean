@@ -1,21 +1,12 @@
-import YesMetaZFC.Logic.FirstOrder.FormalSystem.ExpressionEncoding
-import YesMetaZFC.Logic.FirstOrder.LevyHierarchy
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.CodeDomain
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.IntrinsicFormulaTemplate
 
 /-!
 # `ProofT` 的 Lévy 层级接口
 
-本模块只处理证明图与可证性谓词的量词骨架。具体 replay 如何构造证明图、以及
-对象理论如何证明该图正确，仍由各 presentation 自行提供。
-
-核心约定如下：
-
-* 二元 proof graph 若是 `Delta0`，则它同时可作 `Sigma1` 与 `Pi1` 公式使用；
-* 普通可证性谓词 `∃ p, Proof(p,c)` 是 `Sigma1`，其否定是 `Pi1`；
-* Rosser 的“小于当前证明码不存在反证”仍是 `Delta0`；
-* 因而 Rosser 比较谓词是 `Sigma1`，其否定是 `Pi1`。
-
-这些结论完全是句法性的，不引入对象理论公理，也不把任意展开式伪装成
-`Delta0`。具体 presentation 必须交付真实的 `IsDelta0` 证明图证据。
+本模块只处理证明图与可证性谓词的量词骨架。所有量词都直接使用内在 bound
+上下文，证明码与结论的排序及作用域由类型索引保证，不再需要自由变量编号、关闭
+自由变量或新鲜性旁证。
 -/
 
 namespace YesMetaZFC
@@ -30,80 +21,35 @@ open scoped Symbols
 
 set_option autoImplicit false
 
-/-- 纯集合论语言中由成员关系给出的标准 Lévy 有界量词参数。 -/
-def set_levy_bound : Formula.LevyBound signature where
-  sort := SetSort.set
-  relation := RelationSymbol.membership
-
-/-! ## 编码层常用有界公式 -/
-
-/-- 子串逐点条件只在 segment 的有限定义域上量化。 -/
-theorem code_substring_at_delta0
-    (whole segment start : SetTerm)
-    (hSegmentFresh :
-      (SetSort.set, 320) ∉
-        Term.freeSupport segment) :
-    Formula.IsDelta0 set_levy_bound
-      (code_substring_at_condition whole segment start) := by
-  have hDomainFresh :
-      (SetSort.set, 320) ∉
-        Term.freeSupport (domₘ(segment)) := by
-    simpa [Term.freeSupport, Term.freeSupportList] using
-      hSegmentFresh
-  have hPoint :
-      Formula.IsDelta0 set_levy_bound
-        ((((x#320 +ₘ start) ∈ₘ domₘ(whole)) ∧ₘ
-          ((whole ·ₘ (x#320 +ₘ start)) ≐ₘ
-            (segment ·ₘ x#320)))) :=
-    Formula.IsDelta0.conj
-      (Formula.IsDelta0.rel
-        RelationSymbol.membership
-        [x#320 +ₘ start, domₘ(whole)])
-      (Formula.IsDelta0.equal
-        (whole ·ₘ (x#320 +ₘ start))
-        (segment ·ₘ x#320))
-  have hBounded :
-      Formula.IsDelta0 set_levy_bound
-        (∀ₘ[SetSort.set, 320],
-          (x#320 ∈ₘ domₘ(segment)) ⟶ₘ
-            ((((x#320 +ₘ start) ∈ₘ domₘ(whole)) ∧ₘ
-              ((whole ·ₘ (x#320 +ₘ start)) ≐ₘ
-                (segment ·ₘ x#320))))) :=
-    Formula.IsDelta0.bounded_forall_closeFreeAt
-      320 (domₘ(segment)) hDomainFresh hPoint
-  exact Formula.IsDelta0.conj
-    (Formula.IsDelta0.rel RelationSymbol.membership
-      [start, ωₘ])
-    (by
-      simpa [code_substring_at_condition] using hBounded)
+/-- Rosser 比较所使用的纯句法码域。 -/
+structure Delta0CodeDomain where
+  condition : FormulaTemplate.Unary
+  delta0 :
+    ∀ {bound free : SetContext} (point : SetTerm bound free),
+      Formula.IsDelta0 set_levy_bound (condition point)
 
 /-- 二元对象证明图的纯句法接口。 -/
 structure Delta0ProofGraph where
-  condition : SetTerm → SetTerm → SetFormula
+  condition : FormulaTemplate.Binary
   delta0 :
-    ∀ proofCode conclusion,
+    ∀ {bound free : SetContext}
+      (proofCode conclusion : SetTerm bound free),
       Formula.IsDelta0 set_levy_bound
         (condition proofCode conclusion)
 
-/-!
-`Sigma1ProofGraph` 只记录正向 proof graph 的 `Sigma1` 分类。
-
-它足以导出一元可证性谓词的 `Sigma1` 与其否定的 `Pi1` 分类，但不承诺
-Rosser 有限比较所需的 `Delta0` 反证体；后者仍必须使用
-`Delta0ProofGraph`。
--/
+/-- `Sigma1ProofGraph` 只记录正向证明图的 `Sigma1` 分类。 -/
 structure Sigma1ProofGraph where
-  condition : SetTerm → SetTerm → SetFormula
+  condition : FormulaTemplate.Binary
   sigma1 :
-    ∀ proofCode conclusion,
+    ∀ {bound free : SetContext}
+      (proofCode conclusion : SetTerm bound free),
       Formula.IsSigma1 set_levy_bound
         (condition proofCode conclusion)
 
 namespace Delta0ProofGraph
 
 /-- `Delta0` proof graph 的 `Sigma1` 投影。 -/
-def toSigma1
-    (G : Delta0ProofGraph) : Sigma1ProofGraph where
+def toSigma1 (G : Delta0ProofGraph) : Sigma1ProofGraph where
   condition := G.condition
   sigma1 proofCode conclusion :=
     (G.delta0 proofCode conclusion).to_sigma1
@@ -111,7 +57,8 @@ def toSigma1
 /-- `Delta0` proof graph 的正公式自动提升为 `Sigma1`。 -/
 theorem condition_sigma1
     (G : Delta0ProofGraph)
-    (proofCode conclusion : SetTerm) :
+    {bound free : SetContext}
+    (proofCode conclusion : SetTerm bound free) :
     Formula.IsSigma1 set_levy_bound
       (G.condition proofCode conclusion) :=
   (G.delta0 proofCode conclusion).to_sigma1
@@ -119,7 +66,8 @@ theorem condition_sigma1
 /-- `Delta0` proof graph 的同一公式自动提升为 `Pi1`。 -/
 theorem condition_pi1
     (G : Delta0ProofGraph)
-    (proofCode conclusion : SetTerm) :
+    {bound free : SetContext}
+    (proofCode conclusion : SetTerm bound free) :
     Formula.IsPi1 set_levy_bound
       (G.condition proofCode conclusion) :=
   (G.delta0 proofCode conclusion).to_pi1
@@ -127,158 +75,192 @@ theorem condition_pi1
 /-- proof graph 的补关系由一个 `Pi1` 公式给出。 -/
 theorem neg_condition_pi1
     (G : Delta0ProofGraph)
-    (proofCode conclusion : SetTerm) :
+    {bound free : SetContext}
+    (proofCode conclusion : SetTerm bound free) :
     Formula.IsPi1 set_levy_bound
       (¬ₘ G.condition proofCode conclusion) :=
-  Formula.IsPi1.neg (G.condition_sigma1 proofCode conclusion)
+  Formula.IsLevel1.neg (G.condition_sigma1 proofCode conclusion)
 
 /-- 普通一元可证性谓词。 -/
 def provability
     (G : Delta0ProofGraph)
-    (conclusion : SetTerm)
-    (proofCodeId : FreeVarId) : SetFormula :=
-  ∃ₘ[SetSort.set, proofCodeId],
-    G.condition (x#proofCodeId) conclusion
+    {bound free : SetContext}
+    (conclusion : SetTerm bound free) : SetFormula bound free :=
+  Formula.existsE SetSort.set
+    (G.condition
+      (bₘ[.here])
+      (conclusion.weakenBound SetSort.set))
 
 /-- `∃ p, Proof(p,c)` 的正式 `Sigma1` 分类。 -/
 theorem provability_sigma1
     (G : Delta0ProofGraph)
-    (conclusion : SetTerm)
-    (proofCodeId : FreeVarId) :
+    {bound free : SetContext}
+    (conclusion : SetTerm bound free) :
     Formula.IsSigma1 set_levy_bound
-      (G.provability conclusion proofCodeId) := by
+      (G.provability conclusion) := by
   simpa [provability] using
-    Formula.IsSigma1.exists_closeFreeAt
-      SetSort.set proofCodeId
-      (G.condition_sigma1 (x#proofCodeId) conclusion)
+    Formula.IsLevel1.existsE (ℬ := set_levy_bound) SetSort.set
+      (G.condition_sigma1
+        (bₘ[.here])
+        (conclusion.weakenBound SetSort.set))
 
 /-- 普通不可证性谓词 `¬∃ p, Proof(p,c)` 的正式 `Pi1` 分类。 -/
 theorem neg_provability_pi1
     (G : Delta0ProofGraph)
-    (conclusion : SetTerm)
-    (proofCodeId : FreeVarId) :
+    {bound free : SetContext}
+    (conclusion : SetTerm bound free) :
     Formula.IsPi1 set_levy_bound
-      (¬ₘ G.provability conclusion proofCodeId) :=
-  Formula.IsPi1.neg
-    (G.provability_sigma1 conclusion proofCodeId)
+      (¬ₘ G.provability conclusion) :=
+  Formula.IsLevel1.neg
+    (G.provability_sigma1 conclusion)
 
 /-- 在给定证明码以下不存在右侧公式的证明。 -/
 def no_smaller
     (G : Delta0ProofGraph)
-    (bound conclusion : SetTerm)
-    (smallerCodeId : FreeVarId) : SetFormula :=
-  ∀ₘ[SetSort.set, smallerCodeId],
-    (x#smallerCodeId ∈ₘ bound) ⟶ₘ
-      ¬ₘ G.condition (x#smallerCodeId) conclusion
+    {bound free : SetContext}
+    (proofBound conclusion : SetTerm bound free) :
+    SetFormula bound free :=
+  set_levy_bound.boundedForall proofBound
+    (¬ₘ G.condition
+      (bₘ[.here])
+      (conclusion.weakenBound SetSort.set))
+
+/-- `no_smaller` 沿 free 上下文弱化逐项作用。 -/
+@[simp] theorem no_smaller_weakenFree
+    (G : Delta0ProofGraph)
+    {bound free : SetContext}
+    (introduced : SetSort)
+    (proofBound conclusion : SetTerm bound free) :
+    (G.no_smaller proofBound conclusion).weakenFree introduced =
+      G.no_smaller (proofBound.weakenFree introduced)
+        (conclusion.weakenFree introduced) := by
+  simp [no_smaller, Formula.LevyBound.boundedForall,
+    Term.weakenFree_weakenBound]
+
+/-- 顶部证明码变量实例化后直接恢复普通 `no_smaller`。 -/
+@[simp] theorem no_smaller_instantiateTop_bvar
+    (G : Delta0ProofGraph)
+    {free : SetContext}
+    (conclusion replacement : SetOpenTerm free) :
+    Formula.instantiateTop replacement
+        (G.no_smaller (.bvar .here)
+          (conclusion.weakenBound SetSort.set)) =
+      G.no_smaller replacement conclusion := by
+  have hConclusionNested :
+      (Term.weakenBound SetSort.set
+        (Term.weakenBound SetSort.set conclusion)).substituteMapped
+          (VariableSubstitution.liftBound SetSort.set
+            (VariableSubstitution.instantiateTop replacement))
+          VariableSubstitution.freeId =
+        Term.weakenBound SetSort.set conclusion := by
+    simp []
+  simp [no_smaller, Formula.LevyBound.boundedForall,
+    Formula.instantiateTop, Formula.substitute,
+    Substitution.instantiateTop, Formula.substituteMapped,
+    Term.substituteMapped,
+    FormulaTemplate.apply_two_substituteMapped,
+    VariableSubstitution.liftBound,
+    VariableSubstitution.instantiateTop,
+    hConclusionNested]
 
 /-- 有限初始段上的否定搜索仍然是 `Delta0`。 -/
 theorem no_smaller_delta0
     (G : Delta0ProofGraph)
-    (bound conclusion : SetTerm)
-    (smallerCodeId : FreeVarId)
-    (hBoundFresh :
-      (SetSort.set, smallerCodeId) ∉
-        Term.freeSupport bound) :
+    {bound free : SetContext}
+    (proofBound conclusion : SetTerm bound free) :
     Formula.IsDelta0 set_levy_bound
-      (G.no_smaller bound conclusion smallerCodeId) := by
-  have hBody :
-      Formula.IsDelta0 set_levy_bound
-        (¬ₘ G.condition (x#smallerCodeId) conclusion) :=
-    Formula.IsDelta0.neg
-      (G.delta0 (x#smallerCodeId) conclusion)
+      (G.no_smaller proofBound conclusion) := by
   simpa [no_smaller] using
-    Formula.IsDelta0.bounded_forall_closeFreeAt
-      smallerCodeId bound hBoundFresh hBody
+    Formula.IsDelta0.bounded_forall proofBound
+      (Formula.IsDelta0.neg
+        (G.delta0
+          (bₘ[.here])
+          (conclusion.weakenBound SetSort.set)))
 
 /-- 左侧有证明，且在该证明码以下没有右侧证明。 -/
 def comparison
     (G : Delta0ProofGraph)
-    (left right : SetTerm)
-    (proofCodeId smallerCodeId : FreeVarId) : SetFormula :=
-  ∃ₘ[SetSort.set, proofCodeId],
-    G.condition (x#proofCodeId) left ∧ₘ
-      G.no_smaller
-        (x#proofCodeId) right smallerCodeId
+    (D : Delta0CodeDomain)
+    {bound free : SetContext}
+    (left right : SetTerm bound free) : SetFormula bound free :=
+  Formula.existsE SetSort.set
+    (D.condition (bₘ[.here]) ∧ₘ
+      (G.condition
+          (bₘ[.here])
+          (left.weakenBound SetSort.set) ∧ₘ
+        G.no_smaller
+          (bₘ[.here])
+          (right.weakenBound SetSort.set)))
 
 /-- Rosser 有限比较的正式 `Sigma1` 分类。 -/
 theorem comparison_sigma1
     (G : Delta0ProofGraph)
-    (left right : SetTerm)
-    (proofCodeId smallerCodeId : FreeVarId)
-    (hIds : proofCodeId ≠ smallerCodeId) :
+    (D : Delta0CodeDomain)
+    {bound free : SetContext}
+    (left right : SetTerm bound free) :
     Formula.IsSigma1 set_levy_bound
-      (G.comparison left right proofCodeId smallerCodeId) := by
-  have hProofFresh :
-      (SetSort.set, smallerCodeId) ∉
-        Term.freeSupport (x#proofCodeId) := by
-    intro hMember
-    have hPair :
-        (SetSort.set, smallerCodeId) =
-          (SetSort.set, proofCodeId) :=
-      List.mem_singleton.mp hMember
-    cases hPair
-    exact hIds rfl
+      (G.comparison D left right) := by
   have hBody :
       Formula.IsDelta0 set_levy_bound
-        (G.condition (x#proofCodeId) left ∧ₘ
-          G.no_smaller
-            (x#proofCodeId) right smallerCodeId) :=
+        (D.condition (bₘ[.here]) ∧ₘ
+          (G.condition
+              (bₘ[.here])
+              (left.weakenBound SetSort.set) ∧ₘ
+            G.no_smaller
+              (bₘ[.here])
+              (right.weakenBound SetSort.set))) :=
     Formula.IsDelta0.conj
-      (G.delta0 (x#proofCodeId) left)
-      (G.no_smaller_delta0
-        (x#proofCodeId) right smallerCodeId hProofFresh)
+      (D.delta0 (bₘ[.here]))
+      (Formula.IsDelta0.conj
+        (G.delta0
+          (bₘ[.here])
+          (left.weakenBound SetSort.set))
+        (G.no_smaller_delta0
+          (bₘ[.here])
+          (right.weakenBound SetSort.set)))
   simpa [comparison] using
-    Formula.IsSigma1.exists_closeFreeAt
-      SetSort.set proofCodeId hBody.to_sigma1
+    Formula.IsLevel1.existsE (ℬ := set_levy_bound) SetSort.set hBody.to_sigma1
 
 /-- Rosser 有限比较之否定的正式 `Pi1` 分类。 -/
 theorem neg_comparison_pi1
     (G : Delta0ProofGraph)
-    (left right : SetTerm)
-    (proofCodeId smallerCodeId : FreeVarId)
-    (hIds : proofCodeId ≠ smallerCodeId) :
+    (D : Delta0CodeDomain)
+    {bound free : SetContext}
+    (left right : SetTerm bound free) :
     Formula.IsPi1 set_levy_bound
-      (¬ₘ G.comparison
-        left right proofCodeId smallerCodeId) :=
-  Formula.IsPi1.neg
-    (G.comparison_sigma1
-      left right proofCodeId smallerCodeId hIds)
+      (¬ₘ G.comparison D left right) :=
+  Formula.IsLevel1.neg
+    (G.comparison_sigma1 D left right)
 
 /-- 把右侧固定为左侧否定码得到 Rosser 可证性谓词。 -/
 def rosser_provability
     (G : Delta0ProofGraph)
-    (code : SetTerm)
-    (proofCodeId smallerCodeId : FreeVarId) : SetFormula :=
-  G.comparison
-    code (neg_codeₘ(code))
-    proofCodeId smallerCodeId
+    (D : Delta0CodeDomain)
+    {bound free : SetContext}
+    (code : SetTerm bound free) : SetFormula bound free :=
+  G.comparison D code (neg_codeₘ(code))
 
 /-- Rosser 可证性谓词的正式 `Sigma1` 分类。 -/
 theorem rosser_provability_sigma1
     (G : Delta0ProofGraph)
-    (code : SetTerm)
-    (proofCodeId smallerCodeId : FreeVarId)
-    (hIds : proofCodeId ≠ smallerCodeId) :
+    (D : Delta0CodeDomain)
+    {bound free : SetContext}
+    (code : SetTerm bound free) :
     Formula.IsSigma1 set_levy_bound
-      (G.rosser_provability
-        code proofCodeId smallerCodeId) := by
+      (G.rosser_provability D code) := by
   simpa [rosser_provability] using
-    G.comparison_sigma1
-      code (neg_codeₘ(code))
-      proofCodeId smallerCodeId hIds
+    G.comparison_sigma1 D code (neg_codeₘ(code))
 
 /-- Rosser 不可证性谓词的正式 `Pi1` 分类。 -/
 theorem neg_rosser_provability_pi1
     (G : Delta0ProofGraph)
-    (code : SetTerm)
-    (proofCodeId smallerCodeId : FreeVarId)
-    (hIds : proofCodeId ≠ smallerCodeId) :
+    (D : Delta0CodeDomain)
+    {bound free : SetContext}
+    (code : SetTerm bound free) :
     Formula.IsPi1 set_levy_bound
-      (¬ₘ G.rosser_provability
-        code proofCodeId smallerCodeId) :=
-  Formula.IsPi1.neg
-    (G.rosser_provability_sigma1
-      code proofCodeId smallerCodeId hIds)
+      (¬ₘ G.rosser_provability D code) :=
+  Formula.IsLevel1.neg
+    (G.rosser_provability_sigma1 D code)
 
 end Delta0ProofGraph
 
@@ -287,7 +269,8 @@ namespace Sigma1ProofGraph
 /-- `Sigma1` proof graph 的正向条件分类。 -/
 theorem condition_sigma1
     (G : Sigma1ProofGraph)
-    (proofCode conclusion : SetTerm) :
+    {bound free : SetContext}
+    (proofCode conclusion : SetTerm bound free) :
     Formula.IsSigma1 set_levy_bound
       (G.condition proofCode conclusion) :=
   G.sigma1 proofCode conclusion
@@ -295,32 +278,35 @@ theorem condition_sigma1
 /-- 普通一元可证性谓词。 -/
 def provability
     (G : Sigma1ProofGraph)
-    (conclusion : SetTerm)
-    (proofCodeId : FreeVarId) : SetFormula :=
-  ∃ₘ[SetSort.set, proofCodeId],
-    G.condition (x#proofCodeId) conclusion
+    {bound free : SetContext}
+    (conclusion : SetTerm bound free) : SetFormula bound free :=
+  Formula.existsE SetSort.set
+    (G.condition
+      (bₘ[.here])
+      (conclusion.weakenBound SetSort.set))
 
 /-- `∃ p, Proof(p,c)` 的正式 `Sigma1` 分类。 -/
 theorem provability_sigma1
     (G : Sigma1ProofGraph)
-    (conclusion : SetTerm)
-    (proofCodeId : FreeVarId) :
+    {bound free : SetContext}
+    (conclusion : SetTerm bound free) :
     Formula.IsSigma1 set_levy_bound
-      (G.provability conclusion proofCodeId) := by
+      (G.provability conclusion) := by
   simpa [provability] using
-    Formula.IsSigma1.exists_closeFreeAt
-      SetSort.set proofCodeId
-      (G.condition_sigma1 (x#proofCodeId) conclusion)
+    Formula.IsLevel1.existsE (ℬ := set_levy_bound) SetSort.set
+      (G.condition_sigma1
+        (bₘ[.here])
+        (conclusion.weakenBound SetSort.set))
 
 /-- 普通不可证性谓词的正式 `Pi1` 分类。 -/
 theorem neg_provability_pi1
     (G : Sigma1ProofGraph)
-    (conclusion : SetTerm)
-    (proofCodeId : FreeVarId) :
+    {bound free : SetContext}
+    (conclusion : SetTerm bound free) :
     Formula.IsPi1 set_levy_bound
-      (¬ₘ G.provability conclusion proofCodeId) :=
-  Formula.IsPi1.neg
-    (G.provability_sigma1 conclusion proofCodeId)
+      (¬ₘ G.provability conclusion) :=
+  Formula.IsLevel1.neg
+    (G.provability_sigma1 conclusion)
 
 end Sigma1ProofGraph
 end ProofT

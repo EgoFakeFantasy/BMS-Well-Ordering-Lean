@@ -47,22 +47,30 @@ def canonicalOrdinalPairLess (𝒞 : OrderedPairConvention) : BinarySchema 0 whe
   freeClosed := by
     simp [Formula.canonicalOrdinalPairLess, Formula.isOrdinalMaximum,
       Formula.extensionalEq, Formula.FreeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 从有序对编码取第一坐标。 -/
 def orderedPairFirst (𝒞 : OrderedPairConvention) : BinarySchema 0 where
   body := .existsE <| 𝒞.code (.bound 2) (.bound 1) (.bound 0)
   freeClosed := by
     simp [Formula.FreeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 从有序对编码取第二坐标。 -/
 def orderedPairSecond (𝒞 : OrderedPairConvention) : BinarySchema 0 where
   body := .existsE <| 𝒞.code (.bound 2) (.bound 0) (.bound 1)
   freeClosed := by
     simp [Formula.FreeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 从有序数坐标编码取规范最大坐标。 -/
 def ordinalPairMaximum (𝒞 : OrderedPairConvention) : BinarySchema 0 where
   body := .existsE <| .existsE <| .conj (𝒞.code (.bound 3) (.bound 1) (.bound 0)) (Formula.isOrdinalMaximum (.bound 1) (.bound 0) (.bound 2))
   freeClosed := by
     simp [Formula.isOrdinalMaximum, Formula.extensionalEq,
       Formula.FreeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end BinarySchema
 namespace UnarySchema
 /-- 候选有序对的规范最大坐标等于给定参数。 -/
@@ -71,11 +79,15 @@ def hasOrdinalPairMaximum (𝒞 : OrderedPairConvention) : UnarySchema 1 where
   freeClosed := by
     simp [Formula.isOrdinalMaximum, Formula.extensionalEq,
       Formula.FreeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 候选有序对的第一坐标等于给定参数。 -/
 def hasOrderedPairFirst (𝒞 : OrderedPairConvention) : UnarySchema 1 where
   body := .existsE <| 𝒞.code (.bound 1) (.bound 2) (.bound 0)
   freeClosed := by
     simp [Formula.FreeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end UnarySchema
 namespace Formula
 /-- 序数最大值公式的模型语义。 -/

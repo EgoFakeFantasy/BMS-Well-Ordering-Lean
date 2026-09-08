@@ -1262,7 +1262,7 @@ theorem prime_dvd_power_of_exponent_nonempty
       hPowerProduct hPrimePrevious
   exact ⟨hPower.prime_is_prime.prime_mem_omega,
     previousPower, hPreviousPowerOmega, by
-      prove_auto⟩
+      simpa [hPowerEqPrimePrevious] using hPrimePrevious⟩
 /--
 两个正指数素数幂若取值相同，则它们的底素数相同。
 双向使用 Euclid 下降后，两边素性将两个底数都压到平凡因子分支。

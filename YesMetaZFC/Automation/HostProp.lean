@@ -1,21 +1,31 @@
-import YesMetaZFC.Automation.Request
+import YesMetaZFC.Automation.SourcePreprocessing
+
 /-!
 # 普通 Lean `Prop` 的可信语义核
 
-本模块只保存宿主命题骨架、proof-carrying facts 及其到公共一阶搜索语义的桥接。
-Lean 元层重化由 `HostRules.Frontend` 负责，AVATAR 证书物化与宿主回放由
-`HostRules.Backend` 负责。
+本模块把宿主命题骨架同时翻译为：
+
+* 供预处理与搜索器消费的原始有限语法；
+* 供可信语义边界消费的内在闭句语法。
+
+两种翻译由一次确定性的检查编译等式对齐。排序正确、作用域正确和闭合性不再作为
+递归 Prop 证明向下游传播；旧的反模型扩张桥与自由变量环境桥已完全移除。
 -/
+
 namespace YesMetaZFC
 namespace Automation
 namespace HostProp
+
 universe x
+
 open Lean Meta
 open CoreSyntax
 open CoreSyntax.NormalForm
+
 structure Atom where
   id : Nat
   deriving Repr, Inhabited, BEq, DecidableEq, Lean.ToExpr
+
 inductive Formula where
   | atom (value : Atom)
   | falsum
@@ -26,7 +36,9 @@ inductive Formula where
   | imp (left right : Formula)
   | iff (left right : Formula)
   deriving Repr, Inhabited, BEq, DecidableEq, Lean.ToExpr
+
 namespace Formula
+
 def eval (atoms : Nat → Prop) : Formula → Prop
   | .atom value => atoms value.id
   | .falsum => False
@@ -36,12 +48,14 @@ def eval (atoms : Nat → Prop) : Formula → Prop
   | .disj left right => eval atoms left ∨ eval atoms right
   | .imp left right => eval atoms left → eval atoms right
   | .iff left right => eval atoms left ↔ eval atoms right
+
 def predicate (atom : Atom) : CoreSyntax.PredicateSymbol := {
   id := atom.id
   arity := 0
   role := .relation
   inputSorts := []
 }
+
 def toCore : Formula → CoreSyntax.Formula
   | .atom value => .atom (predicate value) []
   | .falsum => .falseE
@@ -51,8 +65,10 @@ def toCore : Formula → CoreSyntax.Formula
   | .disj left right => .disj left.toCore right.toCore
   | .imp left right => .imp left.toCore right.toCore
   | .iff left right => .iffE left.toCore right.toCore
+
+/-- 搜索层使用的原始有限语法。 -/
 def toSearch : Formula →
-    Logic.FirstOrder.Formula SearchMaterialization.SearchSignature
+    DAGCertificate.Formula SearchMaterialization.SearchSignature
   | .atom value => .rel (.predicate (predicate value)) []
   | .falsum => .falsum
   | .truth => .truth
@@ -61,40 +77,79 @@ def toSearch : Formula →
   | .disj left right => .disj left.toSearch right.toSearch
   | .imp left right => .imp left.toSearch right.toSearch
   | .iff left right => .iff left.toSearch right.toSearch
-/-! ## 宿主命题骨架的良构性证书 -/
-theorem toSearch_admissible (formula : Formula) :
-    Logic.FirstOrder.Formula.Admissible formula.toSearch := by
+
+/-- 可信层使用的内在闭句语法。 -/
+def toIntrinsic : Formula →
+    Logic.FirstOrder.Sentence SearchMaterialization.SearchSignature
+  | .atom value => .rel (.predicate (predicate value)) .nil
+  | .falsum => .falsum
+  | .truth => .truth
+  | .neg body => .neg body.toIntrinsic
+  | .conj left right => .conj left.toIntrinsic right.toIntrinsic
+  | .disj left right => .disj left.toIntrinsic right.toIntrinsic
+  | .imp left right => .imp left.toIntrinsic right.toIntrinsic
+  | .iff left right => .iff left.toIntrinsic right.toIntrinsic
+
+/-- 宿主命题原始语法编译后定义上就是对应的内在闭句。 -/
+@[simp] theorem compile_toSearch (formula : Formula) :
+    DAGCertificate.Compile.sentence? formula.toSearch =
+      some formula.toIntrinsic := by
   induction formula with
   | atom value =>
-      constructor
-      · exact Logic.FirstOrder.FormulaWellFormed.rel (σ := SearchMaterialization.SearchSignature)
-          (SearchMaterialization.RelSymbol.predicate (predicate value)) .nil
-      · exact Logic.FirstOrder.FormulaScoped.rel (σ := SearchMaterialization.SearchSignature)
-          (SearchMaterialization.RelSymbol.predicate (predicate value)) [] (by
-            intro term hTerm
-            cases hTerm)
-  | falsum =>
-      exact Logic.FirstOrder.Formula.Admissible.falsum
-  | truth =>
-      exact Logic.FirstOrder.Formula.Admissible.truth
+      simp only [toSearch, toIntrinsic,
+        DAGCertificate.Compile.sentence?,
+        DAGCertificate.Compile.formula?]
+      dsimp [predicate, SearchMaterialization.SearchSignature]
+      rw [DAGCertificate.Compile.arguments?_nil]
+      rfl
+  | falsum | truth =>
+      rfl
   | neg body ih =>
-      exact Logic.FirstOrder.Formula.Admissible.neg ih
-  | conj left right ihLeft ihRight =>
-      exact Logic.FirstOrder.Formula.Admissible.conj ihLeft ihRight
-  | disj left right ihLeft ihRight =>
-      exact Logic.FirstOrder.Formula.Admissible.disj ihLeft ihRight
-  | imp left right ihLeft ihRight =>
-      exact Logic.FirstOrder.Formula.Admissible.imp ihLeft ihRight
+      change DAGCertificate.Compile.formula?
+        DAGCertificate.Compile.FreeRegistry.empty [] body.toSearch =
+          some body.toIntrinsic at ih
+      change Option.map Logic.FirstOrder.Formula.neg
+        (DAGCertificate.Compile.formula?
+          DAGCertificate.Compile.FreeRegistry.empty [] body.toSearch) =
+        some (Logic.FirstOrder.Formula.neg body.toIntrinsic)
+      rw [ih]
+      rfl
+  | conj left right ihLeft ihRight
+  | disj left right ihLeft ihRight
+  | imp left right ihLeft ihRight
   | iff left right ihLeft ihRight =>
-      exact Logic.FirstOrder.Formula.Admissible.iff ihLeft ihRight
+      change DAGCertificate.Compile.formula?
+        DAGCertificate.Compile.FreeRegistry.empty [] left.toSearch =
+          some left.toIntrinsic at ihLeft
+      change DAGCertificate.Compile.formula?
+        DAGCertificate.Compile.FreeRegistry.empty [] right.toSearch =
+          some right.toIntrinsic at ihRight
+      simp only [toSearch, toIntrinsic,
+        DAGCertificate.Compile.sentence?,
+        DAGCertificate.Compile.formula?]
+      rw [ihLeft, ihRight]
+      rfl
+
+@[simp] theorem compile_toSearchList (formulas : List Formula) :
+    DAGCertificate.Compile.sentenceList? (formulas.map toSearch) =
+      some (formulas.map toIntrinsic) := by
+  induction formulas with
+  | nil => rfl
+  | cons formula rest ih =>
+      simp [DAGCertificate.Compile.sentenceList?, ih]
+
 end Formula
+
 inductive Facts where
   | nil
   | cons (proposition : Prop) (proof : proposition) (tail : Facts)
+
 namespace Facts
+
 @[reducible] def propositions : Facts → List Prop
   | .nil => []
   | .cons proposition _ tail => proposition :: tail.propositions
+
 theorem holds : ∀ (facts : Facts) (proposition : Prop),
     proposition ∈ facts.propositions → proposition
   | .nil, proposition, hMem => by
@@ -104,7 +159,9 @@ theorem holds : ∀ (facts : Facts) (proposition : Prop),
       rcases hMem with hHead | hTail
       · simpa [hHead] using proof
       · exact tail.holds proposition hTail
+
 end Facts
+
 /--
 元层重化的 proof-carrying 结果。
 两个 alignment 字段把纯语法快照钉回原 Lean 命题；后端 closed 计算不读取它们。
@@ -118,275 +175,198 @@ structure CheckedInput (goal : Prop) where
     premises.map (Formula.eval atoms) = facts.propositions
   targetAligned :
     Formula.eval atoms target = goal
+
 namespace CheckedInput
+
 theorem premiseHolds {goal : Prop} (input : CheckedInput goal)
     {formula : Formula} (hFormula : formula ∈ input.premises) :
     Formula.eval input.atoms formula := by
   apply input.facts.holds
   rw [← input.premisesAligned]
   exact List.mem_map.mpr ⟨formula, hFormula, rfl⟩
-theorem goalOfTarget {goal : Prop} (input : CheckedInput goal) (hTarget : Formula.eval input.atoms input.target) : goal := by
+
+theorem goalOfTarget {goal : Prop} (input : CheckedInput goal)
+    (hTarget : Formula.eval input.atoms input.target) : goal := by
   rw [← input.targetAligned]
   exact hTarget
+
 def sourceProblemOfSyntax (premises : List Formula) (target : Formula) :
     SourcePreprocessing.Problem := {
   premises := premises.map Formula.toCore
   target := target.toCore
 }
-def deepProblemOfSyntax (premises : List Formula) (target : Formula) :
+
+/-- 预处理与搜索器消费的原始公式问题。 -/
+def searchProblemOfSyntax (premises : List Formula) (target : Formula) :
     SourcePreprocessing.DeepProblem := {
   premises := premises.map Formula.toSearch
   target := target.toSearch
 }
-theorem deepProblemOfSyntax_admissible (premises : List Formula) (target : Formula) :
-    LogicSoundness.SetLevel.DeepProblem.Admissible (deepProblemOfSyntax premises target) := by
-  constructor
-  · exact target.toSearch_admissible
-  · intro premise hPremise
-    change premise ∈ premises.map Formula.toSearch at hPremise
-    rcases List.mem_map.mp hPremise with ⟨source, hSource, rfl⟩
-    exact source.toSearch_admissible
+
+/-- 可信语义层消费的内在闭句问题。 -/
+def intrinsicProblemOfSyntax (premises : List Formula) (target : Formula) :
+    LogicSoundness.SetLevel.DeepProblem
+      SearchMaterialization.SearchSignature := {
+  premises := premises.map Formula.toIntrinsic
+  target := target.toIntrinsic
+}
+
+/-- 原始问题的一次检查编译精确命中宿主命题的内在翻译。 -/
+@[simp] theorem searchProblem_compilation
+    (premises : List Formula) (target : Formula) :
+    DAGCertificate.Compile.compileProblem?
+        (searchProblemOfSyntax premises target) =
+      some (intrinsicProblemOfSyntax premises target) := by
+  simp [DAGCertificate.Compile.compileProblem?, searchProblemOfSyntax,
+    intrinsicProblemOfSyntax]
+
+def checkedProblemOfSyntax (premises : List Formula) (target : Formula) :
+    DAGCertificate.Compile.CheckedProblem
+      (searchProblemOfSyntax premises target) :=
+  DAGCertificate.Compile.CheckedProblem.of_compilation
+    (searchProblem_compilation premises target)
+
 def sourceProblem {goal : Prop} (input : CheckedInput goal) :
     SourcePreprocessing.Problem :=
   sourceProblemOfSyntax input.premises input.target
-def deepProblem {goal : Prop} (input : CheckedInput goal) :
+
+def searchProblem {goal : Prop} (input : CheckedInput goal) :
     SourcePreprocessing.DeepProblem :=
-  deepProblemOfSyntax input.premises input.target
+  searchProblemOfSyntax input.premises input.target
+
+def intrinsicProblem {goal : Prop} (input : CheckedInput goal) :
+    LogicSoundness.SetLevel.DeepProblem
+      SearchMaterialization.SearchSignature :=
+  intrinsicProblemOfSyntax input.premises input.target
+
+def checkedProblem {goal : Prop} (input : CheckedInput goal) :
+    DAGCertificate.Compile.CheckedProblem input.searchProblem :=
+  checkedProblemOfSyntax input.premises input.target
+
+@[simp] theorem checkedProblem_problem {goal : Prop}
+    (input : CheckedInput goal) :
+    input.checkedProblem.problem = input.intrinsicProblem :=
+  rfl
+
 abbrev SearchStructureAt :=
   LogicSoundness.SetLevel.StructureAt.{x}
     SearchMaterialization.SearchSignature
+
 abbrev SearchStructure := SearchStructureAt.{0}
-abbrev SearchEnvAt (M : SearchStructureAt.{x}) :=
-  LogicSoundness.SetLevel.EnvAt.{x} M
-abbrev SearchEnv (M : SearchStructure) := SearchEnvAt.{0} M
-@[reducible] noncomputable def coreModelOfSearch (M : SearchStructureAt.{x}) : Semantics.Model.{x} := by
-  classical
-  exact {
-    Carrier := M.Domain
-    default := Classical.choice M.nonempty
-    sortInterp := M.sortInterp
-    sortNonempty := M.sortNonempty
-    functionInterp := fun symbol arguments =>
-      if hArguments :
-          Logic.FirstOrder.ArgsSatisfy M.sortInterp arguments (SearchMaterialization.SearchSignature.funcDomain
-              (FirstOrderProjection.functionSymbol symbol)) then
-        M.funcInterp (FirstOrderProjection.functionSymbol symbol) arguments
-      else
-        Classical.choose (M.sortNonempty symbol.outputSort)
-    predicateInterp := fun predicate arguments =>
-      M.relInterp (.predicate predicate) arguments
-    applyInterp := fun _ _ => Classical.choice M.nonempty
-    boolValue := fun _ => Classical.choice M.nonempty
-    notValue := fun _ => Classical.choice M.nonempty
-    andValue := fun _ _ => Classical.choice M.nonempty
-    orValue := fun _ _ => Classical.choice M.nonempty
-    impValue := fun _ _ => Classical.choice M.nonempty
-    iffValue := fun _ _ => Classical.choice M.nonempty
-    quoteValue := fun _ => Classical.choice M.nonempty
-    lambdaValue := fun _ _ _ => Classical.choice M.nonempty
-    iteValue := fun _ _ _ => Classical.choice M.nonempty
-    boolHolds := fun _ => False
-  }
-@[reducible] noncomputable def coreEnvOfSearch
-    {M : SearchStructureAt.{x}} (env : SearchEnvAt.{x} M) :
-    Semantics.Env (coreModelOfSearch M) where
-  boundVal := fun index => env.boundVal .object index
-  freeVal := env.freeVal
-theorem coreModel_functionSort (M : SearchStructureAt.{x}) :
-    ∀ symbol arguments, (coreModelOfSearch M).sortInterp symbol.outputSort ((coreModelOfSearch M).functionInterp symbol arguments) := by
-  intro symbol arguments
-  classical
-  by_cases hArguments :
-      Logic.FirstOrder.ArgsSatisfy M.sortInterp arguments (SearchMaterialization.SearchSignature.funcDomain (FirstOrderProjection.functionSymbol symbol))
-  · simpa only [coreModelOfSearch, hArguments, ↓reduceDIte] using
-      M.funcSort (FirstOrderProjection.functionSymbol symbol)
-        arguments hArguments
-  · simpa only [coreModelOfSearch, hArguments, ↓reduceDIte] using
-      Classical.choose_spec (M.sortNonempty symbol.outputSort)
-theorem coreEnv_respectsFree {M : SearchStructureAt.{x}} (env : SearchEnvAt.{x} M) :
-    Semantics.Env.RespectsFree (coreEnvOfSearch env) := by
-  intro sort id
-  exact env.freeSort sort id
-theorem satisfies_coreFormula {M : SearchStructureAt.{x}} (env : SearchEnvAt.{x} M) :
-    ∀ formula : Formula,
-      Semantics.Formula.Satisfies (coreEnvOfSearch env) formula.toCore ↔
-        Logic.FirstOrder.Formula.satisfies env formula.toSearch
-  | .atom value => by
-      simp [Formula.toCore, Formula.toSearch, Formula.predicate,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies, coreModelOfSearch]
-  | .falsum => by
-      simp [Formula.toCore, Formula.toSearch,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies]
-  | .truth => by
-      simp [Formula.toCore, Formula.toSearch,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies]
-  | .neg body => by
-      simpa [Formula.toCore, Formula.toSearch,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies] using
-          not_congr (satisfies_coreFormula env body)
-  | .conj left right => by
-      simpa [Formula.toCore, Formula.toSearch,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies] using
-          and_congr (satisfies_coreFormula env left) (satisfies_coreFormula env right)
-  | .disj left right => by
-      simpa [Formula.toCore, Formula.toSearch,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies] using
-          or_congr (satisfies_coreFormula env left) (satisfies_coreFormula env right)
-  | .imp left right => by
-      simpa [Formula.toCore, Formula.toSearch,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies] using
-          imp_congr (satisfies_coreFormula env left) (satisfies_coreFormula env right)
-  | .iff left right => by
-      simpa [Formula.toCore, Formula.toSearch,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies] using
-          iff_congr (satisfies_coreFormula env left) (satisfies_coreFormula env right)
-theorem coreSatisfiesConjunctionList {M : Semantics.Model.{x}} (env : Semantics.Env M) (formulas : List CoreSyntax.Formula) (hFormulas :
-      ∀ formula ∈ formulas, Semantics.Formula.Satisfies env formula) :
-    Semantics.Formula.Satisfies env (CoreSyntax.Formula.conjunctionList formulas) := by
-  induction formulas with
-  | nil =>
-      simp [CoreSyntax.Formula.conjunctionList,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval]
-  | cons head tail ih =>
-      cases tail with
-      | nil =>
-          simpa [CoreSyntax.Formula.conjunctionList] using
-            hFormulas head (by simp)
-      | cons next rest =>
-          simp only [CoreSyntax.Formula.conjunctionList,
-            Semantics.Formula.Satisfies, Semantics.Formula.eval]
-          constructor
-          · exact hFormulas head (by simp)
-          · apply ih
-            intro formula hFormula
-            exact hFormulas formula (by simp [hFormula])
-def firstOrderBridgeAt {goal : Prop} (input : CheckedInput goal) :
-    SourcePreprocessing.FirstOrderProblemBridgeAt.{x}
-      input.sourceProblem input.deepProblem := by
-  constructor
-  intro M env hModels hTarget
-  refine ⟨{
-    model := coreModelOfSearch M
-    functionSort := coreModel_functionSort M
-    env := coreEnvOfSearch env
-    respectsFree := coreEnv_respectsFree env
-    satisfies := ?_
-  }⟩
-  unfold sourceProblem SourcePreprocessing.Problem.refutationSource
-  apply coreSatisfiesConjunctionList
-  intro formula hFormula
-  simp only [List.mem_append, List.mem_singleton] at hFormula
-  rcases hFormula with hPremise | hTargetFormula
-  · rcases List.mem_map.mp hPremise with
-      ⟨source, hSource, rfl⟩
-    exact (satisfies_coreFormula env source).mpr <|
-        hModels source.toSearch <|
-          List.mem_map.mpr ⟨source, hSource, rfl⟩
-  · subst formula
-    have hCoreTarget :
-        ¬ Semantics.Formula.Satisfies (coreEnvOfSearch env) input.target.toCore := by
-      intro hCore
-      exact hTarget <| (satisfies_coreFormula env input.target).mp hCore
-    simpa [Semantics.Formula.Satisfies, Semantics.Formula.eval] using
-      hCoreTarget
-def firstOrderBridge {goal : Prop} (input : CheckedInput goal) :
-    SourcePreprocessing.FirstOrderProblemBridge
-      input.sourceProblem input.deepProblem :=
-  input.firstOrderBridgeAt
+
 /--
-atom 表在任意模型 universe 中的标准宿主模型；所有 sort 共享提升后的 `Unit`，
-关系解释回到原 Lean 命题。
+atom 表的标准宿主结构。所有排序解释为提升后的 `Unit`；宿主命题只由零元 predicate
+解释读取，函数和其余关系不会出现在宿主命题翻译中。
 -/
 def hostStructureAt (atoms : Nat → Prop) : SearchStructureAt.{x} where
-  Domain := ULift.{x, 0} Unit
-  nonempty := ⟨ULift.up ()⟩
-  sortInterp := fun _ _ => True
-  sortNonempty := fun _ => ⟨ULift.up (), trivial⟩
+  Carrier := fun _ => ULift.{x, 0} Unit
+  nonempty := fun _ => ⟨ULift.up ()⟩
   funcInterp := fun _ _ => ULift.up ()
-  funcSort := by
-    intro symbol arguments hArguments
-    trivial
-  relInterp := fun relation arguments =>
+  relInterp := fun relation _ =>
     match relation with
-    | .predicate predicate =>
-        if arguments.isEmpty then atoms predicate.id else False
+    | .predicate predicate => atoms predicate.id
     | _ => False
+
 def hostStructure (atoms : Nat → Prop) : SearchStructure :=
   hostStructureAt.{0} atoms
-def hostEnvAt (atoms : Nat → Prop) :
-    SearchEnvAt.{x} (hostStructureAt.{x} atoms) where
-  boundVal := fun _ _ => ULift.up ()
-  freeVal := fun _ _ => ULift.up ()
-  boundSort := by simp [hostStructureAt]
-  freeSort := by simp [hostStructureAt]
-def hostEnv (atoms : Nat → Prop) : SearchEnv (hostStructure atoms) :=
-  hostEnvAt.{0} atoms
-theorem satisfies_searchFormula_hostAt (atoms : Nat → Prop) :
+
+/-- 内在闭句在标准宿主结构中的真假定义上回到原 Lean 命题。 -/
+theorem satisfies_intrinsic_hostAt (atoms : Nat → Prop) :
     ∀ formula : Formula,
-      Logic.FirstOrder.Formula.satisfies (hostEnvAt.{x} atoms) formula.toSearch ↔
+      formula.toIntrinsic.TrueIn (hostStructureAt.{x} atoms) ↔
         formula.eval atoms
   | .atom value => by
-      simp [Formula.toSearch, Formula.predicate,
-        Logic.FirstOrder.Formula.satisfies, hostStructureAt, hostEnvAt,
-        Formula.eval]
+      simp [Formula.toIntrinsic, Formula.predicate,
+        Logic.FirstOrder.Formula.TrueIn,
+        Logic.FirstOrder.Formula.satisfies,
+        Logic.FirstOrder.Env.empty, hostStructureAt, Formula.eval]
   | .falsum => by
-      simp [Formula.toSearch, Logic.FirstOrder.Formula.satisfies,
-        Formula.eval]
+      simp [Formula.toIntrinsic, Logic.FirstOrder.Formula.TrueIn,
+        Logic.FirstOrder.Formula.satisfies, Formula.eval]
   | .truth => by
-      simp [Formula.toSearch, Logic.FirstOrder.Formula.satisfies,
-        Formula.eval]
+      simp [Formula.toIntrinsic, Logic.FirstOrder.Formula.TrueIn,
+        Logic.FirstOrder.Formula.satisfies, Formula.eval]
   | .neg body => by
-      simpa [Formula.toSearch, Logic.FirstOrder.Formula.satisfies,
-        Formula.eval] using
-          not_congr (satisfies_searchFormula_hostAt atoms body)
+      simpa [Formula.toIntrinsic, Logic.FirstOrder.Formula.TrueIn,
+        Logic.FirstOrder.Formula.satisfies, Formula.eval] using
+          not_congr (satisfies_intrinsic_hostAt atoms body)
   | .conj left right => by
-      simpa [Formula.toSearch, Logic.FirstOrder.Formula.satisfies,
-        Formula.eval] using
-          and_congr (satisfies_searchFormula_hostAt atoms left) (satisfies_searchFormula_hostAt atoms right)
+      simpa [Formula.toIntrinsic, Logic.FirstOrder.Formula.TrueIn,
+        Logic.FirstOrder.Formula.satisfies, Formula.eval] using
+          and_congr (satisfies_intrinsic_hostAt atoms left)
+            (satisfies_intrinsic_hostAt atoms right)
   | .disj left right => by
-      simpa [Formula.toSearch, Logic.FirstOrder.Formula.satisfies,
-        Formula.eval] using
-          or_congr (satisfies_searchFormula_hostAt atoms left) (satisfies_searchFormula_hostAt atoms right)
+      simpa [Formula.toIntrinsic, Logic.FirstOrder.Formula.TrueIn,
+        Logic.FirstOrder.Formula.satisfies, Formula.eval] using
+          or_congr (satisfies_intrinsic_hostAt atoms left)
+            (satisfies_intrinsic_hostAt atoms right)
   | .imp left right => by
-      simpa [Formula.toSearch, Logic.FirstOrder.Formula.satisfies,
-        Formula.eval] using
-          imp_congr (satisfies_searchFormula_hostAt atoms left) (satisfies_searchFormula_hostAt atoms right)
+      simpa [Formula.toIntrinsic, Logic.FirstOrder.Formula.TrueIn,
+        Logic.FirstOrder.Formula.satisfies, Formula.eval] using
+          imp_congr (satisfies_intrinsic_hostAt atoms left)
+            (satisfies_intrinsic_hostAt atoms right)
   | .iff left right => by
-      simpa [Formula.toSearch, Logic.FirstOrder.Formula.satisfies,
-        Formula.eval] using
-          iff_congr (satisfies_searchFormula_hostAt atoms left) (satisfies_searchFormula_hostAt atoms right)
-theorem satisfies_searchFormula_host (atoms : Nat → Prop) :
+      simpa [Formula.toIntrinsic, Logic.FirstOrder.Formula.TrueIn,
+        Logic.FirstOrder.Formula.satisfies, Formula.eval] using
+          iff_congr (satisfies_intrinsic_hostAt atoms left)
+            (satisfies_intrinsic_hostAt atoms right)
+
+theorem satisfies_intrinsic_host (atoms : Nat → Prop) :
     ∀ formula : Formula,
-      Logic.FirstOrder.Formula.satisfies (hostEnv atoms) formula.toSearch ↔
+      formula.toIntrinsic.TrueIn (hostStructure atoms) ↔
         formula.eval atoms :=
-  satisfies_searchFormula_hostAt.{0} atoms
-theorem soundOfSearchAt {goal : Prop} (input : CheckedInput goal) (hSearch :
+  satisfies_intrinsic_hostAt.{0} atoms
+
+/-- 内在闭句语义证书直接恢复原宿主目标。 -/
+theorem soundOfIntrinsicAt {goal : Prop} (input : CheckedInput goal)
+    (hSearch :
       LogicSoundness.SetLevel.SemanticallyEntailsAt.{x}
-        input.deepProblem.theory input.deepProblem.target) :
+        input.intrinsicProblem.theory input.intrinsicProblem.target) :
     goal := by
   have hTarget :
-      Logic.FirstOrder.Formula.satisfies (hostEnvAt.{x} input.atoms) input.target.toSearch :=
-    hSearch (hostEnvAt.{x} input.atoms) (by
-      intro formula hFormula
-      rcases List.mem_map.mp hFormula with
-        ⟨source, hSource, rfl⟩
-      exact (satisfies_searchFormula_hostAt input.atoms source).mpr (input.premiseHolds hSource))
-  exact input.goalOfTarget <| (satisfies_searchFormula_hostAt input.atoms input.target).mp hTarget
-theorem soundOfSearch {goal : Prop} (input : CheckedInput goal) (hSearch :
+      input.target.toIntrinsic.TrueIn
+        (hostStructureAt.{x} input.atoms) :=
+    hSearch (hostStructureAt.{x} input.atoms) (by
+      intro sentence hSentence
+      change sentence ∈ input.premises.map Formula.toIntrinsic at hSentence
+      rcases List.mem_map.mp hSentence with ⟨source, hSource, rfl⟩
+      exact (satisfies_intrinsic_hostAt input.atoms source).mpr
+        (input.premiseHolds hSource))
+  exact input.goalOfTarget <|
+    (satisfies_intrinsic_hostAt input.atoms input.target).mp hTarget
+
+theorem soundOfIntrinsic {goal : Prop} (input : CheckedInput goal)
+    (hSearch :
       LogicSoundness.SetLevel.SemanticallyEntails
-        input.deepProblem.theory input.deepProblem.target) :
+        input.intrinsicProblem.theory input.intrinsicProblem.target) :
     goal :=
-  input.soundOfSearchAt hSearch
+  input.soundOfIntrinsicAt hSearch
+
+/-- 任意同源 checked 编译结果都由其编译等式归约到同一个内在问题。 -/
+theorem soundOfCheckedAt {goal : Prop} (input : CheckedInput goal)
+    (checked : DAGCertificate.Compile.CheckedProblem input.searchProblem)
+    (hSearch :
+      LogicSoundness.SetLevel.SemanticallyEntailsAt.{x}
+        checked.problem.theory checked.problem.target) :
+    goal := by
+  have hProblem : checked.problem = input.intrinsicProblem :=
+    DAGCertificate.Compile.CheckedProblem.problem_eq_of_compilation checked
+      (searchProblem_compilation input.premises input.target)
+  apply input.soundOfIntrinsicAt
+  simpa [hProblem] using! hSearch
+
+theorem soundOfChecked {goal : Prop} (input : CheckedInput goal)
+    (checked : DAGCertificate.Compile.CheckedProblem input.searchProblem)
+    (hSearch :
+      LogicSoundness.SetLevel.SemanticallyEntails
+        checked.problem.theory checked.problem.target) :
+    goal :=
+  input.soundOfCheckedAt checked hSearch
+
 end CheckedInput
+
 /-! ## 公共 proof-carrying facts 构造 -/
+
 def proofFactsExprWithTypes (proofs propositions : Array Expr) : MetaM Expr := do
   unless proofs.size == propositions.size do
     throwError
@@ -401,10 +381,12 @@ def proofFactsExprWithTypes (proofs propositions : Array Expr) : MetaM Expr := d
         "prove_auto USE expected a proof term, but got{indentExpr proposition}"
     tail ← mkAppM ``Facts.cons #[proposition, proofs[index]!, tail]
   return tail
+
 def proofFactsExpr (proofs : Array Expr) : MetaM Expr := do
   let propositions ← proofs.mapM fun proof => do
     instantiateMVars (← inferType proof)
   proofFactsExprWithTypes proofs propositions
+
 end HostProp
 end Automation
 end YesMetaZFC

@@ -63,6 +63,8 @@ def ordinalIterationOperator (𝒞 : OrderedPairConvention)
       Formula.existsMem, Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest,
       TermVector.boundParameters, Term.weaken]
+    repeat' apply And.intro
+    all_goals first | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl | skip
     exact Formula.related_freeClosed_of_closed (relation := function) (parameters := TermVector.boundParameters parameterCount 3)
       (left := Term.newest) (right := .bound 1) (by simp) (by simp) (by simp)
 /-- 由超限递归得到的序数函数迭代关系。 -/
@@ -929,7 +931,7 @@ theorem epsilonZero_exists (hZF : ℳ.Models SetTheory.ZF) (𝕀 : 𝒞.Interpre
     apply and_congr_right
     intro _
     simpa [UnarySchema.epsilonNumber, env,
-      Term.eval_bound_zero_push, Term.eval_bound_one_push] using
+      Term.eval_bound_zero_push, Term.eval_bound_one_push] using!
       Formula.satisfies_isEpsilonNumber_iff
         𝕀 hZF.1 (env.push value) (.bound 1) (.bound 0)
   have hCandidatesSubset :

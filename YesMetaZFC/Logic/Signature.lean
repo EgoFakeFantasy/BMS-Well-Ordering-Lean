@@ -1,12 +1,15 @@
 /-!
 # 通用逻辑签名
-这一层只描述对象语言的符号表，不携带任何 MF1 章节语义。
-后续自动化、无穷语言和二阶扩展都应通过这里的签名接口进入。
+这一层只描述对象语言的符号表，不携带任何章节语义。
+函数与关系的参数排序列表直接索引内在语法中的异质参数列；非法元数和非法排序
+不再进入语法类型。
 -/
 namespace YesMetaZFC
 namespace Logic
 universe u v w
-/-- 多 sorted 一阶签名：函数和关系的 arity 都由 sort 列表给出。 -/
+-- 各字段（或其签名别名）保留独立宇宙；结构类型的 max 不是冗余参数。
+set_option linter.checkUnivs false in
+/-- 多排序一阶签名。函数和关系的参数排序列表是语法构造子的类型索引。 -/
 structure Signature where
   SortSymbol : Type u
   FuncSymbol : Type v

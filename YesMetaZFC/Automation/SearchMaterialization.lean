@@ -3,7 +3,6 @@ import YesMetaZFC.Automation.CoreNormalForm.CheckedPreprocessing
 import YesMetaZFC.Automation.AvatarSplit
 import YesMetaZFC.Automation.Guards
 import YesMetaZFC.Automation.DAGCertificate
-import YesMetaZFC.Automation.AvatarRegistrySoundness
 import YesMetaZFC.Automation.ResourceTrace
 import YesMetaZFC.Automation.Scheduler
 import YesMetaZFC.Automation.Data.StableIdMap
@@ -16,12 +15,10 @@ import YesMetaZFC.Automation.Data.CertificateWorkspace
 设计边界：
 * `SearchDAG` 持有 canonical initial-clause table；source 只能引用其中的唯一索引；
 * 材料化前会完整核对 search table 与 `ClauseProblem.initialClauses`，不从 source 切片猜来源；
-* AVATAR guard 会材料化进 DAG 节点；全局 selector registry checker 负责闭合其语义；
+* AVATAR guard 会材料化进 DAG 节点；全局 selector registry checker 只负责核对有限证书结构；
 * residual CDCL 会重建普通对象父字句、AVATAR selector skeleton、theory-conflict learned
   clause 与 guard activation 四类 initial 链接；
-* selector skeleton 通过 fixed-bound-stack AVATAR 拓扑定理进入专用 soundness 出口；
-* 带 substitution 的一阶规则会材料化成 substituted local evidence；这些 evidence 已经可计算
-  检查 result clause，但在 substitution soundness 引理补齐前不进入 soundness-supported 片段；
+* selector skeleton 与 substitution evidence 都只在本层生成可计算材料，语义重放由独立内在类型层承担；
 -/
 namespace YesMetaZFC
 namespace Automation
@@ -724,6 +721,7 @@ def label : RelSymbol → String
   | definition id arity => s!"definition[{id}/{arity}]"
   | predicate symbol => s!"predicate[{symbol.id}/{symbol.arity}]"
 end RelSymbol
+@[implicit_reducible]
 def SearchSignature : LogicSoundness.SetLevel.Signature where
   SortSymbol := SearchSort
   FuncSymbol := SearchFunc
@@ -750,7 +748,7 @@ abbrev Clause := DAGCertificate.Clause SearchSignature
 abbrev ParentClause := DAGCertificate.ParentClause SearchSignature
 abbrev Node := DAGCertificate.Node SearchSignature
 abbrev Payload := DAGCertificate.Payload SearchSignature
-abbrev DeepProblem := DAGCertificate.DeepProblem SearchSignature
+abbrev DeepProblem := DAGCertificate.Problem SearchSignature
 abbrev ClauseProblem := DAGCertificate.ClauseProblem SearchSignature
 abbrev DAG := DAGCertificate.DAG SearchSignature
 instance instSearchSignatureSortDecidableEq :

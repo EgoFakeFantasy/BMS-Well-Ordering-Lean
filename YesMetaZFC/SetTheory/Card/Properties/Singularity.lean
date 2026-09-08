@@ -47,7 +47,7 @@ theorem iff_exists_smallCardinalityUnionFamily
     rcases hSingular.2 with
       ⟨otherCf, hOtherCfκ, hOtherCofinality⟩
     have hCfEq : cf = otherCf := by
-      prove_auto
+      exact hCofinality.eq hOtherCofinality
     have hCfκ : ℳ.mem cf κ := by
       simpa [hCfEq] using hOtherCfκ
     rcases hCofinality.hasCofinalSequence with

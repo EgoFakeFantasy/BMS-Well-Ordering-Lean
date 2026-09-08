@@ -142,7 +142,7 @@ theorem satisfies_isSetCodedWellOrder_iff
         TermVector.evalEnv_singleton_bound,
         Term.eval_bound_zero_push, Term.eval_bound_one_push,
         Definitional.Term.eval_newest, Definitional.Term.eval_weaken,
-        Structure.MemberSubset, Structure.SameMembers] using hLeast
+        Structure.MemberSubset, Structure.SameMembers] using! hLeast
     exact hLeastSemantic subset hSubset value hValue
   · rintro ⟨hLinearSemantic, hLeastSemantic⟩
     have hLinearFormula := (satisfies_isSetCodedLinearOrder_iff
@@ -176,7 +176,7 @@ theorem satisfies_isSetCodedWellOrder_iff
       TermVector.evalEnv_singleton_bound,
       Term.eval_bound_zero_push, Term.eval_bound_one_push,
       Definitional.Term.eval_newest, Definitional.Term.eval_weaken,
-      Structure.MemberSubset, Structure.SameMembers] using hLeast
+      Structure.MemberSubset, Structure.SameMembers] using! hLeast
 theorem satisfies_isRelationInitialSegment_iff
     {ℳ : Structure.{u}} {𝒞 : OrderedPairConvention} (𝕀 : 𝒞.Interpretation ℳ)
     {depth : Nat} (env : Env ℳ depth) (segment relation carrier : Term depth) :
@@ -230,6 +230,8 @@ def transportedOrdinalMembership (𝒞 : OrderedPairConvention) : BinarySchema 1
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 def wellOrderCollapseValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
   body := Formula.isWellOrderCollapseValue 𝒞 (.bound 2) (.bound 3) (.bound 1) (.bound 0)
   freeClosed := by
@@ -243,6 +245,8 @@ def wellOrderCollapseValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
       Formula.existsMem, Formula.subset,
       Formula.extensionalEq, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end BinarySchema
 namespace UnarySchema
 /-- 从固定载体中分离当前点的全部严格前驱。 -/
@@ -252,6 +256,8 @@ def wellOrderPredecessorMembership (𝒞 : OrderedPairConvention) : UnarySchema 
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 从良序载体中分离函数值落入固定子集的输入。 -/
 def wellOrderRangePreimageMembership (𝒞 : OrderedPairConvention) : UnarySchema 2 where
   body := Formula.existsMem (.bound 2) <|
@@ -259,6 +265,8 @@ def wellOrderRangePreimageMembership (𝒞 : OrderedPairConvention) : UnarySchem
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.existsMem,
       Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 当前点的良序坍缩值存在且唯一。 -/
 def wellOrderCollapseValueExistsUnique (𝒞 : OrderedPairConvention) : UnarySchema 2 where
   body := .conj (.existsE <| Formula.isWellOrderCollapseValue 𝒞 (.bound 2) (.bound 3) (.bound 1) (.bound 0)) <|
@@ -275,6 +283,8 @@ def wellOrderCollapseValueExistsUnique (𝒞 : OrderedPairConvention) : UnarySch
       Formula.existsMem, Formula.subset,
       Formula.extensionalEq, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end UnarySchema
 namespace Formula
 /-- 传输后的序关系由逆双射像之间的序数隶属关系精确刻画。 -/
@@ -358,8 +368,15 @@ theorem satisfies_wellOrderCollapseValueExistsUnique_iff
             ℳ.IsWellOrderCollapseValue 𝕀 (env.bound 0) (env.bound 1) current other →
               other = value
   constructor
-  · prove_auto
-  · prove_auto
+  · rintro ⟨⟨value, hValue⟩, hUnique⟩
+    refine ⟨value, hValue, ?_⟩
+    intro other hOther
+    exact (hUnique value other hValue hOther).symm
+  · rintro ⟨value, hValue, hUnique⟩
+    constructor
+    · exact ⟨value, hValue⟩
+    · intro first second hFirst hSecond
+      exact (hUnique first hFirst).trans (hUnique second hSecond).symm
 end Formula
 end Project
 end Definitional
@@ -479,7 +496,8 @@ theorem refl {ℳ : Structure.{u}}
   refine ⟨?_, ?_⟩
   · intro value hValue
     exact hValue
-  · prove_auto
+  · intro current hCurrent predecessor hPredecessor hPair
+    exact hPredecessor
 end Structure.IsRelationInitialSegment
 namespace ZF
 /-- ZF 中集合编码关系的载体内前驱集存在。 -/

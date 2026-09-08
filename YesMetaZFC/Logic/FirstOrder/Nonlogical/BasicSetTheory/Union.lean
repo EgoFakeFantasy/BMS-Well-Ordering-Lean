@@ -1,1281 +1,810 @@
 import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.Pairing
+
 /-!
 # 并集与二元并
-一元并集存在公理保持在只含外延性的最小理论上；并集函数符号随后作为描述符扩张
-加入。二元并函数符号则建立在配对与一元并两个描述符理论的合并之上，其定义公理
-直接表达文献中的“先取无序对，再取一元并集”。
-核心成员规格使用现代的析取写法，文献中的机械变量编号只保留在闭公理的实例化
-边界，不传播到后续定理接口。
+
+并集成员条件、存在公理与函数符号定义全部建立在内在类型语法上。二元并只保留
+“无序对后取并集”的定义等式及成员析取规格；旧的变量编号、admissibility、闭性
+旁证和文献描述子兼容层不再进入公共接口。
 -/
+
 namespace YesMetaZFC
 namespace Logic
 namespace FirstOrder
 namespace Nonlogical
 namespace BasicSetTheory
+
 open scoped Symbols
-/-- `union` 恰好由 `source` 的所有元素的元素组成。 -/
-def union_spec (source union : SetTerm) : SetFormula :=
-  ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ union) ↔ₘ (∃ₘ[SetSort.set], (bₛ#0 ∈ₘ source) ∧ₘ (bₛ#1 ∈ₘ bₛ#0))
+
+/-- `element` 属于 `source` 的某个成员。 -/
+def union_witness_condition {bound free : SetContext}
+    (source element : SetTerm bound free) : SetFormula bound free :=
+  let witness : SetTerm bound (SetSort.set :: free) := .fvar .here
+  ((witness ∈ₘ source.weakenFree SetSort.set) ∧ₘ
+    (element.weakenFree SetSort.set ∈ₘ witness))
+    |>.existsFreeTop SetSort.set
+
+/-- `union` 恰好由 `source` 的所有成员的成员组成。 -/
+def union_spec {bound free : SetContext}
+    (source union : SetTerm bound free) : SetFormula bound free :=
+  let element : SetTerm bound (SetSort.set :: free) := .fvar .here
+  membership_specification union
+    (union_witness_condition
+      (source.weakenFree SetSort.set) element)
+
 /-- 对固定集合断言其并集存在。 -/
-def union_exists (source : SetTerm) : SetFormula :=
-  ∃ₘ[SetSort.set],
-    ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ bₛ#1) ↔ₘ (∃ₘ[SetSort.set], (bₛ#0 ∈ₘ source) ∧ₘ (bₛ#1 ∈ₘ bₛ#0))
+def union_exists {bound free : SetContext}
+    (source : SetTerm bound free) : SetFormula bound free :=
+  let union : SetTerm bound (SetSort.set :: free) := .fvar .here
+  (union_spec (source.weakenFree SetSort.set) union)
+    |>.existsFreeTop SetSort.set
+
 /-- 并集存在公理。 -/
-def union_axiom : SetFormula :=
-  ∀ₘ[SetSort.set, 0],
-    union_exists (x#0)
+def union_axiom : SetSentence :=
+  Metatheory.Formula.forall_close
+    (union_exists
+      (FreshVariable.newest
+        (σ := signature) (free := []) SetSort.set))
+
 /-- 只在外延理论上加入并集存在公理。 -/
 def union_theory : SetTheory :=
   Theory.insert union_axiom extensionality_theory
+
 /-- 一元并集函数符号的开放定义实例。 -/
-def union_definition_instance (source : SetTerm) : SetFormula :=
+def union_definition_instance {bound free : SetContext}
+    (source : SetTerm bound free) : SetFormula bound free :=
   union_spec source (⋃ₘ source)
+
 /-- 一元并集函数符号的定义公理。 -/
-def union_definition_axiom : SetFormula :=
-  ∀ₘ[SetSort.set, 0],
-    union_definition_instance (x#0)
-/-- 在并集存在理论上加入一元并集函数符号的描述符扩张。 -/
+def union_definition_axiom : SetSentence :=
+  Metatheory.Formula.forall_close
+    (union_definition_instance
+      (FreshVariable.newest
+        (σ := signature) (free := []) SetSort.set))
+
+/-- 在并集存在理论上加入一元并集函数符号定义。 -/
 def union_operator_theory : SetTheory :=
   Theory.insert union_definition_axiom union_theory
+
+/-- `element` 属于 `left` 或 `right`。 -/
+def binary_union_member_condition {bound free : SetContext}
+    (left right element : SetTerm bound free) : SetFormula bound free :=
+  (element ∈ₘ left) ∨ₘ (element ∈ₘ right)
+
 /-- `candidate` 是 `left` 与 `right` 的二元并。 -/
-def binary_union_spec (left right candidate : SetTerm) :
-    SetFormula :=
-  ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ candidate) ↔ₘ ((bₛ#0 ∈ₘ left) ∨ₘ (bₛ#0 ∈ₘ right))
-/-- 文献中的二元并描述：先取无序对，再对该无序对取一元并集。 -/
-def binary_union_descriptor (left right candidate : SetTerm) :
-    SetFormula :=
-  ∃ₘ[SetSort.set], (bₛ#0 ≐ₘ {left, right}ₘ) ∧ₘ (candidate ≐ₘ ⋃ₘ bₛ#0)
-/-- 配对与一元并描述符公理的合并理论。 -/
+def binary_union_spec {bound free : SetContext}
+    (left right candidate : SetTerm bound free) : SetFormula bound free :=
+  let element : SetTerm bound (SetSort.set :: free) := .fvar .here
+  membership_specification candidate
+    (binary_union_member_condition
+      (left.weakenFree SetSort.set)
+      (right.weakenFree SetSort.set) element)
+
+/-- 二元并成员条件与 free 重命名自然交换。 -/
+@[simp] theorem binary_union_member_condition_renameMapped
+    {bound sourceFree targetFree : SetContext}
+    (ρ : VariableRenaming sourceFree targetFree)
+    (left right element : SetTerm bound sourceFree) :
+    (binary_union_member_condition left right element).renameMapped
+        VariableRenaming.id ρ =
+      binary_union_member_condition
+        (left.renameMapped VariableRenaming.id ρ)
+        (right.renameMapped VariableRenaming.id ρ)
+        (element.renameMapped VariableRenaming.id ρ) := by
+  simp [binary_union_member_condition, Formula.renameMapped,
+    Arguments.renameMapped]
+
+/-- 二元并规格与 free 重命名自然交换。 -/
+@[simp] theorem binary_union_spec_renameMapped
+    {bound sourceFree targetFree : SetContext}
+    (ρ : VariableRenaming sourceFree targetFree)
+    (left right union : SetTerm bound sourceFree) :
+    (binary_union_spec left right union).renameMapped
+        VariableRenaming.id ρ =
+      binary_union_spec
+        (left.renameMapped VariableRenaming.id ρ)
+        (right.renameMapped VariableRenaming.id ρ)
+        (union.renameMapped VariableRenaming.id ρ) := by
+  unfold binary_union_spec
+  rw [membership_specification_renameMapped]
+  rw [binary_union_member_condition_renameMapped]
+  rw [Term.renameMapped_weakenFree_lift,
+    Term.renameMapped_weakenFree_lift]
+  rfl
+
+/-- 二元并规格与任意新 free 参数槽的 weakening 严格交换。 -/
+@[simp] theorem binary_union_spec_weakenFree
+    {bound free : SetContext} (introduced : SetSort)
+    (left right union : SetTerm bound free) :
+    (binary_union_spec left right union).weakenFree introduced =
+      binary_union_spec (left.weakenFree introduced)
+        (right.weakenFree introduced) (union.weakenFree introduced) := by
+  rw [Formula.weakenFree_eq_renameMapped]
+  exact binary_union_spec_renameMapped
+    (VariableRenaming.weaken introduced) left right union
+
+/-- 配对与一元并函数符号理论的合并。 -/
 def binary_union_base_theory : SetTheory :=
   Theory.union pairing_operator_theory union_operator_theory
+
 /-- 二元并函数符号的开放定义实例。 -/
-def binary_union_definition_instance (left right : SetTerm) :
-    SetFormula := (left ∪ₘ right) ≐ₘ (⋃ₘ {left, right}ₘ)
+def binary_union_definition_instance {bound free : SetContext}
+    (left right : SetTerm bound free) : SetFormula bound free :=
+  (left ∪ₘ right) ≐ₘ (⋃ₘ {left, right}ₘ)
+
 /-- 二元并函数符号的定义公理。 -/
-def binary_union_definition_axiom : SetFormula :=
-  ∀ₘ[SetSort.set, 0],
-    ∀ₘ[SetSort.set, 1],
-      binary_union_definition_instance (x#0) (x#1)
-/-- 在配对与一元并描述符理论上加入二元并函数符号。 -/
+def binary_union_definition_axiom : SetSentence :=
+  Metatheory.Formula.forall_close
+    (binary_union_definition_instance
+      (.fvar (.there .here) :
+        SetOpenTerm [SetSort.set, SetSort.set])
+      (.fvar .here :
+        SetOpenTerm [SetSort.set, SetSort.set]))
+
+/-- 在配对与一元并函数符号理论上加入二元并函数符号。 -/
 def binary_union_operator_theory : SetTheory :=
   Theory.insert
     binary_union_definition_axiom
     binary_union_base_theory
-/-- 一元并集项保持 proof-carrying 项边界。 -/
-theorem union_term_admissible (source : SetTerm) (hSource : Term.Admissible source SetSort.set) :
-    Term.Admissible (union_term source) SetSort.set := by
-  simpa using
-    set_function_application_admissible
-      .union [⟨source, by assumption⟩]
-      (by rfl) (by rfl)
 
-/-- 一元并项的合法性由参数计算证书组合。 -/
-@[term_check]
-theorem union_term_check
-    {source : SetTerm}
-    (hSource : Term.CheckCertificate source SetSort.set) :
-    Term.CheckCertificate (union_term source) SetSort.set :=
-  Term.check_admissible_complete <|
-    union_term_admissible source hSource.admissible
-
-/-- 二元并项保持 proof-carrying 项边界。 -/
-theorem binary_union_term_admissible (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    Term.Admissible (binary_union_term left right) SetSort.set := by
-  simpa using
-    set_function_application_admissible
-      .binaryUnion [⟨left, by assumption⟩, ⟨right, by assumption⟩]
-      (by rfl) (by rfl)
-
-/-- 二元并项的合法性由两个参数计算证书组合。 -/
-@[term_check]
-theorem binary_union_term_check
-    {left right : SetTerm}
-    (hLeft : Term.CheckCertificate left SetSort.set)
-    (hRight : Term.CheckCertificate right SetSort.set) :
-    Term.CheckCertificate (binary_union_term left right) SetSort.set :=
-  Term.check_admissible_complete <|
-    binary_union_term_admissible left right
-      hLeft.admissible hRight.admissible
-
-/-- 一元并集规格在 admissible 的源项与候选项处仍然 admissible。 -/
-theorem union_spec_admissible
-    {source union : SetTerm} (hSource : Term.Admissible source SetSort.set) (hUnion : Term.Admissible union SetSort.set) :
-    Formula.Admissible (union_spec source union) := by
-  prove_admissible
-
-/-- 一元并规格的合法性由两个参数计算证书组合。 -/
-@[formula_check]
-theorem union_spec_check
-    {source union : SetTerm}
-    (hSource : Term.CheckCertificate source SetSort.set)
-    (hUnion : Term.CheckCertificate union SetSort.set) :
-    Formula.CheckCertificate (union_spec source union) :=
-  Formula.check_admissible_complete <|
-    union_spec_admissible hSource.admissible hUnion.admissible
-
-/-- 一元并集函数符号的开放定义实例在 admissible 源项处仍然 admissible。 -/
-theorem union_definition_instance_admissible
-    {source : SetTerm} (hSource : Term.Admissible source SetSort.set) :
-    Formula.Admissible (union_definition_instance source) :=
-  union_spec_admissible hSource (union_term_admissible source hSource)
-/-- 二元并规格在三个 admissible 集合项处仍然 admissible。 -/
-theorem binary_union_spec_admissible
-    {left right candidate : SetTerm} (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set)
-    (hCandidate : Term.Admissible candidate SetSort.set) :
-    Formula.Admissible (binary_union_spec left right candidate) := by
-  prove_admissible
-
-/-- 二元并规格的合法性由三个参数计算证书组合。 -/
-@[formula_check]
-theorem binary_union_spec_check
-    {left right candidate : SetTerm}
-    (hLeft : Term.CheckCertificate left SetSort.set)
-    (hRight : Term.CheckCertificate right SetSort.set)
-    (hCandidate : Term.CheckCertificate candidate SetSort.set) :
-    Formula.CheckCertificate (binary_union_spec left right candidate) :=
-  Formula.check_admissible_complete <|
-    binary_union_spec_admissible
-      hLeft.admissible hRight.admissible hCandidate.admissible
-
-/-- 文献二元并描述符在三个 admissible 集合项处仍然 admissible。 -/
-theorem binary_union_descriptor_admissible
-    {left right candidate : SetTerm} (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set)
-    (hCandidate : Term.Admissible candidate SetSort.set) :
-    Formula.Admissible (binary_union_descriptor
-        left right candidate) := by
-  prove_admissible
-/-- 二元并函数符号的开放定义实例在 admissible 参数处仍然 admissible。 -/
-theorem binary_union_definition_instance_admissible
-    {left right : SetTerm} (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    Formula.Admissible (binary_union_definition_instance
-        left right) :=
-  Formula.Admissible.equal (binary_union_term_admissible
-      left right hLeft hRight) (union_term_admissible (unordered_pair_term left right) (unordered_pair_term_admissible
-        left right hLeft hRight))
-/-- 并集存在公理满足公共 proof-carrying 良构性边界。 -/
-theorem union_axiom_admissible :
-    Formula.Admissible union_axiom := by
-  apply Formula.check_admissible_sound
-  native_decide
-/-- 并集存在理论仍然 admissible。 -/
-theorem union_theory_admissible :
-    Theory.Admissible union_theory :=
-  Theory.admissible_insert
-    union_axiom_admissible
-    extensionality_theory_admissible
-/-- 一元并集函数符号定义公理满足公共良构性边界。 -/
-theorem union_definition_axiom_admissible :
-    Formula.Admissible union_definition_axiom := by
-  apply Formula.check_admissible_sound
-  native_decide
-/-- 一元并集描述符理论仍然 admissible。 -/
-theorem union_operator_theory_admissible :
-    Theory.Admissible union_operator_theory :=
-  Theory.admissible_insert
-    union_definition_axiom_admissible
-    union_theory_admissible
-/-- 配对与一元并描述符理论的合并仍然 admissible。 -/
-theorem binary_union_base_theory_admissible :
-    Theory.Admissible binary_union_base_theory := by
-  intro formula hFormula
-  rcases hFormula with hFormula | hFormula
-  · exact pairing_operator_theory_admissible
-      formula hFormula
-  · exact union_operator_theory_admissible
-      formula hFormula
-/-- 二元并函数符号定义公理满足公共良构性边界。 -/
-theorem binary_union_definition_axiom_admissible :
-    Formula.Admissible binary_union_definition_axiom := by
-  apply Formula.check_admissible_sound
-  native_decide
-/-- 二元并描述符理论仍然 admissible。 -/
-theorem binary_union_operator_theory_admissible :
-    Theory.Admissible binary_union_operator_theory :=
-  Theory.admissible_insert
-    binary_union_definition_axiom_admissible
-    binary_union_base_theory_admissible
-/-- 一元并集描述符理论中的每条公理都是闭公式。 -/
-@[derive_close_sentence]
-theorem union_operator_theory_sentence
-    {formula : SetFormula} (hFormula : union_operator_theory formula) :
-    Formula.Sentence formula := by
-  constructor
-  · exact union_operator_theory_admissible
-      formula hFormula
-  · change
-      formula = union_definition_axiom ∨ (formula = union_axiom ∨
-          extensionality_theory formula) at hFormula
-    rcases hFormula with rfl | hFormula
-    · native_decide
-    · rcases hFormula with rfl | hFormula
-      · native_decide
-      · change formula = extensionality_axiom at hFormula
-        subst formula
-        native_decide
-/-- 二元并描述符理论中的每条公理都是闭公式。 -/
-@[derive_close_sentence]
-theorem binary_union_operator_theory_sentence
-    {formula : SetFormula} (hFormula : binary_union_operator_theory formula) :
-    Formula.Sentence formula := by
-  constructor
-  · exact binary_union_operator_theory_admissible
-      formula hFormula
-  · rcases hFormula with rfl | hFormula
-    · native_decide
-    · rcases hFormula with hFormula | hFormula
-      · exact (pairing_operator_theory_sentence hFormula).2
-      · exact (union_operator_theory_sentence hFormula).2
-/-- 配对描述符理论嵌入二元并描述符理论。 -/
+/-- 配对函数符号理论嵌入二元并函数符号理论。 -/
 theorem pairing_operator_theory_subset_binary_union_operator_theory
-    {formula : SetFormula} (hFormula : pairing_operator_theory formula) :
-    binary_union_operator_theory formula :=
-  Or.inr (Or.inl hFormula)
-/-- 一元并描述符理论嵌入二元并描述符理论。 -/
+    {sentence : SetSentence}
+    (hSentence : pairing_operator_theory sentence) :
+    binary_union_operator_theory sentence :=
+  Or.inr (Or.inl hSentence)
+
+/-- 一元并函数符号理论嵌入二元并函数符号理论。 -/
 theorem union_operator_theory_subset_binary_union_operator_theory
-    {formula : SetFormula} (hFormula : union_operator_theory formula) :
-    binary_union_operator_theory formula :=
-  Or.inr (Or.inr hFormula)
-/-- 并集存在公理可在任意 admissible 集合项处实例化。 -/
-theorem union_exists_derives (source : SetTerm) (hSource : Term.Admissible source SetSort.set) :
-    ⊢ₘ[union_theory]
-      union_exists source := by
-  have hAxiom :
-      ⊢ₘ[union_theory] union_axiom :=
-    FirstOrder.Derives.theory_mem (by
-      exact Or.inl rfl)
-  have hInstance :=
-    FirstOrder.Derives.forall_elim
-      (term := source) hAxiom
-  simpa [union_axiom, union_exists,
-    Formula.openAt_closeFreeAt_eq_substituteFree,
-    Formula.openAt, Formula.closeFreeAt,
-    Formula.next_depth, Formula.substituteFree,
-    Term.openAt, Term.closeFreeAt,
-    Term.substituteFree, set_variable,
-    set_bound_variable] using hInstance
-/-- 一元并集函数符号定义公理可在任意 admissible 集合项处实例化。 -/
-theorem union_definition_instance_derives (source : SetTerm) (hSource : Term.Admissible source SetSort.set) :
-    ⊢ₘ[union_operator_theory]
+    {sentence : SetSentence}
+    (hSentence : union_operator_theory sentence) :
+    binary_union_operator_theory sentence :=
+  Or.inr (Or.inr hSentence)
+
+/-- 并集存在公理可在任意集合项处实例化。 -/
+theorem union_exists_derives
+    {free : SetContext} {Γ : Context signature free}
+    (source : SetOpenTerm free) :
+    Γ ⊢ₘ[union_theory] union_exists source := by
+  let body : SetOpenFormula [SetSort.set] :=
+    union_exists
+      (FreshVariable.newest
+        (σ := signature) (free := []) SetSort.set)
+  let τ : VariableSubstitution signature [SetSort.set] [] free :=
+    VariableSubstitution.cons source VariableSubstitution.empty
+  have hClosed :
+      ([] : Context signature []) ⊢ₘ[union_theory]
+        Formula.fromSentence union_axiom :=
+    FirstOrder.Derives.theory_axiom (by exact Or.inl rfl)
+  have hInstance := Metatheory.Derives.forall_close_elim
+    (Γ := Γ) body τ hClosed
+  simpa [body, τ, union_axiom, union_exists, union_spec,
+    union_witness_condition, membership_specification,
+    Formula.substituteFree, Substitution.free_map,
+    Formula.substitute, Formula.substituteMapped,
+    Term.substituteMapped, Arguments.substituteMapped,
+    VariableSubstitution.cons, VariableSubstitution.empty,
+    VariableSubstitution.liftFree,
+    VariableSubstitution.weakenBound,
+    VariableSubstitution.boundId,
+    VariableSubstitution.freeId,
+    FreshVariable.newest] using! hInstance
+
+/-- 一元并函数符号定义公理可在任意集合项处实例化。 -/
+theorem union_definition_instance_derives
+    {free : SetContext} {Γ : Context signature free}
+    (source : SetOpenTerm free) :
+    Γ ⊢ₘ[union_operator_theory]
       union_definition_instance source := by
-  have hAxiom :
-      ⊢ₘ[union_operator_theory]
-        union_definition_axiom :=
-    FirstOrder.Derives.theory_mem (by
-      exact Or.inl rfl)
-  have hInstance :=
-    FirstOrder.Derives.forall_elim
-      (term := source) hAxiom
-  simpa [union_definition_axiom,
+  let body : SetOpenFormula [SetSort.set] :=
+    union_definition_instance
+      (FreshVariable.newest
+        (σ := signature) (free := []) SetSort.set)
+  let τ : VariableSubstitution signature [SetSort.set] [] free :=
+    VariableSubstitution.cons source VariableSubstitution.empty
+  have hClosed :
+      ([] : Context signature []) ⊢ₘ[union_operator_theory]
+        Formula.fromSentence union_definition_axiom :=
+    FirstOrder.Derives.theory_axiom (by exact Or.inl rfl)
+  have hInstance := Metatheory.Derives.forall_close_elim
+    (Γ := Γ) body τ hClosed
+  simpa [body, τ, union_definition_axiom,
     union_definition_instance, union_spec,
-    Formula.openAt_closeFreeAt_eq_substituteFree,
-    Formula.openAt, Formula.closeFreeAt,
-    Formula.next_depth, Formula.substituteFree,
-    Term.openAt, Term.closeFreeAt,
-    Term.substituteFree, set_variable,
-    set_bound_variable, union_term] using hInstance
-/-- 定义扩张中的一元并集项满足并集规格。 -/
-theorem union_term_spec_derives (source : SetTerm) (hSource : Term.Admissible source SetSort.set) :
-    ⊢ₘ[union_operator_theory]
+    union_witness_condition, membership_specification,
+    Formula.substituteFree, Substitution.free_map,
+    Formula.substitute, Formula.substituteMapped,
+    Term.substituteMapped, Arguments.substituteMapped,
+    VariableSubstitution.cons, VariableSubstitution.empty,
+    VariableSubstitution.liftFree,
+    VariableSubstitution.weakenBound,
+    VariableSubstitution.boundId,
+    VariableSubstitution.freeId,
+    FreshVariable.newest] using! hInstance
+
+/-- 规范并集项满足并集规格。 -/
+theorem union_term_spec_derives
+    {free : SetContext} {Γ : Context signature free}
+    (source : SetOpenTerm free) :
+    Γ ⊢ₘ[union_operator_theory]
       union_spec source (⋃ₘ source) := by
   simpa [union_definition_instance] using
-    union_definition_instance_derives source hSource
+    (union_definition_instance_derives (Γ := Γ) source)
+
+/-- 并集规格在任意元素处的点态实例。 -/
+theorem union_spec_membership_iff
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (source union element : SetOpenTerm free)
+    (hSpec : Γ ⊢ₘ[T] union_spec source union) :
+    Γ ⊢ₘ[T]
+      (element ∈ₘ union) ↔ₘ
+        union_witness_condition source element := by
+  have hAt := FirstOrder.Derives.forall_elim element hSpec
+  simpa [union_spec, union_witness_condition,
+    membership_specification, Formula.instantiateFreeTop,
+    Formula.substituteFree, Substitution.free_map,
+    Substitution.instantiateFreeTop,
+    Formula.substitute, Formula.substituteMapped,
+    Term.substituteMapped, Arguments.substituteMapped,
+    VariableSubstitution.liftFree,
+    VariableSubstitution.instantiateFreeTop,
+    VariableSubstitution.weakenBound,
+    VariableSubstitution.boundId,
+    VariableSubstitution.freeId] using hAt
+
 /-- 同一集合的两个并集候选必相等。 -/
-theorem union_unique (source left right : SetTerm) (hSource : Term.Admissible source SetSort.set) (hLeft : Term.Admissible left SetSort.set)
-    (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[extensionality_theory]
+theorem union_unique
+    {free : SetContext} {Γ : Context signature free}
+    (source left right : SetOpenTerm free) :
+    Γ ⊢ₘ[extensionality_theory]
       union_spec source left ⟶ₘ
         union_spec source right ⟶ₘ (left ≐ₘ right) := by
-  simpa [union_spec,
-    membership_specification] using
-    membership_specification_unique
-      left right (∃ₘ[SetSort.set], (bₛ#0 ∈ₘ source) ∧ₘ (bₛ#1 ∈ₘ bₛ#0))
-      hLeft hRight (union_spec_admissible
-        hSource hLeft) (union_spec_admissible
-        hSource hRight)
-/-- 一个集合项等于 `source` 的并集，当且仅当它满足并集规格。 -/
-theorem union_eq_iff_spec (source candidate : SetTerm) (hSource : Term.Admissible source SetSort.set) (hCandidate : Term.Admissible candidate SetSort.set) :
-    ⊢ₘ[union_operator_theory] (candidate ≐ₘ ⋃ₘ source) ↔ₘ
-        union_spec source candidate := by
-  let union := union_term source
-  let parameter :=
-    FreshVariable.fresh_id SetSort.set
-      [Formula.equal source source]
-  have hUnion :
-      Term.Admissible union SetSort.set :=
-    union_term_admissible source hSource
-  have hParameterFreshSource : (SetSort.set, parameter) ∉
-        Term.freeSupport source := by
-    dsimp [parameter]
-    exact FreshVariable.fresh_term_not_mem_m
-      SetSort.set source
-  have hSourceFixedCandidate :
-      Term.substituteFree SetSort.set
-          parameter candidate source =
-        source :=
-    Term.substituteFree_eq_self_of_not_mem
-      SetSort.set parameter candidate source
-      hParameterFreshSource
-  have hSourceFixedUnion :
-      Term.substituteFree SetSort.set
-          parameter union source =
-        source :=
-    Term.substituteFree_eq_self_of_not_mem
-      SetSort.set parameter union source
-      hParameterFreshSource
-  have hCandidateUnionEqualityAdmissible :
-      Formula.Admissible (candidate ≐ₘ union) :=
-    Formula.Admissible.equal
-      hCandidate hUnion
-  have hCandidateSpecAdmissible :
-      Formula.Admissible (union_spec source candidate) :=
-    union_spec_admissible
-      hSource hCandidate
-  change
-    ⊢ₘ[union_operator_theory] (candidate ≐ₘ union) ↔ₘ
-        union_spec source candidate
-  apply FirstOrder.Derives.iffIntro
+  let element : SetOpenTerm (SetSort.set :: free) := .fvar .here
+  let condition : SetOpenFormula (SetSort.set :: free) :=
+    union_witness_condition
+      (source.weakenFree SetSort.set) element
+  simpa [union_spec, condition, element] using
+    (membership_specification_unique
+      (Γ := Γ) left right condition)
+
+/-- 一个集合等于规范并集项，当且仅当它满足并集规格。 -/
+theorem union_eq_iff_spec
+    {free : SetContext} {Γ : Context signature free}
+    (source candidate : SetOpenTerm free) :
+    Γ ⊢ₘ[union_operator_theory]
+      (candidate ≐ₘ ⋃ₘ source) ↔ₘ union_spec source candidate := by
+  let union : SetOpenTerm free := ⋃ₘ source
+  apply FirstOrder.Derives.iff_intro
   · have hEquality :
-        [candidate ≐ₘ union] ⊢ₘ[union_operator_theory]
+        ((candidate ≐ₘ union) :: Γ) ⊢ₘ[union_operator_theory]
           candidate ≐ₘ union :=
-      .assumption (by simp)
-    have hCongruence :=
-      Metatheory.Derives.equality_iff_of_equality (T := union_operator_theory) (Γ := [candidate ≐ₘ union]) (sort := SetSort.set) (eigen := parameter)
-        (left := candidate) (right := union) (body := union_spec source (x#parameter))
-        hEquality
-    have hCongruenceNormalized :
-        [candidate ≐ₘ union] ⊢ₘ[union_operator_theory]
-          union_spec source candidate ↔ₘ
-            union_spec source union := by
-      simpa [union_spec,
-        Formula.substituteFree, Term.substituteFree,
-        hSourceFixedCandidate, hSourceFixedUnion,
-        set_variable] using hCongruence
+      FirstOrder.Derives.assumption List.mem_cons_self
+    let body : Formula signature [SetSort.set] free :=
+      union_spec
+        (source.weakenBound SetSort.set) (.bvar .here)
+    have hCongruence := Metatheory.Derives.equality_iff_of_equality
+      (T := union_operator_theory)
+      (Γ := (candidate ≐ₘ union) :: Γ) body hEquality
     have hUnionSpec :
-        [candidate ≐ₘ union] ⊢ₘ[union_operator_theory]
+        ((candidate ≐ₘ union) :: Γ) ⊢ₘ[union_operator_theory]
           union_spec source union :=
-      FirstOrder.Derives.context_weaken_cons (by
-          simpa [union] using
-            union_term_spec_derives source hSource)
-    exact FirstOrder.Derives.iffElimLeft
-      hCongruenceNormalized hUnionSpec
+      FirstOrder.Derives.context_weaken_cons
+        (assumption := candidate ≐ₘ union)
+        (by simpa [union] using
+          (union_term_spec_derives (Γ := Γ) source))
+    have hCongruence' :
+        ((candidate ≐ₘ union) :: Γ) ⊢ₘ[union_operator_theory]
+          union_spec source candidate ↔ₘ union_spec source union := by
+      simpa [body, union_spec, union_witness_condition,
+        membership_specification,
+        Formula.instantiateFreeTop, Formula.substituteFree,
+        Substitution.free_map,
+        Substitution.instantiateFreeTop, Formula.substitute,
+        Formula.substituteMapped, Term.substituteMapped,
+        Arguments.substituteMapped,
+        VariableSubstitution.liftFree,
+        VariableSubstitution.instantiateFreeTop,
+        VariableSubstitution.instantiateTop,
+        VariableSubstitution.weakenBound,
+        VariableSubstitution.boundId,
+        VariableSubstitution.freeId] using! hCongruence
+    simpa [union] using
+      FirstOrder.Derives.iff_elim_right hCongruence' hUnionSpec
   · have hCandidateSpec :
-        [union_spec source candidate] ⊢ₘ[union_operator_theory]
+        (union_spec source candidate :: Γ) ⊢ₘ[union_operator_theory]
           union_spec source candidate :=
-      .assumption (by simp)
+      FirstOrder.Derives.assumption List.mem_cons_self
     have hUnionSpec :
-        [union_spec source candidate] ⊢ₘ[union_operator_theory]
+        (union_spec source candidate :: Γ) ⊢ₘ[union_operator_theory]
           union_spec source union :=
-      FirstOrder.Derives.context_weaken_cons (by
-          simpa [union] using
-            union_term_spec_derives source hSource)
+      FirstOrder.Derives.context_weaken_cons
+        (assumption := union_spec source candidate)
+        (by simpa [union] using
+          (union_term_spec_derives (Γ := Γ) source))
     have hUnique :
-        [union_spec source candidate] ⊢ₘ[union_operator_theory]
+        (union_spec source candidate :: Γ) ⊢ₘ[union_operator_theory]
           union_spec source candidate ⟶ₘ
             union_spec source union ⟶ₘ (candidate ≐ₘ union) :=
-      FirstOrder.Derives.context_weaken_cons <|
-        FirstOrder.Derives.theory_weaken (by
-            intro formula hFormula
-            change
-              formula = union_definition_axiom ∨ (formula = union_axiom ∨
-                  extensionality_theory formula)
-            exact Or.inr (Or.inr hFormula)) (union_unique
-            source candidate union
-            hSource hCandidate hUnion)
-    exact FirstOrder.Derives.impElim (FirstOrder.Derives.impElim
-        hUnique hCandidateSpec)
+      FirstOrder.Derives.context_weaken_cons
+        (assumption := union_spec source candidate)
+        (FirstOrder.Derives.theory_weaken (by
+          intro sentence hSentence
+          exact Or.inr (Or.inr hSentence))
+          (union_unique (Γ := Γ) source candidate union))
+    exact FirstOrder.Derives.imp_elim
+      (FirstOrder.Derives.imp_elim hUnique hCandidateSpec)
       hUnionSpec
-/-- 已证明的集合等式可直接提升为一元并集函数项等式。 -/
+
+/-- 已证明的集合等式可直接提升为一元并项等式。 -/
 theorem union_term_congr_of_equality
-    {T : SetTheory} {Γ : Context signature} (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set)
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free)
     (hEquality : Γ ⊢ₘ[T] left ≐ₘ right) :
     Γ ⊢ₘ[T] (⋃ₘ left) ≐ₘ (⋃ₘ right) := by
-  exact Metatheory.Derives.unary_term_constructor_congr_of_equality
-    union_term
-    union_term_admissible
-    (by intros; simp [Term.substituteFree])
-    left right hLeft hRight hEquality
-/-- 一元并集函数项保持自由集合变量的等式。 -/
-theorem union_term_congr (left right : FreeVarId) :
-    ⊢ₘ (x#left ≐ₘ x#right) ⟶ₘ ((⋃ₘ x#left) ≐ₘ (⋃ₘ x#right)) := by
-  nd_apply FirstOrder.Derives.impIntro
-  exact union_term_congr_of_equality
-    (x#left) (x#right)
-    (set_variable_admissible left)
-    (set_variable_admissible right)
-    (.assumption (by simp))
-/-- 等价的源集合可运输同一个候选对象的一元并集等式。 -/
-theorem union_eq_transport (left right candidate : FreeVarId) :
-    ⊢ₘ (x#left ≐ₘ x#right) ⟶ₘ ((x#candidate ≐ₘ ⋃ₘ x#left) ⟶ₘ (x#candidate ≐ₘ ⋃ₘ x#right)) := by
-  let left_union := union_term (x#left)
-  let right_union := union_term (x#right)
-  have hLeftUnion :
-      Term.Admissible left_union SetSort.set :=
-    union_term_admissible (x#left) (set_variable_admissible left)
-  have hRightUnion :
-      Term.Admissible right_union SetSort.set :=
-    union_term_admissible (x#right) (set_variable_admissible right)
-  have hLeftAdmissible :
-      Term.Admissible (x#left) SetSort.set :=
-    set_variable_admissible left
-  have hRightAdmissible :
-      Term.Admissible (x#right) SetSort.set :=
-    set_variable_admissible right
-  have hCandidateAdmissible :
-      Term.Admissible (x#candidate) SetSort.set :=
-    set_variable_admissible candidate
-  change
-    ⊢ₘ (x#left ≐ₘ x#right) ⟶ₘ ((x#candidate ≐ₘ left_union) ⟶ₘ (x#candidate ≐ₘ right_union))
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  have hSourceEquality :
-      [x#candidate ≐ₘ left_union,
-          x#left ≐ₘ x#right] ⊢ₘ
-        x#left ≐ₘ x#right :=
-    .assumption (by simp)
-  have hCandidateEquality :
-      [x#candidate ≐ₘ left_union,
-          x#left ≐ₘ x#right] ⊢ₘ
-        x#candidate ≐ₘ left_union :=
-    .assumption (by simp)
-  have hUnionEquality :
-      [x#candidate ≐ₘ left_union,
-          x#left ≐ₘ x#right] ⊢ₘ
-        left_union ≐ₘ right_union := by
-    simpa [left_union, right_union] using
-      union_term_congr_of_equality (T := (Theory.empty : SetTheory)) (Γ :=
-          [x#candidate ≐ₘ left_union,
-            x#left ≐ₘ x#right]) (x#left) (x#right) (set_variable_admissible left) (set_variable_admissible right)
-        hSourceEquality
+  let termContext : SetTerm [SetSort.set] free :=
+    ⋃ₘ (.bvar .here : SetTerm [SetSort.set] free)
+  simpa [termContext] using!
+    (Metatheory.Derives.term_context_congr_of_equality
+      (T := T) (Γ := Γ) termContext hEquality)
+
+/-- 一元并项合同的蕴含形式。 -/
+theorem union_term_congr
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[T]
+      (left ≐ₘ right) ⟶ₘ ((⋃ₘ left) ≐ₘ (⋃ₘ right)) := by
+  apply FirstOrder.Derives.imp_intro
+  exact union_term_congr_of_equality left right
+    (FirstOrder.Derives.assumption List.mem_cons_self)
+
+/-- 等价的源集合可运输同一个候选对象的并集等式。 -/
+theorem union_eq_transport
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (left right candidate : SetOpenTerm free) :
+    Γ ⊢ₘ[T]
+      (left ≐ₘ right) ⟶ₘ
+        ((candidate ≐ₘ ⋃ₘ left) ⟶ₘ
+          (candidate ≐ₘ ⋃ₘ right)) := by
+  apply FirstOrder.Derives.imp_intro
+  apply FirstOrder.Derives.imp_intro
+  let Δ : Context signature free :=
+    (candidate ≐ₘ ⋃ₘ left) :: (left ≐ₘ right) :: Γ
+  have hSourceEquality : Δ ⊢ₘ[T] left ≐ₘ right :=
+    FirstOrder.Derives.assumption (by simp [Δ])
+  have hCandidateEquality : Δ ⊢ₘ[T] candidate ≐ₘ ⋃ₘ left :=
+    FirstOrder.Derives.assumption (by simp [Δ])
+  have hUnionEquality := union_term_congr_of_equality
+    (T := T) (Γ := Δ) left right hSourceEquality
   exact Metatheory.Derives.equality_trans
     hCandidateEquality hUnionEquality
-/-- 一元并集候选图刻画的双变量全称闭包。 -/
-theorem union_eq_iff_spec_forall (source candidate : FreeVarId) :
-    ⊢ₘ[union_operator_theory]
-      ∀ₘ[SetSort.set, source],
-        ∀ₘ[SetSort.set, candidate], (x#candidate ≐ₘ ⋃ₘ x#source) ↔ₘ
-            union_spec (x#source) (x#candidate) := by
-  have hOpen :
-      ⊢ₘ[union_operator_theory] (x#candidate ≐ₘ ⋃ₘ x#source) ↔ₘ
-          union_spec (x#source) (x#candidate) :=
-    union_eq_iff_spec (x#source) (x#candidate) (set_variable_admissible source) (set_variable_admissible candidate)
-  derive_close (source, candidate) using hOpen
-/-- 一元并集函数项等式合同的双变量全称闭包。 -/
-theorem union_term_congr_forall (left right : FreeVarId) :
-    ⊢ₘ[union_operator_theory]
-      ∀ₘ[SetSort.set, left],
-        ∀ₘ[SetSort.set, right], (x#left ≐ₘ x#right) ⟶ₘ ((⋃ₘ x#left) ≐ₘ (⋃ₘ x#right)) := by
-  derive_close (left, right) using
-    union_term_congr left right
-/-- 二元并定义公理可在任意两个 admissible 集合项处实例化。 -/
-theorem binary_union_definition_instance_derives (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set)
-    (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[binary_union_operator_theory]
-      binary_union_definition_instance
-        left right := by
-  have hAxiom :
-      ⊢ₘ[binary_union_operator_theory]
-        binary_union_definition_axiom :=
-    FirstOrder.Derives.theory_mem (by
-      exact Or.inl rfl)
-  have hLeftInstance :=
-    FirstOrder.Derives.forall_elim
-      (term := left) hAxiom
-  have hRightInstance :=
-    FirstOrder.Derives.forall_elim
-      (term := right) hLeftInstance
-  have hLeftOpenOneRight :
-      Term.openAt SetSort.set 1 right left = left :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 1 right left hLeft.2
-  have hLeftOpenZeroRight :
-      Term.openAt SetSort.set 0 right left = left :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 right left hLeft.2
-  simpa [binary_union_definition_axiom,
+
+/-- 二元并定义公理可在任意两个集合项处实例化。 -/
+theorem binary_union_definition_instance_derives
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[binary_union_operator_theory]
+      binary_union_definition_instance left right := by
+  let body : SetOpenFormula [SetSort.set, SetSort.set] :=
+    binary_union_definition_instance
+      (.fvar (.there .here) :
+        SetOpenTerm [SetSort.set, SetSort.set])
+      (.fvar .here :
+        SetOpenTerm [SetSort.set, SetSort.set])
+  let τ : VariableSubstitution signature
+      [SetSort.set, SetSort.set] [] free :=
+    VariableSubstitution.cons right
+      (VariableSubstitution.cons left VariableSubstitution.empty)
+  have hClosed :
+      ([] : Context signature []) ⊢ₘ[binary_union_operator_theory]
+        Formula.fromSentence binary_union_definition_axiom :=
+    FirstOrder.Derives.theory_axiom (by exact Or.inl rfl)
+  have hInstance := Metatheory.Derives.forall_close_elim
+    (Γ := Γ) body τ hClosed
+  simpa [body, τ, binary_union_definition_axiom,
     binary_union_definition_instance,
-    Formula.openAt_closeFreeAt_eq_substituteFree,
-    Formula.openAt, Formula.closeFreeAt,
-    Formula.next_depth, Formula.substituteFree,
-    Term.openAt, Term.closeFreeAt,
-    Term.substituteFree, set_variable,
-    set_bound_variable, binary_union_term,
-    union_term, unordered_pair_term,
-    hLeftOpenOneRight, hLeftOpenZeroRight] using hRightInstance
-/-- 二元并项按定义等于对应无序对的一元并集。 -/
-theorem binary_union_term_eq_union_pair_derives (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[binary_union_operator_theory] (left ∪ₘ right) ≐ₘ (⋃ₘ {left, right}ₘ) := by
+    Formula.substituteFree, Substitution.free_map,
+    Formula.substitute, Formula.substituteMapped,
+    Term.substituteMapped, Arguments.substituteMapped,
+    VariableSubstitution.cons, VariableSubstitution.empty,
+    VariableSubstitution.liftFree,
+    VariableSubstitution.weakenBound,
+    VariableSubstitution.boundId,
+    VariableSubstitution.freeId] using hInstance
+
+/-- 定义扩张中的二元并项等于对应无序对的一元并。 -/
+theorem binary_union_term_eq_union_pair_derives
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[binary_union_operator_theory]
+      (left ∪ₘ right) ≐ₘ (⋃ₘ {left, right}ₘ) := by
   simpa [binary_union_definition_instance] using
-    binary_union_definition_instance_derives
-      left right hLeft hRight
-/--
-一个候选项等于规范二元并，当且仅当存在文献所用的中间无序对并且候选等于其并集。
--/
-theorem binary_union_eq_iff_descriptor (left right candidate : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set)
-    (hCandidate : Term.Admissible candidate SetSort.set) :
-    ⊢ₘ[binary_union_operator_theory] (candidate ≐ₘ (left ∪ₘ right)) ↔ₘ
-        binary_union_descriptor left right candidate := by
-  let pair := unordered_pair_term left right
-  let union := union_term pair
-  let binary := binary_union_term left right
-  have hPair :
-      Term.Admissible pair SetSort.set :=
-    unordered_pair_term_admissible
-      left right hLeft hRight
-  have hUnion :
-      Term.Admissible union SetSort.set :=
-    union_term_admissible pair hPair
-  have hBinary :
-      Term.Admissible binary SetSort.set :=
-    binary_union_term_admissible
-      left right hLeft hRight
-  have hDefinition :
-      ⊢ₘ[binary_union_operator_theory]
-        binary ≐ₘ union := by
-    simpa [binary, union, pair] using
-      binary_union_term_eq_union_pair_derives
-        left right hLeft hRight
-  have hLeftOpenPair :
-      Term.openAt SetSort.set 0 pair left = left :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 pair left hLeft.2
-  have hRightOpenPair :
-      Term.openAt SetSort.set 0 pair right = right :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 pair right hRight.2
-  have hCandidateOpenPair :
-      Term.openAt SetSort.set 0 pair candidate =
-        candidate :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 pair candidate hCandidate.2
-  have hDescriptorAdmissible :
-      Formula.Admissible (binary_union_descriptor
-          left right candidate) :=
-    binary_union_descriptor_admissible
-      hLeft hRight hCandidate
-  have hCandidateBinaryAdmissible :
-      Formula.Admissible (candidate ≐ₘ binary) :=
-    Formula.Admissible.equal
-      hCandidate hBinary
-  change
-    ⊢ₘ[binary_union_operator_theory] (candidate ≐ₘ binary) ↔ₘ
-        binary_union_descriptor left right candidate
-  apply FirstOrder.Derives.iffIntro
-  · have hCandidateBinary :
-        [candidate ≐ₘ binary]
-          ⊢ₘ[binary_union_operator_theory]
-            candidate ≐ₘ binary :=
-      .assumption (by simp)
+    (binary_union_definition_instance_derives (Γ := Γ) left right)
 
-    have hDefinition' :
-        [candidate ≐ₘ binary]
-          ⊢ₘ[binary_union_operator_theory]
-            binary ≐ₘ union :=
-      FirstOrder.Derives.context_weaken_cons
-        hDefinition
-    have hCandidateUnion :
-        [candidate ≐ₘ binary]
-          ⊢ₘ[binary_union_operator_theory]
-            candidate ≐ₘ union :=
-      Metatheory.Derives.equality_trans
-        hCandidateBinary hDefinition'
-    nd_apply FirstOrder.Derives.exists_intro (term := pair)
-    simpa [binary_union_descriptor,
-      pair, union, Formula.openAt,
-      Term.openAt, hLeftOpenPair,
-      hRightOpenPair,
-      hCandidateOpenPair] using (FirstOrder.Derives.conjIntro
-        (FirstOrder.Derives.eq_refl_m (sort := SetSort.set) pair)
-        hCandidateUnion)
-  · let descriptor_body : SetFormula := (bₛ#0 ≐ₘ pair) ∧ₘ (candidate ≐ₘ ⋃ₘ bₛ#0)
-    let descriptor : SetFormula :=
-      ∃ₘ[SetSort.set], descriptor_body
-    let conclusion : SetFormula :=
-      candidate ≐ₘ binary
-    let witness :=
-      FreshVariable.fresh_id SetSort.set
-        [descriptor_body, descriptor, conclusion]
-    let witness_body :=
-      Formula.openAt SetSort.set 0 (x#witness) descriptor_body
-    have hWitnessFreshDescriptorBody : (SetSort.set, witness) freshForₘ
-          descriptor_body := by
-      dsimp [witness]
-      exact FreshVariable.fresh_id_not_mem_m (by simp)
-    have hWitnessFreshDescriptor : (SetSort.set, witness) freshForₘ
-          descriptor := by
-      dsimp [witness]
-      exact FreshVariable.fresh_id_not_mem_m (by simp)
-    have hWitnessFreshConclusion : (SetSort.set, witness) freshForₘ
-          conclusion := by
-      dsimp [witness]
-      exact FreshVariable.fresh_id_not_mem_m (by simp)
-    have hLocalDescriptorAdmissible :
-        Formula.Admissible descriptor := by
-      simpa [descriptor, descriptor_body,
-        binary_union_descriptor, pair] using
-        hDescriptorAdmissible
-    have hWitnessBodyAdmissible :
-        Formula.Admissible witness_body := by
-      dsimp [witness_body]
-      refine Formula.Admissible.exists_openAt (σ := signature) (body := descriptor_body) (term := x#witness)
-        SetSort.set ?_ (set_variable_admissible witness)
-      exact hLocalDescriptorAdmissible
-    have hDescriptor :
-        [descriptor] ⊢ₘ[binary_union_operator_theory]
-          binary_union_descriptor
-            left right candidate :=
-      .assumption (by
-        simp [descriptor, descriptor_body,
-          binary_union_descriptor, pair])
-    have hExists :
-        [descriptor] ⊢ₘ[binary_union_operator_theory]
-          ∃ₘ[SetSort.set],
-            Formula.closeFreeAt
-              SetSort.set witness 0 witness_body := by
-      have hCloseOpen :
-          Formula.closeFreeAt
-              SetSort.set witness 0 witness_body =
-            descriptor_body := by
-        dsimp [witness_body]
-        exact
-        Formula.closeFreeAt_openAt
-          SetSort.set witness 0
-            descriptor_body
-            hWitnessFreshDescriptorBody
-      simpa [descriptor, descriptor_body,
-        binary_union_descriptor, pair,
-        hCloseOpen] using hDescriptor
-    have hCase :
-        witness_body :: [descriptor]
-          ⊢ₘ[binary_union_operator_theory]
-            conclusion := by
-      have hConjunction :
-          witness_body :: [descriptor]
-            ⊢ₘ[binary_union_operator_theory] (x#witness ≐ₘ pair) ∧ₘ (candidate ≐ₘ ⋃ₘ x#witness) := by
-        have hAssumption :
-            witness_body :: [descriptor]
-              ⊢ₘ[binary_union_operator_theory]
-                witness_body :=
-          .assumption (by simp)
+/-- 二元并规格在任意元素处的点态实例。 -/
+theorem binary_union_spec_membership_iff
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (left right union element : SetOpenTerm free)
+    (hSpec : Γ ⊢ₘ[T] binary_union_spec left right union) :
+    Γ ⊢ₘ[T]
+      (element ∈ₘ union) ↔ₘ
+        ((element ∈ₘ left) ∨ₘ (element ∈ₘ right)) := by
+  have hAt := FirstOrder.Derives.forall_elim element hSpec
+  simpa [binary_union_spec, binary_union_member_condition,
+    membership_specification] using! hAt
 
-        have hPairOpenWitness :
-            Term.openAt SetSort.set 0 (x#witness) pair =
-              pair :=
-          Term.openAt_eq_self_of_boundClosed
-            SetSort.set 0 (x#witness)
-            pair hPair.2
-        have hCandidateOpenWitness :
-            Term.openAt SetSort.set 0 (x#witness) candidate =
-              candidate :=
-          Term.openAt_eq_self_of_boundClosed
-            SetSort.set 0 (x#witness)
-            candidate hCandidate.2
-        simpa [witness_body, descriptor_body,
-          Formula.openAt, Term.openAt,
-          hPairOpenWitness,
-          hCandidateOpenWitness] using hAssumption
-      have hWitnessPair :
-          witness_body :: [descriptor]
-            ⊢ₘ[binary_union_operator_theory]
-              x#witness ≐ₘ pair :=
-        FirstOrder.Derives.conjElimLeft
-          hConjunction
-      have hCandidateWitnessUnion :
-          witness_body :: [descriptor]
-            ⊢ₘ[binary_union_operator_theory]
-              candidate ≐ₘ ⋃ₘ x#witness :=
-        FirstOrder.Derives.conjElimRight
-          hConjunction
-      have hWitnessUnionPairUnion :
-          witness_body :: [descriptor]
-            ⊢ₘ[binary_union_operator_theory] (⋃ₘ x#witness) ≐ₘ union := by
-        simpa [union] using
-          union_term_congr_of_equality (x#witness) pair (set_variable_admissible witness)
-            hPair hWitnessPair
-      have hCandidateUnion :
-          witness_body :: [descriptor]
-            ⊢ₘ[binary_union_operator_theory]
-              candidate ≐ₘ union :=
-        Metatheory.Derives.equality_trans
-          hCandidateWitnessUnion
-          hWitnessUnionPairUnion
-      have hUnionBinary :
-          witness_body :: [descriptor]
-            ⊢ₘ[binary_union_operator_theory]
-              union ≐ₘ binary :=
-        Metatheory.Derives.equality_symm
-          (FirstOrder.Derives.context_weaken (by
-              intro formula hFormula
-              cases hFormula)
-            hDefinition)
-      exact Metatheory.Derives.equality_trans
-        hCandidateUnion hUnionBinary
-    exact FirstOrder.Derives.exists_elim (by
-        intro formula hFormula
-        have hSentence :=
-          binary_union_operator_theory_sentence hFormula
-        rw [hSentence.2]
-        simp) (by
-        intro formula hFormula
-        rcases List.mem_singleton.mp hFormula with rfl
-        exact hWitnessFreshDescriptor)
-        hWitnessFreshConclusion
-        hExists hCase
-/-- 二元并项满足文献中的“配对后取并集”描述。 -/
-theorem binary_union_term_descriptor_derives (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[binary_union_operator_theory]
-      binary_union_descriptor
-        left right (left ∪ₘ right) := by
-  exact FirstOrder.Derives.iffElimRight (binary_union_eq_iff_descriptor
-      left right (left ∪ₘ right)
-      hLeft hRight (binary_union_term_admissible
-        left right hLeft hRight))
-    (FirstOrder.Derives.eq_refl_m
-      (sort := SetSort.set) (left ∪ₘ right))
-/--
-无序对规格与一元并规格组合成二元并的成员析取规格。
-这是后续有限并与后继构造复用的公共桥；中间见证只在本证明内部出现。
--/
-theorem pair_union_spec_implies_binary_union_spec (left right pair union : SetTerm) (hLeft : Term.Admissible left SetSort.set)
-    (hRight : Term.Admissible right SetSort.set) (hPair : Term.Admissible pair SetSort.set) (hUnion : Term.Admissible union SetSort.set) :
-    ⊢ₘ
+/-- 无序对规格与一元并规格组合成二元并的成员析取规格。 -/
+theorem pair_union_spec_implies_binary_union_spec
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (left right pair union : SetOpenTerm free) :
+    Γ ⊢ₘ[T]
       pair_spec left right pair ⟶ₘ
         union_spec pair union ⟶ₘ
           binary_union_spec left right union := by
-  let pair_formula := pair_spec left right pair
-  let union_formula := union_spec pair union
-  let result_body : SetFormula := (bₛ#0 ∈ₘ union) ↔ₘ ((bₛ#0 ∈ₘ left) ∨ₘ (bₛ#0 ∈ₘ right))
-  let element :=
-    FreshVariable.fresh_id SetSort.set
-      [pair_formula, union_formula, result_body]
-  let membership_disjunction : SetFormula := (x#element ∈ₘ left) ∨ₘ (x#element ∈ₘ right)
-  let point : SetFormula := (x#element ∈ₘ union) ↔ₘ
-      membership_disjunction
-  have hElementFreshPair : (SetSort.set, element) freshForₘ
-        pair_formula := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hElementFreshUnion : (SetSort.set, element) freshForₘ
-        union_formula := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hElementFreshResult : (SetSort.set, element) freshForₘ
-        result_body := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hPairOpenOne :
-      Term.openAt SetSort.set 1 (x#element) pair =
-        pair :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 1 (x#element) pair hPair.2
-  have hUnionOpenZero :
-      Term.openAt SetSort.set 0 (x#element) union =
-        union :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) union hUnion.2
-  have hPairFormulaAdmissible :
-      Formula.Admissible pair_formula := by
-    dsimp [pair_formula]
-    exact pair_spec_admissible
-      hLeft hRight hPair
-  have hUnionFormulaAdmissible :
-      Formula.Admissible union_formula := by
-    dsimp [union_formula]
-    exact union_spec_admissible
-      hPair hUnion
-  have hElementAdmissible :
-      Term.Admissible (x#element) SetSort.set :=
-    set_variable_admissible element
-  have hElementMemUnionAdmissible :
-      Formula.Admissible (x#element ∈ₘ union) :=
-    membership_formula_admissible
-      hElementAdmissible hUnion
-  have hElementMemLeftAdmissible :
-      Formula.Admissible (x#element ∈ₘ left) :=
-    membership_formula_admissible
-      hElementAdmissible hLeft
-  have hElementMemRightAdmissible :
-      Formula.Admissible (x#element ∈ₘ right) :=
-    membership_formula_admissible
-      hElementAdmissible hRight
-  have hMembershipDisjunctionAdmissible :
-      Formula.Admissible membership_disjunction := by
-    dsimp [membership_disjunction]
-    exact Formula.Admissible.disj
-      hElementMemLeftAdmissible
-      hElementMemRightAdmissible
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  have hPairFormula :
-      [union_formula, pair_formula] ⊢ₘ
-        pair_formula :=
-    .assumption (by simp)
-  have hUnionFormula :
-      [union_formula, pair_formula] ⊢ₘ
-        union_formula :=
-    .assumption (by simp)
+  apply FirstOrder.Derives.imp_intro
+  apply FirstOrder.Derives.imp_intro
+  unfold binary_union_spec membership_specification
+  apply FirstOrder.Derives.forall_intro
+  let element : SetOpenTerm (SetSort.set :: free) := .fvar .here
+  let Δ : Context signature (SetSort.set :: free) :=
+    FreshVariable.extendContext SetSort.set
+      (union_spec pair union :: pair_spec left right pair :: Γ)
+  have hPairWeak :
+      Δ ⊢ₘ[T] (pair_spec left right pair).weakenFree SetSort.set :=
+    FirstOrder.Derives.assumption (by
+      simp [Δ, FreshVariable.extendContext])
+  have hUnionWeak :
+      Δ ⊢ₘ[T] (union_spec pair union).weakenFree SetSort.set :=
+    FirstOrder.Derives.assumption (by
+      simp [Δ, FreshVariable.extendContext])
   have hUnionAtRaw :=
-    FirstOrder.Derives.forall_elim
-      (term := x#element) hUnionFormula
+    FirstOrder.Derives.forall_elim_newest_weakened hUnionWeak
   have hUnionAt :
-      [union_formula, pair_formula] ⊢ₘ (x#element ∈ₘ union) ↔ₘ (∃ₘ[SetSort.set], (bₛ#0 ∈ₘ pair) ∧ₘ (x#element ∈ₘ bₛ#0)) := by
-    simpa [union_formula, union_spec,
-      Formula.openAt, Formula.next_depth,
-      Term.openAt, hPairOpenOne,
-      hUnionOpenZero] using hUnionAtRaw
-  have hUnionWitnessExistsAdmissible :
-      Formula.Admissible (∃ₘ[SetSort.set], (bₛ#0 ∈ₘ pair) ∧ₘ (x#element ∈ₘ bₛ#0)) :=
-    Formula.Admissible.iff_right
-      hUnionAt.admissible
-  have hPoint :
-      [union_formula, pair_formula] ⊢ₘ point := by
-    apply FirstOrder.Derives.iffIntro
-    · let witness_body : SetFormula := (bₛ#0 ∈ₘ pair) ∧ₘ (x#element ∈ₘ bₛ#0)
-      let conclusion : SetFormula := (x#element ∈ₘ left) ∨ₘ (x#element ∈ₘ right)
-      let witness :=
-        FreshVariable.fresh_id SetSort.set
-          [pair_formula, union_formula,
-            x#element ∈ₘ union,
-            witness_body, conclusion]
-      let witness_point :=
-        Formula.openAt SetSort.set 0 (x#witness) witness_body
-      have hWitnessFreshPair : (SetSort.set, witness) freshForₘ
-            pair_formula := by
-        dsimp [witness]
-        exact FreshVariable.fresh_id_not_mem_m (by simp)
-      have hWitnessFreshUnion : (SetSort.set, witness) freshForₘ
-            union_formula := by
-        dsimp [witness]
-        exact FreshVariable.fresh_id_not_mem_m (by simp)
-      have hWitnessFreshMembership : (SetSort.set, witness) freshForₘ (x#element ∈ₘ union) := by
-        dsimp [witness]
-        exact FreshVariable.fresh_id_not_mem_m (by simp)
-      have hWitnessFreshBody : (SetSort.set, witness) freshForₘ
-            witness_body := by
-        dsimp [witness]
-        exact FreshVariable.fresh_id_not_mem_m (by simp)
-      have hWitnessFreshConclusion : (SetSort.set, witness) freshForₘ
-            conclusion := by
-        dsimp [witness]
-        exact FreshVariable.fresh_id_not_mem_m (by simp)
-      have hWitnessNeElement :
-          witness ≠ element := by
-        intro hEqual
-        apply hWitnessFreshMembership
-        rw [hEqual]
-        change (SetSort.set, element) ∈
-            Term.freeSupportList
-              [(x#element : SetTerm), union]
-        exact Term.mem_freeSupportList_of_mem (term := (x#element : SetTerm)) (terms := [(x#element : SetTerm), union]) (by simp) (by
-            change (SetSort.set, element) ∈
-                [(SetSort.set, element)]
-            simp)
-      have hUnionAt' : (x#element ∈ₘ union) ::
-              [union_formula, pair_formula] ⊢ₘ (x#element ∈ₘ union) ↔ₘ (∃ₘ[SetSort.set], witness_body) :=
-        FirstOrder.Derives.context_weaken_cons (by
-            simpa [witness_body] using hUnionAt)
-      have hExists : (x#element ∈ₘ union) ::
-              [union_formula, pair_formula] ⊢ₘ
-            ∃ₘ[SetSort.set], witness_body :=
-        FirstOrder.Derives.iffElimRight
-          hUnionAt' (.assumption (by simp))
-      have hExistsClosed : (x#element ∈ₘ union) ::
-              [union_formula, pair_formula] ⊢ₘ
-            ∃ₘ[SetSort.set],
-              Formula.closeFreeAt
-                SetSort.set witness 0 witness_point := by
-        have hCloseOpen :
-            Formula.closeFreeAt
-                SetSort.set witness 0 witness_point =
-              witness_body := by
-          dsimp [witness_point]
-          exact Formula.closeFreeAt_openAt
-            SetSort.set witness 0 witness_body
-            hWitnessFreshBody
-        simpa [hCloseOpen] using hExists
-      have hCase :
-          witness_point :: (x#element ∈ₘ union) ::
-                [union_formula, pair_formula] ⊢ₘ
-            conclusion := by
-        have hConjunctionRaw :
-            witness_point :: (x#element ∈ₘ union) ::
-                  [union_formula, pair_formula] ⊢ₘ
-              witness_point :=
-          .assumption (by simp)
-        have hPairOpenWitness :
-            Term.openAt SetSort.set 0 (x#witness) pair =
-              pair :=
-          Term.openAt_eq_self_of_boundClosed
-            SetSort.set 0 (x#witness)
-            pair hPair.2
-        have hConjunction :
-            witness_point :: (x#element ∈ₘ union) ::
-                  [union_formula, pair_formula] ⊢ₘ (x#witness ∈ₘ pair) ∧ₘ (x#element ∈ₘ x#witness) := by
-          simpa [witness_point, witness_body,
-            Formula.openAt, Term.openAt,
-            hPairOpenWitness] using hConjunctionRaw
-        have hWitnessInPair :=
-          FirstOrder.Derives.conjElimLeft
-            hConjunction
-        have hElementInWitness :=
-          FirstOrder.Derives.conjElimRight
-            hConjunction
-        have hPairFormula' :
-            witness_point :: (x#element ∈ₘ union) ::
-                  [union_formula, pair_formula] ⊢ₘ
-              pair_formula :=
-          .assumption (by simp)
-        have hPairAtRaw :=
-          FirstOrder.Derives.forall_elim
-            (term := x#witness) hPairFormula'
-        have hPairOpenZero :
-            Term.openAt SetSort.set 0 (x#witness) pair =
-              pair :=
-          Term.openAt_eq_self_of_boundClosed
-            SetSort.set 0 (x#witness)
-            pair hPair.2
-        have hLeftOpenZero :
-            Term.openAt SetSort.set 0 (x#witness) left =
-              left :=
-          Term.openAt_eq_self_of_boundClosed
-            SetSort.set 0 (x#witness)
-            left hLeft.2
-        have hRightOpenZero :
-            Term.openAt SetSort.set 0 (x#witness) right =
-              right :=
-          Term.openAt_eq_self_of_boundClosed
-            SetSort.set 0 (x#witness)
-            right hRight.2
+      Δ ⊢ₘ[T]
+        (element ∈ₘ union.weakenFree SetSort.set) ↔ₘ
+          union_witness_condition
+            (pair.weakenFree SetSort.set) element := by
+    simpa [element, union_spec, union_witness_condition,
+      membership_specification, Formula.instantiateFreeTop,
+      Formula.substituteFree, Substitution.free_map,
+      Formula.substitute, Formula.substituteMapped,
+      Term.substituteMapped, Arguments.substituteMapped,
+      VariableSubstitution.liftFree,
+      VariableSubstitution.instantiateFreeTop,
+      VariableSubstitution.weakenBound,
+      VariableSubstitution.boundId,
+      VariableSubstitution.freeId,
+      FreshVariable.newest] using hUnionAtRaw
+  apply FirstOrder.Derives.iff_intro
+  · have hUnionAt' := FirstOrder.Derives.context_weaken_cons
+      (assumption := element ∈ₘ union.weakenFree SetSort.set) hUnionAt
+    have hElementInUnion :
+        ((element ∈ₘ union.weakenFree SetSort.set) :: Δ) ⊢ₘ[T]
+          element ∈ₘ union.weakenFree SetSort.set :=
+      FirstOrder.Derives.assumption List.mem_cons_self
+    have hExists := FirstOrder.Derives.iff_elim_left
+      hUnionAt' hElementInUnion
+    apply FirstOrder.Derives.exists_elim hExists
+    let witness : SetOpenTerm
+        (SetSort.set :: SetSort.set :: free) := .fvar .here
+    let element' : SetOpenTerm
+        (SetSort.set :: SetSort.set :: free) :=
+      element.weakenFree SetSort.set
+    let Ω : Context signature
+        (SetSort.set :: SetSort.set :: free) :=
+      ((witness ∈ₘ (pair.weakenFree SetSort.set).weakenFree SetSort.set) ∧ₘ
+          (element' ∈ₘ witness)) ::
+        FreshVariable.extendContext SetSort.set
+          ((element ∈ₘ union.weakenFree SetSort.set) :: Δ)
+    have hConjunction :
+        Ω ⊢ₘ[T]
+          (witness ∈ₘ
+              (pair.weakenFree SetSort.set).weakenFree SetSort.set) ∧ₘ
+            (element' ∈ₘ witness) :=
+      FirstOrder.Derives.assumption (by simp [Ω])
+    have hWitnessInPair :=
+      FirstOrder.Derives.conj_elim_left hConjunction
+    have hElementInWitness :=
+      FirstOrder.Derives.conj_elim_right hConjunction
+    have hPairWeak' :
+        Ω ⊢ₘ[T]
+          ((pair_spec left right pair).weakenFree SetSort.set
+            |>.weakenFree SetSort.set) :=
+      FirstOrder.Derives.assumption (by
+        simp [Ω, Δ, FreshVariable.extendContext])
+    have hPairAtRaw := FirstOrder.Derives.forall_elim
+      witness hPairWeak'
+    have hPairAt :
+        Ω ⊢ₘ[T]
+          (witness ∈ₘ
+              (pair.weakenFree SetSort.set).weakenFree SetSort.set) ↔ₘ
+            ((witness ≐ₘ
+                (left.weakenFree SetSort.set).weakenFree SetSort.set) ∨ₘ
+              (witness ≐ₘ
+                (right.weakenFree SetSort.set).weakenFree SetSort.set)) := by
+      simp only [Formula.renameMapped_comp] at hPairAtRaw
+      dsimp [witness] at hPairAtRaw
+      have hBound :
+          (VariableRenaming.comp
+              (VariableRenaming.lift (introduced := SetSort.set)
+                (VariableRenaming.id :
+                  VariableRenaming ([] : SetContext) []))
+              (VariableRenaming.lift (introduced := SetSort.set)
+                (VariableRenaming.id :
+                  VariableRenaming ([] : SetContext) [])) :
+            VariableRenaming [SetSort.set] [SetSort.set]) =
+            (VariableRenaming.id :
+              VariableRenaming [SetSort.set] [SetSort.set]) := by
+        funext resultSort entry
+        cases entry <;> rfl
+      rw [hBound,
+        Formula.instantiateTop_renameMapped_abstractFreeTop_fvar]
+        at hPairAtRaw
+      let ρ : VariableRenaming free
+          (SetSort.set :: SetSort.set :: free) :=
+        VariableRenaming.comp
+          (VariableRenaming.weaken SetSort.set)
+          (VariableRenaming.weaken SetSort.set)
+      let κ : VariableRenaming (SetSort.set :: free)
+          (SetSort.set :: SetSort.set :: free) :=
+        VariableRenaming.cons .here ρ
+      have hRename (term : SetOpenTerm free) :
+          (term.weakenFree SetSort.set).renameMapped
+              VariableRenaming.id κ =
+            (term.weakenFree SetSort.set).weakenFree SetSort.set := by
+        have hDrop := Term.renameMapped_weakenFree_cons
+          (σ := signature)
+          (boundRenaming := VariableRenaming.id)
+          (head := (.here :
+            Variable (SetSort.set :: SetSort.set :: free)
+              SetSort.set))
+          (tail := ρ) term
+        have hTwo := Term.renameMapped_two_weakenFree
+          (σ := signature) (first := SetSort.set)
+          (second := SetSort.set) term
+        simpa [κ, ρ] using hDrop.trans hTwo
+      change
+        Ω ⊢ₘ[T]
+          (witness ∈ₘ
+              (pair.weakenFree SetSort.set).renameMapped
+                VariableRenaming.id κ) ↔ₘ
+            ((witness ≐ₘ
+                (left.weakenFree SetSort.set).renameMapped
+                  VariableRenaming.id κ) ∨ₘ
+              (witness ≐ₘ
+                (right.weakenFree SetSort.set).renameMapped
+                  VariableRenaming.id κ)) at hPairAtRaw
+      rw [hRename pair, hRename left, hRename right] at hPairAtRaw
+      simpa [witness] using hPairAtRaw
+    have hChoice := FirstOrder.Derives.iff_elim_left
+      hPairAt hWitnessInPair
+    apply FirstOrder.Derives.disj_elim hChoice
+    · have hEquality :
+          ((witness ≐ₘ
+              (left.weakenFree SetSort.set).weakenFree SetSort.set) :: Ω)
+              ⊢ₘ[T]
+            witness ≐ₘ
+              (left.weakenFree SetSort.set).weakenFree SetSort.set :=
+        FirstOrder.Derives.assumption List.mem_cons_self
+      have hMembership := FirstOrder.Derives.context_weaken_cons
+        (assumption := witness ≐ₘ
+          (left.weakenFree SetSort.set).weakenFree SetSort.set)
+        hElementInWitness
+      have hTransport := membership_right_iff_of_equality
+        element' witness
+        ((left.weakenFree SetSort.set).weakenFree SetSort.set)
+        hEquality
+      exact FirstOrder.Derives.disj_intro_left
+        (FirstOrder.Derives.iff_elim_left hTransport hMembership)
+    · have hEquality :
+          ((witness ≐ₘ
+              (right.weakenFree SetSort.set).weakenFree SetSort.set) :: Ω)
+              ⊢ₘ[T]
+            witness ≐ₘ
+              (right.weakenFree SetSort.set).weakenFree SetSort.set :=
+        FirstOrder.Derives.assumption List.mem_cons_self
+      have hMembership := FirstOrder.Derives.context_weaken_cons
+        (assumption := witness ≐ₘ
+          (right.weakenFree SetSort.set).weakenFree SetSort.set)
+        hElementInWitness
+      have hTransport := membership_right_iff_of_equality
+        element' witness
+        ((right.weakenFree SetSort.set).weakenFree SetSort.set)
+        hEquality
+      exact FirstOrder.Derives.disj_intro_right
+        (FirstOrder.Derives.iff_elim_left hTransport hMembership)
+  · let choice : SetOpenFormula (SetSort.set :: free) :=
+      (element ∈ₘ left.weakenFree SetSort.set) ∨ₘ
+        (element ∈ₘ right.weakenFree SetSort.set)
+    let Θ : Context signature (SetSort.set :: free) := choice :: Δ
+    have hChoice : Θ ⊢ₘ[T] choice :=
+      FirstOrder.Derives.assumption List.mem_cons_self
+    have hUnionAt' :
+        Θ ⊢ₘ[T]
+          (element ∈ₘ union.weakenFree SetSort.set) ↔ₘ
+            union_witness_condition
+              (pair.weakenFree SetSort.set) element :=
+      FirstOrder.Derives.context_weaken_cons hUnionAt
+    have hBoundOne :
+        (VariableRenaming.lift (introduced := SetSort.set)
+            (VariableRenaming.id :
+              VariableRenaming ([] : SetContext) []) :
+          VariableRenaming [SetSort.set] [SetSort.set]) =
+        (VariableRenaming.id :
+          VariableRenaming [SetSort.set] [SetSort.set]) :=
+      VariableRenaming.lift_id
+    have hExists :
+        Θ ⊢ₘ[T]
+          union_witness_condition
+            (pair.weakenFree SetSort.set) element := by
+      apply FirstOrder.Derives.disj_elim hChoice
+      · have hElementInLeft :
+            ((element ∈ₘ left.weakenFree SetSort.set) :: Θ) ⊢ₘ[T]
+              element ∈ₘ left.weakenFree SetSort.set :=
+          FirstOrder.Derives.assumption List.mem_cons_self
+        have hPairBranch :
+            ((element ∈ₘ left.weakenFree SetSort.set) :: Θ) ⊢ₘ[T]
+              (pair_spec left right pair).weakenFree SetSort.set :=
+          FirstOrder.Derives.context_weaken_cons
+            (assumption := element ∈ₘ left.weakenFree SetSort.set)
+            (FirstOrder.Derives.context_weaken_cons
+              (assumption := choice) hPairWeak)
+        have hPairAtRaw := FirstOrder.Derives.forall_elim
+          (left.weakenFree SetSort.set) hPairBranch
+        rw [hBoundOne,
+          Formula.instantiateTop_renameMapped_abstractFreeTop_weakenFree]
+          at hPairAtRaw
         have hPairAt :
-            witness_point :: (x#element ∈ₘ union) ::
-                  [union_formula, pair_formula] ⊢ₘ (x#witness ∈ₘ pair) ↔ₘ ((x#witness ≐ₘ left) ∨ₘ (x#witness ≐ₘ right)) := by
-          simpa [pair_formula, pair_spec,
-            pair_member_condition,
-            Formula.openAt, Term.openAt,
-            hPairOpenZero, hLeftOpenZero,
-            hRightOpenZero] using hPairAtRaw
-        have hChoice :
-            witness_point :: (x#element ∈ₘ union) ::
-                  [union_formula, pair_formula] ⊢ₘ (x#witness ≐ₘ left) ∨ₘ (x#witness ≐ₘ right) :=
-          FirstOrder.Derives.iffElimRight
-            hPairAt hWitnessInPair
-        apply FirstOrder.Derives.disjElim hChoice
-        · have hEquality : (x#witness ≐ₘ left) ::
-                  witness_point :: (x#element ∈ₘ union) ::
-                      [union_formula, pair_formula] ⊢ₘ
-                x#witness ≐ₘ left :=
-            .assumption (by simp)
-          have hElementInWitness' : (x#witness ≐ₘ left) ::
-                  witness_point :: (x#element ∈ₘ union) ::
-                      [union_formula, pair_formula] ⊢ₘ
-                x#element ∈ₘ x#witness :=
-            FirstOrder.Derives.context_weaken_cons
-              hElementInWitness
-          have hSubstitution :=
-            Metatheory.Derives.equality_substitute_free_variable (T := (Theory.empty : SetTheory)) (Γ := (x#witness ≐ₘ left) ::
-                  witness_point :: (x#element ∈ₘ union) ::
-                      [union_formula, pair_formula]) (sort := SetSort.set) (eigen := witness) (replacement := left) (body := x#element ∈ₘ x#witness)
-          have hTransport :=
-            FirstOrder.Derives.impElim (FirstOrder.Derives.impElim
-                hSubstitution hEquality)
-              hElementInWitness'
-          have hElementInLeft : (x#witness ≐ₘ left) ::
-                  witness_point :: (x#element ∈ₘ union) ::
-                      [union_formula, pair_formula] ⊢ₘ
-                x#element ∈ₘ left := by
-            simpa [Formula.substituteFree,
-              Term.substituteFree, set_variable,
-              hWitnessNeElement,
-              Ne.symm hWitnessNeElement] using hTransport
-          exact FirstOrder.Derives.disjIntroLeft
-            hElementInLeft
-        · have hEquality : (x#witness ≐ₘ right) ::
-                  witness_point :: (x#element ∈ₘ union) ::
-                      [union_formula, pair_formula] ⊢ₘ
-                x#witness ≐ₘ right :=
-            .assumption (by simp)
-          have hElementInWitness' : (x#witness ≐ₘ right) ::
-                  witness_point :: (x#element ∈ₘ union) ::
-                      [union_formula, pair_formula] ⊢ₘ
-                x#element ∈ₘ x#witness :=
-            FirstOrder.Derives.context_weaken_cons
-              hElementInWitness
-          have hSubstitution :=
-            Metatheory.Derives.equality_substitute_free_variable (T := (Theory.empty : SetTheory)) (Γ := (x#witness ≐ₘ right) ::
-                  witness_point :: (x#element ∈ₘ union) ::
-                      [union_formula, pair_formula]) (sort := SetSort.set) (eigen := witness) (replacement := right) (body := x#element ∈ₘ x#witness)
-          have hTransport :=
-            FirstOrder.Derives.impElim (FirstOrder.Derives.impElim
-                hSubstitution hEquality)
-              hElementInWitness'
-          have hElementInRight : (x#witness ≐ₘ right) ::
-                  witness_point :: (x#element ∈ₘ union) ::
-                      [union_formula, pair_formula] ⊢ₘ
-                x#element ∈ₘ right := by
-            simpa [Formula.substituteFree,
-              Term.substituteFree, set_variable,
-              hWitnessNeElement,
-              Ne.symm hWitnessNeElement] using hTransport
-          exact FirstOrder.Derives.disjIntroRight
-            hElementInRight
-      exact FirstOrder.Derives.exists_elim (by
-          intro formula hFormula
-          cases hFormula) (by
-          intro formula hFormula
-          rcases List.mem_cons.mp hFormula with rfl | hFormula
-          · exact hWitnessFreshMembership
-          · rcases List.mem_cons.mp hFormula with rfl | hFormula
-            · exact hWitnessFreshUnion
-            · rcases List.mem_cons.mp hFormula with rfl | hFormula
-              · exact hWitnessFreshPair
-              · exact False.elim (List.not_mem_nil hFormula))
-        hWitnessFreshConclusion
-        hExistsClosed hCase
-    · have hUnionAt' :
-          membership_disjunction :: [union_formula, pair_formula] ⊢ₘ (x#element ∈ₘ union) ↔ₘ (∃ₘ[SetSort.set], (bₛ#0 ∈ₘ pair) ∧ₘ (x#element ∈ₘ bₛ#0)) :=
-        FirstOrder.Derives.context_weaken_cons
-          hUnionAt
-      have hChoice :
-          membership_disjunction :: [union_formula, pair_formula] ⊢ₘ
-            membership_disjunction :=
-        .assumption (by simp)
-      have hExists :
-          membership_disjunction :: [union_formula, pair_formula] ⊢ₘ
-            ∃ₘ[SetSort.set], (bₛ#0 ∈ₘ pair) ∧ₘ (x#element ∈ₘ bₛ#0) := by
-        apply FirstOrder.Derives.disjElim hChoice
-        · have hElementInLeft : (x#element ∈ₘ left) ::
-                  membership_disjunction ::
-                    [union_formula, pair_formula] ⊢ₘ
-                x#element ∈ₘ left :=
-            .assumption (by simp)
-          have hPairFormula' : (x#element ∈ₘ left) ::
-                  membership_disjunction ::
-                    [union_formula, pair_formula] ⊢ₘ
-                pair_formula :=
-            .assumption (by simp)
-          have hPairAtRaw :=
-            FirstOrder.Derives.forall_elim
-              (term := left) hPairFormula'
-          have hPairOpenLeft :
-              Term.openAt SetSort.set 0 left pair =
-                pair :=
-            Term.openAt_eq_self_of_boundClosed
-              SetSort.set 0 left pair hPair.2
-          have hLeftOpenLeft :
-              Term.openAt SetSort.set 0 left left =
-                left :=
-            Term.openAt_eq_self_of_boundClosed
-              SetSort.set 0 left left hLeft.2
-          have hRightOpenLeft :
-              Term.openAt SetSort.set 0 left right =
-                right :=
-            Term.openAt_eq_self_of_boundClosed
-              SetSort.set 0 left right hRight.2
-          have hPairAt : (x#element ∈ₘ left) ::
-                  membership_disjunction ::
-                    [union_formula, pair_formula] ⊢ₘ (left ∈ₘ pair) ↔ₘ ((left ≐ₘ left) ∨ₘ (left ≐ₘ right)) := by
-            simpa [pair_formula, pair_spec,
-              pair_member_condition,
-              Formula.openAt, Term.openAt,
-              hPairOpenLeft, hLeftOpenLeft,
-              hRightOpenLeft] using hPairAtRaw
-          have hLeftInPair : (x#element ∈ₘ left) ::
-                  membership_disjunction ::
-                    [union_formula, pair_formula] ⊢ₘ
-                left ∈ₘ pair :=
-            FirstOrder.Derives.iffElimLeft
-              hPairAt (FirstOrder.Derives.disjIntroLeft
-                (FirstOrder.Derives.eq_refl_m
-                  (sort := SetSort.set) left))
-          nd_apply FirstOrder.Derives.exists_intro (term := left)
-          have hPairOpenLeftZero :
-              Term.openAt SetSort.set 0 left pair =
-                pair :=
-            hPairOpenLeft
-          simpa [Formula.openAt, Term.openAt,
-            hPairOpenLeftZero] using (FirstOrder.Derives.conjIntro
-              hLeftInPair hElementInLeft)
-        · have hElementInRight : (x#element ∈ₘ right) ::
-                  membership_disjunction ::
-                    [union_formula, pair_formula] ⊢ₘ
-                x#element ∈ₘ right :=
-            .assumption (by simp)
-          have hPairFormula' : (x#element ∈ₘ right) ::
-                  membership_disjunction ::
-                    [union_formula, pair_formula] ⊢ₘ
-                pair_formula :=
-            .assumption (by simp)
-          have hPairAtRaw :=
-            FirstOrder.Derives.forall_elim
-              (term := right) hPairFormula'
-          have hPairOpenRight :
-              Term.openAt SetSort.set 0 right pair =
-                pair :=
-            Term.openAt_eq_self_of_boundClosed
-              SetSort.set 0 right pair hPair.2
-          have hLeftOpenRight :
-              Term.openAt SetSort.set 0 right left =
-                left :=
-            Term.openAt_eq_self_of_boundClosed
-              SetSort.set 0 right left hLeft.2
-          have hRightOpenRight :
-              Term.openAt SetSort.set 0 right right =
-                right :=
-            Term.openAt_eq_self_of_boundClosed
-              SetSort.set 0 right right hRight.2
-          have hPairAt : (x#element ∈ₘ right) ::
-                  membership_disjunction ::
-                    [union_formula, pair_formula] ⊢ₘ (right ∈ₘ pair) ↔ₘ ((right ≐ₘ left) ∨ₘ (right ≐ₘ right)) := by
-            simpa [pair_formula, pair_spec,
-              pair_member_condition,
-              Formula.openAt, Term.openAt,
-              hPairOpenRight, hLeftOpenRight,
-              hRightOpenRight] using hPairAtRaw
-          have hRightInPair : (x#element ∈ₘ right) ::
-                  membership_disjunction ::
-                    [union_formula, pair_formula] ⊢ₘ
-                right ∈ₘ pair :=
-            FirstOrder.Derives.iffElimLeft
-              hPairAt (FirstOrder.Derives.disjIntroRight
-                (FirstOrder.Derives.eq_refl_m
-                  (sort := SetSort.set) right))
-          nd_apply FirstOrder.Derives.exists_intro (term := right)
-          simpa [Formula.openAt, Term.openAt,
-            hPairOpenRight] using (FirstOrder.Derives.conjIntro
-              hRightInPair hElementInRight)
-      exact FirstOrder.Derives.iffElimLeft
-        hUnionAt' hExists
-  have hPointOpened :
-      [union_formula, pair_formula] ⊢ₘ
-        Formula.openAt SetSort.set 0 (x#element) result_body := by
-    have hLeftOpenZero :
-        Term.openAt SetSort.set 0 (x#element) left =
-          left :=
-      Term.openAt_eq_self_of_boundClosed
-        SetSort.set 0 (x#element)
-        left hLeft.2
-    have hRightOpenZero :
-        Term.openAt SetSort.set 0 (x#element) right =
-          right :=
-      Term.openAt_eq_self_of_boundClosed
-        SetSort.set 0 (x#element)
-        right hRight.2
-    simpa [point, result_body,
-      Formula.openAt, Term.openAt,
-      hUnionOpenZero, hLeftOpenZero,
-      hRightOpenZero] using hPoint
-  have hGeneralized :=
-    FirstOrder.Derives.forall_intro (T := (Theory.empty : SetTheory)) (Γ := [union_formula, pair_formula]) (sort := SetSort.set) (eigen := element) (body :=
-        Formula.openAt SetSort.set 0 (x#element) result_body) (by
-        intro formula hFormula
-        cases hFormula) (by
-        intro formula hFormula
-        rcases List.mem_cons.mp hFormula with rfl | hFormula
-        · exact hElementFreshUnion
-        · rcases List.mem_cons.mp hFormula with rfl | hFormula
-          · exact hElementFreshPair
-          · exact False.elim (List.not_mem_nil hFormula))
-      hPointOpened
-  simpa [pair_formula, union_formula,
-    binary_union_spec, result_body,
-    Formula.closeFreeAt_openAt
-      SetSort.set element 0 result_body
-      hElementFreshResult] using hGeneralized
+            ((element ∈ₘ left.weakenFree SetSort.set) :: Θ) ⊢ₘ[T]
+              (left.weakenFree SetSort.set ∈ₘ
+                  pair.weakenFree SetSort.set) ↔ₘ
+                ((left.weakenFree SetSort.set ≐ₘ
+                    left.weakenFree SetSort.set) ∨ₘ
+                  (left.weakenFree SetSort.set ≐ₘ
+                    right.weakenFree SetSort.set)) := by
+          simpa [pair_member_condition] using! hPairAtRaw
+        have hLeftInPair := FirstOrder.Derives.iff_elim_right hPairAt
+          (FirstOrder.Derives.disj_intro_left
+            (Metatheory.Derives.equality_refl
+              (T := T)
+              (Γ := (element ∈ₘ left.weakenFree SetSort.set) :: Θ)
+              (left.weakenFree SetSort.set)))
+        apply FirstOrder.Derives.exists_intro
+          (left.weakenFree SetSort.set)
+        simpa [union_witness_condition] using!
+          FirstOrder.Derives.conj_intro hLeftInPair hElementInLeft
+      · have hElementInRight :
+            ((element ∈ₘ right.weakenFree SetSort.set) :: Θ) ⊢ₘ[T]
+              element ∈ₘ right.weakenFree SetSort.set :=
+          FirstOrder.Derives.assumption List.mem_cons_self
+        have hPairBranch :
+            ((element ∈ₘ right.weakenFree SetSort.set) :: Θ) ⊢ₘ[T]
+              (pair_spec left right pair).weakenFree SetSort.set :=
+          FirstOrder.Derives.context_weaken_cons
+            (assumption := element ∈ₘ right.weakenFree SetSort.set)
+            (FirstOrder.Derives.context_weaken_cons
+              (assumption := choice) hPairWeak)
+        have hPairAtRaw := FirstOrder.Derives.forall_elim
+          (right.weakenFree SetSort.set) hPairBranch
+        rw [hBoundOne,
+          Formula.instantiateTop_renameMapped_abstractFreeTop_weakenFree]
+          at hPairAtRaw
+        have hPairAt :
+            ((element ∈ₘ right.weakenFree SetSort.set) :: Θ) ⊢ₘ[T]
+              (right.weakenFree SetSort.set ∈ₘ
+                  pair.weakenFree SetSort.set) ↔ₘ
+                ((right.weakenFree SetSort.set ≐ₘ
+                    left.weakenFree SetSort.set) ∨ₘ
+                  (right.weakenFree SetSort.set ≐ₘ
+                    right.weakenFree SetSort.set)) := by
+          simpa [pair_member_condition] using! hPairAtRaw
+        have hRightInPair := FirstOrder.Derives.iff_elim_right hPairAt
+          (FirstOrder.Derives.disj_intro_right
+            (Metatheory.Derives.equality_refl
+              (T := T)
+              (Γ := (element ∈ₘ right.weakenFree SetSort.set) :: Θ)
+              (right.weakenFree SetSort.set)))
+        apply FirstOrder.Derives.exists_intro
+          (right.weakenFree SetSort.set)
+        simpa [union_witness_condition] using!
+          FirstOrder.Derives.conj_intro hRightInPair hElementInRight
+    exact FirstOrder.Derives.iff_elim_right hUnionAt' hExists
+
 /-- 二元并项满足成员析取规格。 -/
-theorem binary_union_term_spec_derives (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[binary_union_operator_theory]
-      binary_union_spec
-        left right (left ∪ₘ right) := by
-  let pair := unordered_pair_term left right
-  let union := binary_union_term left right
-  have hPair :
-      Term.Admissible pair SetSort.set :=
-    unordered_pair_term_admissible
-      left right hLeft hRight
-  have hUnion :
-      Term.Admissible union SetSort.set :=
-    binary_union_term_admissible
-      left right hLeft hRight
+theorem binary_union_term_spec_derives
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[binary_union_operator_theory]
+      binary_union_spec left right (left ∪ₘ right) := by
+  let pair : SetOpenTerm free := {left, right}ₘ
+  let union : SetOpenTerm free := left ∪ₘ right
   have hPairSpec :
-      ⊢ₘ[binary_union_operator_theory]
+      Γ ⊢ₘ[binary_union_operator_theory]
         pair_spec left right pair :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        pairing_operator_theory_subset_binary_union_operator_theory
-          hFormula) (by
-        simpa [pair] using
-          unordered_pair_term_spec_derives
-            left right hLeft hRight)
+    FirstOrder.Derives.theory_weaken
+      pairing_operator_theory_subset_binary_union_operator_theory
+      (by simpa [pair] using
+        (unordered_pair_term_spec_derives (Γ := Γ) left right))
   have hUnionEqSpec :
-      ⊢ₘ[binary_union_operator_theory] (union ≐ₘ ⋃ₘ pair) ↔ₘ
-          union_spec pair union :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        union_operator_theory_subset_binary_union_operator_theory
-          hFormula) (union_eq_iff_spec pair union hPair hUnion)
+      Γ ⊢ₘ[binary_union_operator_theory]
+        (union ≐ₘ ⋃ₘ pair) ↔ₘ union_spec pair union :=
+    FirstOrder.Derives.theory_weaken
+      union_operator_theory_subset_binary_union_operator_theory
+      (union_eq_iff_spec (Γ := Γ) pair union)
   have hDefinition :
-      ⊢ₘ[binary_union_operator_theory]
+      Γ ⊢ₘ[binary_union_operator_theory]
         union ≐ₘ ⋃ₘ pair := by
     simpa [union, pair] using
-      binary_union_term_eq_union_pair_derives
-        left right hLeft hRight
-  have hUnionSpec :
-      ⊢ₘ[binary_union_operator_theory]
-        union_spec pair union :=
-    FirstOrder.Derives.iffElimRight
-      hUnionEqSpec hDefinition
-  have hBridge :
-      ⊢ₘ[binary_union_operator_theory]
-        pair_spec left right pair ⟶ₘ
-          union_spec pair union ⟶ₘ
-            binary_union_spec left right union :=
-    FirstOrder.Derives.of_empty (pair_union_spec_implies_binary_union_spec
-        left right pair union
-        hLeft hRight hPair hUnion)
+      (binary_union_term_eq_union_pair_derives
+        (Γ := Γ) left right)
+  have hUnionSpec := FirstOrder.Derives.iff_elim_left
+    hUnionEqSpec hDefinition
+  have hBridge := pair_union_spec_implies_binary_union_spec
+    (T := binary_union_operator_theory) (Γ := Γ)
+    left right pair union
   simpa [union] using
-    FirstOrder.Derives.impElim (FirstOrder.Derives.impElim
-        hBridge hPairSpec)
+    FirstOrder.Derives.imp_elim
+      (FirstOrder.Derives.imp_elim hBridge hPairSpec)
       hUnionSpec
+
 /-- 两个参数的已证明等式可组合为二元并项等式。 -/
 theorem binary_union_term_congr_of_equalities
-    {Γ : Context signature} (left_first right_first left_second right_second : SetTerm) (hLeftFirst : Term.Admissible left_first SetSort.set)
-    (hRightFirst : Term.Admissible right_first SetSort.set) (hLeftSecond : Term.Admissible left_second SetSort.set)
-    (hRightSecond : Term.Admissible right_second SetSort.set) (hFirstEquality :
-      Γ ⊢ₘ[binary_union_operator_theory]
-        left_first ≐ₘ right_first) (hSecondEquality :
-      Γ ⊢ₘ[binary_union_operator_theory]
-        left_second ≐ₘ right_second) :
-    Γ ⊢ₘ[binary_union_operator_theory] (left_first ∪ₘ left_second) ≐ₘ (right_first ∪ₘ right_second) := by
-  exact Metatheory.Derives.binary_term_constructor_congr_of_equalities
-    binary_union_term
-    binary_union_term_admissible
-    (by intros; simp [Term.substituteFree])
-    left_first right_first left_second right_second
-    hLeftFirst hRightFirst hLeftSecond hRightSecond
-    hFirstEquality hSecondEquality
-/-- 两组自由变量等式推出对应二元并项相等。 -/
-theorem binary_union_term_congr (left_first right_first left_second right_second : FreeVarId) :
-    ⊢ₘ[binary_union_operator_theory] (x#left_first ≐ₘ x#right_first) ⟶ₘ ((x#left_second ≐ₘ x#right_second) ⟶ₘ ((x#left_first ∪ₘ x#left_second) ≐ₘ
-            (x#right_first ∪ₘ x#right_second))) := by
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  exact binary_union_term_congr_of_equalities (Γ :=
-      [x#left_second ≐ₘ x#right_second,
-        x#left_first ≐ₘ x#right_first]) (x#left_first) (x#right_first) (x#left_second) (x#right_second) (set_variable_admissible left_first)
-    (set_variable_admissible right_first)
-    (set_variable_admissible left_second)
-    (set_variable_admissible right_second)
-    (.assumption (by simp)) (.assumption (by simp))
-/-- 文献二元并候选图刻画的三变量全称闭包。 -/
-theorem binary_union_eq_iff_descriptor_forall (left right candidate : FreeVarId) :
-    ⊢ₘ[binary_union_operator_theory]
-      ∀ₘ[SetSort.set, left],
-        ∀ₘ[SetSort.set, right],
-          ∀ₘ[SetSort.set, candidate], (x#candidate ≐ₘ (x#left ∪ₘ x#right)) ↔ₘ
-              binary_union_descriptor (x#left) (x#right) (x#candidate) := by
-  have hOpen :
-      ⊢ₘ[binary_union_operator_theory] (x#candidate ≐ₘ (x#left ∪ₘ x#right)) ↔ₘ
-          binary_union_descriptor (x#left) (x#right) (x#candidate) :=
-    binary_union_eq_iff_descriptor (x#left) (x#right) (x#candidate) (set_variable_admissible left) (set_variable_admissible right)
-      (set_variable_admissible candidate)
-  derive_close (left, right, candidate) using hOpen
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (leftFirst rightFirst leftSecond rightSecond : SetOpenTerm free)
+    (hFirst : Γ ⊢ₘ[T] leftFirst ≐ₘ rightFirst)
+    (hSecond : Γ ⊢ₘ[T] leftSecond ≐ₘ rightSecond) :
+    Γ ⊢ₘ[T]
+      (leftFirst ∪ₘ leftSecond) ≐ₘ
+        (rightFirst ∪ₘ rightSecond) := by
+  let firstContext : SetTerm [SetSort.set] free :=
+    (.bvar .here : SetTerm [SetSort.set] free) ∪ₘ
+      leftSecond.weakenBound SetSort.set
+  let secondContext : SetTerm [SetSort.set] free :=
+    rightFirst.weakenBound SetSort.set ∪ₘ
+      (.bvar .here : SetTerm [SetSort.set] free)
+  have hFirstContext (first : SetOpenTerm free) :
+      firstContext.instantiateTop first = first ∪ₘ leftSecond := by
+    change
+      (((Term.bvar .here : SetTerm [SetSort.set] free)
+          |>.instantiateTop first) ∪ₘ
+        ((leftSecond.weakenBound SetSort.set).instantiateTop first)) =
+          first ∪ₘ leftSecond
+    rw [Term.instantiateTop_bvar_here,
+      Term.instantiateTop_weakenBound]
+  have hSecondContext (second : SetOpenTerm free) :
+      secondContext.instantiateTop second = rightFirst ∪ₘ second := by
+    change
+      (((rightFirst.weakenBound SetSort.set).instantiateTop second) ∪ₘ
+        ((Term.bvar .here : SetTerm [SetSort.set] free)
+          |>.instantiateTop second)) = rightFirst ∪ₘ second
+    rw [Term.instantiateTop_weakenBound,
+      Term.instantiateTop_bvar_here]
+  have hMiddle :
+      firstContext.instantiateTop rightFirst =
+        secondContext.instantiateTop leftSecond :=
+    (hFirstContext rightFirst).trans
+      (hSecondContext leftSecond).symm
+  have hResult :=
+    Metatheory.Derives.term_context_pair_congr_of_equalities
+      (T := T) (Γ := Γ) firstContext secondContext hMiddle
+      hFirst hSecond
+  rw [hFirstContext leftFirst, hSecondContext rightSecond] at hResult
+  exact hResult
+
+/-- 两组参数等式推出对应二元并项相等。 -/
+theorem binary_union_term_congr
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (leftFirst rightFirst leftSecond rightSecond : SetOpenTerm free) :
+    Γ ⊢ₘ[T]
+      (leftFirst ≐ₘ rightFirst) ⟶ₘ
+        ((leftSecond ≐ₘ rightSecond) ⟶ₘ
+          ((leftFirst ∪ₘ leftSecond) ≐ₘ
+            (rightFirst ∪ₘ rightSecond))) := by
+  apply FirstOrder.Derives.imp_intro
+  apply FirstOrder.Derives.imp_intro
+  exact binary_union_term_congr_of_equalities
+    leftFirst rightFirst leftSecond rightSecond
+    (FirstOrder.Derives.assumption (by simp))
+    (FirstOrder.Derives.assumption List.mem_cons_self)
+
 end BasicSetTheory
 end Nonlogical
 end FirstOrder

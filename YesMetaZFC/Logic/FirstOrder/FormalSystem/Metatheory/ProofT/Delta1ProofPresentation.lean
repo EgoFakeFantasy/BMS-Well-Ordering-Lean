@@ -1,16 +1,14 @@
-import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.CheckedCompleteness
-import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.RosserFinite
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.IntrinsicQuotation
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.Hierarchy
 
 /-!
-# `ProofT` 的可判定证明表示
+# `ProofT` 的直接证明表示
 
-该接口包装任意 Hilbert 理论枚举的 checked replay，并要求调用方把 replay 的成功
-与失败分别内部化到同一个对象证明谓词。
-
-这里的“`Delta1`”指标准自然数上的可计算判定及其逐点正负表示。形式化的 Lévy
-层级接口位于 `ProofT.Hierarchy`；只有另行给出 `Delta0ProofGraph` 并把它与本
-presentation 的 replay 关系接通后，才能宣称得到语法意义上的 `Δ₁` proof graph。
-canonical checked 关系要求目标公式正好是 replay 结果末行。
+证明码检查器直接作用于内在闭句。quotation 保留当前 AST 的全部构造子，
+不经过旧 Hilbert 化。闭句的排序、作用域和 quotation 结果由类型与
+总函数保证；对象侧只保存一个 `Delta0ProofGraph` 以及检查器的正负表示合同。
+旧的 Hilbert 化 replay、`Option` quotation、`Admissible` 和自由变量编号不再进入
+接口。
 -/
 
 namespace YesMetaZFC
@@ -22,88 +20,89 @@ namespace ProofT
 open Nonlogical.BasicSetTheory
 open scoped Nonlogical.BasicSetTheory.Symbols
 open scoped Symbols
-open GodelQuotation
-open Rosser
+open QuineEncoding
 
 set_option autoImplicit false
 
-/--
-理论 `Thilbert` 的外部 checked replay 与理论 `Traw` 中对象证明谓词之间的表示合同。
-
-该结构只保存 Rosser 终局实际消费的能力：replay 可靠性与完备性由枚举器导出；
-对象侧只需交付真实 quotation 上的存在正表示和逐码负表示。
--/
+/-! 证明码检查器与对象证明图的直接表示合同。 -/
 structure Delta1ProofPresentation
     (Traw Thilbert : SetTheory) where
-  enumeration :
-    ProofCode.HilbertTheoryEnumeration Thilbert
-  hilbert_closed :
-    ∀ formula, Thilbert formula →
-      Thilbert (Formula.hilbertize SetSort.set formula)
-  verifier : ObjectCertificateVerifier
-  base : FreeVarId
-  realize :
-    ∀ {formula : SetFormula} {code : SetTerm},
-      GodelQuotation.Numbered.quote? formula = some code →
-      HilbertDerives Thilbert formula →
-      ∃ proofCode,
-        Derives Traw [] (
-          proof_condition
-            verifier (numₘ(proofCode)) code base)
-  reject :
-    ∀ (proofCode : Nat) {formula : SetFormula} {code : SetTerm},
-      Formula.Admissible formula →
-      GodelQuotation.Numbered.quote? formula = some code →
-      ¬ fs_terminal_checked_hilbertized_proof_code_for
-          enumeration proofCode formula →
-      Derives Traw [] (
-        ¬ₘ proof_condition
-          verifier (numₘ(proofCode)) code base)
+  graph : Delta0ProofGraph
+  checked : Nat → SetSentence → Bool
+  checked_sound :
+    ∀ {proofCode : Nat} {formula : SetSentence},
+      checked proofCode formula = true →
+        Derives Thilbert [] formula
+  checked_complete :
+    ∀ {formula : SetSentence},
+      Derives Thilbert [] formula →
+        ∃ proofCode, checked proofCode formula = true
+  condition_positive :
+    ∀ {proofCode : Nat} {formula : SetSentence},
+      checked proofCode formula = true →
+        Derives Traw []
+          (graph.condition
+            (numₘ(proofCode))
+            (IntrinsicQuotation.quote formula))
+  condition_negative :
+    ∀ {proofCode : Nat} {formula : SetSentence},
+      checked proofCode formula = false →
+        Derives Traw []
+          (¬ₘ graph.condition
+            (numₘ(proofCode))
+          (IntrinsicQuotation.quote formula))
 
 namespace Delta1ProofPresentation
 
-/-- presentation 所固定的精确末行 checked 证明码关系。 -/
-def checked
-    {Traw Thilbert : SetTheory}
-  (P : Delta1ProofPresentation Traw Thilbert)
-    (proofCode : Nat) (formula : SetFormula) : Prop :=
-  fs_terminal_checked_hilbertized_proof_code_for
-    P.enumeration proofCode formula
+variable {Traw Thilbert : SetTheory}
 
-/-- checked replay 成功给出 Hilbert 化目标的真实推导。 -/
-theorem checked_sound
-    {Traw Thilbert : SetTheory}
-    (P : Delta1ProofPresentation Traw Thilbert)
-    {proofCode : Nat} {formula : SetFormula}
-    (hChecked : P.checked proofCode formula) :
-      HilbertDerives Thilbert
-      (Formula.hilbertize SetSort.set formula) :=
-  fs_terminal_checked_hilbertized_proof_code_for_sound
-    P.enumeration hChecked
-
-/-- 每个 Hilbert 可推导公式都有一个被 presentation 接受的 checked proof code。 -/
-theorem checked_complete
-    {Traw Thilbert : SetTheory}
-    (P : Delta1ProofPresentation Traw Thilbert)
-    {formula : SetFormula}
-    (hDerives : HilbertDerives Thilbert formula) :
-    ∃ proofCode, P.checked proofCode formula :=
-  fs_terminal_checked_hilbertized_proof_code_for_exists_of_derives
-    P.enumeration P.hilbert_closed hDerives
-
-/--
-presentation 的 Hilbert 理论吸收自身的再次 Hilbert 化。
-
-这是 `hilbert_closed` 的理论包含形式，供整棵 Hilbert 推导再次编译时使用。
--/
-theorem hilbertized_subset
-    {Traw Thilbert : SetTheory}
+def condition
     (P : Delta1ProofPresentation Traw Thilbert) :
-    ∀ candidate,
-      Theory.hilbertize SetSort.set Thilbert candidate →
-        Thilbert candidate := by
-  rintro candidate ⟨formula, hFormula, rfl⟩
-  exact P.hilbert_closed formula hFormula
+    FormulaTemplate.Binary :=
+  P.graph.condition
+
+def code
+    (P : Delta1ProofPresentation Traw Thilbert)
+    (proofCode : Nat) (formula : SetSentence) : SetSentence :=
+  P.graph.condition
+    (numₘ(proofCode))
+    (IntrinsicQuotation.quote formula)
+
+theorem checked_true_of_derives
+    (P : Delta1ProofPresentation Traw Thilbert)
+    {formula : SetSentence}
+    (hDerives : Derives Thilbert [] formula) :
+    ∃ proofCode, P.checked proofCode formula = true :=
+  P.checked_complete hDerives
+
+theorem sound
+    (P : Delta1ProofPresentation Traw Thilbert)
+    {proofCode : Nat} {formula : SetSentence}
+    (hChecked : P.checked proofCode formula = true) :
+    Derives Thilbert [] formula :=
+  P.checked_sound hChecked
+
+theorem complete
+    (P : Delta1ProofPresentation Traw Thilbert)
+    {formula : SetSentence}
+    (hDerives : Derives Thilbert [] formula) :
+    ∃ proofCode, P.checked proofCode formula = true :=
+  P.checked_complete hDerives
+
+theorem realize
+    (P : Delta1ProofPresentation Traw Thilbert)
+    {formula : SetSentence}
+    (hDerives : Derives Thilbert [] formula) :
+    ∃ proofCode, Derives Traw [] (P.code proofCode formula) := by
+  rcases P.checked_complete hDerives with ⟨proofCode, hChecked⟩
+  exact ⟨proofCode, P.condition_positive hChecked⟩
+
+theorem reject
+    (P : Delta1ProofPresentation Traw Thilbert)
+    {proofCode : Nat} {formula : SetSentence}
+    (hChecked : P.checked proofCode formula = false) :
+    Derives Traw [] (¬ₘ P.code proofCode formula) :=
+  P.condition_negative hChecked
 
 end Delta1ProofPresentation
 end ProofT

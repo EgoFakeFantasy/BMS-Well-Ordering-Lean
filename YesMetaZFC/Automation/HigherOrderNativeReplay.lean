@@ -1,3 +1,5 @@
+import YesMetaZFC.Automation.CoreNormalForm.HigherOrderProjectionSoundness
+import YesMetaZFC.Automation.HOAvatarSoundness
 import YesMetaZFC.Automation.SourcePreprocessing
 import YesMetaZFC.Automation.HOExtensionalWitnessRegistry
 import YesMetaZFC.Automation.HODAGCertificate.LinearReplay
@@ -57,7 +59,7 @@ structure Checked (sourceProblem : SourcePreprocessing.Problem)
       payload.clauses).initialClauses.all HODAGCertificate.Clause.check = true
   h_supported : dag.avatarSoundnessSupported = true
 
-def Checked.ofCheck
+theorem Checked.ofCheck
     {sourceProblem : SourcePreprocessing.Problem}
     {payload : Payload} {dag : DAG}
     (hCheck : check sourceProblem payload dag = true) :

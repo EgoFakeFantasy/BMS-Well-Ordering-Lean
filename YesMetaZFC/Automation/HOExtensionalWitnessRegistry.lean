@@ -11,6 +11,8 @@ namespace HOExtensionalWitnessRegistry
 open HODAGCertificate
 open Logic.HigherOrder
 universe u v w
+-- 各字段（或其签名别名）保留独立宇宙；结构类型的 max 不是冗余参数。
+set_option linter.checkUnivs false in
 abbrev Signature := HODAGCertificate.Signature
 abbrev SimpleType (σ : Signature) := HODAGCertificate.SimpleType σ
 abbrev Term (σ : Signature) := HODAGCertificate.Term σ

@@ -1,3 +1,7 @@
+import YesMetaZFC.Automation.RelationalDefinitions
+import YesMetaZFC.Automation.SemanticTransfer
+import YesMetaZFC.Automation.TotalizedGraph
+import YesMetaZFC.Automation.RelationalExpansion
 import YesMetaZFC.Automation.CoreSyntax
 import YesMetaZFC.Automation.CoreNormalForm
 import YesMetaZFC.Automation.CoreNormalForm.FoolLambdaSoundness
@@ -21,8 +25,8 @@ import YesMetaZFC.Automation.CoreNormalForm.HigherOrderProjectionSoundness
 import YesMetaZFC.Automation.HORefutationProvider
 import YesMetaZFC.Automation.AvatarSplit
 import YesMetaZFC.Automation.Avatar
-import YesMetaZFC.Automation.AvatarSoundness
-import YesMetaZFC.Automation.AvatarRegistrySoundness
+import YesMetaZFC.Automation.DAGCertificate.AvatarRegistry
+import YesMetaZFC.Automation.DAGCertificate.IntrinsicReplay
 import YesMetaZFC.Automation.Data
 import YesMetaZFC.Automation.Resolution
 import YesMetaZFC.Automation.Resolution.CertificateSlice
@@ -84,10 +88,11 @@ sort 保持、source 解释保持以及 FOOL/lambda 与外延合同保持。
 checked HO-AVATAR DAG 后端出口。
 `Automation.AvatarSplit` 放置搜索层与 DAG checker 共用的 component partition 核心。
 `Automation.Avatar` 放置常驻 CDCL 与 guarded first-order saturation 的双核协调器。
-`Automation.AvatarSoundness` 放置 component/split selector 语义、fixed-bound-stack
-整图 soundness 与 residual CDCL 空根 contradiction。
-`Automation.AvatarRegistrySoundness` 从 checked DAG 全局构造 selector registry、
-valuation 与两类 selector 语义合同，并闭合 AVATAR 主线后端出口。
+`Automation.AvatarSoundness` 保留旧 fixed-bound-stack AVATAR 数学层，供尚未迁移的
+FO/HO 消费者继续使用；新的 typed DAG replay 不再从该层复制桥接证明。
+`Automation.DAGCertificate.AvatarRegistry` 复算 selector registry 的有限结构合同；
+`Automation.DAGCertificate.IntrinsicReplay.AvatarSemantics` 在统一 free registry 下提供
+component/split 语义，并由 `HostRules` 直接消费 AVATAR 后端出口。
 `Automation.LogicSoundness` 放置新 `Logic` 语义核对应的零层级深嵌入 soundness 合同。
 `Automation.Completeness` 为实际 `SearchSignature` 建立公平 Henkin 调度，并把
 free-closed checked backend success 经强完备性回收到公共 `Derives`。

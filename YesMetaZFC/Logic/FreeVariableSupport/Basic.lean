@@ -1,9 +1,11 @@
 import YesMetaZFC.Logic.Syntax
 
 /-!
-# 一阶自由变量支持的纯语法层
+# 上下文内在的自由变量支持
 
-本模块只计算项与公式的有限自由变量支持，不引入结构、环境或满足关系。
+自由变量不再由全局自然数命名，而是由当前 free 上下文中的类型化位置确定。因此支持
+也直接表示成该有限上下文上的布尔掩码：不存在的变量位置无法进入接口，成员判断保持
+可计算，环境覆盖不需要经典选择。
 -/
 
 namespace YesMetaZFC
@@ -12,90 +14,107 @@ namespace FirstOrder
 
 universe u v w
 
-/-- 自由变量由 sort 与稳定编号共同确定。 -/
-abbrev FreeVariable (σ : Signature.{u, v, w}) :=
-  σ.SortSymbol × FreeVarId
+/-- free 上下文上的有限可计算支持。 -/
+abbrev FreeSupport (σ : Signature.{u, v, w}) (free : SortContext σ) :=
+  Fin free.length → Bool
 
-/-- 有限自由变量支持。重复成员不影响后续按成员关系消费的接口。 -/
-abbrev FreeVariable.Support (σ : Signature.{u, v, w}) :=
-  List (FreeVariable σ)
+namespace FreeSupport
 
-namespace FreeVariable.Support
+/-- 空支持。 -/
+def empty {σ : Signature.{u, v, w}} {free : SortContext σ} :
+    FreeSupport σ free :=
+  fun _ => false
 
-/-- 两个自由变量支持不相交。 -/
-def Disjoint {σ : Signature.{u, v, w}}
-    (left right : FreeVariable.Support σ) : Prop :=
-  ∀ fv, fv ∈ left → fv ∈ right → False
+/-- 只包含一个上下文位置的支持。 -/
+def singleton {σ : Signature.{u, v, w}} {free : SortContext σ}
+    {sort : σ.SortSymbol} (entry : Variable free sort) :
+    FreeSupport σ free :=
+  fun position => decide (position = entry.position)
+
+/-- 两个支持的并。 -/
+def union {σ : Signature.{u, v, w}} {free : SortContext σ}
+    (left right : FreeSupport σ free) : FreeSupport σ free :=
+  fun position => left position || right position
+
+/-- 一个位置属于支持。 -/
+def Contains {σ : Signature.{u, v, w}} {free : SortContext σ}
+    (support : FreeSupport σ free) (position : Fin free.length) : Prop :=
+  support position = true
+
+/-- 左支持包含于右支持。 -/
+def Subset {σ : Signature.{u, v, w}} {free : SortContext σ}
+    (left right : FreeSupport σ free) : Prop :=
+  ∀ position, left.Contains position → right.Contains position
+
+/-- 两个支持不相交。 -/
+def Disjoint {σ : Signature.{u, v, w}} {free : SortContext σ}
+    (left right : FreeSupport σ free) : Prop :=
+  ∀ position, left.Contains position → right.Contains position → False
+
+@[simp] theorem contains_empty {σ : Signature.{u, v, w}}
+    {free : SortContext σ} (position : Fin free.length) :
+    ¬ (empty : FreeSupport σ free).Contains position := by
+  simp [Contains, empty]
+
+@[simp] theorem contains_singleton_self {σ : Signature.{u, v, w}}
+    {free : SortContext σ} {sort : σ.SortSymbol}
+    (entry : Variable free sort) :
+    (singleton entry).Contains entry.position := by
+  simp [Contains, singleton]
+
+@[simp] theorem contains_union {σ : Signature.{u, v, w}}
+    {free : SortContext σ} {left right : FreeSupport σ free}
+    {position : Fin free.length} :
+    (union left right).Contains position ↔
+      left.Contains position ∨ right.Contains position := by
+  simp [Contains, union, Bool.or_eq_true]
 
 /-- 支持不交关系是对称的。 -/
 theorem Disjoint.symm {σ : Signature.{u, v, w}}
-    {left right : FreeVariable.Support σ}
-    (hDisjoint : Disjoint left right) :
-    Disjoint right left :=
-  fun fv hRight hLeft => hDisjoint fv hLeft hRight
+    {free : SortContext σ} {left right : FreeSupport σ free}
+    (hDisjoint : Disjoint left right) : Disjoint right left :=
+  fun position hRight hLeft => hDisjoint position hLeft hRight
 
-end FreeVariable.Support
-
-namespace Term
+end FreeSupport
 
 mutual
-  /-- 项的自由变量支持。 -/
-  def freeSupport {σ : Signature.{u, v, w}} :
-      Term σ → FreeVariable.Support σ
-    | .var (.bvar ..) => []
-    | .var (.fvar sort id) => [(sort, id)]
-    | .app _ args => freeSupportList args
 
-  /-- 项列表的自由变量支持。 -/
-  def freeSupportList {σ : Signature.{u, v, w}} :
-      List (Term σ) → FreeVariable.Support σ
-    | [] => []
-    | term :: rest => freeSupport term ++ freeSupportList rest
+/-- 项的自由变量支持。 -/
+def Term.freeSupport {σ : Signature.{u, v, w}}
+    {bound free : SortContext σ} {sort : σ.SortSymbol} :
+    Term σ bound free sort → FreeSupport σ free
+  | .bvar _ => FreeSupport.empty
+  | .fvar entry => FreeSupport.singleton entry
+  | .app _ arguments => Arguments.freeSupport arguments
+
+/-- 异质参数列的自由变量支持。 -/
+def Arguments.freeSupport {σ : Signature.{u, v, w}}
+    {bound free : SortContext σ} {sorts : List σ.SortSymbol} :
+    Arguments σ bound free sorts → FreeSupport σ free
+  | .nil => FreeSupport.empty
+  | .cons term rest =>
+      FreeSupport.union term.freeSupport rest.freeSupport
+
 end
-
-/-- 项列表支持把 append 分解为两侧支持的 append。 -/
-@[simp]
-theorem freeSupportList_append {σ : Signature.{u, v, w}}
-    (left right : List (Term σ)) :
-    freeSupportList (left ++ right) =
-      freeSupportList left ++ freeSupportList right := by
-  induction left with
-  | nil =>
-      rfl
-  | cons head tail ih =>
-      simp [freeSupportList, ih, List.append_assoc]
-
-/-- 项属于项列表时，其自由变量支持嵌入整个列表的支持。 -/
-theorem mem_freeSupportList_of_mem {σ : Signature.{u, v, w}}
-    {term : Term σ} {terms : List (Term σ)}
-    (hTerm : term ∈ terms) {freeVariable : FreeVariable σ}
-    (hVariable : freeVariable ∈ freeSupport term) :
-    freeVariable ∈ freeSupportList terms := by
-  induction terms with
-  | nil =>
-      cases hTerm
-  | cons head tail ih =>
-      rcases List.mem_cons.mp hTerm with rfl | hTail
-      · simp [freeSupportList, hVariable]
-      · simp [freeSupportList, ih hTail]
-
-end Term
 
 namespace Formula
 
-/-- 公式的自由变量支持；locally nameless bound variable 不进入支持。 -/
-def freeSupport {σ : Signature.{u, v, w}} :
-    Formula σ → FreeVariable.Support σ
-  | .falsum => []
-  | .truth => []
-  | .rel _ args => Term.freeSupportList args
-  | .equal left right => Term.freeSupport left ++ Term.freeSupport right
-  | .neg φ => freeSupport φ
-  | .conj φ ψ => freeSupport φ ++ freeSupport ψ
-  | .disj φ ψ => freeSupport φ ++ freeSupport ψ
-  | .imp φ ψ => freeSupport φ ++ freeSupport ψ
-  | .iff φ ψ => freeSupport φ ++ freeSupport ψ
-  | .forallE _ body => freeSupport body
+/-- 公式的自由变量支持。 -/
+def freeSupport {σ : Signature.{u, v, w}}
+    {bound free : SortContext σ} :
+    Formula σ bound free → FreeSupport σ free
+  | .falsum => FreeSupport.empty
+  | .truth => FreeSupport.empty
+  | .rel _ arguments => arguments.freeSupport
+  | .equal left right =>
+      FreeSupport.union left.freeSupport right.freeSupport
+  | .neg body => freeSupport body
+  | .conj left right
+  | .disj left right
+  | .imp left right
+  | .iff left right =>
+      FreeSupport.union (freeSupport left) (freeSupport right)
+  | .forallE _ body
   | .existsE _ body => freeSupport body
 
 end Formula

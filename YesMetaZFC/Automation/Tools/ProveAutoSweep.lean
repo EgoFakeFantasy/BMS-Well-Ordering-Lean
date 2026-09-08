@@ -2,10 +2,12 @@ import Lean.Elab.Tactic.Meta
 import Lean.Parser.Module
 import Lean.Util.CollectAxioms
 import Lean.Util.Heartbeats
-import YesMetaZFC
+import YesMetaZFC.Automation.HostAvatar.Dispatch
 /-!
 # `prove_auto` 批量目标扫描器
 
+静态依赖只保留公共 tactic 入口；待扫描的完整证明库在运行时从 `.olean` 加载，
+避免启动时对元数学模块的大型闭式编码定义执行原生初始化。
 本工具只作为独立 `lake exe` 构建，不进入证明库的默认导入图。它从 `.olean`
 读取模块 import DAG 与声明原始顺序，在严格心跳预算下重建定理的 Π-上下文并运行
 `prove_auto`。成功证明必须在元状态回滚前完成依赖审计，避免目标自身、同模块后置

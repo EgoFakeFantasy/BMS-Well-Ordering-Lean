@@ -566,7 +566,7 @@ theorem rewriteRootFormula?_fool_sound {M : Model} (contract : FoolContract M) (
       rcases hStep with ⟨_, rfl⟩
       simp [SemanticallyEquivalent, Formula.Satisfies, Formula.eval]
 end Formula
-open Formula Term
+open _root_.YesMetaZFC.Automation.CoreSyntax.NormalForm.Semantics.Formula _root_.YesMetaZFC.Automation.CoreSyntax.NormalForm.Semantics.Term
 mutual
   theorem Formula.rewriteOnceFormula?_fool_sound {M : Model} (contract : FoolContract M) (bound : List CoreSort) (env : Env M) (hBound : Env.RespectsBound bound env) (hFree : Env.RespectsFree env) {source target :
       Formula} {rule : StepRule} (hSourceFragment : Formula.foolFragment source = true) (hTargetFragment : Formula.foolFragment target = true) (hSource : Formula.checkWith bound source = true) (hTarget :
@@ -1384,7 +1384,7 @@ theorem sound_of_foolCheck {M : Model} (contract : FoolContract M) (env : Env M)
               simp [TraceExpr.rewriteOnce?, hStep, TraceExpr.eq, SyntaxEq.formulaEq_eq_true] at hRewrite
               rcases hRewrite with ⟨_, hTarget⟩
               subst target
-              simpa [TraceExpr.check?, Formula.check?] using
+              exact
                 Formula.rewriteOnceFormula?_fool_sound contract [] env
                   hBound hFree hBeforeFragment hAfterFragment (by simpa [TraceExpr.check?, Formula.check?] using hBefore)
                     (by simpa [TraceExpr.check?, Formula.check?] using hAfter)

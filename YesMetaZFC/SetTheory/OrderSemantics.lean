@@ -75,12 +75,12 @@ theorem mem_well_order_sat_iff_d
   constructor
   · rintro ⟨hIrrefl, hTrans, hCompare, hLeast⟩
     refine ⟨⟨hIrrefl, hTrans, ?_⟩, ?_⟩
-    · simpa [Structure.SameMembers] using hCompare
+    · simpa [Structure.SameMembers] using! hCompare
     · rintro subset hSubset ⟨value, hValue⟩
       exact hLeast subset hSubset value hValue
   · rintro ⟨⟨hIrrefl, hTrans, hCompare⟩, hLeast⟩
     refine ⟨hIrrefl, hTrans, ?_, ?_⟩
-    · simpa [Structure.SameMembers] using hCompare
+    · simpa [Structure.SameMembers] using! hCompare
     · intro subset hSubset value hValue
       exact hLeast subset hSubset ⟨value, hValue⟩
 end Definitional.Project.Formula

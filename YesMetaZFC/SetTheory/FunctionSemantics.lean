@@ -187,7 +187,9 @@ theorem mem_iff_pairMember {ℳ : Structure.{u}}
         𝕀.Codes pair left right ∧
           ℳ.PairMember 𝕀 left right relation := by
   constructor
-  · prove_auto
+  · intro hMember
+    rcases hRelation pair hMember with ⟨left, right, hCode⟩
+    exact ⟨left, right, hCode, pair, hCode, hMember⟩
   · rintro ⟨left, right, hCode, encoded, hEncoded, hMember⟩
     have hEq := 𝕀.unique hCode hEncoded
     simpa [hEq] using hMember
@@ -219,7 +221,7 @@ theorem isSetFunction {ℳ : Structure.{u}}
       ℳ.IsRestrictionOf 𝕀 restriction function source) (hFunction : ℳ.IsSetFunction 𝕀 function) :
     ℳ.IsSetFunction 𝕀 restriction := by
   constructor
-  · prove_auto
+  · exact hRestriction.1
   · intro input first second hFirst hSecond
     apply hFunction.2 input first second
     · exact (hRestriction.2 input first).mp hFirst |>.2
@@ -275,7 +277,7 @@ theorem trans {ℳ : Structure.{u}}
       ℳ.IsRestrictionOf 𝕀 innerRestriction function inner) (hSubset : ∀ value, ℳ.mem value inner → ℳ.mem value outer) :
     ℳ.IsRestrictionOf 𝕀 innerRestriction outerRestriction inner := by
   constructor
-  · prove_auto
+  · exact hInner.1
   · intro input output
     constructor
     · intro hPair

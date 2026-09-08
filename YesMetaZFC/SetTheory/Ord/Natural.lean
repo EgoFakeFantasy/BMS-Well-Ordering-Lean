@@ -418,7 +418,8 @@ theorem exists_predecessor_of_mem_of_nonempty
       exact Or.inr ⟨predecessor, hPredecessor, hSuccessor⟩
   rcases hProperty number hNumberOmega with
     hEmpty | hSuccessor
-  · prove_auto
+  · rcases hNumberNonempty with ⟨member, hMember⟩
+    exact False.elim (hEmpty member hMember)
   · exact hSuccessor
 /-- 最小归纳集由隶属关系良序。 -/
 theorem membershipWellOrder {ℳ : Structure.{u}} (hZF : ℳ.Models SetTheory.ZF)
@@ -463,7 +464,8 @@ theorem isLimitOrdinal {ℳ : Structure.{u}} (hZF : ℳ.Models SetTheory.ZF)
     {ω : ℳ.Domain} (hω : ℳ.IsOmega ω) :
     ℳ.IsLimitOrdinal ω := by
   refine ⟨hω.isOrdinal hZF, ?_, ?_⟩
-  · prove_auto
+  · rcases hω.1.1 with ⟨empty, _, hEmptyOmega⟩
+    exact ⟨empty, hEmptyOmega⟩
   · intro predecessor hPredecessor
     rcases hω.1.2 predecessor hPredecessor with
       ⟨successor, hSuccessor, hSuccessorOmega⟩

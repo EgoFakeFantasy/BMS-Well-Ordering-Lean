@@ -1,15 +1,12 @@
 import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.NumeralArithmetic
+import YesMetaZFC.Logic.FirstOrder.FormalSystem.Metatheory.ProofT.Hierarchy
 import YesMetaZFC.Logic.FirstOrder.FormalSystem.ProofCode
 
 /-!
 # ProofT 的最小对象算术核心
 
-`ProofT.Core` 只记录 Rosser 有限比较真正消费的对象算术能力，不要求理论逐字包含
-quotation、有限序列、替换、分离、收集或幂集等具体定义层。
-
-当前集合论实现使用 von Neumann numeral 与成员关系表示自然数次序。这里要求的有限
-numeral 消去和标准边界切分均属于 PA 级算术强度；KPω 可以用 `Δ₀` 分离实现后者。
-quotation、对角化和证明图表示将在后续接口中建立于本核心之上。
+本模块只记录 Rosser 有限比较真正消费的对象算术能力。项和公式均采用内在上下文
+索引，码域的良构性、自由变量支撑以及替换交换律不再作为额外证明合同出现。
 -/
 
 namespace YesMetaZFC
@@ -27,23 +24,21 @@ set_option autoImplicit false
 /--
 只用空集与后继定义合同消去有限 numeral 成员关系。
 
-证明按外部 `bound` 归纳；它不依赖标准序列、函数编码或 quotation。调用方只需证明
-目标理论包含这两层最基本的定义扩张。
+证明按外部 `bound` 归纳；它不依赖对象理论中的自然数集合、quotation 或序列编码。
 -/
 theorem numeral_member_elim
     {T : SetTheory}
     (hEmpty :
-      ∀ formula,
+      ∀ {formula},
         empty_set_symbol_theory formula → T formula)
     (hSuccessor :
-      ∀ formula,
+      ∀ {formula},
         successor_operator_theory formula → T formula)
-    {Γ : Context signature}
+    {free : SetContext}
+    {Γ : Context signature free}
     (bound : Nat)
-    (point : SetTerm)
-    (conclusion : SetFormula)
-    (hPoint : Term.Admissible point SetSort.set)
-    (hConclusion : Formula.Admissible conclusion)
+    (point : SetOpenTerm free)
+    (conclusion : SetOpenFormula free)
     (hMember :
       Γ ⊢ₘ[T] point ∈ₘ numₘ(bound))
     (hBranch :
@@ -62,12 +57,10 @@ theorem numeral_member_elim
             (by simp)
             (FirstOrder.Derives.theory_weaken
               hEmpty
-              (empty_set_term_has_no_members
-                point hPoint))
-      exact FirstOrder.Derives.falsumElim
-        (FirstOrder.Derives.negElim
+              (empty_set_term_has_no_members point))
+      exact FirstOrder.Derives.falsum_elim
+        (FirstOrder.Derives.neg_elim
           hMember hNotMember)
-        (Formula.check_admissible_complete hConclusion)
   | succ bound ih =>
       have hMembershipIff :
           Γ ⊢ₘ[T]
@@ -80,32 +73,29 @@ theorem numeral_member_elim
           (by simp)
           (FirstOrder.Derives.theory_weaken
             hSuccessor
-            (by
-              simpa [successor_member_condition] using
-                successor_term_membership_iff
-                  (numₘ(bound)) point
-                  (finite_numeral_term_admissible bound)
-                  hPoint))
+            (successor_term_membership_iff
+              (Γ := [])
+              (numₘ(bound)) point))
       have hCases :
           Γ ⊢ₘ[T]
             (point ≐ₘ numₘ(bound)) ∨ₘ
               (point ∈ₘ numₘ(bound)) :=
-        FirstOrder.Derives.iffElimRight
+        FirstOrder.Derives.iff_elim_left
           hMembershipIff
           (by
             simpa [finite_numeral_term] using hMember)
-      apply FirstOrder.Derives.disjElim hCases
+      apply FirstOrder.Derives.disj_elim hCases
       · exact hBranch bound (Nat.lt_succ_self bound)
-      · let member : SetFormula :=
+      · let member : SetOpenFormula free :=
           point ∈ₘ numₘ(bound)
-        let Δ : Context signature := member :: Γ
+        let Δ : Context signature free := member :: Γ
         have hMember' :
             Δ ⊢ₘ[T] point ∈ₘ numₘ(bound) := by
           simpa [member, Δ] using
             (FirstOrder.Derives.assumption
               (T := T)
               (Γ := Δ)
-              (φ := member)
+              (formula := member)
               (by simp [Δ]))
         apply ih hMember'
         intro index hIndex
@@ -123,119 +113,110 @@ theorem numeral_member_elim
             (Nat.lt_trans hIndex
               (Nat.lt_succ_self bound)))
 
-/--
-有限证书反演所需的对象算术核心。
-
-该层只包含标准 numeral 判异、理论闭句边界与有限 numeral 穷尽；它不要求自然数
-切分，因而可直接服务于证书标签、有限 payload 和固定公理表的拒绝算法。
--/
+/-- 有限证书反演所需的对象算术核心。 -/
 structure FiniteCore (T : SetTheory) extends NumeralArithmetic T where
-  /-- 理论公理均为闭句，供对象全称化与存在消去的新鲜性检查使用。 -/
-  theory_sentence :
-    ∀ {formula : SetFormula},
-      T formula → Formula.Sentence formula
   /-- `point ∈ n` 可按全部标准 `i < n` 穷尽为 `point = i`。 -/
   member_elim :
-    ∀ {Γ : Context signature}
+    ∀ {free : SetContext}
+      {Γ : Context signature free}
       (bound : Nat)
-      (point : SetTerm)
-      (conclusion : SetFormula)
-      (_hPoint : Term.Admissible point SetSort.set)
-      (_hConclusion : Formula.Admissible conclusion),
+      (point : SetOpenTerm free)
+      (conclusion : SetOpenFormula free),
       Γ ⊢ₘ[T] point ∈ₘ numₘ(bound) →
       (∀ index, index < bound →
         (point ≐ₘ numₘ(index)) :: Γ
           ⊢ₘ[T] conclusion) →
       Γ ⊢ₘ[T] conclusion
 
-/--
-证书标签与配对 payload 反演所需的有限算术核心。
+/-- 有限对象算术宿主的最小公理合同。 -/
+structure ArithmeticSupport (T : SetTheory) where
+  contains_membership_irreflexive :
+    ∀ {formula},
+      membership_irreflexive_theory formula → T formula
+  contains_empty_set :
+    ∀ {formula},
+      empty_set_symbol_theory formula → T formula
+  contains_successor :
+    ∀ {formula},
+      successor_operator_theory formula → T formula
 
-相较 `FiniteCore` 只增加标准输入上的 Gödel 配对地面计算；不要求一般配对函数
-的总性，也不要求 Rosser 自然数切分。
--/
+namespace ArithmeticSupport
+
+/-- 最小算术宿主沿理论包含直接提升。 -/
+theorem theory_weaken
+    {T U : SetTheory}
+    (A : ArithmeticSupport T)
+    (hTU : Theory.Extends U T) :
+    ArithmeticSupport U where
+  contains_membership_irreflexive := fun hSentence =>
+    hTU (A.contains_membership_irreflexive hSentence)
+  contains_empty_set := fun hSentence =>
+    hTU (A.contains_empty_set hSentence)
+  contains_successor := fun hSentence =>
+    hTU (A.contains_successor hSentence)
+
+/-- 从最小算术宿主派生标准 numeral 判异接口。 -/
+theorem numeral_arithmetic
+    {T : SetTheory}
+    (A : ArithmeticSupport T) :
+    NumeralArithmetic T where
+  numeral_ne := fun hNe =>
+    ProofT.numeral_ne
+      A.contains_membership_irreflexive
+      A.contains_successor
+      hNe
+
+/-- 从最小算术宿主派生有限 numeral 穷尽核心。 -/
+theorem finite_core
+    {T : SetTheory}
+    (A : ArithmeticSupport T) :
+    FiniteCore T where
+  toNumeralArithmetic := A.numeral_arithmetic
+  member_elim := by
+    intro free Γ bound point conclusion hMember hBranch
+    exact ProofT.numeral_member_elim
+      A.contains_empty_set
+      A.contains_successor
+      bound point conclusion hMember hBranch
+
+end ArithmeticSupport
+
+/-- 证书标签与配对 payload 反演所需的有限算术核心。 -/
 structure CertificateCore (T : SetTheory) extends FiniteCore T where
   /-- 两个标准 numeral 的 Gödel 配对项计算为对应的标准 numeral。 -/
   pair_value :
     ∀ left right,
-      Derives T [] (
-        godel_pairₘ(⟨numₘ(left), numₘ(right)⟩ₘ) ≐ₘ
+      Derives T ([] : Context signature []) (
+        godel_pairₘ(numₘ(left), numₘ(right)) ≐ₘ
           numₘ(ProofCode.godel_pair_value left right))
 
-/--
-未知对象自然数坐标的 Gödel 配对反演核心。
-
-该层在有限证书算术上追加标准 numeral 的自然数性，以及沿一般配对等式得到左右
-坐标有限上界的能力。它只供需要反演未知 payload 的模块使用；普通标签拒绝仍停留
-在更弱的 `CertificateCore`。
--/
-structure PairingCore (T : SetTheory) extends CertificateCore T where
-  /-- 每个标准 numeral 都属于对象自然数。 -/
-  numeral_natural :
-    ∀ value,
-      Derives T [] (
-        numₘ(value) ∈ₘ ωₘ)
-  /-- 一般配对等式把左坐标压入配对值的后继。 -/
-  left_bound :
-    ∀ {Γ : Context signature}
-      (certificate left right : SetTerm),
-      Term.Admissible certificate SetSort.set →
-      Term.Admissible left SetSort.set →
-      Term.Admissible right SetSort.set →
-      Γ ⊢ₘ[T] left ∈ₘ ωₘ →
-      Γ ⊢ₘ[T] right ∈ₘ ωₘ →
-      Γ ⊢ₘ[T]
-        certificate ≐ₘ godel_pairₘ(⟨left, right⟩ₘ) →
-      Γ ⊢ₘ[T] left ∈ₘ Sₘ(certificate)
-  /-- 一般配对等式把右坐标压入配对值的后继。 -/
-  right_bound :
-    ∀ {Γ : Context signature}
-      (certificate left right : SetTerm),
-      Term.Admissible certificate SetSort.set →
-      Term.Admissible left SetSort.set →
-      Term.Admissible right SetSort.set →
-      Γ ⊢ₘ[T] left ∈ₘ ωₘ →
-      Γ ⊢ₘ[T] right ∈ₘ ωₘ →
-      Γ ⊢ₘ[T]
-        certificate ≐ₘ godel_pairₘ(⟨left, right⟩ₘ) →
-      Γ ⊢ₘ[T] right ∈ₘ Sₘ(certificate)
-
-/--
-Rosser 有限比较所需的完整对象算术核心。
-
-该结构在 `FiniteCore` 上只追加相对标准 numeral 的自然数切分；quotation、
-有限序列、替换和 schema 定义仍不进入公共签名。
--/
+/-- Rosser 有限比较所需的完整对象算术核心。 -/
 structure Core (T : SetTheory) extends FiniteCore T where
-  /-- 任意对象自然数相对标准 numeral `q` 可切分为 `≤ q` 或 `> q`。 -/
-  natural_cut :
-    ∀ (q : Nat)
-      (point : SetTerm),
-      Term.Admissible point SetSort.set →
+  /-- 对象语言中的证明码域。 -/
+  code_domain : Delta0CodeDomain
+  /-- 码域元素相对标准 numeral `q` 可切分为 `≤ q` 或 `> q`。 -/
+  code_cut :
+    ∀ {free : SetContext}
+      (q : Nat)
+      (point : SetOpenTerm free),
       Derives T [] (
-        (point ∈ₘ ωₘ) ⟶ₘ
+        code_domain.condition point ⟶ₘ
           ((point ∈ₘ Sₘ(numₘ(q))) ∨ₘ
             (numₘ(q) ∈ₘ point)))
 
 namespace Core
 
-/--
-在任意局部上下文中按标准边界消去对象自然数。
-
-较小分支只暴露标准等式 `point = i`，不泄漏有限 numeral 的成员见证；较大分支
-保留严格成员关系，正好对应 Rosser 的“存在更小右证明码”矛盾。
--/
+/-- 在任意局部上下文中按标准边界消去证明码域元素。 -/
 theorem cut_elim
     {T : SetTheory}
     (C : Core T)
-    {Γ : Context signature}
+    {free : SetContext}
+    {Γ : Context signature free}
     (q : Nat)
-    (point : SetTerm)
-    (conclusion : SetFormula)
-    (hPoint : Term.Admissible point SetSort.set)
-    (hConclusion : Formula.Admissible conclusion)
-    (hNatural :
-      Γ ⊢ₘ[T] point ∈ₘ ωₘ)
+    (point : SetOpenTerm free)
+    (conclusion : SetOpenFormula free)
+    (hDomain :
+      Γ ⊢ₘ[T] C.code_domain.condition point)
     (hLower :
       ∀ index, index ≤ q →
         (point ≐ₘ numₘ(index)) :: Γ
@@ -248,28 +229,27 @@ theorem cut_elim
       Γ ⊢ₘ[T]
         (point ∈ₘ Sₘ(numₘ(q))) ∨ₘ
           (numₘ(q) ∈ₘ point) :=
-    FirstOrder.Derives.impElim
+    FirstOrder.Derives.imp_elim
       (FirstOrder.Derives.context_weaken
         (Γ := [])
         (Δ := Γ)
         (by simp)
-        (C.natural_cut q point hPoint))
-      hNatural
-  apply FirstOrder.Derives.disjElim hCut
-  · let member : SetFormula :=
+        (C.code_cut q point))
+      hDomain
+  apply FirstOrder.Derives.disj_elim hCut
+  · let member : SetOpenFormula free :=
       point ∈ₘ Sₘ(numₘ(q))
-    let Δ : Context signature := member :: Γ
+    let Δ : Context signature free := member :: Γ
     have hMember :
         Δ ⊢ₘ[T] point ∈ₘ numₘ(q + 1) := by
       simpa [member, Δ, finite_numeral_term] using
         (FirstOrder.Derives.assumption
           (T := T)
           (Γ := Δ)
-          (φ := member)
+          (formula := member)
           (by simp [Δ]))
     apply C.member_elim
-      (q + 1) point conclusion
-      hPoint hConclusion hMember
+      (q + 1) point conclusion hMember
     intro index hIndex
     exact FirstOrder.Derives.context_weaken
       (Γ := (point ≐ₘ numₘ(index)) :: Γ)

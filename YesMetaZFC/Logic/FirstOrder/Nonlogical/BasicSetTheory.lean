@@ -17,6 +17,7 @@ import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.Function
 import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.FunctionProperties
 import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.NaturalDiscreteLinearOrder
 import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.FiniteOrdinal
+import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.NaturalNumeral
 import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.OrderOperators
 import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.WellOrderComparison
 import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.Ordinal

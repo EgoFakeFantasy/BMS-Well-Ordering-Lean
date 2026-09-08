@@ -22,7 +22,7 @@ structure CheckerSeal {α : Sort u} (check : α → Bool) (input : α) : Prop wh
 namespace CheckerSeal
 
 /-- 由内核已经核验的 checker 真值建立封印。 -/
-def ofTrue {α : Sort u} {check : α → Bool} {input : α}
+theorem ofTrue {α : Sort u} {check : α → Bool} {input : α}
     (checked : check input = true) : CheckerSeal check input :=
   ⟨checked⟩
 

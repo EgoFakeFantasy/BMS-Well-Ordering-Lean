@@ -1,20 +1,17 @@
 import Lean
+import YesMetaZFC.Automation.Request.GoalAttempt
 import YesMetaZFC.Automation.HostNormalization.CoreRules
 import YesMetaZFC.Automation.LogicSoundness
-import YesMetaZFC.Automation.SourcePreprocessing
-import YesMetaZFC.Automation.Completeness
 /-!
 # 新 `prove_auto` 请求层
-这一层是后 MF1 的新请求边界。自动化主线直接消费深嵌入
-`LogicSoundness.SetLevel.CheckedCertificate` / `CheckedValidCertificate`，不再把浅嵌入
-`BridgeResult` 当成默认入口。
+这一层只负责宿主上下文收集、provider 调度与内在闭句证书消费。预处理、原始搜索
+语法及其检查编译均由各后端负责，不再从请求层反向依赖 completeness 或 source
+bridge。
 当前入口：
 * `prove_auto CERT cert`
 * `prove_auto VALID cert`
 * `prove_auto BACKEND success`
-搜索器后续应产出上述 checked certificate 对象，或新的 proof-carrying
-`BackendSuccess` 对象。`BACKEND` 对语义目标直接回放 soundness；对
-`SearchSignature` 上的 free-closed `Derives` 目标则统一经过 Henkin 强完备性。
+搜索器应产出上述 checked certificate 对象或 proof-carrying `BackendSuccess` 对象。
 -/
 namespace YesMetaZFC
 open Lean Elab Tactic Meta
@@ -42,31 +39,6 @@ private def proofFitsMainGoal (proof : Expr) : TacticM Bool :=
     let goal ← getMainTarget
     let proofType ← inferType proof
     withTransparency .reducible <| isDefEq proofType goal
-/--
-从具体 SearchSignature 后端成功对象构造强完备性 `Derives` 证明。
-free-closed 条件由 problem 的可计算 checker 在内核中重放；不能计算闭合时返回 `none`。
--/
-private unsafe def backendDerivesProof? (success : Expr) :
-    TacticM (Option Expr) :=
-  withoutModifyingState do
-    try
-      let derivesFunction ← mkAppM
-        ``LogicSoundness.SetLevel.BackendSuccess.derives_of_freeClosed_check
-        #[success]
-      let derivesFunctionType ← withTransparency .reducible <|
-        whnf (← inferType derivesFunction)
-      match derivesFunctionType with
-      | .forallE _ hClosedType _ _ =>
-          let some hClosed ← proveProposition? hClosedType
-            | return none
-          let proof ← instantiateMVars (mkApp derivesFunction hClosed)
-          unless (← getMVarsNoDelayed proof).isEmpty do
-            return none
-          return some proof
-      | _ =>
-          return none
-    catch _ =>
-      return none
 /--
 `prove_auto` 的 Lean 元层资源作用域。
 继承调用点的心跳预算，使搜索、预处理与 CDCL 除了各自的 fuel 和 arena 预算外，
@@ -731,24 +703,11 @@ def ContextRequest.prepareProviderManaged (request : ContextRequest) : PreparedC
     explicitRaw := request.useFacts.size
   }
 }
-structure GoalAttempt (goal : Prop) where
-  closed : Bool
-  summary : String
-  sound : closed = true → goal
 namespace GoalAttempt
-def failure {goal : Prop} (summary : String) : GoalAttempt goal where
-  closed := false
-  summary := summary
-  sound := by simp
-/-- 已有目标证明直接形成闭合尝试；`closed` 投影不展开证明体。 -/
-def success {goal : Prop} (proof : goal) (summary : String) :
-    GoalAttempt goal where
-  closed := true
-  summary := summary
-  sound := fun _ => proof
-theorem soundOfClosed {goal : Prop} (request : GoalAttempt goal) (hClosed : request.closed = true) : goal :=
-  request.sound hClosed
-theorem backendSoundOfClosedAt (problem : SourcePreprocessing.DeepProblem) (attempt : LogicSoundness.SetLevel.BackendAttemptAt.{x} problem)
+theorem backendSoundOfClosedAt
+    {σ : LogicSoundness.SetLevel.Signature}
+    (problem : LogicSoundness.SetLevel.DeepProblem σ)
+    (attempt : LogicSoundness.SetLevel.BackendAttemptAt.{x} problem)
     (hClosed : LogicSoundness.SetLevel.BackendAttemptAt.closed attempt = true) :
     LogicSoundness.SetLevel.SemanticallyEntailsAt.{x}
       problem.theory problem.target := by
@@ -757,25 +716,14 @@ theorem backendSoundOfClosedAt (problem : SourcePreprocessing.DeepProblem) (atte
       exact success.sound
   | failure diagnostic =>
       simp [LogicSoundness.SetLevel.BackendAttemptAt.closed, hAttempt] at hClosed
-theorem backendSoundOfClosed (problem : SourcePreprocessing.DeepProblem) (attempt : LogicSoundness.SetLevel.BackendAttempt problem)
+theorem backendSoundOfClosed
+    {σ : LogicSoundness.SetLevel.Signature}
+    (problem : LogicSoundness.SetLevel.DeepProblem σ)
+    (attempt : LogicSoundness.SetLevel.BackendAttempt problem)
     (hClosed : attempt.closed = true) :
     LogicSoundness.SetLevel.SemanticallyEntails
       problem.theory problem.target :=
   backendSoundOfClosedAt problem attempt hClosed
-/--
-零 universe 的 closed backend attempt 在 free-closed problem 上给出 `Derives`。
--/
-theorem backendDerivesOfClosed (problem : SourcePreprocessing.DeepProblem) (attempt : LogicSoundness.SetLevel.BackendAttempt problem)
-    (hProblemClosed : DAGCertificate.DeepProblem.FreeClosed problem) (hClosed : attempt.closed = true) :
-    Logic.FirstOrder.Derives problem.theory [] problem.target := by
-  cases hAttempt : attempt with
-  | success success =>
-      exact
-        LogicSoundness.SetLevel.BackendSuccess.derives_of_freeClosed
-          success hProblemClosed
-  | failure diagnostic =>
-      simp [LogicSoundness.SetLevel.BackendAttempt.closed,
-        LogicSoundness.SetLevel.BackendAttemptAt.closed, hAttempt] at hClosed
 end GoalAttempt
 private structure ContextDispatchResult where
   attempt? : Option Expr := none
@@ -869,7 +817,10 @@ private unsafe def contextualAttempt? (request : ContextRequest) (preparedSeed? 
 class GoalRequest (goal : Prop) where
   run : GoalAttempt goal
 namespace GoalRequest
-@[reducible] def ofAttemptAt (problem : SourcePreprocessing.DeepProblem) (attempt : LogicSoundness.SetLevel.BackendAttemptAt.{x} problem) :
+@[reducible] def ofAttemptAt
+    {σ : LogicSoundness.SetLevel.Signature}
+    (problem : LogicSoundness.SetLevel.DeepProblem σ)
+    (attempt : LogicSoundness.SetLevel.BackendAttemptAt.{x} problem) :
     GoalRequest (LogicSoundness.SetLevel.SemanticallyEntailsAt.{x}
         problem.theory problem.target) where
   run := {
@@ -877,138 +828,13 @@ namespace GoalRequest
     summary := LogicSoundness.SetLevel.BackendAttemptAt.summary attempt
     sound := GoalAttempt.backendSoundOfClosedAt problem attempt
   }
-@[reducible] def ofAttempt (problem : SourcePreprocessing.DeepProblem) (attempt : LogicSoundness.SetLevel.BackendAttempt problem) :
+@[reducible] def ofAttempt
+    {σ : LogicSoundness.SetLevel.Signature}
+    (problem : LogicSoundness.SetLevel.DeepProblem σ)
+    (attempt : LogicSoundness.SetLevel.BackendAttempt problem) :
     GoalRequest (LogicSoundness.SetLevel.SemanticallyEntails
         problem.theory problem.target) :=
   ofAttemptAt problem attempt
-/--
-用 proof-free 状态及其与 checked attempt 的对齐证明建立 `Derives` 请求。
-provider 已有独立 closed 计算时应使用此入口，避免规约整份 proof-carrying attempt。
--/
-@[reducible] def ofDerivesAttemptWithStatus (problem : SourcePreprocessing.DeepProblem) (attempt : LogicSoundness.SetLevel.BackendAttempt problem)
-    (hProblemClosed : DAGCertificate.DeepProblem.FreeClosed problem) (closed : Bool) (summary : String) (hClosedStatus : attempt.closed = closed) :
-    GoalRequest (Logic.FirstOrder.Derives problem.theory [] problem.target) where
-  run := {
-    closed := closed
-    summary := summary
-    sound := fun hClosed =>
-      GoalAttempt.backendDerivesOfClosed
-        problem attempt hProblemClosed (hClosedStatus.trans hClosed)
-  }
-@[reducible] def ofDerivesAttempt (problem : SourcePreprocessing.DeepProblem) (attempt : LogicSoundness.SetLevel.BackendAttempt problem)
-    (hProblemClosed : DAGCertificate.DeepProblem.FreeClosed problem) :
-    GoalRequest (Logic.FirstOrder.Derives problem.theory [] problem.target) :=
-  ofDerivesAttemptWithStatus problem attempt hProblemClosed
-    attempt.closed attempt.summary rfl
-@[reducible] def ofDerivesAttemptCheck (problem : SourcePreprocessing.DeepProblem) (attempt : LogicSoundness.SetLevel.BackendAttempt problem)
-    (hProblemClosed : DAGCertificate.DeepProblem.freeClosed problem = true) :
-    GoalRequest (Logic.FirstOrder.Derives problem.theory [] problem.target) :=
-  ofDerivesAttempt problem attempt (DAGCertificate.DeepProblem.freeClosed_sound hProblemClosed)
-@[reducible] def ofDerivesSuccess (problem : SourcePreprocessing.DeepProblem) (success : LogicSoundness.SetLevel.BackendSuccess problem)
-    (hProblemClosed : DAGCertificate.DeepProblem.FreeClosed problem) :
-    GoalRequest (Logic.FirstOrder.Derives problem.theory [] problem.target) :=
-  ofDerivesAttemptWithStatus problem (.success success) hProblemClosed
-    true success.summary rfl
-@[reducible] def ofDerivesSuccessCheck (problem : SourcePreprocessing.DeepProblem) (success : LogicSoundness.SetLevel.BackendSuccess problem)
-    (hProblemClosed : DAGCertificate.DeepProblem.freeClosed problem = true) :
-    GoalRequest (Logic.FirstOrder.Derives problem.theory [] problem.target) :=
-  ofDerivesSuccess problem success (DAGCertificate.DeepProblem.freeClosed_sound hProblemClosed)
-@[reducible] def ofSourceAt (sourceProblem : SourcePreprocessing.Problem) (problem : SourcePreprocessing.DeepProblem)
-    (bridge : SourcePreprocessing.ProblemBridgeAt.{x} sourceProblem problem) (settings : SourcePreprocessing.Settings := {})
-    (avatarConfig : SourcePreprocessing.AvatarConfig := {}) (hoConfig : SourcePreprocessing.HOAvatarConfig := {}) (label : String := "bare prove_auto") :
-    GoalRequest (LogicSoundness.SetLevel.SemanticallyEntailsAt.{x}
-        problem.theory problem.target) :=
-  ofAttemptAt problem <|
-    SourcePreprocessing.runRoutedProviderAt
-      sourceProblem problem bridge settings avatarConfig hoConfig label
-@[reducible] def ofSource (sourceProblem : SourcePreprocessing.Problem) (problem : SourcePreprocessing.DeepProblem)
-    (bridge : SourcePreprocessing.ProblemBridge sourceProblem problem) (settings : SourcePreprocessing.Settings := {})
-    (avatarConfig : SourcePreprocessing.AvatarConfig := {}) (hoConfig : SourcePreprocessing.HOAvatarConfig := {}) (label : String := "bare prove_auto") :
-    GoalRequest (LogicSoundness.SetLevel.SemanticallyEntails
-        problem.theory problem.target) :=
-  ofSourceAt sourceProblem problem bridge settings avatarConfig hoConfig label
-@[reducible] def ofFoolSourceAt (sourceProblem : SourcePreprocessing.Problem) (problem : SourcePreprocessing.DeepProblem) (bridge :
-      SourcePreprocessing.FoolProblemBridgeAt.{x} sourceProblem problem) (settings : SourcePreprocessing.FoolSettings := {})
-    (avatarConfig : SourcePreprocessing.AvatarConfig := {}) (label : String := "bare FOOL prove_auto") :
-    GoalRequest (LogicSoundness.SetLevel.SemanticallyEntailsAt.{x}
-        problem.theory problem.target) :=
-  ofAttemptAt problem <|
-    Scheduler.bindAttemptAt (SourcePreprocessing.runFool sourceProblem settings) fun result =>
-        result.result.runAvatarWithBridgeAt problem (result.refutationBridgeAt bridge) avatarConfig label
-@[reducible] def ofFoolSource (sourceProblem : SourcePreprocessing.Problem) (problem : SourcePreprocessing.DeepProblem)
-    (bridge : SourcePreprocessing.FoolProblemBridge sourceProblem problem) (settings : SourcePreprocessing.FoolSettings := {})
-    (avatarConfig : SourcePreprocessing.AvatarConfig := {}) (label : String := "bare FOOL prove_auto") :
-    GoalRequest (LogicSoundness.SetLevel.SemanticallyEntails
-        problem.theory problem.target) :=
-  ofFoolSourceAt
-    sourceProblem problem bridge settings avatarConfig label
-/--
-从已经由内核拆分检查的 FOOL preprocessing 与 DAG 数据建立同 universe 请求。
-该入口只消费 `FoolReplay`，类型上不经过联合 FOOL/lambda 合同。
--/
-@[reducible] def ofPreparedFoolReplayAt (sourceProblem : SourcePreprocessing.Problem) (payload : SourcePreprocessing.Payload)
-    (problem : SourcePreprocessing.DeepProblem) (bridge :
-      SourcePreprocessing.FoolProblemBridgeAt.{x} sourceProblem problem) (search : SourcePreprocessing.SearchInput) (hReplay :
-      SourcePreprocessing.FoolReplay.check sourceProblem payload = true) (label : String) (data :
-      SearchReplayMaterial.SearchCertificateProvider.PreparedReplaySearchData (SourcePreprocessing.FoolReplay.searchInput
-          payload problem search label)) :
-    GoalRequest (LogicSoundness.SetLevel.SemanticallyEntailsAt.{x}
-        problem.theory problem.target) :=
-  let replay :=
-    SourcePreprocessing.FoolReplay.ofCheck sourceProblem payload hReplay
-  let success :=
-    data.backendSuccessAt (replay.refutationBridgeAt bridge)
-  ofAttemptAt problem (.success success)
-@[reducible] def ofPreparedFoolReplay (sourceProblem : SourcePreprocessing.Problem) (payload : SourcePreprocessing.Payload)
-    (problem : SourcePreprocessing.DeepProblem) (bridge : SourcePreprocessing.FoolProblemBridge sourceProblem problem)
-    (search : SourcePreprocessing.SearchInput) (hReplay :
-      SourcePreprocessing.FoolReplay.check sourceProblem payload = true) (label : String) (data :
-      SearchReplayMaterial.SearchCertificateProvider.PreparedReplaySearchData (SourcePreprocessing.FoolReplay.searchInput
-          payload problem search label)) :
-    GoalRequest (LogicSoundness.SetLevel.SemanticallyEntails
-        problem.theory problem.target) :=
-  ofPreparedFoolReplayAt
-    sourceProblem payload problem bridge search hReplay label data
-/--
-free-closed 搜索问题上的 prepared FOOL replay 直接产生 `Derives` 请求。
-后端成功先给出语义有效性，再统一消费当前 LN 核的强完备性定理。
--/
-@[reducible] def ofPreparedFoolReplayDerives (sourceProblem : SourcePreprocessing.Problem) (payload : SourcePreprocessing.Payload)
-    (problem : SourcePreprocessing.DeepProblem) (bridge : SourcePreprocessing.FoolProblemBridge sourceProblem problem)
-    (search : SourcePreprocessing.SearchInput) (hReplay :
-      SourcePreprocessing.FoolReplay.check sourceProblem payload = true) (label : String) (data :
-      SearchReplayMaterial.SearchCertificateProvider.PreparedReplaySearchData (SourcePreprocessing.FoolReplay.searchInput
-          payload problem search label)) (hProblemClosed : DAGCertificate.DeepProblem.FreeClosed problem) :
-    GoalRequest (Logic.FirstOrder.Derives problem.theory [] problem.target) :=
-  let replay :=
-    SourcePreprocessing.FoolReplay.ofCheck sourceProblem payload hReplay
-  let success : LogicSoundness.SetLevel.BackendSuccess problem :=
-    data.backendSuccessAt (replay.refutationBridgeAt bridge)
-  ofDerivesSuccess problem success hProblemClosed
-@[reducible] def ofPreparedFoolReplayDerivesCheck (sourceProblem : SourcePreprocessing.Problem) (payload : SourcePreprocessing.Payload)
-    (problem : SourcePreprocessing.DeepProblem) (bridge : SourcePreprocessing.FoolProblemBridge sourceProblem problem)
-    (search : SourcePreprocessing.SearchInput) (hReplay :
-      SourcePreprocessing.FoolReplay.check sourceProblem payload = true) (label : String) (data :
-      SearchReplayMaterial.SearchCertificateProvider.PreparedReplaySearchData (SourcePreprocessing.FoolReplay.searchInput
-          payload problem search label)) (hProblemClosed : DAGCertificate.DeepProblem.freeClosed problem = true) :
-    GoalRequest (Logic.FirstOrder.Derives problem.theory [] problem.target) :=
-  ofPreparedFoolReplayDerives
-    sourceProblem payload problem bridge search hReplay label data (DAGCertificate.DeepProblem.freeClosed_sound hProblemClosed)
-@[reducible] def ofFirstOrderSourceAt (sourceProblem : SourcePreprocessing.Problem) (problem : SourcePreprocessing.DeepProblem) (bridge :
-      SourcePreprocessing.FirstOrderProblemBridgeAt.{x} sourceProblem problem) (settings : SourcePreprocessing.FirstOrderSettings := {})
-    (avatarConfig : SourcePreprocessing.AvatarConfig := {}) (label : String := "bare first-order prove_auto") :
-    GoalRequest (LogicSoundness.SetLevel.SemanticallyEntailsAt.{x}
-        problem.theory problem.target) :=
-  ofAttemptAt problem <|
-    Scheduler.bindAttemptAt (SourcePreprocessing.runFirstOrder sourceProblem settings) fun result =>
-        result.result.runAvatarWithBridgeAt problem (result.refutationBridgeAt bridge) avatarConfig label
-@[reducible] def ofFirstOrderSource (sourceProblem : SourcePreprocessing.Problem) (problem : SourcePreprocessing.DeepProblem)
-    (bridge : SourcePreprocessing.FirstOrderProblemBridge sourceProblem problem) (settings : SourcePreprocessing.FirstOrderSettings := {})
-    (avatarConfig : SourcePreprocessing.AvatarConfig := {}) (label : String := "bare first-order prove_auto") :
-    GoalRequest (LogicSoundness.SetLevel.SemanticallyEntails
-        problem.theory problem.target) :=
-  ofFirstOrderSourceAt
-    sourceProblem problem bridge settings avatarConfig label
 end GoalRequest
 syntax (name := proveAutoCheckedCertificate)
   "prove_auto " "CERT " term : tactic
@@ -1031,19 +857,8 @@ syntax (name := proveAutoBackendSuccess)
         if ← proofFitsMainGoal semanticProof then
           closeByProof `prove_auto_backend semanticProof
         else
-          match ← backendDerivesProof? success with
-          | some derivesProof =>
-              if ← proofFitsMainGoal derivesProof then
-                closeByProof `prove_auto_backend_derives derivesProof
-              else
-                throwError
-                  "prove_auto BACKEND produced neither the current semantic target nor the \
-                  corresponding SearchSignature `Derives` target"
-          | none =>
-              throwError
-                "prove_auto BACKEND did not match the current semantic target and could not \
-                construct a free-closed SearchSignature `Derives` replay through strong \
-                completeness"
+          throwError
+            "prove_auto BACKEND certificate does not match the current intrinsic semantic target"
 syntax (name := proveAutoCheckedValidCertificate)
   "prove_auto " "VALID " term : tactic
 @[tactic proveAutoCheckedValidCertificate]

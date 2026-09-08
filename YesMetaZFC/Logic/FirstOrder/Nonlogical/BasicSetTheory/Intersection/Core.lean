@@ -1,1367 +1,630 @@
+import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.EmptySet
 import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.Pairing
+
 /-!
-# 非空族交集与二元交
-一元交的核心规格直接表达“属于族中每个成员”。存在性仍从一个具体分离实例
-推出：先由非空性取得族中成员，再在该成员上按公共成员条件分离。文献中选择
-承载集合的机械步骤只保留为构造层接口，不进入交集项的长期定义。
-一元交函数符号只在非空族上由描述符公理刻画。二元交随后定义为无序对的一元交，
-并导出通常的成员合取规格。
+# 非空族交集核心
+
+交集成员条件直接建立在内在类型语法上。存在性只复用一个参数化分离谓词：
+先从非空族取得规范 fresh 成员，再在该成员中分离所有公共元素。整个构造不再
+携带变量编号、admissibility、闭性证书或描述符兼容层。
 -/
+
 namespace YesMetaZFC
 namespace Logic
 namespace FirstOrder
 namespace Nonlogical
 namespace BasicSetTheory
+
 open scoped Symbols
-/-- `candidate` 正好由 `family` 中每个集合的公共元素组成。 -/
-def intersection_spec (family candidate : SetTerm) :
-    SetFormula :=
-  ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ candidate) ↔ₘ (∀ₘ[SetSort.set], (bₛ#0 ∈ₘ family) ⟶ₘ (bₛ#1 ∈ₘ bₛ#0))
-/-- 对固定非空族断言其交集候选存在。 -/
-def intersection_exists (family : SetTerm) :
-    SetFormula :=
-  ∃ₘ[SetSort.set],
-    ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ bₛ#1) ↔ₘ (∀ₘ[SetSort.set], (bₛ#0 ∈ₘ family) ⟶ₘ (bₛ#1 ∈ₘ bₛ#0))
-/--
-从 `source` 分离 `family` 的公共元素所得的候选规格。
-`source ∈ family` 时，这一规格与 `intersection_spec family candidate` 等价。
--/
-def intersection_separation_spec (family source candidate : SetTerm) :
-    SetFormula :=
-  ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ candidate) ↔ₘ ((bₛ#0 ∈ₘ source) ∧ₘ (∀ₘ[SetSort.set], (bₛ#0 ∈ₘ family) ⟶ₘ (bₛ#1 ∈ₘ bₛ#0)))
+
+/-- `element` 属于 `family` 的每个成员。 -/
+def intersection_member_condition {bound free : SetContext}
+    (family element : SetTerm bound free) : SetFormula bound free :=
+  let member : SetTerm bound (SetSort.set :: free) := .fvar .here
+  ((member ∈ₘ family.weakenFree SetSort.set) ⟶ₘ
+    (element.weakenFree SetSort.set ∈ₘ member))
+    |>.forallFreeTop SetSort.set
+
+/-- `candidate` 恰由 `family` 的公共元素组成。 -/
+def intersection_spec {bound free : SetContext}
+    (family candidate : SetTerm bound free) : SetFormula bound free :=
+  let element : SetTerm bound (SetSort.set :: free) := .fvar .here
+  membership_specification candidate
+    (intersection_member_condition
+      (family.weakenFree SetSort.set) element)
+
+/-- 对固定族断言一个交集候选存在。 -/
+def intersection_exists {bound free : SetContext}
+    (family : SetTerm bound free) : SetFormula bound free :=
+  let candidate : SetTerm bound (SetSort.set :: free) := .fvar .here
+  (intersection_spec (family.weakenFree SetSort.set) candidate)
+    |>.existsFreeTop SetSort.set
+
+/-- 公共成员条件与 free 重命名自然交换。 -/
+@[simp] theorem intersection_member_condition_renameMapped
+    {bound sourceFree targetFree : SetContext}
+    (ρ : VariableRenaming sourceFree targetFree)
+    (family element : SetTerm bound sourceFree) :
+    (intersection_member_condition family element).renameMapped
+        VariableRenaming.id ρ =
+      intersection_member_condition
+        (family.renameMapped VariableRenaming.id ρ)
+        (element.renameMapped VariableRenaming.id ρ) := by
+  unfold intersection_member_condition
+  rw [Formula.renameMapped_forallFreeTop]
+  simp only [Formula.renameMapped, Arguments.renameMapped]
+  rw [Term.renameMapped_weakenFree_lift,
+    Term.renameMapped_weakenFree_lift]
+  rfl
+
+/-- 交集规格与 free 重命名自然交换。 -/
+@[simp] theorem intersection_spec_renameMapped
+    {bound sourceFree targetFree : SetContext}
+    (ρ : VariableRenaming sourceFree targetFree)
+    (family candidate : SetTerm bound sourceFree) :
+    (intersection_spec family candidate).renameMapped
+        VariableRenaming.id ρ =
+      intersection_spec
+        (family.renameMapped VariableRenaming.id ρ)
+        (candidate.renameMapped VariableRenaming.id ρ) := by
+  unfold intersection_spec
+  rw [membership_specification_renameMapped]
+  rw [intersection_member_condition_renameMapped]
+  rw [Term.renameMapped_weakenFree_lift]
+  rfl
+
+/-- 交集规格与任意新 free 参数槽的 weakening 严格交换。 -/
+@[simp] theorem intersection_spec_weakenFree
+    {bound free : SetContext} (introduced : SetSort)
+    (family candidate : SetTerm bound free) :
+    (intersection_spec family candidate).weakenFree introduced =
+      intersection_spec (family.weakenFree introduced)
+        (candidate.weakenFree introduced) := by
+  rw [Formula.weakenFree_eq_renameMapped]
+  exact intersection_spec_renameMapped
+    (VariableRenaming.weaken introduced) family candidate
+
+/-- 交集存在式与 free 重命名自然交换。 -/
+@[simp] theorem intersection_exists_renameMapped
+    {bound sourceFree targetFree : SetContext}
+    (ρ : VariableRenaming sourceFree targetFree)
+    (family : SetTerm bound sourceFree) :
+    (intersection_exists family).renameMapped VariableRenaming.id ρ =
+      intersection_exists
+        (family.renameMapped VariableRenaming.id ρ) := by
+  unfold intersection_exists
+  rw [Formula.renameMapped_existsFreeTop]
+  rw [intersection_spec_renameMapped]
+  rw [Term.renameMapped_weakenFree_lift]
+  rfl
+
+/-- 以 `family` 为参数的公共元素分离谓词。 -/
+def intersection_predicate {free : SetContext}
+    (family : SetOpenTerm free) : SetPredicate free where
+  body :=
+    let element : SetOpenTerm (SetSort.set :: free) :=
+      FreshVariable.newest
+        (σ := signature) (free := free) SetSort.set
+    (intersection_member_condition
+      (family.weakenFree SetSort.set) element).abstractFreeTop
+
+/-- 从 `source` 中分离 `family` 的公共元素。 -/
+def intersection_separation_spec {bound free : SetContext}
+    (family source candidate : SetTerm bound free) : SetFormula bound free :=
+  let element : SetTerm bound (SetSort.set :: free) := .fvar .here
+  membership_specification candidate
+    ((element ∈ₘ source.weakenFree SetSort.set) ∧ₘ
+      intersection_member_condition
+        (family.weakenFree SetSort.set) element)
+
 /-- 对固定族与承载集合断言上述分离结果存在。 -/
-def intersection_separation_exists (family source : SetTerm) :
-    SetFormula :=
-  ∃ₘ[SetSort.set],
-    ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ bₛ#1) ↔ₘ ((bₛ#0 ∈ₘ source) ∧ₘ (∀ₘ[SetSort.set], (bₛ#0 ∈ₘ family) ⟶ₘ (bₛ#1 ∈ₘ bₛ#0)))
-/-- 交集构造实际消费的闭分离公理实例。 -/
-def intersection_separation_axiom : SetFormula :=
-  ∀ₘ[SetSort.set, 0],
-    ∀ₘ[SetSort.set, 1],
-      intersection_separation_exists (x#0) (x#1)
-/--
-交集存在性所需的基础理论。
-它组合子集定义、空集描述符和交集公共成员谓词的一个闭分离实例。
--/
+def intersection_separation_exists {bound free : SetContext}
+    (family source : SetTerm bound free) : SetFormula bound free :=
+  let candidate : SetTerm bound (SetSort.set :: free) := .fvar .here
+  (intersection_separation_spec
+    (family.weakenFree SetSort.set)
+    (source.weakenFree SetSort.set) candidate)
+    |>.existsFreeTop SetSort.set
+
+/-- 在外延理论上加入公共元素分离公理。 -/
+def intersection_separation_theory : SetTheory :=
+  fun sentence =>
+    (∃ (free : SetContext) (family : SetOpenTerm free),
+      sentence = (intersection_predicate family).separation_axiom) ∨
+    extensionality_theory sentence
+
+/-- 交集存在性所需的最弱基础理论。 -/
 def intersection_base_theory : SetTheory :=
-  Theory.insert
-    intersection_separation_axiom (Theory.union subset_theory empty_set_symbol_theory)
+  Theory.union intersection_separation_theory empty_set_symbol_theory
+
 /-- 一元交函数符号的开放定义实例。 -/
-def intersection_definition_instance (family candidate : SetTerm) :
-    SetFormula :=
-  set_nonempty_condition family ⟶ₘ ((candidate ≐ₘ ⋂ₘ family) ↔ₘ
-      intersection_spec family candidate)
-/-- 一元交函数符号的定义公理。 -/
-def intersection_definition_axiom : SetFormula :=
-  ∀ₘ[SetSort.set, 0],
-    ∀ₘ[SetSort.set, 1],
-      intersection_definition_instance (x#0) (x#1)
-/-- 在交集存在基础上加入一元交函数符号。 -/
+def intersection_definition_instance {bound free : SetContext}
+    (family candidate : SetTerm bound free) : SetFormula bound free :=
+  set_nonempty_condition family ⟶ₘ
+    ((candidate ≐ₘ ⋂ₘ family) ↔ₘ intersection_spec family candidate)
+
+/-- 一元交函数符号的闭定义公理。 -/
+def intersection_definition_axiom : SetSentence :=
+  Metatheory.Formula.forall_close
+    (intersection_definition_instance
+      (.fvar (.there .here) :
+        SetOpenTerm [SetSort.set, SetSort.set])
+      (.fvar .here :
+        SetOpenTerm [SetSort.set, SetSort.set]))
+
+/-- 在交集存在理论上加入一元交函数符号。 -/
 def intersection_operator_theory : SetTheory :=
-  Theory.insert
-    intersection_definition_axiom
-    intersection_base_theory
-/-- `candidate` 正好由同时属于 `left` 与 `right` 的元素组成。 -/
-def binary_intersection_spec (left right candidate : SetTerm) :
-    SetFormula :=
-  ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ candidate) ↔ₘ ((bₛ#0 ∈ₘ left) ∧ₘ (bₛ#0 ∈ₘ right))
-/-- `element` 属于 `pair` 中的每个成员。 -/
-def pair_common_member_condition (pair element : SetTerm) :
-    SetFormula :=
-  ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ pair) ⟶ₘ (element ∈ₘ bₛ#0)
-/-- 文献中的二元交描述：先取无序对，再取该非空族的一元交。 -/
-def binary_intersection_descriptor (left right candidate : SetTerm) :
-    SetFormula :=
-  candidate ≐ₘ ⋂ₘ {left, right}ₘ
-/-- 配对与一元交描述符公理的合并理论。 -/
+  Theory.insert intersection_definition_axiom intersection_base_theory
+
+/-- `candidate` 恰由同时属于 `left` 与 `right` 的元素组成。 -/
+def binary_intersection_spec {bound free : SetContext}
+    (left right candidate : SetTerm bound free) : SetFormula bound free :=
+  let element : SetTerm bound (SetSort.set :: free) := .fvar .here
+  membership_specification candidate
+    ((element ∈ₘ left.weakenFree SetSort.set) ∧ₘ
+      (element ∈ₘ right.weakenFree SetSort.set))
+
+/-- 配对与一元交函数符号理论的合并。 -/
 def binary_intersection_base_theory : SetTheory :=
-  Theory.union
-    pairing_operator_theory
-    intersection_operator_theory
+  Theory.union pairing_operator_theory intersection_operator_theory
+
 /-- 二元交函数符号的开放定义实例。 -/
-def binary_intersection_definition_instance (left right : SetTerm) :
-    SetFormula := (left ∩ₘ right) ≐ₘ (⋂ₘ {left, right}ₘ)
-/-- 二元交函数符号的定义公理。 -/
-def binary_intersection_definition_axiom : SetFormula :=
-  ∀ₘ[SetSort.set, 0],
-    ∀ₘ[SetSort.set, 1],
-      binary_intersection_definition_instance (x#0) (x#1)
-/-- 在配对与一元交描述符理论上加入二元交函数符号。 -/
+def binary_intersection_definition_instance {bound free : SetContext}
+    (left right : SetTerm bound free) : SetFormula bound free :=
+  (left ∩ₘ right) ≐ₘ (⋂ₘ {left, right}ₘ)
+
+/-- 二元交函数符号的闭定义公理。 -/
+def binary_intersection_definition_axiom : SetSentence :=
+  Metatheory.Formula.forall_close
+    (binary_intersection_definition_instance
+      (.fvar (.there .here) :
+        SetOpenTerm [SetSort.set, SetSort.set])
+      (.fvar .here :
+        SetOpenTerm [SetSort.set, SetSort.set]))
+
+/-- 在配对与一元交函数符号理论上加入二元交函数符号。 -/
 def binary_intersection_operator_theory : SetTheory :=
-  Theory.insert
-    binary_intersection_definition_axiom
+  Theory.insert binary_intersection_definition_axiom
     binary_intersection_base_theory
-/-- 一元交项保持 proof-carrying 项边界。 -/
-theorem intersection_term_admissible (family : SetTerm) (hFamily : Term.Admissible family SetSort.set) :
-    Term.Admissible (intersection_term family) SetSort.set := by
-  simpa using
-    set_function_application_admissible
-      .intersection [⟨family, by assumption⟩]
-      (by rfl) (by rfl)
 
-/-- 一元交项的合法性由参数计算证书组合。 -/
-@[term_check]
-theorem intersection_term_check
-    {family : SetTerm}
-    (hFamily : Term.CheckCertificate family SetSort.set) :
-    Term.CheckCertificate (intersection_term family) SetSort.set :=
-  Term.check_admissible_complete <|
-    intersection_term_admissible family hFamily.admissible
+/-- 公共元素分离理论嵌入交集基础理论。 -/
+theorem intersection_separation_theory_subset_intersection_base_theory
+    {sentence : SetSentence}
+    (hSentence : intersection_separation_theory sentence) :
+    intersection_base_theory sentence :=
+  Or.inl hSentence
 
-/-- 二元交项保持 proof-carrying 项边界。 -/
-theorem binary_intersection_term_admissible (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    Term.Admissible (binary_intersection_term left right)
-      SetSort.set := by
-  simpa using
-    set_function_application_admissible
-      .binaryIntersection [⟨left, by assumption⟩, ⟨right, by assumption⟩]
-      (by rfl) (by rfl)
+/-- 空集符号理论嵌入交集基础理论。 -/
+theorem empty_set_symbol_theory_subset_intersection_base_theory
+    {sentence : SetSentence}
+    (hSentence : empty_set_symbol_theory sentence) :
+    intersection_base_theory sentence :=
+  Or.inr hSentence
 
-/-- 二元交项的合法性由两个参数计算证书组合。 -/
-@[term_check]
-theorem binary_intersection_term_check
-    {left right : SetTerm}
-    (hLeft : Term.CheckCertificate left SetSort.set)
-    (hRight : Term.CheckCertificate right SetSort.set) :
-    Term.CheckCertificate (binary_intersection_term left right) SetSort.set :=
-  Term.check_admissible_complete <|
-    binary_intersection_term_admissible left right
-      hLeft.admissible hRight.admissible
-
-/-- 一元交规格在 admissible 的族项与候选项处仍然 admissible。 -/
-theorem intersection_spec_admissible
-    {family candidate : SetTerm} (hFamily : Term.Admissible family SetSort.set) (hCandidate : Term.Admissible candidate SetSort.set) :
-    Formula.Admissible (intersection_spec family candidate) := by
-  prove_admissible
-
-/-- 一元交规格的合法性由两个参数计算证书组合。 -/
-@[formula_check]
-theorem intersection_spec_check
-    {family candidate : SetTerm}
-    (hFamily : Term.CheckCertificate family SetSort.set)
-    (hCandidate : Term.CheckCertificate candidate SetSort.set) :
-    Formula.CheckCertificate (intersection_spec family candidate) :=
-  Formula.check_admissible_complete <|
-    intersection_spec_admissible
-      hFamily.admissible hCandidate.admissible
-
-/-- 一元交存在式在 admissible 族项处仍然 admissible。 -/
-theorem intersection_exists_admissible
-    {family : SetTerm} (hFamily : Term.Admissible family SetSort.set) :
-    Formula.Admissible (intersection_exists family) := by
-  prove_admissible
-/-- 交集分离规格在三个 admissible 集合项处仍然 admissible。 -/
-theorem intersection_separation_spec_admissible
-    {family source candidate : SetTerm} (hFamily : Term.Admissible family SetSort.set) (hSource : Term.Admissible source SetSort.set)
-    (hCandidate : Term.Admissible candidate SetSort.set) :
-    Formula.Admissible (intersection_separation_spec
-        family source candidate) := by
-  prove_admissible
-/-- 一元交函数符号的开放定义实例在 admissible 参数处仍然 admissible。 -/
-theorem intersection_definition_instance_admissible
-    {family candidate : SetTerm} (hFamily : Term.Admissible family SetSort.set) (hCandidate : Term.Admissible candidate SetSort.set) :
-    Formula.Admissible (intersection_definition_instance
-        family candidate) :=
-  Formula.Admissible.imp (set_nonempty_condition_admissible hFamily) (Formula.Admissible.iff (Formula.Admissible.equal
-        hCandidate (intersection_term_admissible
-          family hFamily)) (intersection_spec_admissible
-        hFamily hCandidate))
-/-- 二元交规格在三个 admissible 集合项处仍然 admissible。 -/
-theorem binary_intersection_spec_admissible
-    {left right candidate : SetTerm} (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set)
-    (hCandidate : Term.Admissible candidate SetSort.set) :
-    Formula.Admissible (binary_intersection_spec
-        left right candidate) := by
-  prove_admissible
-
-/-- 二元交规格的合法性由三个参数计算证书组合。 -/
-@[formula_check]
-theorem binary_intersection_spec_check
-    {left right candidate : SetTerm}
-    (hLeft : Term.CheckCertificate left SetSort.set)
-    (hRight : Term.CheckCertificate right SetSort.set)
-    (hCandidate : Term.CheckCertificate candidate SetSort.set) :
-    Formula.CheckCertificate
-      (binary_intersection_spec left right candidate) :=
-  Formula.check_admissible_complete <|
-    binary_intersection_spec_admissible
-      hLeft.admissible hRight.admissible hCandidate.admissible
-
-/-- 配对公共成员条件在 admissible 配对项与元素项处仍然 admissible。 -/
-theorem pair_common_member_condition_admissible
-    {pair element : SetTerm} (hPair : Term.Admissible pair SetSort.set) (hElement : Term.Admissible element SetSort.set) :
-    Formula.Admissible (pair_common_member_condition
-        pair element) := by
-  prove_admissible
-/-- 二元交描述符在三个 admissible 集合项处仍然 admissible。 -/
-theorem binary_intersection_descriptor_admissible
-    {left right candidate : SetTerm} (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set)
-    (hCandidate : Term.Admissible candidate SetSort.set) :
-    Formula.Admissible (binary_intersection_descriptor
-        left right candidate) :=
-  Formula.Admissible.equal
-    hCandidate (intersection_term_admissible (unordered_pair_term left right) (unordered_pair_term_admissible
-        left right hLeft hRight))
-/-- 二元交函数符号的开放定义实例在 admissible 参数处仍然 admissible。 -/
-theorem binary_intersection_definition_instance_admissible
-    {left right : SetTerm} (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    Formula.Admissible (binary_intersection_definition_instance
-        left right) :=
-  Formula.Admissible.equal (binary_intersection_term_admissible
-      left right hLeft hRight) (intersection_term_admissible (unordered_pair_term left right) (unordered_pair_term_admissible
-        left right hLeft hRight))
-/-- 交集分离公理满足公共 proof-carrying 良构性边界。 -/
-theorem intersection_separation_axiom_admissible :
-    Formula.Admissible intersection_separation_axiom := by
-  apply Formula.check_admissible_sound
-  native_decide
-/-- 交集基础理论仍然 admissible。 -/
-theorem intersection_base_theory_admissible :
-    Theory.Admissible intersection_base_theory := by
-  intro formula hFormula
-  rcases hFormula with rfl | hFormula
-  · exact intersection_separation_axiom_admissible
-  · rcases hFormula with hFormula | hFormula
-    · exact subset_theory_admissible formula hFormula
-    · exact empty_set_symbol_theory_admissible
-        formula hFormula
-/-- 一元交定义公理满足公共良构性边界。 -/
-theorem intersection_definition_axiom_admissible :
-    Formula.Admissible intersection_definition_axiom := by
-  apply Formula.check_admissible_sound
-  native_decide
-/-- 一元交描述符理论仍然 admissible。 -/
-theorem intersection_operator_theory_admissible :
-    Theory.Admissible intersection_operator_theory :=
-  Theory.admissible_insert
-    intersection_definition_axiom_admissible
-    intersection_base_theory_admissible
-/-- 配对与一元交描述符理论的合并仍然 admissible。 -/
-theorem binary_intersection_base_theory_admissible :
-    Theory.Admissible binary_intersection_base_theory := by
-  intro formula hFormula
-  rcases hFormula with hFormula | hFormula
-  · exact pairing_operator_theory_admissible
-      formula hFormula
-  · exact intersection_operator_theory_admissible
-      formula hFormula
-/-- 二元交定义公理满足公共良构性边界。 -/
-theorem binary_intersection_definition_axiom_admissible :
-    Formula.Admissible
-      binary_intersection_definition_axiom := by
-  apply Formula.check_admissible_sound
-  native_decide
-/-- 二元交描述符理论仍然 admissible。 -/
-theorem binary_intersection_operator_theory_admissible :
-    Theory.Admissible
-      binary_intersection_operator_theory :=
-  Theory.admissible_insert
-    binary_intersection_definition_axiom_admissible
-    binary_intersection_base_theory_admissible
-/-- 交集基础理论中的每条公理都是闭公式。 -/
-@[derive_close_sentence]
-theorem intersection_base_theory_sentence
-    {formula : SetFormula} (hFormula : intersection_base_theory formula) :
-    Formula.Sentence formula := by
-  constructor
-  · exact intersection_base_theory_admissible
-      formula hFormula
-  · rcases hFormula with rfl | hFormula
-    · native_decide
-    · rcases hFormula with hFormula | hFormula
-      · change
-          formula = subset_definition_axiom ∨
-            extensionality_theory formula at hFormula
-        rcases hFormula with rfl | hFormula
-        · native_decide
-        · change formula = extensionality_axiom at hFormula
-          subst formula
-          native_decide
-      · change
-          formula = empty_set_definition_axiom ∨ (formula = empty_predicate.separation_axiom ∨
-              extensionality_theory formula) at hFormula
-        rcases hFormula with rfl | hFormula
-        · native_decide
-        · rcases hFormula with rfl | hFormula
-          · native_decide
-          · change formula = extensionality_axiom at hFormula
-            subst formula
-            native_decide
-/-- 一元交描述符理论中的每条公理都是闭公式。 -/
-@[derive_close_sentence]
-theorem intersection_operator_theory_sentence
-    {formula : SetFormula} (hFormula : intersection_operator_theory formula) :
-    Formula.Sentence formula := by
-  constructor
-  · exact intersection_operator_theory_admissible
-      formula hFormula
-  · rcases hFormula with rfl | hFormula
-    · native_decide
-    · exact (intersection_base_theory_sentence hFormula).2
-/-- 二元交基础理论中的每条公理都是闭公式。 -/
-@[derive_close_sentence]
-theorem binary_intersection_base_theory_sentence
-    {formula : SetFormula} (hFormula : binary_intersection_base_theory formula) :
-    Formula.Sentence formula := by
-  rcases hFormula with hFormula | hFormula
-  · exact pairing_operator_theory_sentence hFormula
-  · exact intersection_operator_theory_sentence hFormula
-/-- 二元交描述符理论中的每条公理都是闭公式。 -/
-@[derive_close_sentence]
-theorem binary_intersection_operator_theory_sentence
-    {formula : SetFormula} (hFormula : binary_intersection_operator_theory formula) :
-    Formula.Sentence formula := by
-  constructor
-  · exact binary_intersection_operator_theory_admissible
-      formula hFormula
-  · rcases hFormula with rfl | hFormula
-    · native_decide
-    · exact (binary_intersection_base_theory_sentence
-          hFormula).2
-/-- 子集理论嵌入交集基础理论。 -/
-theorem subset_theory_subset_intersection_base_theory
-    {formula : SetFormula} (hFormula : subset_theory formula) :
-    intersection_base_theory formula :=
-  Or.inr (Or.inl hFormula)
 /-- 外延理论嵌入交集基础理论。 -/
 theorem extensionality_theory_subset_intersection_base_theory
-    {formula : SetFormula} (hFormula : extensionality_theory formula) :
-    intersection_base_theory formula :=
-  subset_theory_subset_intersection_base_theory (Or.inr hFormula)
-/-- 空集描述符理论嵌入交集基础理论。 -/
-theorem empty_set_symbol_theory_subset_intersection_base_theory
-    {formula : SetFormula} (hFormula : empty_set_symbol_theory formula) :
-    intersection_base_theory formula :=
-  Or.inr (Or.inr hFormula)
-/-- 交集基础理论嵌入一元交描述符理论。 -/
+    {sentence : SetSentence}
+    (hSentence : extensionality_theory sentence) :
+    intersection_base_theory sentence :=
+  Or.inl (Or.inr hSentence)
+
+/-- 交集基础理论嵌入一元交函数符号理论。 -/
 theorem intersection_base_theory_subset_intersection_operator_theory
-    {formula : SetFormula} (hFormula : intersection_base_theory formula) :
-    intersection_operator_theory formula :=
-  Or.inr hFormula
-/-- 配对描述符理论嵌入二元交基础理论。 -/
+    {sentence : SetSentence}
+    (hSentence : intersection_base_theory sentence) :
+    intersection_operator_theory sentence :=
+  Or.inr hSentence
+
+/-- 配对函数符号理论嵌入二元交基础理论。 -/
 theorem pairing_operator_theory_subset_binary_intersection_base_theory
-    {formula : SetFormula} (hFormula : pairing_operator_theory formula) :
-    binary_intersection_base_theory formula :=
-  Or.inl hFormula
-/-- 空集描述符理论嵌入二元交基础理论。 -/
-theorem empty_set_symbol_theory_subset_binary_intersection_base_theory
-    {formula : SetFormula} (hFormula : empty_set_symbol_theory formula) :
-    binary_intersection_base_theory formula :=
-  Or.inr <|
-    intersection_base_theory_subset_intersection_operator_theory <|
-      empty_set_symbol_theory_subset_intersection_base_theory hFormula
-/-- 一元交描述符理论嵌入二元交基础理论。 -/
+    {sentence : SetSentence}
+    (hSentence : pairing_operator_theory sentence) :
+    binary_intersection_base_theory sentence :=
+  Or.inl hSentence
+
+/-- 一元交函数符号理论嵌入二元交基础理论。 -/
 theorem intersection_operator_theory_subset_binary_intersection_base_theory
-    {formula : SetFormula} (hFormula : intersection_operator_theory formula) :
-    binary_intersection_base_theory formula :=
-  Or.inr hFormula
-/-- 二元交基础理论嵌入二元交描述符理论。 -/
+    {sentence : SetSentence}
+    (hSentence : intersection_operator_theory sentence) :
+    binary_intersection_base_theory sentence :=
+  Or.inr hSentence
+
+/-- 二元交基础理论嵌入二元交函数符号理论。 -/
 theorem binary_intersection_base_theory_subset_binary_intersection_operator_theory
-    {formula : SetFormula} (hFormula : binary_intersection_base_theory formula) :
-    binary_intersection_operator_theory formula :=
-  Or.inr hFormula
-/-- 一元交描述符理论嵌入二元交描述符理论。 -/
+    {sentence : SetSentence}
+    (hSentence : binary_intersection_base_theory sentence) :
+    binary_intersection_operator_theory sentence :=
+  Or.inr hSentence
+
+/-- 一元交函数符号理论嵌入二元交函数符号理论。 -/
 theorem intersection_operator_theory_subset_binary_intersection_operator_theory
-    {formula : SetFormula} (hFormula : intersection_operator_theory formula) :
-    binary_intersection_operator_theory formula :=
-  binary_intersection_base_theory_subset_binary_intersection_operator_theory <|
-    intersection_operator_theory_subset_binary_intersection_base_theory
-      hFormula
-/-- 配对描述符理论嵌入二元交描述符理论。 -/
+    {sentence : SetSentence}
+    (hSentence : intersection_operator_theory sentence) :
+    binary_intersection_operator_theory sentence :=
+  Or.inr (Or.inr hSentence)
+
+/-- 配对函数符号理论嵌入二元交函数符号理论。 -/
 theorem pairing_operator_theory_subset_binary_intersection_operator_theory
-    {formula : SetFormula} (hFormula : pairing_operator_theory formula) :
-    binary_intersection_operator_theory formula :=
-  binary_intersection_base_theory_subset_binary_intersection_operator_theory <|
-    pairing_operator_theory_subset_binary_intersection_base_theory
-      hFormula
-/-- 外延理论嵌入二元交描述符理论。 -/
+    {sentence : SetSentence}
+    (hSentence : pairing_operator_theory sentence) :
+    binary_intersection_operator_theory sentence :=
+  Or.inr (Or.inl hSentence)
+
+/-- 外延理论嵌入二元交函数符号理论。 -/
 theorem extensionality_theory_subset_binary_intersection_operator_theory
-    {formula : SetFormula} (hFormula : extensionality_theory formula) :
-    binary_intersection_operator_theory formula :=
-  intersection_operator_theory_subset_binary_intersection_operator_theory <|
-    intersection_base_theory_subset_intersection_operator_theory <|
-      extensionality_theory_subset_intersection_base_theory
-        hFormula
-/-- 闭分离公理可在任意两个 admissible 集合项处实例化。 -/
-theorem intersection_separation_exists_derives (family source : SetTerm) (hFamily : Term.Admissible family SetSort.set)
-    (hSource : Term.Admissible source SetSort.set) :
-    ⊢ₘ[intersection_base_theory]
+    {sentence : SetSentence}
+    (hSentence : extensionality_theory sentence) :
+    binary_intersection_operator_theory sentence :=
+  intersection_operator_theory_subset_binary_intersection_operator_theory
+    (intersection_base_theory_subset_intersection_operator_theory
+      (extensionality_theory_subset_intersection_base_theory hSentence))
+
+/-- 公共成员条件可在任意给定族成员处消去。 -/
+theorem intersection_member_condition_elim
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (family member element : SetOpenTerm free) :
+    Γ ⊢ₘ[T]
+      intersection_member_condition family element ⟶ₘ
+        (member ∈ₘ family) ⟶ₘ (element ∈ₘ member) := by
+  apply FirstOrder.Derives.imp_intro
+  apply FirstOrder.Derives.imp_intro
+  have hUniversal :
+      ((member ∈ₘ family) ::
+        intersection_member_condition family element :: Γ) ⊢ₘ[T]
+          intersection_member_condition family element :=
+    FirstOrder.Derives.assumption (by simp)
+  have hAt := FirstOrder.Derives.forall_elim member hUniversal
+  have hImplication :
+      ((member ∈ₘ family) ::
+        intersection_member_condition family element :: Γ) ⊢ₘ[T]
+          (member ∈ₘ family) ⟶ₘ (element ∈ₘ member) := by
+    simpa [intersection_member_condition] using! hAt
+  exact FirstOrder.Derives.imp_elim hImplication
+    (FirstOrder.Derives.assumption List.mem_cons_self)
+
+/-- 交集规格在任意元素处的点态实例。 -/
+theorem intersection_spec_membership_iff
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (family candidate element : SetOpenTerm free)
+    (hSpec : Γ ⊢ₘ[T] intersection_spec family candidate) :
+    Γ ⊢ₘ[T]
+      (element ∈ₘ candidate) ↔ₘ
+        intersection_member_condition family element := by
+  have hAt := FirstOrder.Derives.forall_elim element hSpec
+  simpa [intersection_spec, intersection_member_condition,
+    membership_specification, Formula.instantiateFreeTop,
+    Formula.substituteFree, Substitution.free_map,
+    Substitution.instantiateFreeTop, Formula.substitute,
+    Formula.substituteMapped, Term.substituteMapped,
+    Arguments.substituteMapped, VariableSubstitution.liftFree,
+    VariableSubstitution.instantiateFreeTop,
+    VariableSubstitution.weakenBound,
+    VariableSubstitution.boundId,
+    VariableSubstitution.freeId] using hAt
+
+/-- 参数化公共元素谓词在规范 fresh 元素处直接恢复公共成员条件。 -/
+@[simp] theorem intersection_predicate_atNewest
+    {free : SetContext} (family : SetOpenTerm free) :
+    (intersection_predicate family).atNewest =
+      intersection_member_condition
+        (family.weakenFree SetSort.set)
+        (FreshVariable.newest
+          (σ := signature) (free := free) SetSort.set) := by
+  simp [SetPredicate.atNewest, intersection_predicate,
+    intersection_member_condition, FreshVariable.newest]
+
+/-- 谓词参数扩张后在下一规范 fresh 元素处仍命中同一快路径。 -/
+@[simp] theorem intersection_predicate_weakenFree_atNewest
+    {free : SetContext} (family : SetOpenTerm free) :
+    ((intersection_predicate family).weakenFree).atNewest =
+      intersection_member_condition
+        ((family.weakenFree SetSort.set).weakenFree SetSort.set)
+        (FreshVariable.newest
+          (σ := signature) (free := SetSort.set :: free) SetSort.set) := by
+  unfold SetPredicate.atNewest SetPredicate.weakenFree
+    intersection_predicate
+  dsimp
+  simp only [FreshVariable.newest]
+  rw [Formula.instantiateTop_two_weakenings_abstractFreeTop_newest]
+  change
+    (intersection_member_condition
+      (family.weakenFree SetSort.set)
+      (Term.newestFree
+        (σ := signature) (free := free) SetSort.set)).renameMapped
+        VariableRenaming.id
+        (VariableRenaming.lift (introduced := SetSort.set)
+          (VariableRenaming.weaken SetSort.set)) =
+      intersection_member_condition
+        ((family.weakenFree SetSort.set).weakenFree SetSort.set)
+        (Term.newestFree
+          (σ := signature) (free := SetSort.set :: free) SetSort.set)
+  rw [intersection_member_condition_renameMapped]
+  rw [Term.renameMapped_weakenFree_lift]
+  rfl
+
+/-- 公共元素分离 schema 可直接消费任意族与承载集合。 -/
+theorem intersection_separation_exists_derives
+    {free : SetContext} {Γ : Context signature free}
+    (family source : SetOpenTerm free) :
+    Γ ⊢ₘ[intersection_base_theory]
       intersection_separation_exists family source := by
-  have hAxiom :
-      ⊢ₘ[intersection_base_theory]
-        intersection_separation_axiom :=
-    FirstOrder.Derives.theory_mem (by
-      exact Or.inl rfl)
-  have hFamilyInstance :=
-    FirstOrder.Derives.forall_elim
-      (term := family) hAxiom
-  have hSourceInstance :=
-    FirstOrder.Derives.forall_elim
-      (term := source) hFamilyInstance
-  have hFamilyOpenThree :
-      Term.openAt SetSort.set 3 source family = family :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 3 source family hFamily.2
-  simpa [intersection_separation_axiom,
-    intersection_separation_exists,
-    Formula.openAt_closeFreeAt_eq_substituteFree,
-    Formula.openAt, Formula.closeFreeAt,
-    Formula.next_depth, Formula.substituteFree,
-    Term.openAt, Term.closeFreeAt,
-    Term.substituteFree, set_variable,
-    set_bound_variable, hFamilyOpenThree] using
-      hSourceInstance
-/-- 一元交定义公理可在任意两个 admissible 集合项处实例化。 -/
-theorem intersection_definition_instance_derives (family candidate : SetTerm) (hFamily : Term.Admissible family SetSort.set)
-    (hCandidate : Term.Admissible candidate SetSort.set) :
-    ⊢ₘ[intersection_operator_theory]
-      intersection_definition_instance
-        family candidate := by
-  have hAxiom :
-      ⊢ₘ[intersection_operator_theory]
-        intersection_definition_axiom :=
-    FirstOrder.Derives.theory_mem (by
-      exact Or.inl rfl)
-  have hFamilyInstance :=
-    FirstOrder.Derives.forall_elim
-      (term := family) hAxiom
-  have hCandidateInstance :=
-    FirstOrder.Derives.forall_elim
-      (term := candidate) hFamilyInstance
-  have hFamilyOpenZero :
-      Term.openAt SetSort.set 0 candidate family = family :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 candidate family hFamily.2
-  have hFamilyOpenOne :
-      Term.openAt SetSort.set 1 candidate family = family :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 1 candidate family hFamily.2
-  have hFamilyOpenTwo :
-      Term.openAt SetSort.set 2 candidate family = family :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 2 candidate family hFamily.2
-  simpa [intersection_definition_axiom,
-    intersection_definition_instance,
-    intersection_spec, set_nonempty_condition,
-    Formula.openAt_closeFreeAt_eq_substituteFree,
-    Formula.openAt, Formula.closeFreeAt,
-    Formula.next_depth, Formula.substituteFree,
-    Term.openAt, Term.closeFreeAt,
-    Term.substituteFree, set_variable,
-    set_bound_variable, intersection_term,
-    empty_set_term, hFamilyOpenZero,
-    hFamilyOpenOne, hFamilyOpenTwo] using
-      hCandidateInstance
-/-- 二元交定义公理可在任意两个 admissible 集合项处实例化。 -/
-theorem binary_intersection_definition_instance_derives (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set)
-    (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[binary_intersection_operator_theory]
-      binary_intersection_definition_instance
-        left right := by
-  have hAxiom :
-      ⊢ₘ[binary_intersection_operator_theory]
-        binary_intersection_definition_axiom :=
-    FirstOrder.Derives.theory_mem (by
-      exact Or.inl rfl)
-  have hLeftInstance :=
-    FirstOrder.Derives.forall_elim
-      (term := left) hAxiom
-  have hRightInstance :=
-    FirstOrder.Derives.forall_elim
-      (term := right) hLeftInstance
-  have hLeftOpenZero :
-      Term.openAt SetSort.set 0 right left = left :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 right left hLeft.2
-  have hLeftOpenOne :
-      Term.openAt SetSort.set 1 right left = left :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 1 right left hLeft.2
-  simpa [binary_intersection_definition_axiom,
+  have hGeneric := SetPredicate.separation_exists_derives
+    (Γ := Γ) (intersection_predicate family) source
+  have hLifted := FirstOrder.Derives.theory_weaken
+    (T := (intersection_predicate family).separation_theory)
+    (U := intersection_base_theory)
+    (by
+      intro sentence hSentence
+      rcases hSentence with rfl | hExtensionality
+      · exact Or.inl (Or.inl ⟨free, family, rfl⟩)
+      · exact Or.inl (Or.inr hExtensionality))
+    hGeneric
+  simpa [intersection_separation_exists,
+    intersection_separation_spec,
+    SetPredicate.separation_exists, SetPredicate.separation_spec,
+    SetPredicate.separation_condition, membership_specification,
+    FreshVariable.newest] using! hLifted
+
+/-- 一元交定义公理可在任意族与候选项处实例化。 -/
+theorem intersection_definition_instance_derives
+    {free : SetContext} {Γ : Context signature free}
+    (family candidate : SetOpenTerm free) :
+    Γ ⊢ₘ[intersection_operator_theory]
+      intersection_definition_instance family candidate := by
+  let body : SetOpenFormula [SetSort.set, SetSort.set] :=
+    intersection_definition_instance
+      (.fvar (.there .here) :
+        SetOpenTerm [SetSort.set, SetSort.set])
+      (.fvar .here :
+        SetOpenTerm [SetSort.set, SetSort.set])
+  let τ : VariableSubstitution signature
+      [SetSort.set, SetSort.set] [] free :=
+    VariableSubstitution.cons candidate
+      (VariableSubstitution.cons family VariableSubstitution.empty)
+  have hClosed :
+      ([] : Context signature []) ⊢ₘ[intersection_operator_theory]
+        Formula.fromSentence intersection_definition_axiom :=
+    FirstOrder.Derives.theory_axiom (by exact Or.inl rfl)
+  have hInstance := Metatheory.Derives.forall_close_elim
+    (Γ := Γ) body τ hClosed
+  simpa [body, τ, intersection_definition_axiom,
+    intersection_definition_instance, intersection_spec,
+    intersection_member_condition, set_nonempty_condition,
+    membership_specification, Formula.substituteFree,
+    Substitution.free_map, Formula.substitute,
+    Formula.substituteMapped, Term.substituteMapped,
+    Arguments.substituteMapped, VariableSubstitution.cons,
+    VariableSubstitution.empty, VariableSubstitution.liftFree,
+    VariableSubstitution.weakenBound,
+    VariableSubstitution.boundId,
+    VariableSubstitution.freeId] using hInstance
+
+/-- 二元交定义公理可在任意两个集合项处实例化。 -/
+theorem binary_intersection_definition_instance_derives
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[binary_intersection_operator_theory]
+      binary_intersection_definition_instance left right := by
+  let body : SetOpenFormula [SetSort.set, SetSort.set] :=
+    binary_intersection_definition_instance
+      (.fvar (.there .here) :
+        SetOpenTerm [SetSort.set, SetSort.set])
+      (.fvar .here :
+        SetOpenTerm [SetSort.set, SetSort.set])
+  let τ : VariableSubstitution signature
+      [SetSort.set, SetSort.set] [] free :=
+    VariableSubstitution.cons right
+      (VariableSubstitution.cons left VariableSubstitution.empty)
+  have hClosed :
+      ([] : Context signature []) ⊢ₘ[binary_intersection_operator_theory]
+        Formula.fromSentence binary_intersection_definition_axiom :=
+    FirstOrder.Derives.theory_axiom (by exact Or.inl rfl)
+  have hInstance := Metatheory.Derives.forall_close_elim
+    (Γ := Γ) body τ hClosed
+  simpa [body, τ, binary_intersection_definition_axiom,
     binary_intersection_definition_instance,
-    Formula.openAt_closeFreeAt_eq_substituteFree,
-    Formula.openAt, Formula.closeFreeAt,
-    Formula.next_depth, Formula.substituteFree,
-    Term.openAt, Term.closeFreeAt,
-    Term.substituteFree, set_variable,
-    set_bound_variable, intersection_term,
-    binary_intersection_term,
-    unordered_pair_term, hLeftOpenZero,
-    hLeftOpenOne] using hRightInstance
-/--
-从族中一个成员分离公共元素，与直接交集规格等价。
-文献中的非空前提在这里是冗余的：`source ∈ family` 已经给出了所需见证。
--/
-theorem intersection_separation_spec_iff_of_mem (family source candidate : SetTerm) (hFamily : Term.Admissible family SetSort.set)
-    (hSource : Term.Admissible source SetSort.set) (hCandidate : Term.Admissible candidate SetSort.set) :
-    ⊢ₘ (source ∈ₘ family) ⟶ₘ (intersection_separation_spec
-            family source candidate ↔ₘ
+    Formula.substituteFree, Substitution.free_map,
+    Formula.substitute, Formula.substituteMapped,
+    Term.substituteMapped, Arguments.substituteMapped,
+    VariableSubstitution.cons, VariableSubstitution.empty,
+    VariableSubstitution.liftFree,
+    VariableSubstitution.weakenBound,
+    VariableSubstitution.boundId,
+    VariableSubstitution.freeId] using hInstance
+
+/-- 从族中一个成员分离公共元素，与直接交集规格等价。 -/
+theorem intersection_separation_spec_iff_of_mem
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (family source candidate : SetOpenTerm free) :
+    Γ ⊢ₘ[T]
+      (source ∈ₘ family) ⟶ₘ
+        (intersection_separation_spec family source candidate ↔ₘ
           intersection_spec family candidate) := by
-  let source_mem : SetFormula := source ∈ₘ family
-  let separation := intersection_separation_spec
-    family source candidate
-  let direct := intersection_spec family candidate
-  let separation_body : SetFormula := (bₛ#0 ∈ₘ candidate) ↔ₘ ((bₛ#0 ∈ₘ source) ∧ₘ (∀ₘ[SetSort.set], (bₛ#0 ∈ₘ family) ⟶ₘ (bₛ#1 ∈ₘ bₛ#0)))
-  let direct_body : SetFormula := (bₛ#0 ∈ₘ candidate) ↔ₘ (∀ₘ[SetSort.set], (bₛ#0 ∈ₘ family) ⟶ₘ (bₛ#1 ∈ₘ bₛ#0))
-  let element :=
-    FreshVariable.fresh_id SetSort.set
-      [source_mem, separation, direct,
-        separation_body, direct_body]
-  let common_at : SetFormula :=
-    ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ family) ⟶ₘ (x#element ∈ₘ bₛ#0)
-  have hElementFreshSourceMem : (SetSort.set, element) freshForₘ
-        source_mem := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hElementFreshSeparation : (SetSort.set, element) freshForₘ
-        separation := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hElementFreshDirect : (SetSort.set, element) freshForₘ
-        direct := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hElementFreshSeparationBody : (SetSort.set, element) freshForₘ
-        separation_body := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hElementFreshDirectBody : (SetSort.set, element) freshForₘ
-        direct_body := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hFamilyOpenOne :
-      Term.openAt SetSort.set 1 (x#element) family =
-        family :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 1 (x#element) family hFamily.2
-  have hSourceOpen :
-      Term.openAt SetSort.set 0 (x#element) source =
-        source :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) source hSource.2
-  have hCandidateOpen :
-      Term.openAt SetSort.set 0 (x#element) candidate =
-        candidate :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) candidate hCandidate.2
-  have hFamilyOpenSource :
-      Term.openAt SetSort.set 0 source family = family :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 source family hFamily.2
-  have hSourceMemAdmissible :
-      Formula.Admissible source_mem := by
-    dsimp [source_mem]
-    exact membership_formula_admissible hSource hFamily
-  have hSeparationAdmissible :
-      Formula.Admissible separation := by
-    dsimp [separation]
-    exact intersection_separation_spec_admissible
-      hFamily hSource hCandidate
-  have hDirectAdmissible :
-      Formula.Admissible direct := by
-    dsimp [direct]
-    exact intersection_spec_admissible
-      hFamily hCandidate
-  have hElementAdmissible :
-      Term.Admissible (x#element) SetSort.set :=
-    set_variable_admissible element
-  have hElementMemCandidateAdmissible :
-      Formula.Admissible (x#element ∈ₘ candidate) :=
-    membership_formula_admissible
-      hElementAdmissible hCandidate
-  have hElementMemSourceAdmissible :
-      Formula.Admissible (x#element ∈ₘ source) :=
-    membership_formula_admissible
-      hElementAdmissible hSource
-  change ⊢ₘ source_mem ⟶ₘ (separation ↔ₘ direct)
-  nd_apply FirstOrder.Derives.impIntro
-  apply FirstOrder.Derives.iffIntro
-  · have hSeparation :
-        separation :: [source_mem] ⊢ₘ
-          separation :=
-      .assumption (by simp)
-    have hSeparationAtRaw :=
-      FirstOrder.Derives.forall_elim
-        (term := x#element) hSeparation
-    have hSeparationAt :
-        separation :: [source_mem] ⊢ₘ (x#element ∈ₘ candidate) ↔ₘ ((x#element ∈ₘ source) ∧ₘ
-              common_at) := by
-      simpa [separation,
-        intersection_separation_spec,
-        separation_body, common_at,
-        Formula.openAt, Formula.next_depth,
-        Term.openAt, hFamilyOpenOne,
-        hSourceOpen, hCandidateOpen] using
-          hSeparationAtRaw
-    have hDirectAt :
-        separation :: [source_mem] ⊢ₘ (x#element ∈ₘ candidate) ↔ₘ
-            common_at := by
-      have hCommonAtAdmissible :
-          Formula.Admissible common_at :=
-        Formula.Admissible.conj_right <|
-          Formula.Admissible.iff_right
-            hSeparationAt.admissible
-      apply FirstOrder.Derives.iffIntro
-      · have hSeparationAt' :=
-          FirstOrder.Derives.context_weaken_cons (assumption := x#element ∈ₘ candidate)
-            hSeparationAt
-        have hConjunction :=
-          FirstOrder.Derives.iffElimRight
-            hSeparationAt' (.assumption (by simp)
-              )
-        exact FirstOrder.Derives.conjElimRight
-          hConjunction
-      · have hCommon :
-            common_at ::
-                separation :: [source_mem] ⊢ₘ
-              common_at :=
-          .assumption (by simp)
-        have hCommonAtSourceRaw :=
-          FirstOrder.Derives.forall_elim
-            (term := source) hCommon
-        have hCommonAtSource :
-            common_at ::
-                separation :: [source_mem] ⊢ₘ (source ∈ₘ family) ⟶ₘ (x#element ∈ₘ source) := by
-          simpa [common_at, Formula.openAt,
-            Term.openAt, hFamilyOpenSource] using
-              hCommonAtSourceRaw
-        have hSourceMem :
-            common_at ::
-                separation :: [source_mem] ⊢ₘ
-              source ∈ₘ family :=
-          .assumption (by simp [source_mem])
-        have hElementSource :=
-          FirstOrder.Derives.impElim
-            hCommonAtSource hSourceMem
-        have hConjunction :=
-          FirstOrder.Derives.conjIntro
-            hElementSource hCommon
-        have hSeparationAt' :=
-          FirstOrder.Derives.context_weaken_cons (assumption := common_at)
-            hSeparationAt
-        exact FirstOrder.Derives.iffElimLeft
-          hSeparationAt' hConjunction
-    have hDirectAtOpened :
-        separation :: [source_mem] ⊢ₘ
-          Formula.openAt SetSort.set 0 (x#element) direct_body := by
-      simpa [direct_body, common_at,
-        Formula.openAt, Formula.next_depth,
-        Term.openAt, hFamilyOpenOne,
-        hCandidateOpen] using hDirectAt
-    have hGeneralized :=
-      FirstOrder.Derives.forall_intro (T := (Theory.empty : SetTheory)) (Γ := [separation, source_mem]) (sort := SetSort.set) (eigen := element) (body :=
-          Formula.openAt SetSort.set 0 (x#element) direct_body) (by
-          intro formula hFormula
-          cases hFormula) (by
-          intro formula hFormula
-          rcases List.mem_cons.mp hFormula with rfl | hFormula
-          · exact hElementFreshSeparation
-          · rcases List.mem_singleton.mp hFormula with rfl
-            exact hElementFreshSourceMem)
-        hDirectAtOpened
-    simpa [direct, intersection_spec,
-      Formula.closeFreeAt_openAt
-        SetSort.set element 0 direct_body
-        hElementFreshDirectBody] using hGeneralized
-  · have hDirect :
-        direct :: [source_mem] ⊢ₘ direct :=
-      .assumption (by simp)
-    have hDirectAtRaw :=
-      FirstOrder.Derives.forall_elim
-        (term := x#element) hDirect
-    have hDirectAt :
-        direct :: [source_mem] ⊢ₘ (x#element ∈ₘ candidate) ↔ₘ
-            common_at := by
-      simpa [direct, intersection_spec,
-        direct_body, common_at,
-        Formula.openAt, Formula.next_depth,
-        Term.openAt, hFamilyOpenOne,
-        hCandidateOpen] using hDirectAtRaw
-    have hSeparationAt :
-        direct :: [source_mem] ⊢ₘ (x#element ∈ₘ candidate) ↔ₘ ((x#element ∈ₘ source) ∧ₘ
-              common_at) := by
-      have hCommonAtAdmissible :
-          Formula.Admissible common_at :=
-        Formula.Admissible.iff_right
-          hDirectAt.admissible
-      have hConjunctionAdmissible :
-          Formula.Admissible ((x#element ∈ₘ source) ∧ₘ
-              common_at) :=
-        Formula.Admissible.conj
-          hElementMemSourceAdmissible
-          hCommonAtAdmissible
-      apply FirstOrder.Derives.iffIntro
-      · have hDirectAt' :=
-          FirstOrder.Derives.context_weaken_cons (assumption := x#element ∈ₘ candidate)
-            hDirectAt
-        have hCommon :=
-          FirstOrder.Derives.iffElimRight
-            hDirectAt' (.assumption (by simp)
-              )
-        have hCommonAtSourceRaw :=
-          FirstOrder.Derives.forall_elim
-            (term := source) hCommon
-        have hCommonAtSource : (x#element ∈ₘ candidate) ::
-                direct :: [source_mem] ⊢ₘ (source ∈ₘ family) ⟶ₘ (x#element ∈ₘ source) := by
-          simpa [common_at, Formula.openAt,
-            Term.openAt, hFamilyOpenSource] using
-              hCommonAtSourceRaw
-        have hSourceMem : (x#element ∈ₘ candidate) ::
-                direct :: [source_mem] ⊢ₘ
-              source ∈ₘ family :=
-          .assumption (by simp [source_mem])
-        exact FirstOrder.Derives.conjIntro (FirstOrder.Derives.impElim
-            hCommonAtSource hSourceMem)
-          hCommon
-      · have hConjunction : ((x#element ∈ₘ source) ∧ₘ common_at) ::
-                direct :: [source_mem] ⊢ₘ (x#element ∈ₘ source) ∧ₘ
-                common_at :=
-          .assumption (by simp)
-        have hCommon :=
-          FirstOrder.Derives.conjElimRight
-            hConjunction
-        have hDirectAt' :=
-          FirstOrder.Derives.context_weaken_cons (assumption := (x#element ∈ₘ source) ∧ₘ
-                common_at)
-            hDirectAt
-        exact FirstOrder.Derives.iffElimLeft
-          hDirectAt' hCommon
-    have hSeparationAtOpened :
-        direct :: [source_mem] ⊢ₘ
-          Formula.openAt SetSort.set 0 (x#element) separation_body := by
-      simpa [separation_body, common_at,
-        Formula.openAt, Formula.next_depth,
-        Term.openAt, hFamilyOpenOne,
-        hSourceOpen, hCandidateOpen] using
-          hSeparationAt
-    have hGeneralized :=
-      FirstOrder.Derives.forall_intro (T := (Theory.empty : SetTheory)) (Γ := [direct, source_mem]) (sort := SetSort.set) (eigen := element) (body :=
-          Formula.openAt SetSort.set 0 (x#element) separation_body) (by
-          intro formula hFormula
-          cases hFormula) (by
-          intro formula hFormula
-          rcases List.mem_cons.mp hFormula with rfl | hFormula
-          · exact hElementFreshDirect
-          · rcases List.mem_singleton.mp hFormula with rfl
-            exact hElementFreshSourceMem)
-        hSeparationAtOpened
-    simpa [separation,
-      intersection_separation_spec,
-      Formula.closeFreeAt_openAt
-        SetSort.set element 0 separation_body
-        hElementFreshSeparationBody] using hGeneralized
-/-- 交集候选是族中每个成员的子集成员条件。 -/
-theorem intersection_spec_implies_subset_condition_of_mem (family candidate member : SetTerm) (hFamily : Term.Admissible family SetSort.set)
-    (hCandidate : Term.Admissible candidate SetSort.set) (hMember : Term.Admissible member SetSort.set) :
-    ⊢ₘ
-      intersection_spec family candidate ⟶ₘ ((member ∈ₘ family) ⟶ₘ
-          subset_condition candidate member) := by
-  let spec := intersection_spec family candidate
-  let member_mem : SetFormula := member ∈ₘ family
-  let subset_body : SetFormula := (bₛ#0 ∈ₘ candidate) ⟶ₘ (bₛ#0 ∈ₘ member)
-  let element :=
-    FreshVariable.fresh_id SetSort.set
-      [spec, member_mem, subset_body]
-  let common_at : SetFormula :=
-    ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ family) ⟶ₘ (x#element ∈ₘ bₛ#0)
-  have hElementFreshSpec : (SetSort.set, element) freshForₘ spec := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hElementFreshMemberMem : (SetSort.set, element) freshForₘ
-        member_mem := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hElementFreshSubsetBody : (SetSort.set, element) freshForₘ
-        subset_body := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hFamilyOpenOne :
-      Term.openAt SetSort.set 1 (x#element) family =
-        family :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 1 (x#element) family hFamily.2
-  have hCandidateOpen :
-      Term.openAt SetSort.set 0 (x#element) candidate =
-        candidate :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) candidate hCandidate.2
-  have hMemberOpen :
-      Term.openAt SetSort.set 0 (x#element) member =
-        member :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) member hMember.2
-  have hFamilyOpenMember :
-      Term.openAt SetSort.set 0 member family = family :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 member family hFamily.2
-  have hSpecAdmissible :
-      Formula.Admissible spec := by
-    dsimp [spec]
-    exact intersection_spec_admissible
-      hFamily hCandidate
-  have hMemberMemAdmissible :
-      Formula.Admissible member_mem := by
-    dsimp [member_mem]
-    exact membership_formula_admissible
-      hMember hFamily
-  have hElementAdmissible :
-      Term.Admissible (x#element) SetSort.set :=
-    set_variable_admissible element
-  have hElementMemCandidateAdmissible :
-      Formula.Admissible (x#element ∈ₘ candidate) :=
-    membership_formula_admissible
-      hElementAdmissible hCandidate
-  change ⊢ₘ spec ⟶ₘ (member_mem ⟶ₘ (∀ₘ[SetSort.set], subset_body))
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  have hSpec :
-      member_mem :: [spec] ⊢ₘ spec :=
-    .assumption (by simp)
-  have hSpecAtRaw :=
-    FirstOrder.Derives.forall_elim
-      (term := x#element) hSpec
-  have hSpecAt :
-      member_mem :: [spec] ⊢ₘ (x#element ∈ₘ candidate) ↔ₘ
-          common_at := by
-    simpa [spec, intersection_spec,
-      common_at, Formula.openAt,
-      Formula.next_depth, Term.openAt,
-      hFamilyOpenOne, hCandidateOpen] using
-        hSpecAtRaw
-  have hSubsetAt :
-      member_mem :: [spec] ⊢ₘ (x#element ∈ₘ candidate) ⟶ₘ (x#element ∈ₘ member) := by
-    nd_apply FirstOrder.Derives.impIntro
-    have hSpecAt' :=
-      FirstOrder.Derives.context_weaken_cons (assumption := x#element ∈ₘ candidate)
-        hSpecAt
-    have hCommon :=
-      FirstOrder.Derives.iffElimRight
-        hSpecAt' (.assumption (by simp)
-          )
-    have hCommonAtMemberRaw :=
-      FirstOrder.Derives.forall_elim
-        (term := member) hCommon
-    have hCommonAtMember : (x#element ∈ₘ candidate) ::
-            member_mem :: [spec] ⊢ₘ
-          member_mem ⟶ₘ (x#element ∈ₘ member) := by
-      simpa [common_at, member_mem,
-        Formula.openAt, Term.openAt,
-        hFamilyOpenMember] using
-          hCommonAtMemberRaw
-    exact FirstOrder.Derives.impElim
-      hCommonAtMember (.assumption (by simp)
-        )
-  have hSubsetAtOpened :
-      member_mem :: [spec] ⊢ₘ
-        Formula.openAt SetSort.set 0 (x#element) subset_body := by
-    simpa [subset_body, Formula.openAt,
-      Term.openAt, hCandidateOpen,
-      hMemberOpen] using hSubsetAt
-  have hGeneralized :=
-    FirstOrder.Derives.forall_intro (T := (Theory.empty : SetTheory)) (Γ := [member_mem, spec]) (sort := SetSort.set) (eigen := element) (body :=
-        Formula.openAt SetSort.set 0 (x#element) subset_body) (by
-        intro formula hFormula
-        cases hFormula) (by
-        intro formula hFormula
-        rcases List.mem_cons.mp hFormula with rfl | hFormula
-        · exact hElementFreshMemberMem
-        · rcases List.mem_singleton.mp hFormula with rfl
-          exact hElementFreshSpec)
-      hSubsetAtOpened
-  simpa [subset_condition,
-    Formula.closeFreeAt_openAt
-      SetSort.set element 0 subset_body
-      hElementFreshSubsetBody] using hGeneralized
-/--
-交集候选是族中每个成员的子集。
-这比文献引理 2.1 更强：非空性由 `member ∈ family` 自动蕴含，无需重复列出。
--/
-theorem intersection_spec_implies_subset_of_mem (family candidate member : SetTerm) (hFamily : Term.Admissible family SetSort.set)
-    (hCandidate : Term.Admissible candidate SetSort.set) (hMember : Term.Admissible member SetSort.set) :
-    ⊢ₘ[subset_theory]
-      intersection_spec family candidate ⟶ₘ ((member ∈ₘ family) ⟶ₘ (candidate ⊆ₘ member)) := by
-  let spec := intersection_spec family candidate
-  let member_mem : SetFormula := member ∈ₘ family
-  have hSpecAdmissible :
-      Formula.Admissible spec := by
-    dsimp [spec]
-    exact intersection_spec_admissible
-      hFamily hCandidate
-  have hMemberMemAdmissible :
-      Formula.Admissible member_mem := by
-    dsimp [member_mem]
-    exact membership_formula_admissible
-      hMember hFamily
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  have hConditionImp :
-      member_mem :: [spec] ⊢ₘ[subset_theory]
-        spec ⟶ₘ (member_mem ⟶ₘ
-            subset_condition candidate member) :=
-    FirstOrder.Derives.context_weaken_cons (assumption := member_mem) <|
-      FirstOrder.Derives.context_weaken_cons (assumption := spec) <|
-        FirstOrder.Derives.of_empty <|
-          intersection_spec_implies_subset_condition_of_mem
-            family candidate member
-            hFamily hCandidate hMember
-  have hCondition :=
-    FirstOrder.Derives.impElim (FirstOrder.Derives.impElim
-      hConditionImp (.assumption (by simp)
-          )) (.assumption (by simp))
-  have hDefinition :
-      member_mem :: [spec] ⊢ₘ[subset_theory]
-        subset_definition_instance
-          candidate member :=
-    FirstOrder.Derives.context_weaken_cons (assumption := member_mem) <|
-      FirstOrder.Derives.context_weaken_cons (assumption := spec) <|
-        subset_definition_instance_derives_of_admissible
-          candidate member hCandidate hMember
-  exact FirstOrder.Derives.iffElimLeft
-    hDefinition hCondition
-/-- 同一族的两个直接交集候选必相等。 -/
-theorem intersection_unique (family left right : SetTerm) (hFamily : Term.Admissible family SetSort.set) (hLeft : Term.Admissible left SetSort.set)
-    (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[extensionality_theory]
+  apply FirstOrder.Derives.imp_intro
+  unfold intersection_separation_spec intersection_spec
+  apply Metatheory.Derives.forall_iff_mono
+  let element : SetOpenTerm (SetSort.set :: free) :=
+    FreshVariable.newest
+      (σ := signature) (free := free) SetSort.set
+  let common : SetOpenFormula (SetSort.set :: free) :=
+    intersection_member_condition
+      (family.weakenFree SetSort.set) element
+  let sourceMember : SetOpenFormula (SetSort.set :: free) :=
+    element ∈ₘ source.weakenFree SetSort.set
+  have hSourceMember :
+      FreshVariable.extendContext SetSort.set
+        ((source ∈ₘ family) :: Γ) ⊢ₘ[T]
+          (source.weakenFree SetSort.set ∈ₘ
+            family.weakenFree SetSort.set) :=
+    FirstOrder.Derives.assumption (by
+      simp [FreshVariable.extendContext])
+  have hCondition :
+      FreshVariable.extendContext SetSort.set
+        ((source ∈ₘ family) :: Γ) ⊢ₘ[T]
+          (sourceMember ∧ₘ common) ↔ₘ common := by
+    apply FirstOrder.Derives.iff_intro
+    · exact FirstOrder.Derives.conj_elim_right
+        (FirstOrder.Derives.assumption List.mem_cons_self)
+    · have hCommon :
+          common :: FreshVariable.extendContext SetSort.set
+            ((source ∈ₘ family) :: Γ) ⊢ₘ[T] common :=
+        FirstOrder.Derives.assumption List.mem_cons_self
+      have hElementSource := FirstOrder.Derives.imp_elim
+        (FirstOrder.Derives.imp_elim
+          (intersection_member_condition_elim
+            (T := T)
+            (Γ := common :: FreshVariable.extendContext SetSort.set
+              ((source ∈ₘ family) :: Γ))
+            (family.weakenFree SetSort.set)
+            (source.weakenFree SetSort.set) element)
+          hCommon)
+        (FirstOrder.Derives.context_weaken_cons hSourceMember)
+      exact FirstOrder.Derives.conj_intro hElementSource hCommon
+  have hCongruence := Metatheory.Derives.iff_right_congr_m
+    (φ := element ∈ₘ candidate.weakenFree SetSort.set) hCondition
+  simpa [intersection_member_condition, element, common, sourceMember,
+    FreshVariable.newest] using! hCongruence
+
+/-- 同一族的两个交集候选必相等。 -/
+theorem intersection_unique
+    {free : SetContext} {Γ : Context signature free}
+    (family left right : SetOpenTerm free) :
+    Γ ⊢ₘ[extensionality_theory]
       intersection_spec family left ⟶ₘ
         intersection_spec family right ⟶ₘ (left ≐ₘ right) := by
-  simpa [intersection_spec,
-    membership_specification] using
-    membership_specification_unique
-      left right (∀ₘ[SetSort.set], (bₛ#0 ∈ₘ family) ⟶ₘ (bₛ#1 ∈ₘ bₛ#0))
-      hLeft hRight (intersection_spec_admissible
-        hFamily hLeft) (intersection_spec_admissible
-        hFamily hRight)
-/--
-从两个不同族成员上分离出的公共元素集合相等。
-这就是文献引理 2.3 的现代接口；非空前提已由两个成员假设吸收。
--/
-theorem intersection_choice_independent (family first_source second_source left right : SetTerm) (hFamily : Term.Admissible family SetSort.set)
-    (hFirstSource : Term.Admissible first_source SetSort.set) (hSecondSource : Term.Admissible second_source SetSort.set)
-    (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[extensionality_theory] (first_source ∈ₘ family) ⟶ₘ ((second_source ∈ₘ family) ⟶ₘ (intersection_separation_spec
-              family first_source left ⟶ₘ (intersection_separation_spec
-                family second_source right ⟶ₘ (left ≐ₘ right)))) := by
-  let first_mem : SetFormula :=
-    first_source ∈ₘ family
-  let second_mem : SetFormula :=
-    second_source ∈ₘ family
-  let left_separation :=
-    intersection_separation_spec
-      family first_source left
-  let right_separation :=
-    intersection_separation_spec
-      family second_source right
-  let left_direct := intersection_spec family left
-  let right_direct := intersection_spec family right
-  have hFirstMemAdmissible :
-      Formula.Admissible first_mem := by
-    dsimp [first_mem]
-    exact membership_formula_admissible
-      hFirstSource hFamily
-  have hSecondMemAdmissible :
-      Formula.Admissible second_mem := by
-    dsimp [second_mem]
-    exact membership_formula_admissible
-      hSecondSource hFamily
-  have hLeftSeparationAdmissible :
-      Formula.Admissible left_separation := by
-    dsimp [left_separation]
-    exact intersection_separation_spec_admissible
-      hFamily hFirstSource hLeft
-  have hRightSeparationAdmissible :
-      Formula.Admissible right_separation := by
-    dsimp [right_separation]
-    exact intersection_separation_spec_admissible
-      hFamily hSecondSource hRight
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  have hFirstBridgeImp :
-      right_separation :: left_separation ::
-          second_mem :: [first_mem]
-        ⊢ₘ[extensionality_theory]
-          first_mem ⟶ₘ (left_separation ↔ₘ left_direct) :=
-    FirstOrder.Derives.context_weaken_cons (assumption := right_separation) <|
-      FirstOrder.Derives.context_weaken_cons (assumption := left_separation) <|
-        FirstOrder.Derives.context_weaken_cons (assumption := second_mem) <|
-          FirstOrder.Derives.context_weaken_cons (assumption := first_mem) <|
-            FirstOrder.Derives.of_empty <|
-              by
-                simpa [first_mem, left_separation,
-                  left_direct] using
-                  intersection_separation_spec_iff_of_mem
-                    family first_source left
-                    hFamily hFirstSource hLeft
-  have hSecondBridgeImp :
-      right_separation :: left_separation ::
-          second_mem :: [first_mem]
-        ⊢ₘ[extensionality_theory]
-          second_mem ⟶ₘ (right_separation ↔ₘ right_direct) :=
-    FirstOrder.Derives.context_weaken_cons (assumption := right_separation) <|
-      FirstOrder.Derives.context_weaken_cons (assumption := left_separation) <|
-        FirstOrder.Derives.context_weaken_cons (assumption := second_mem) <|
-          FirstOrder.Derives.context_weaken_cons (assumption := first_mem) <|
-            FirstOrder.Derives.of_empty <|
-              by
-                simpa [second_mem, right_separation,
-                  right_direct] using
-                  intersection_separation_spec_iff_of_mem
-                    family second_source right
-                    hFamily hSecondSource hRight
-  have hFirstBridge :=
-    FirstOrder.Derives.impElim
-      hFirstBridgeImp (.assumption (by simp))
-  have hSecondBridge :=
-    FirstOrder.Derives.impElim
-      hSecondBridgeImp (.assumption (by simp))
-  have hLeftDirect :
-      right_separation :: left_separation ::
-          second_mem :: [first_mem]
-        ⊢ₘ[extensionality_theory]
-          left_direct :=
-    FirstOrder.Derives.iffElimRight
-      hFirstBridge (.assumption (by simp))
-  have hRightDirect :
-      right_separation :: left_separation ::
-          second_mem :: [first_mem]
-        ⊢ₘ[extensionality_theory]
-          right_direct :=
-    FirstOrder.Derives.iffElimRight
-      hSecondBridge (.assumption (by simp))
-  have hUnique :
-      right_separation :: left_separation ::
-          second_mem :: [first_mem]
-        ⊢ₘ[extensionality_theory]
-          left_direct ⟶ₘ (right_direct ⟶ₘ (left ≐ₘ right)) :=
-    FirstOrder.Derives.context_weaken_cons (assumption := right_separation) <|
-      FirstOrder.Derives.context_weaken_cons (assumption := left_separation) <|
-        FirstOrder.Derives.context_weaken_cons (assumption := second_mem) <|
-          FirstOrder.Derives.context_weaken_cons (assumption := first_mem) <|
-            by
-              simpa [left_direct, right_direct] using
-                intersection_unique
-                  family left right
-                  hFamily hLeft hRight
-  exact FirstOrder.Derives.impElim (FirstOrder.Derives.impElim
-      hUnique hLeftDirect)
-    hRightDirect
-/-- 同一承载集合上的两个交集分离候选必相等。 -/
-theorem intersection_separation_unique_of_mem (family source left right : SetTerm) (hFamily : Term.Admissible family SetSort.set)
-    (hSource : Term.Admissible source SetSort.set) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[extensionality_theory] (source ∈ₘ family) ⟶ₘ (intersection_separation_spec
-            family source left ⟶ₘ (intersection_separation_spec
-              family source right ⟶ₘ (left ≐ₘ right))) := by
-  let source_mem : SetFormula := source ∈ₘ family
-  let left_separation :=
-    intersection_separation_spec family source left
-  let right_separation :=
-    intersection_separation_spec family source right
-  have hSourceMemAdmissible :
-      Formula.Admissible source_mem := by
-    dsimp [source_mem]
-    exact membership_formula_admissible
-      hSource hFamily
-  have hLeftSeparationAdmissible :
-      Formula.Admissible left_separation := by
-    dsimp [left_separation]
-    exact intersection_separation_spec_admissible
-      hFamily hSource hLeft
-  have hRightSeparationAdmissible :
-      Formula.Admissible right_separation := by
-    dsimp [right_separation]
-    exact intersection_separation_spec_admissible
-      hFamily hSource hRight
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  have hGeneral :
-      right_separation :: left_separation ::
-          [source_mem] ⊢ₘ[extensionality_theory]
-        source_mem ⟶ₘ (source_mem ⟶ₘ (left_separation ⟶ₘ (right_separation ⟶ₘ (left ≐ₘ right)))) :=
-    FirstOrder.Derives.context_weaken_cons (assumption := right_separation) <|
-      FirstOrder.Derives.context_weaken_cons (assumption := left_separation) <|
-        FirstOrder.Derives.context_weaken_cons (assumption := source_mem) <|
-          by
-            simpa [source_mem, left_separation,
-              right_separation] using
-              intersection_choice_independent
-                family source source left right
-                hFamily hSource hSource hLeft hRight
-  have hStepOne :=
-    FirstOrder.Derives.impElim
-      hGeneral (.assumption (by simp))
-  have hStepTwo :=
-    FirstOrder.Derives.impElim
-      hStepOne (.assumption (by simp))
-  have hStepThree :=
-    FirstOrder.Derives.impElim
-      hStepTwo (.assumption (by simp))
-  exact FirstOrder.Derives.impElim
-    hStepThree (.assumption (by simp [right_separation]))
-/-- 已选中的族成员可以直接消费交集分离存在公理。 -/
-theorem intersection_separation_exists_of_mem (family source : SetTerm) (hFamily : Term.Admissible family SetSort.set)
-    (hSource : Term.Admissible source SetSort.set) :
-    ⊢ₘ[intersection_base_theory] (source ∈ₘ family) ⟶ₘ
-        intersection_separation_exists
-          family source := by
-  nd_apply FirstOrder.Derives.impIntro
-  exact FirstOrder.Derives.context_weaken_cons (intersection_separation_exists_derives
-      family source hFamily hSource)
+  let element : SetOpenTerm (SetSort.set :: free) := .fvar .here
+  let condition : SetOpenFormula (SetSort.set :: free) :=
+    intersection_member_condition
+      (family.weakenFree SetSort.set) element
+  simpa [intersection_spec, condition, element] using
+    (membership_specification_unique
+      (Γ := Γ) left right condition)
+
 /-- 一个直接交集候选立即见证交集存在。 -/
-theorem intersection_spec_implies_exists (family candidate : SetTerm) (hFamily : Term.Admissible family SetSort.set)
-    (hCandidate : Term.Admissible candidate SetSort.set) :
-    ⊢ₘ
+theorem intersection_spec_implies_exists
+    {T : SetTheory} {free : SetContext} {Γ : Context signature free}
+    (family candidate : SetOpenTerm free) :
+    Γ ⊢ₘ[T]
       intersection_spec family candidate ⟶ₘ
         intersection_exists family := by
-  nd_apply FirstOrder.Derives.impIntro
-  unfold intersection_exists
-  nd_apply FirstOrder.Derives.exists_intro (term := candidate)
-  have hFamilyOpenTwo :
-      Term.openAt SetSort.set 2 candidate family = family :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 2 candidate family hFamily.2
-  simpa [intersection_spec, Formula.openAt,
-    Formula.next_depth, Term.openAt,
-    hFamilyOpenTwo] using (show
-        [intersection_spec family candidate] ⊢ₘ
-          intersection_spec family candidate from
-        .assumption (by simp))
-/-- 非空族的交集存在，由选中成员上的分离实例构造。 -/
-theorem intersection_exists_derives (family : SetTerm) (hFamily : Term.Admissible family SetSort.set) :
-    ⊢ₘ[intersection_base_theory]
-      set_nonempty_condition family ⟶ₘ
-        intersection_exists family := by
-  let nonempty := set_nonempty_condition family
-  let conclusion := intersection_exists family
-  let member_bound_body : SetFormula :=
-    bₛ#0 ∈ₘ family
-  let member :=
-    FreshVariable.fresh_id SetSort.set
-      [nonempty, conclusion, member_bound_body]
-  let member_point :=
-    Formula.openAt SetSort.set 0 (x#member) member_bound_body
-  have hMemberFreshNonempty : (SetSort.set, member) freshForₘ
-        nonempty := by
-    dsimp [member]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hMemberFreshConclusion : (SetSort.set, member) freshForₘ
-        conclusion := by
-    dsimp [member]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hMemberFreshBoundBody : (SetSort.set, member) freshForₘ
-        member_bound_body := by
-    dsimp [member]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hFamilyOpenMember :
-      Term.openAt SetSort.set 0 (x#member) family =
-        family :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#member) family hFamily.2
-  have hNonemptyAdmissible :
-      Formula.Admissible nonempty := by
-    dsimp [nonempty]
-    exact set_nonempty_condition_admissible
-      hFamily
-  have hMemberPointAdmissible :
-      Formula.Admissible member_point := by
-    have hOpened :=
-      Formula.Admissible.exists_openAt (σ := signature) (body := bₛ#0 ∈ₘ family) (term := x#member)
-        SetSort.set (by
-          simpa [set_has_member] using
-            set_has_member_admissible hFamily) (set_variable_admissible member)
-    simpa [set_has_member, member_point,
-      member_bound_body, Formula.openAt,
-      Term.openAt, hFamilyOpenMember] using
-        hOpened
-  change
-    ⊢ₘ[intersection_base_theory]
-      nonempty ⟶ₘ conclusion
-  nd_apply FirstOrder.Derives.impIntro
+  apply FirstOrder.Derives.imp_intro
+  apply FirstOrder.Derives.exists_intro candidate
+  simpa [intersection_exists, intersection_spec,
+    intersection_member_condition, membership_specification,
+    Formula.instantiateFreeTop, Formula.substituteFree,
+    Substitution.free_map, Substitution.instantiateFreeTop,
+    Formula.substitute, Formula.substituteMapped,
+    Term.substituteMapped, Arguments.substituteMapped,
+    VariableSubstitution.liftFree,
+    VariableSubstitution.instantiateFreeTop,
+    VariableSubstitution.weakenBound,
+    VariableSubstitution.boundId,
+    VariableSubstitution.freeId] using
+    (FirstOrder.Derives.assumption (T := T) List.mem_cons_self :
+      intersection_spec family candidate :: Γ ⊢ₘ[T]
+        intersection_spec family candidate)
+
+/-- 交集存在式与任意新 free 参数槽的 weakening 严格交换。 -/
+@[simp] theorem intersection_exists_weakenFree
+    {free : SetContext} (introduced : SetSort)
+    (family : SetOpenTerm free) :
+    (intersection_exists family).weakenFree introduced =
+      intersection_exists (family.weakenFree introduced) := by
+  rw [Formula.weakenFree_eq_renameMapped]
+  exact intersection_exists_renameMapped
+    (VariableRenaming.weaken introduced) family
+
+/-- 已知族中一个成员时，分离构造给出交集存在。 -/
+theorem intersection_exists_of_member
+    {free : SetContext} {Γ : Context signature free}
+    (family source : SetOpenTerm free) :
+    Γ ⊢ₘ[intersection_base_theory]
+      (source ∈ₘ family) ⟶ₘ intersection_exists family := by
+  apply FirstOrder.Derives.imp_intro
+  have hSeparation :
+      (source ∈ₘ family) :: Γ ⊢ₘ[intersection_base_theory]
+        intersection_separation_exists family source :=
+    FirstOrder.Derives.context_weaken_cons
+      (intersection_separation_exists_derives
+        (Γ := Γ) family source)
+  apply FirstOrder.Derives.exists_elim (by
+    simpa [intersection_separation_exists] using hSeparation)
+  let candidate : SetOpenTerm (SetSort.set :: free) :=
+    FreshVariable.newest
+      (σ := signature) (free := free) SetSort.set
+  let separation : SetOpenFormula (SetSort.set :: free) :=
+    intersection_separation_spec
+      (family.weakenFree SetSort.set)
+      (source.weakenFree SetSort.set) candidate
+  let Δ : Context signature (SetSort.set :: free) :=
+    separation :: FreshVariable.extendContext SetSort.set
+      ((source ∈ₘ family) :: Γ)
+  have hSourceMember : Δ ⊢ₘ[intersection_base_theory]
+      source.weakenFree SetSort.set ∈ₘ family.weakenFree SetSort.set :=
+    FirstOrder.Derives.assumption (by
+      simp [Δ, FreshVariable.extendContext])
+  have hSeparationSpec : Δ ⊢ₘ[intersection_base_theory]
+      intersection_separation_spec
+        (family.weakenFree SetSort.set)
+        (source.weakenFree SetSort.set) candidate := by
+    simpa [Δ, separation] using
+      (FirstOrder.Derives.assumption
+        (T := intersection_base_theory)
+        (Γ := Δ) List.mem_cons_self)
+  have hBridge := FirstOrder.Derives.imp_elim
+    (intersection_separation_spec_iff_of_mem
+      (T := intersection_base_theory) (Γ := Δ)
+      (family.weakenFree SetSort.set)
+      (source.weakenFree SetSort.set) candidate)
+    hSourceMember
+  have hDirect := FirstOrder.Derives.iff_elim_left hBridge hSeparationSpec
+  have hExists := FirstOrder.Derives.exists_intro_newest hDirect
+  simpa [intersection_exists, intersection_spec,
+    intersection_member_condition, membership_specification,
+    candidate, FreshVariable.newest] using! hExists
+
+/-- 非空族的交集存在。 -/
+theorem intersection_exists_derives
+    {free : SetContext} {Γ : Context signature free}
+    (family : SetOpenTerm free) :
+    Γ ⊢ₘ[intersection_base_theory]
+      set_nonempty_condition family ⟶ₘ intersection_exists family := by
+  apply FirstOrder.Derives.imp_intro
+  have hNonempty :
+      set_nonempty_condition family :: Γ ⊢ₘ[intersection_base_theory]
+        set_nonempty_condition family :=
+    FirstOrder.Derives.assumption List.mem_cons_self
   have hHasMemberImp :
-      [nonempty] ⊢ₘ[intersection_base_theory]
-        nonempty ⟶ₘ set_has_member family :=
-    FirstOrder.Derives.context_weaken_cons <|
-      FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          empty_set_symbol_theory_subset_intersection_base_theory
-            hFormula) (by
-          simpa [nonempty] using
-            set_nonempty_implies_has_member
-              family hFamily)
-  have hHasMember :=
-    FirstOrder.Derives.impElim
-      hHasMemberImp (.assumption (by simp))
-  have hHasMemberClosed :
-      [nonempty] ⊢ₘ[intersection_base_theory] (∃ₘ[SetSort.set, member],
-          member_point) := by
-    simpa [set_has_member,
-      member_point, member_bound_body,
-      Formula.closeFreeAt_openAt
-        SetSort.set member 0 member_bound_body
-        hMemberFreshBoundBody] using hHasMember
-  have hMemberCase :
-      member_point :: [nonempty]
-        ⊢ₘ[intersection_base_theory]
-          conclusion := by
-    have hMemberMem :
-        member_point :: [nonempty]
-          ⊢ₘ[intersection_base_theory]
-            x#member ∈ₘ family := by
-      simpa [member_point, member_bound_body,
-        Formula.openAt, Term.openAt,
-        hFamilyOpenMember] using (show
-          member_point :: [nonempty]
-            ⊢ₘ[intersection_base_theory]
-          member_point from
-          .assumption (by simp))
-    let separation_bound_body : SetFormula :=
-      ∀ₘ[SetSort.set], (bₛ#0 ∈ₘ bₛ#1) ↔ₘ ((bₛ#0 ∈ₘ x#member) ∧ₘ (∀ₘ[SetSort.set], (bₛ#0 ∈ₘ family) ⟶ₘ (bₛ#1 ∈ₘ bₛ#0)))
-    let candidate :=
-      FreshVariable.fresh_id SetSort.set
-        [separation_bound_body, member_point,
-          nonempty, conclusion]
-    let candidate_point :=
-      Formula.openAt SetSort.set 0 (x#candidate) separation_bound_body
-    have hCandidateFreshSeparationBody : (SetSort.set, candidate) freshForₘ
-          separation_bound_body := by
-      dsimp [candidate]
-      exact FreshVariable.fresh_id_not_mem_m (by simp)
-    have hCandidateFreshMemberPoint : (SetSort.set, candidate) freshForₘ
-          member_point := by
-      dsimp [candidate]
-      exact FreshVariable.fresh_id_not_mem_m (by simp)
-    have hCandidateFreshNonempty : (SetSort.set, candidate) freshForₘ
-          nonempty := by
-      dsimp [candidate]
-      exact FreshVariable.fresh_id_not_mem_m (by simp)
-    have hCandidateFreshConclusion : (SetSort.set, candidate) freshForₘ
-          conclusion := by
-      dsimp [candidate]
-      exact FreshVariable.fresh_id_not_mem_m (by simp)
-    have hFamilyOpenCandidateTwo :
-        Term.openAt SetSort.set 2 (x#candidate) family =
-          family :=
-      Term.openAt_eq_self_of_boundClosed
-        SetSort.set 2 (x#candidate) family hFamily.2
-    have hSeparationExists :
-        member_point :: [nonempty]
-          ⊢ₘ[intersection_base_theory]
-            intersection_separation_exists
-              family (x#member) :=
-      FirstOrder.Derives.context_weaken_cons (assumption := member_point) <|
-        FirstOrder.Derives.context_weaken_cons (assumption := nonempty) <|
-          intersection_separation_exists_derives
-            family (x#member)
-            hFamily (set_variable_admissible member)
-    have hCandidatePointAdmissible :
-        Formula.Admissible candidate_point := by
-      have hOpened :=
-        Formula.Admissible.exists_openAt (σ := signature) (body := separation_bound_body) (term := x#candidate)
-          SetSort.set (by
-            simpa [intersection_separation_exists,
-              separation_bound_body] using
-              hSeparationExists.admissible) (set_variable_admissible candidate)
-      simpa [intersection_separation_exists,
-        candidate_point, separation_bound_body,
-        Formula.openAt, Formula.next_depth,
-        Term.openAt, hFamilyOpenCandidateTwo] using
-          hOpened
-    have hSeparationExistsClosed :
-        member_point :: [nonempty]
-          ⊢ₘ[intersection_base_theory] (∃ₘ[SetSort.set, candidate],
-              candidate_point) := by
-      simpa [intersection_separation_exists,
-        separation_bound_body, candidate_point,
-        Formula.closeFreeAt_openAt
-          SetSort.set candidate 0
-          separation_bound_body
-          hCandidateFreshSeparationBody] using
-            hSeparationExists
-    have hCandidateCase :
-        candidate_point :: member_point :: [nonempty]
-          ⊢ₘ[intersection_base_theory]
-            conclusion := by
-      have hSeparationSpec :
-          candidate_point :: member_point :: [nonempty]
-            ⊢ₘ[intersection_base_theory]
-              intersection_separation_spec
-                family (x#member) (x#candidate) := by
-        simpa [candidate_point,
-          separation_bound_body,
-          intersection_separation_spec,
-          Formula.openAt, Formula.next_depth,
-          Term.openAt,
-          hFamilyOpenCandidateTwo] using (show
-            candidate_point :: member_point :: [nonempty]
-              ⊢ₘ[intersection_base_theory]
-                candidate_point from
-            .assumption (by simp))
-      have hBridgeImp :
-          candidate_point :: member_point :: [nonempty]
-            ⊢ₘ[intersection_base_theory] (x#member ∈ₘ family) ⟶ₘ (intersection_separation_spec
-                    family (x#member) (x#candidate) ↔ₘ
-                  intersection_spec
-                    family (x#candidate)) :=
-        FirstOrder.Derives.context_weaken_cons (assumption := candidate_point) <|
-          FirstOrder.Derives.context_weaken_cons (assumption := member_point) <|
-            FirstOrder.Derives.context_weaken_cons (assumption := nonempty) <|
-              FirstOrder.Derives.of_empty <|
-                intersection_separation_spec_iff_of_mem
-                  family (x#member) (x#candidate)
-                  hFamily (set_variable_admissible member) (set_variable_admissible candidate)
-      have hMemberMem' :
-          candidate_point :: member_point :: [nonempty]
-            ⊢ₘ[intersection_base_theory]
-              x#member ∈ₘ family :=
-        FirstOrder.Derives.context_weaken_cons (assumption := candidate_point)
-          hMemberMem
-      have hBridge :=
-        FirstOrder.Derives.impElim
-          hBridgeImp hMemberMem'
-      have hDirect :=
-        FirstOrder.Derives.iffElimRight
-          hBridge hSeparationSpec
-      have hExistsImp :
-          candidate_point :: member_point :: [nonempty]
-            ⊢ₘ[intersection_base_theory]
-              intersection_spec
-                  family (x#candidate) ⟶ₘ
-                conclusion :=
-        FirstOrder.Derives.context_weaken_cons (assumption := candidate_point) <|
-          FirstOrder.Derives.context_weaken_cons (assumption := member_point) <|
-            FirstOrder.Derives.context_weaken_cons (assumption := nonempty) <|
-              FirstOrder.Derives.of_empty <|
-                by
-                  simpa [conclusion] using
-                    intersection_spec_implies_exists
-                      family (x#candidate)
-                      hFamily (set_variable_admissible candidate)
-      exact FirstOrder.Derives.impElim
-        hExistsImp hDirect
-    exact FirstOrder.Derives.exists_elim (by
-        intro formula hFormula
-        have hSentence :=
-          intersection_base_theory_sentence hFormula
-        rw [hSentence.2]
-        simp) (by
-        intro formula hFormula
-        rcases List.mem_cons.mp hFormula with rfl | hFormula
-        · exact hCandidateFreshMemberPoint
-        · rcases List.mem_singleton.mp hFormula with rfl
-          exact hCandidateFreshNonempty)
-      hCandidateFreshConclusion
-      hSeparationExistsClosed hCandidateCase
-  exact FirstOrder.Derives.exists_elim (by
-      intro formula hFormula
-      have hSentence :=
-        intersection_base_theory_sentence hFormula
-      rw [hSentence.2]
-      simp) (by
-      intro formula hFormula
-      rcases List.mem_singleton.mp hFormula with rfl
-      exact hMemberFreshNonempty)
-    hMemberFreshConclusion
-    hHasMemberClosed hMemberCase
+      set_nonempty_condition family :: Γ ⊢ₘ[intersection_base_theory]
+        set_nonempty_condition family ⟶ₘ set_has_member family :=
+    FirstOrder.Derives.context_weaken_cons
+      (FirstOrder.Derives.theory_weaken
+        empty_set_symbol_theory_subset_intersection_base_theory
+        (set_nonempty_implies_has_member (Γ := Γ) family))
+  have hHasMember := FirstOrder.Derives.imp_elim hHasMemberImp hNonempty
+  apply FirstOrder.Derives.exists_elim (by
+    simpa [set_has_member] using hHasMember)
+  let member : SetOpenTerm (SetSort.set :: free) :=
+    FreshVariable.newest
+      (σ := signature) (free := free) SetSort.set
+  let membership : SetOpenFormula (SetSort.set :: free) :=
+    member ∈ₘ family.weakenFree SetSort.set
+  let Δ : Context signature (SetSort.set :: free) :=
+    membership :: FreshVariable.extendContext SetSort.set
+      (set_nonempty_condition family :: Γ)
+  have hMember : Δ ⊢ₘ[intersection_base_theory]
+      member ∈ₘ family.weakenFree SetSort.set := by
+    simpa [Δ, membership] using
+      (FirstOrder.Derives.assumption
+        (T := intersection_base_theory)
+        (Γ := Δ) List.mem_cons_self)
+  have hExists := FirstOrder.Derives.imp_elim
+    (intersection_exists_of_member
+      (Γ := Δ) (family.weakenFree SetSort.set) member)
+    hMember
+  rw [intersection_exists_weakenFree]
+  exact hExists
+
 end BasicSetTheory
 end Nonlogical
 end FirstOrder

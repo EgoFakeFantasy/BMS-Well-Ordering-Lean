@@ -50,6 +50,8 @@ private def infiniteCardinalSelfMultiplicationAt (𝒞 : Definitional.Project.Or
       Definitional.Project.Formula.extensionalEq,
       Definitional.Formula.FreeClosed,
       Definitional.Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 无限基数自乘封闭模式的模型语义。 -/
 private theorem satisfies_infiniteCardinalSelfMultiplicationAt_iff
     {ℳ : Structure.{u}}

@@ -143,7 +143,8 @@ theorem expand_freeClosed {σ : AtomSignature.{u}} (definitions : Definitions σ
       rw [Pure.Formula.freeSupport_bind_of_closed]
       · exact
           expand_freeClosed definitions (definitions.body symbol) (definitions.bodyFreeClosed symbol)
-      · prove_auto
+      · intro entry
+        simpa using hClosed entry
   | _, _, .neg formula, hClosed => by
       simp only [Definitional.Formula.FreeClosed] at hClosed
       simpa [expand, Pure.Formula.FreeClosed,

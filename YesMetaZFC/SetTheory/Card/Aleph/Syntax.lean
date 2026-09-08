@@ -66,6 +66,8 @@ def alephOperator (𝒞 : OrderedPairConvention) : BinarySchema 1 where
       Formula.orderedPairMem, Formula.forallMem,
       Formula.existsMem, Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest, Term.weaken]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 由超限递归得到的 Aleph 类关系。 -/
 def aleph (𝒞 : OrderedPairConvention) : BinarySchema 1 :=
   transfiniteRecursion 𝒞 (alephOperator 𝒞)

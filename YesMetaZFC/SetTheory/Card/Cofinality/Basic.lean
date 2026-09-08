@@ -212,9 +212,9 @@ theorem eq {ℳ : Structure.{u}}
     {κ μ α : ℳ.Domain} (hκ : ℳ.IsCofinality 𝕀 κ α) (hμ : ℳ.IsCofinality 𝕀 μ α) :
     κ = μ := by
   rcases hκ.minimal hμ.hasCofinalSequence with hEq | hκμ
-  · prove_auto
+  · exact hEq
   rcases hμ.minimal hκ.hasCofinalSequence with hEq | hμκ
-  · prove_auto
+  · exact hEq.symm
   have hSelf : ℳ.mem κ κ :=
     hκ.isCardinal.1.transitive μ hμκ κ hκμ
   exact False.elim <|

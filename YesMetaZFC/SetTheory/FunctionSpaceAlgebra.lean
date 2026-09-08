@@ -78,12 +78,20 @@ def constantFunctionValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
       Formula.orderedPairMem, Formula.forallMem,
       Formula.existsMem, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals
+      repeat' apply (Definitional.Formula.freeClosed_weaken _).mpr
+      exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 在固定坐标处求一个函数族成员的值。 -/
 def familyEvaluationValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
   body := .existsE <| .conj (Formula.orderedPairMem 𝒞 (.bound 2) (.bound 0) (.bound 3)) (Formula.orderedPairMem 𝒞 (.bound 4) (.bound 1) (.bound 0))
   freeClosed := by
     simp [Formula.orderedPairMem,
       Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals
+      repeat' apply (Definitional.Formula.freeClosed_weaken _).mpr
+      exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 并定义域函数拆分的值关系。 -/
 def splitFunctionDomainValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
   body := .existsE <| .existsE <|
@@ -93,6 +101,10 @@ def splitFunctionDomainValue (𝒞 : OrderedPairConvention) : BinarySchema 2 whe
     simp [Formula.isRestriction, Formula.isRelation,
       Formula.forallMem, Formula.orderedPairMem,
       Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals
+      repeat' apply (Definitional.Formula.freeClosed_weaken _).mpr
+      exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 从取值于笛卡尔积的函数中读取左坐标。 -/
 def leftFunctionProjectionValue (𝒞 : OrderedPairConvention) : BinarySchema 1 where
   body := .existsE <| .existsE <|
@@ -100,6 +112,10 @@ def leftFunctionProjectionValue (𝒞 : OrderedPairConvention) : BinarySchema 1 
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals
+      repeat' apply (Definitional.Formula.freeClosed_weaken _).mpr
+      exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 从取值于笛卡尔积的函数中读取右坐标。 -/
 def rightFunctionProjectionValue (𝒞 : OrderedPairConvention) : BinarySchema 1 where
   body := .existsE <| .existsE <|
@@ -107,6 +123,10 @@ def rightFunctionProjectionValue (𝒞 : OrderedPairConvention) : BinarySchema 1
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals
+      repeat' apply (Definitional.Formula.freeClosed_weaken _).mpr
+      exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 逐点合并两个函数的值为笛卡尔积编码。 -/
 def combineFunctionCoordinatesValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
   body := .existsE <| .existsE <|
@@ -115,6 +135,10 @@ def combineFunctionCoordinatesValue (𝒞 : OrderedPairConvention) : BinarySchem
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals
+      repeat' apply (Definitional.Formula.freeClosed_weaken _).mpr
+      exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 从嵌套函数读取展平后的单点值。 -/
 def uncurriedFunctionValue (𝒞 : OrderedPairConvention) : BinarySchema 1 where
   body := .existsE <| .existsE <| .existsE <|
@@ -123,12 +147,20 @@ def uncurriedFunctionValue (𝒞 : OrderedPairConvention) : BinarySchema 1 where
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals
+      repeat' apply (Definitional.Formula.freeClosed_weaken _).mpr
+      exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 从平坦函数读取固定右坐标截面上的单点值。 -/
 def functionSectionValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
   body := .existsE <| .conj (𝒞.code (.bound 0) (.bound 2) (.bound 4)) (Formula.orderedPairMem 𝒞 (.bound 0) (.bound 1) (.bound 3))
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals
+      repeat' apply (Definitional.Formula.freeClosed_weaken _).mpr
+      exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end BinarySchema
 namespace Formula
 /-- 左坐标投影函数的对象语言刻画。 -/
@@ -168,6 +200,10 @@ def splitFunctionCodomainValue (𝒞 : OrderedPairConvention) : BinarySchema 3 w
       Formula.forallMem, Formula.existsMem,
       Formula.orderedPairMem, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals
+      repeat' apply (Definitional.Formula.freeClosed_weaken _).mpr
+      exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 固定平坦函数后，把右坐标映到相应截面函数。 -/
 def functionSection (𝒞 : OrderedPairConvention) : BinarySchema 3 where
   body := Formula.isFunctionSection 𝒞 (.bound 0) (.bound 2) (.bound 3) (.bound 4) (.bound 1)
@@ -178,6 +214,10 @@ def functionSection (𝒞 : OrderedPairConvention) : BinarySchema 3 where
       Formula.forallMem, Formula.existsMem,
       Formula.orderedPairMem, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals
+      repeat' apply (Definitional.Formula.freeClosed_weaken _).mpr
+      exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 把嵌套函数整体展平。 -/
 def uncurryFunctionValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
   body := Formula.isFunctionUncurrying 𝒞 (.bound 1) (.bound 0) (.bound 2) (.bound 3)
@@ -188,6 +228,10 @@ def uncurryFunctionValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
       Formula.forallMem, Formula.existsMem,
       Formula.orderedPairMem, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals
+      repeat' apply (Definitional.Formula.freeClosed_weaken _).mpr
+      exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end BinarySchema
 namespace Formula
 /-- 常值函数族映射模式的纸面解释。 -/
@@ -355,7 +399,7 @@ theorem denote_functionSection_iff
   simpa [BinarySchema.functionSection, BinarySchema.denote,
     Term.eval_bound_zero_push, Term.eval_bound_one_push,
     Term.eval_bound_two_push, Term.eval_bound_three_push,
-    Term.eval_bound_four_push] using
+    Term.eval_bound_four_push] using!
       satisfies_isFunctionSection_iff 𝕀 hExt ((env.push rightValue).push sectionFunction) (.bound 0) (.bound 2) (.bound 3) (.bound 4) (.bound 1)
 /-- 整体展平 schema 的纸面解释。 -/
 theorem denote_uncurryFunctionValue_iff
@@ -366,7 +410,7 @@ theorem denote_uncurryFunctionValue_iff
         input output (env.bound 0) (env.bound 1) := by
   simpa [BinarySchema.uncurryFunctionValue, BinarySchema.denote,
     Term.eval_bound_zero_push, Term.eval_bound_one_push,
-    Term.eval_bound_two_push, Term.eval_bound_three_push] using
+    Term.eval_bound_two_push, Term.eval_bound_three_push] using!
       satisfies_isFunctionUncurrying_iff 𝕀 hExt ((env.push input).push output) (.bound 1) (.bound 0) (.bound 2) (.bound 3)
 /-- 左坐标投影公式与纸面语义一致。 -/
 theorem satisfies_isLeftFunctionProjection_iff
@@ -864,7 +908,7 @@ theorem equinumerous_nestedFunctionSpace
         rcases (hSectionDefinition.2 leftValue value).mp hSectionPair with
           ⟨selectedProduct, hSelectedCode, hOutputPair⟩
         have hProductEq := 𝕀.unique hCode hSelectedCode
-        simpa [hProductEq] using hOutputPair
+        simpa [hProductEq] using! hOutputPair
     exact ⟨input, hInputMem, (Definitional.Project.Formula.denote_uncurryFunctionValue_iff
         𝕀 hZF.1 env input output).mpr hUncurrying⟩
 /--
@@ -1183,7 +1227,7 @@ theorem equinumerous_functionSpaceIntoProduct
           ⟨selectedLeft, selectedRight,
             hSelectedLeft, _, hSelectedCode⟩
         have hLeftEq := (𝕀.injective hCode hSelectedCode).1
-        simpa [hLeftEq] using hSelectedLeft
+        simpa [hLeftEq] using! hSelectedLeft
     have hRightProjection :
         ℳ.IsRightFunctionProjection 𝕀
           rightFunction input source right := by
@@ -1211,7 +1255,7 @@ theorem equinumerous_functionSpaceIntoProduct
           ⟨selectedLeft, selectedRight,
             _, hSelectedRight, hSelectedCode⟩
         have hRightEq := (𝕀.injective hCode hSelectedCode).2
-        simpa [hRightEq] using hSelectedRight
+        simpa [hRightEq] using! hSelectedRight
     exact ⟨input, hInputMem, (Definitional.Project.Formula.denote_splitFunctionCodomainValue_iff
         𝕀 hZF.1 env input output).mpr
           ⟨leftFunction, rightFunction,

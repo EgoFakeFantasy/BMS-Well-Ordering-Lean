@@ -36,6 +36,7 @@ def coreSort : SimpleType BaseSort → CoreSyntax.CoreSort
   | .base .prop => .prop
   | .base (.named id) => .named id
   | .arrow domain codomain => .arrow (coreSort domain) (coreSort codomain)
+@[implicit_reducible]
 def SearchSignature : Logic.HigherOrder.Signature where
   BaseSort := BaseSort
   FuncSymbol := CoreSyntax.Search.FunctionSymbol

@@ -12,40 +12,59 @@ namespace DeepSyntax
 open _root_.YesMetaZFC.Logic
 open _root_.YesMetaZFC.Logic.FirstOrder
 open _root_.YesMetaZFC.Automation.LogicSoundness
-def bvar {σ : SetLevel.Signature} (sort : σ.SortSymbol) (idx : Nat) : SetLevel.Term σ :=
-  .var (.bvar sort idx)
-def fvar {σ : SetLevel.Signature} (sort : σ.SortSymbol) (id : FreeVarId) : SetLevel.Term σ :=
-  .var (.fvar sort id)
-def app {σ : SetLevel.Signature} (f : σ.FuncSymbol) (args : List (SetLevel.Term σ)) :
-    SetLevel.Term σ :=
+def bvar {σ : SetLevel.Signature} {bound free : SortContext σ}
+    {sort : σ.SortSymbol} (entry : Variable bound sort) :
+    Term σ bound free sort :=
+  .bvar entry
+def fvar {σ : SetLevel.Signature} {bound free : SortContext σ}
+    {sort : σ.SortSymbol} (entry : Variable free sort) :
+    Term σ bound free sort :=
+  .fvar entry
+def app {σ : SetLevel.Signature} {bound free : SortContext σ}
+    (f : σ.FuncSymbol) (args : Arguments σ bound free (σ.funcDomain f)) :
+    Term σ bound free (σ.funcCodomain f) :=
   .app f args
-def rel {σ : SetLevel.Signature} (r : σ.RelSymbol) (args : List (SetLevel.Term σ)) :
-    SetLevel.Formula σ :=
+def rel {σ : SetLevel.Signature} {bound free : SortContext σ}
+    (r : σ.RelSymbol) (args : Arguments σ bound free (σ.relDomain r)) :
+    Formula σ bound free :=
   .rel r args
-def equal {σ : SetLevel.Signature} (left right : SetLevel.Term σ) :
-    SetLevel.Formula σ :=
+def equal {σ : SetLevel.Signature} {bound free : SortContext σ}
+    {sort : σ.SortSymbol} (left right : Term σ bound free sort) :
+    Formula σ bound free :=
   .equal left right
-def falsum {σ : SetLevel.Signature} : SetLevel.Formula σ := .falsum
-def truth {σ : SetLevel.Signature} : SetLevel.Formula σ := .truth
-def neg {σ : SetLevel.Signature} (φ : SetLevel.Formula σ) : SetLevel.Formula σ := .neg φ
-def conj {σ : SetLevel.Signature} (φ ψ : SetLevel.Formula σ) : SetLevel.Formula σ := .conj φ ψ
-def disj {σ : SetLevel.Signature} (φ ψ : SetLevel.Formula σ) : SetLevel.Formula σ := .disj φ ψ
-def imp {σ : SetLevel.Signature} (φ ψ : SetLevel.Formula σ) : SetLevel.Formula σ := .imp φ ψ
-def iff {σ : SetLevel.Signature} (φ ψ : SetLevel.Formula σ) : SetLevel.Formula σ := .iff φ ψ
-def forallE {σ : SetLevel.Signature} (sort : σ.SortSymbol) (body : SetLevel.Formula σ) :
-    SetLevel.Formula σ :=
+def falsum {σ : SetLevel.Signature} {bound free : SortContext σ} :
+    Formula σ bound free := .falsum
+def truth {σ : SetLevel.Signature} {bound free : SortContext σ} :
+    Formula σ bound free := .truth
+def neg {σ : SetLevel.Signature} {bound free : SortContext σ}
+    (φ : Formula σ bound free) : Formula σ bound free := .neg φ
+def conj {σ : SetLevel.Signature} {bound free : SortContext σ}
+    (φ ψ : Formula σ bound free) : Formula σ bound free := .conj φ ψ
+def disj {σ : SetLevel.Signature} {bound free : SortContext σ}
+    (φ ψ : Formula σ bound free) : Formula σ bound free := .disj φ ψ
+def imp {σ : SetLevel.Signature} {bound free : SortContext σ}
+    (φ ψ : Formula σ bound free) : Formula σ bound free := .imp φ ψ
+def iff {σ : SetLevel.Signature} {bound free : SortContext σ}
+    (φ ψ : Formula σ bound free) : Formula σ bound free := .iff φ ψ
+def forallE {σ : SetLevel.Signature} {bound free : SortContext σ}
+    (sort : σ.SortSymbol) (body : Formula σ (sort :: bound) free) :
+    Formula σ bound free :=
   .forallE sort body
-def existsE {σ : SetLevel.Signature} (sort : σ.SortSymbol) (body : SetLevel.Formula σ) :
-    SetLevel.Formula σ :=
+def existsE {σ : SetLevel.Signature} {bound free : SortContext σ}
+    (sort : σ.SortSymbol) (body : Formula σ (sort :: bound) free) :
+    Formula σ bound free :=
   .existsE sort body
-def problem {σ : SetLevel.Signature} (premises : List (SetLevel.Formula σ)) (target : SetLevel.Formula σ) : SetLevel.DeepProblem σ where
+def problem {σ : SetLevel.Signature} (premises : List (SetLevel.Sentence σ))
+    (target : SetLevel.Sentence σ) : SetLevel.DeepProblem σ where
   premises := premises
   target := target
-def valid {σ : SetLevel.Signature} [DecidableEq σ.SortSymbol] (target : SetLevel.Formula σ) (cert : SetLevel.SemanticCertificate SetLevel.Theory.empty target) :
+def valid {σ : SetLevel.Signature} (target : SetLevel.Sentence σ)
+    (cert : SetLevel.SemanticCertificate SetLevel.Theory.empty target) :
     SetLevel.CheckedValidCertificate (σ := σ) where
   target := target
   cert := cert
-def checked {σ : SetLevel.Signature} [DecidableEq σ.SortSymbol] (problem : SetLevel.DeepProblem σ) (cert : SetLevel.DeepProblem.Certificate problem) :
+def checked {σ : SetLevel.Signature} (problem : SetLevel.DeepProblem σ)
+    (cert : SetLevel.DeepProblem.Certificate problem) :
     SetLevel.CheckedCertificate (σ := σ) where
   problem := problem
   cert := cert

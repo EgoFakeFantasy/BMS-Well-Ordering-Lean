@@ -246,7 +246,7 @@ theorem satisfies_of_not_guards
     have hMapMem :
         guardLit.neg ∈ (guards.map PropResolution.Lit.neg).toList := by
       simpa [Array.toList_map] using (List.mem_map_of_mem (f := PropResolution.Lit.neg) hRawGuardMem)
-    simpa [Guards.learnedClause] using
+    simpa [Guards.learnedClause] using!
       PropResolution.mem_canonicalClause_of_mem hMapMem
   have hNegMemClause : guardLit.neg ∈ link.clause.toList := by
     simpa [hClause] using hNegMemLearned
@@ -640,7 +640,7 @@ theorem parentSnapshotChecked_of_eq_true
   have hNodes := Array.all_eq_true.mp hSnapshots
   have hNode : ((dag.nodeAt index hIndex).payload.parentClauses.all fun parent =>
         dag.parentSnapshotChecked parent) = true := by
-    simpa [parentSnapshotsChecked, nodeAt] using hNodes index hIndex
+    simpa [parentSnapshotsChecked, nodeAt] using! hNodes index hIndex
   have hParents := Array.all_eq_true.mp hNode
   have hArray : parent ∈ (dag.nodeAt index hIndex).payload.parentClauses :=
     Array.mem_def.mpr hParent
@@ -784,7 +784,7 @@ theorem guardsChecked_of_eq_true
   intro index hIndex
   have hAt := (Array.all_eq_true.mp hGuards) index hIndex
   exact (Bool.and_eq_true_iff.mp (by
-    simpa [guardsChecked, nodeAt] using hAt)).1
+    simpa [guardsChecked, nodeAt] using! hAt)).1
 theorem propInitialLinksChecked_of_eq_true
      {dag : DAG σ} (hGuards : dag.guardsChecked = true) :
     ∀ index (hIndex : index < dag.nodes.size),
@@ -792,7 +792,7 @@ theorem propInitialLinksChecked_of_eq_true
   intro index hIndex
   have hAt := (Array.all_eq_true.mp hGuards) index hIndex
   exact (Bool.and_eq_true_iff.mp (by
-    simpa [guardsChecked, nodeAt] using hAt)).2
+    simpa [guardsChecked, nodeAt] using! hAt)).2
 def rootExists  (dag : DAG σ) : Bool :=
   dag.graphView.rootExists
 def rootClosed (dag : DAG σ) : Bool :=
@@ -821,7 +821,7 @@ theorem payloadsChecked_of_eq_true
     ∀ index (hIndex : index < dag.nodes.size), (dag.nodeAt index hIndex).check dag.problem = true := by
   intro index hIndex
   have hAll := Array.all_eq_true.mp hPayloads
-  simpa [payloadsChecked, nodeAt] using hAll index hIndex
+  simpa [payloadsChecked, nodeAt] using! hAll index hIndex
 structure NodeContract (dag : DAG σ) (index : Nat) (hIndex : index < dag.nodes.size) : Prop where
   node_id : (dag.nodeAt index hIndex).id = index
   node_checked : (dag.nodeAt index hIndex).check dag.problem = true

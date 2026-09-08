@@ -41,11 +41,15 @@ def inverseValue (𝒞 : OrderedPairConvention) : BinarySchema 1 where
   body := Formula.orderedPairMem 𝒞 (.bound 0) (.bound 1) (.bound 2)
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 两个函数图依次作用得到的复合值关系。 -/
 def compositionValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
   body := .existsE <| .conj (Formula.orderedPairMem 𝒞 (.bound 2) (.bound 0) (.bound 3)) (Formula.orderedPairMem 𝒞 (.bound 0) (.bound 1) (.bound 4))
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /--
 把输入输出值关系提升为函数图成员关系。
 新模式的输出是编码对；存在量词绑定原值关系的输出。
@@ -56,6 +60,8 @@ def functionGraph (𝒞 : OrderedPairConvention)
   body := .existsE <| .conj (schema.body.rename FunctionGraphEmbedding.value) (𝒞.code (.bound 1) (.bound 2) (.bound 0))
   freeClosed := by
     simp [Formula.FreeClosed, schema.freeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end BinarySchema
 namespace Formula
 /-- 恒等值关系的解释就是对象相等。 -/
@@ -138,12 +144,16 @@ def relationMember (𝒞 : OrderedPairConvention)
   body := .existsE <| .existsE <| .conj (𝒞.code (.bound 2) (.bound 1) (.bound 0)) (schema.body.rename RelationGraphEmbedding.value)
   freeClosed := by
     simp [Formula.FreeClosed, schema.freeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 从关系集合中筛出第一坐标属于固定源集的有序对。 -/
 def restrictionMember (𝒞 : OrderedPairConvention) : UnarySchema 1 where
   body := .existsE <| .existsE <| .conj (𝒞.code (.bound 2) (.bound 1) Term.newest) (.mem (.bound 1) (.bound 3))
   freeClosed := by
     simp [Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end UnarySchema
 namespace Formula
 private theorem reindex_relationGraphValue
@@ -174,12 +184,12 @@ theorem satisfies_relationMember_iff
     have hCode' : 𝕀.Codes pair left right := by
       simpa using hCode
     exact ⟨left, right, hCode', by
-      simpa only [reindex_relationGraphValue] using hValue⟩
+      simpa only [reindex_relationGraphValue] using! hValue⟩
   · rintro ⟨left, right, hCode, hValue⟩
     refine ⟨left, right, ?_, ?_⟩
     · simpa using hCode
     rw [satisfies_rename]
-    simpa only [reindex_relationGraphValue] using hValue
+    simpa only [reindex_relationGraphValue] using! hValue
 /-- 限制成员模式恰好筛出第一坐标属于固定源集的编码对。 -/
 theorem satisfies_restrictionMember_iff
     {ℳ : Structure.{u}} {𝒞 : OrderedPairConvention} (𝕀 : 𝒞.Interpretation ℳ) (env : Env ℳ 1) (pair : ℳ.Domain) :

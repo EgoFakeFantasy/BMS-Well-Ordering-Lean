@@ -1,10 +1,11 @@
 import YesMetaZFC.Automation.DAGCertificate.Core
+import YesMetaZFC.Automation.AvatarSplit
+import YesMetaZFC.Automation.DenseDAG
+import YesMetaZFC.Automation.Resolution
 namespace YesMetaZFC
 namespace Automation
 namespace DAGCertificate
-universe x
 open _root_.YesMetaZFC.Automation
-open _root_.YesMetaZFC.Automation.LogicSoundness
 section DAGCertificateSignature
 variable {σ : Signature}
 variable [DecidableEq σ.SortSymbol]
@@ -65,225 +66,6 @@ theorem parentCopy_check_sound
   have hClause' : parent.clause.eq conclusion = true := by
     simpa [ruleCheck, ParentClause.clauseEq] using hCheck
   exact (Clause.eq_sound parent.clause conclusion hClause').symm
-/--
-本地规则 evidence 的公共语义解释器。
-调用方只需给出当前语义上下文中消费原父字句、substitution 父字句和
-standardize-apart 父字句的方式；具体规则的 checker 解包与结论重建只保留在这里。
--/
-theorem satisfies_of_check
-    {M : SetLevel.StructureAt.{x} σ}
-    {parents : Array NodeId} {conclusion : Clause σ}
-    {evidence : LocalRuleEvidence σ} (Context : SetLevel.EnvAt.{x} M → Prop) (hCheck : evidence.check parents conclusion = true) (hParentSat :
-      ∀ parent, parent ∈ evidence.parentClauses.toList →
-        parent.idIn parents = true →
-          ∀ env, Context env → Clause.Satisfies env parent.clause) (hSubstitutedParentSat :
-      ∀ parent, parent ∈ evidence.parentClauses.toList →
-        parent.idIn parents = true →
-          ∀ subst, TermSubstitution.BoundClosed subst ∧
-            TermSubstitution.WellSorted subst →
-              ∀ env, Context env →
-                Clause.Satisfies env (Clause.applySubstitution subst parent.clause)) (hStandardizedParentSat :
-      ∀ parent, parent ∈ evidence.parentClauses.toList →
-        parent.idIn parents = true →
-          ∀ offset subst, TermSubstitution.BoundClosed subst ∧
-            TermSubstitution.WellSorted subst →
-              ∀ env, Context env →
-        Clause.Satisfies env (Clause.applySubstitution subst (Clause.renameFreeVars offset parent.clause))) :
-    ∀ env, Context env → Clause.Satisfies env conclusion := by
-  have hStandardizedSideSat :
-      ∀ (left right : ParentClause σ) (standardizeApart : StandardizeApartEvidence σ) (side : Bool) (hParentMem :
-          StandardizeApartEvidence.sideParent left right side ∈
-            evidence.parentClauses.toList) (hParentIn : (StandardizeApartEvidence.sideParent left right side).idIn parents = true) (subst : TermSubstitution σ),
-        TermSubstitution.BoundClosed subst ∧
-          TermSubstitution.WellSorted subst →
-          standardizeApartCheck left right (some standardizeApart) = true →
-            ∀ env, Context env →
-              Clause.Satisfies env (Clause.applySubstitution subst (StandardizeApartEvidence.sideEvidence standardizeApart side).renamed) := by
-    intro left right standardizeApart side hParentMem hParentIn subst hAdmissible
-      hStandardizeCheck env hContext
-    have hSound :=
-      StandardizeApartEvidence.check_sound_for_side side hStandardizeCheck
-    have hSat :=
-      hStandardizedParentSat (StandardizeApartEvidence.sideParent left right side)
-        hParentMem hParentIn (StandardizeApartEvidence.sideEvidence standardizeApart side).offset
-        subst hAdmissible env hContext
-    simpa [hSound] using hSat
-  have hResolutionSat :
-      ∀ (resolutionEvidence : ResolutionEvidence σ),
-        evidence.parentClauses =
-            #[resolutionEvidence.left, resolutionEvidence.right] →
-          ResolutionEvidence.check conclusion resolutionEvidence = true →
-            ∀ env, Context env → Clause.Satisfies env conclusion := by
-    intro resolutionEvidence hParentClauses hResolutionCheck env hContext
-    have hAdmissible := ResolutionEvidence.check_admissible hResolutionCheck
-    have hConclusion := ResolutionEvidence.check_conclusion hResolutionCheck
-    have hLeftMem :
-        resolutionEvidence.left ∈ evidence.parentClauses.toList := by
-      rw [hParentClauses]
-      simp
-    have hRightMem :
-        resolutionEvidence.right ∈ evidence.parentClauses.toList := by
-      rw [hParentClauses]
-      simp
-    have hLeftIn := parentIdCheck_of_check hCheck hLeftMem
-    have hRightIn := parentIdCheck_of_check hCheck hRightMem
-    rw [hConclusion]
-    exact Clause.satisfies_resolutionResult (by
-        cases hStandardize : resolutionEvidence.standardizeApart? with
-        | none =>
-            simpa [ResolutionEvidence.leftClause, ResolutionEvidence.leftBaseClause,
-              hStandardize] using
-              hSubstitutedParentSat resolutionEvidence.left hLeftMem hLeftIn
-                resolutionEvidence.substitution hAdmissible env hContext
-        | some standardizeApart =>
-            have hStandardizeCheck :
-                standardizeApartCheck resolutionEvidence.left resolutionEvidence.right (some standardizeApart) = true := by
-              have h := hResolutionCheck
-              simp only [ResolutionEvidence.check, hStandardize,
-                Bool.and_eq_true] at h
-              exact h.1
-            simpa [ResolutionEvidence.leftClause, ResolutionEvidence.leftBaseClause,
-              hStandardize] using
-              hStandardizedSideSat
-                resolutionEvidence.left resolutionEvidence.right standardizeApart false
-                hLeftMem hLeftIn resolutionEvidence.substitution hAdmissible
-                hStandardizeCheck env hContext) (by
-        cases hStandardize : resolutionEvidence.standardizeApart? with
-        | none =>
-            simpa [ResolutionEvidence.rightClause, ResolutionEvidence.rightBaseClause,
-              hStandardize] using
-              hSubstitutedParentSat resolutionEvidence.right hRightMem hRightIn
-                resolutionEvidence.substitution hAdmissible env hContext
-        | some standardizeApart =>
-            have hStandardizeCheck :
-                standardizeApartCheck resolutionEvidence.left resolutionEvidence.right (some standardizeApart) = true := by
-              have h := hResolutionCheck
-              simp only [ResolutionEvidence.check, hStandardize,
-                Bool.and_eq_true] at h
-              exact h.1
-            simpa [ResolutionEvidence.rightClause, ResolutionEvidence.rightBaseClause,
-              hStandardize] using
-              hStandardizedSideSat
-                resolutionEvidence.left resolutionEvidence.right standardizeApart true
-                hRightMem hRightIn resolutionEvidence.substitution hAdmissible
-                hStandardizeCheck env hContext)
-  have hRewriteSat :
-      ∀ (kind : RewriteKind) (rewriteEvidence : RewriteEvidence σ),
-        evidence.parentClauses =
-            #[rewriteEvidence.equality, rewriteEvidence.target] →
-          RewriteEvidence.check kind conclusion rewriteEvidence = true →
-            ∀ env, Context env → Clause.Satisfies env conclusion := by
-    intro kind rewriteEvidence hParentClauses hRewriteCheck env hContext
-    have hAdmissible := RewriteEvidence.check_admissible hRewriteCheck
-    have hConclusion := RewriteEvidence.check_conclusion hRewriteCheck
-    have hEqualityMem :
-        rewriteEvidence.equality ∈ evidence.parentClauses.toList := by
-      rw [hParentClauses]
-      simp
-    have hTargetMem :
-        rewriteEvidence.target ∈ evidence.parentClauses.toList := by
-      rw [hParentClauses]
-      simp
-    have hEqualityIn := parentIdCheck_of_check hCheck hEqualityMem
-    have hTargetIn := parentIdCheck_of_check hCheck hTargetMem
-    rw [hConclusion]
-    exact RewriteEvidence.satisfies_result (by
-        cases hStandardize : rewriteEvidence.standardizeApart? with
-        | none =>
-            simpa [RewriteEvidence.equalityClause, RewriteEvidence.equalityBaseClause,
-              hStandardize] using
-              hSubstitutedParentSat rewriteEvidence.equality hEqualityMem hEqualityIn
-                rewriteEvidence.substitution hAdmissible env hContext
-        | some standardizeApart =>
-            have hStandardizeCheck :
-                standardizeApartCheck rewriteEvidence.equality rewriteEvidence.target (some standardizeApart) = true := by
-              have h := hRewriteCheck
-              simp only [RewriteEvidence.check, hStandardize,
-                Bool.and_eq_true] at h
-              exact h.1
-            simpa [RewriteEvidence.equalityClause, RewriteEvidence.equalityBaseClause,
-              hStandardize] using
-              hStandardizedSideSat
-                rewriteEvidence.equality rewriteEvidence.target standardizeApart false
-                hEqualityMem hEqualityIn rewriteEvidence.substitution hAdmissible
-                hStandardizeCheck env hContext) (by
-        cases hStandardize : rewriteEvidence.standardizeApart? with
-        | none =>
-            simpa [RewriteEvidence.targetClause, RewriteEvidence.targetBaseClause,
-              hStandardize] using
-              hSubstitutedParentSat rewriteEvidence.target hTargetMem hTargetIn
-                rewriteEvidence.substitution hAdmissible env hContext
-        | some standardizeApart =>
-            have hStandardizeCheck :
-                standardizeApartCheck rewriteEvidence.equality rewriteEvidence.target (some standardizeApart) = true := by
-              have h := hRewriteCheck
-              simp only [RewriteEvidence.check, hStandardize,
-                Bool.and_eq_true] at h
-              exact h.1
-            simpa [RewriteEvidence.targetClause, RewriteEvidence.targetBaseClause,
-              hStandardize] using
-              hStandardizedSideSat
-                rewriteEvidence.equality rewriteEvidence.target standardizeApart true
-                hTargetMem hTargetIn rewriteEvidence.substitution hAdmissible
-                hStandardizeCheck env hContext)
-  cases hEvidence : evidence with
-  | parentCopy parent =>
-      have hCheck' : check parents conclusion (.parentCopy parent) = true := by
-        simpa [hEvidence] using hCheck
-      have hParentMem : parent ∈ evidence.parentClauses.toList := by
-        simp [hEvidence, parentClauses]
-      have hParentIn := parentIdCheck_of_check hCheck' (hEvidence ▸ hParentMem)
-      have hConclusion := parentCopy_check_sound (ruleCheck_of_check hCheck')
-      intro env hContext
-      rw [hConclusion]
-      exact hParentSat parent hParentMem hParentIn env hContext
-  | resolution resolutionEvidence =>
-      have hCheck' : check parents conclusion (.resolution resolutionEvidence) = true := by
-        simpa [hEvidence] using hCheck
-      have hParentClauses : evidence.parentClauses =
-          #[resolutionEvidence.left, resolutionEvidence.right] := by
-        simp [hEvidence, parentClauses]
-      have hRuleCheck := ruleCheck_of_check hCheck'
-      change ResolutionEvidence.check conclusion resolutionEvidence = true at hRuleCheck
-      exact hResolutionSat resolutionEvidence hParentClauses hRuleCheck
-  | factoring factoringEvidence =>
-      have hCheck' : check parents conclusion (.factoring factoringEvidence) = true := by
-        simpa [hEvidence] using hCheck
-      have hRuleCheck := ruleCheck_of_check hCheck'
-      change FactoringEvidence.check conclusion factoringEvidence = true at hRuleCheck
-      have hAdmissible := FactoringEvidence.check_admissible hRuleCheck
-      have hSound := FactoringEvidence.check_sound hRuleCheck
-      have hParentMem : factoringEvidence.parent ∈ evidence.parentClauses.toList := by
-        simp [hEvidence, parentClauses]
-      have hParentIn := parentIdCheck_of_check hCheck' (hEvidence ▸ hParentMem)
-      intro env hContext
-      apply Clause.satisfies_of_allLiteralsCovered hSound.1
-      exact hSubstitutedParentSat factoringEvidence.parent hParentMem hParentIn
-        factoringEvidence.substitution hAdmissible env hContext
-  | equalityResolution equalityEvidence =>
-      have hCheck' : check parents conclusion (.equalityResolution equalityEvidence) = true := by
-        simpa [hEvidence] using hCheck
-      have hRuleCheck := ruleCheck_of_check hCheck'
-      change EqualityResolutionEvidence.check conclusion equalityEvidence = true at hRuleCheck
-      have hAdmissible := EqualityResolutionEvidence.check_admissible hRuleCheck
-      rcases EqualityResolutionEvidence.check_sound hRuleCheck with
-        ⟨hTerm, _hContains, hConclusion⟩
-      have hParentMem : equalityEvidence.parent ∈ evidence.parentClauses.toList := by
-        simp [hEvidence, parentClauses]
-      have hParentIn := parentIdCheck_of_check hCheck' (hEvidence ▸ hParentMem)
-      intro env hContext
-      rw [hConclusion]
-      exact Clause.satisfies_equalityResolutionResult hTerm (hSubstitutedParentSat equalityEvidence.parent hParentMem hParentIn
-          equalityEvidence.substitution hAdmissible env hContext)
-  | rewrite kind rewriteEvidence =>
-      have hCheck' : check parents conclusion (.rewrite kind rewriteEvidence) = true := by
-        simpa [hEvidence] using hCheck
-      have hParentClauses : evidence.parentClauses =
-          #[rewriteEvidence.equality, rewriteEvidence.target] := by
-        simp [hEvidence, parentClauses]
-      have hRuleCheck := ruleCheck_of_check hCheck'
-      change RewriteEvidence.check kind conclusion rewriteEvidence = true at hRuleCheck
-      exact hRewriteSat kind rewriteEvidence hParentClauses hRuleCheck
 end LocalRuleEvidence
 structure LocalRulePayload (σ : Signature) where
   family : LocalRuleFamily
@@ -315,13 +97,6 @@ structure PropLiteralLink (σ : Signature) where
   prop : PropResolution.Lit
   object : Literal σ
 namespace PropLiteralLink
-def valuation
-    {M : SetLevel.StructureAt.{x} σ} (base : PropResolution.Valuation) (atomMap : Array (Formula σ)) (env : SetLevel.EnvAt.{x} M) :
-    PropResolution.Valuation :=
-  fun var =>
-    match atomMap[var]? with
-    | some atom => Logic.FirstOrder.Formula.satisfies env atom
-    | none => base var
 def outsideAtomMap  (atomMap : Array (Formula σ)) (lit : PropResolution.Lit) : Bool :=
   match atomMap[lit.var]? with
   | some _ => false
@@ -331,50 +106,6 @@ def check (atomMap : Array (Formula σ)) (link : PropLiteralLink σ) : Bool :=
     match atomMap[link.prop.var]? with
     | some atom => StructuralEq.formula atom link.object.atom
     | none => false
-theorem sound
-     {M : SetLevel.StructureAt.{x} σ}
-    {base : PropResolution.Valuation} {atomMap : Array (Formula σ)}
-    {env : SetLevel.EnvAt.{x} M}
-    {link : PropLiteralLink σ} (hCheck : link.check atomMap = true) (hObject : Literal.Satisfies env link.object) :
-    link.prop.Holds (valuation base atomMap env) := by
-  cases link with
-  | mk prop object =>
-  cases prop with
-  | mk var positive =>
-  cases object with
-  | mk objectPolarity objectAtom =>
-  unfold check at hCheck
-  rcases Bool.and_eq_true_iff.mp hCheck with ⟨hPolarity, hAtomCheck⟩
-  have hPolarityEq : positive = objectPolarity :=
-    beq_iff_eq.mp hPolarity
-  cases hLookup : atomMap[var]? with
-  | none =>
-      simp [hLookup] at hAtomCheck
-  | some atom =>
-      have hAtomCheck' : StructuralEq.formula atom objectAtom = true := by
-        simpa [hLookup] using hAtomCheck
-      have hAtomEq : atom = objectAtom :=
-        StructuralEq.formula_sound atom objectAtom hAtomCheck'
-      cases hPolarityEq
-      cases positive <;>
-        simpa [PropResolution.Lit.Holds, valuation, Literal.Satisfies,
-          Literal.toFormula, hLookup, hAtomEq,
-          Logic.FirstOrder.Formula.satisfies] using hObject
-omit [DecidableEq σ.FuncSymbol] [DecidableEq σ.RelSymbol] in
-theorem holds_valuation_iff_of_outsideAtomMap
-     {M : SetLevel.StructureAt.{x} σ}
-    {base : PropResolution.Valuation} {atomMap : Array (Formula σ)}
-    {env : SetLevel.EnvAt.{x} M} {lit : PropResolution.Lit} (hOutside : outsideAtomMap atomMap lit = true) :
-    lit.Holds (valuation base atomMap env) ↔ lit.Holds base := by
-  cases lit with
-  | mk var positive =>
-      unfold outsideAtomMap at hOutside
-      cases hLookup : atomMap[var]? with
-      | some atom =>
-          simp [hLookup] at hOutside
-      | none =>
-          cases positive <;>
-            simp [PropResolution.Lit.Holds, valuation, hLookup]
 omit [DecidableEq σ.SortSymbol] [DecidableEq σ.FuncSymbol] [DecidableEq σ.RelSymbol] in
 theorem outsideAtomMap_neg  {atomMap : Array (Formula σ)}
     {lit : PropResolution.Lit} (hOutside : outsideAtomMap atomMap lit = true) :
@@ -395,37 +126,6 @@ def check (parents : Array NodeId) (atomMap : Array (Formula σ)) (initial : Pro
     link.parent.clause.eq link.objectClause &&
       PropResolution.clauseEq initial.clause link.encodedClause &&
         link.literalLinks.all fun literal => literal.check atomMap
-theorem encodedClause_satisfies_of_object
-    {M : SetLevel.StructureAt.{x} σ} {base : PropResolution.Valuation}
-    {atomMap : Array (Formula σ)} {env : SetLevel.EnvAt.{x} M}
-    {link : PropParentClauseLink σ} (hLiteralChecks : (link.literalLinks.all fun literal => literal.check atomMap) = true)
-    (hObject : Clause.Satisfies env link.objectClause) :
-    PropResolution.Clause.Satisfies (PropLiteralLink.valuation base atomMap env) link.encodedClause := by
-  rcases Clause.satisfies_iff_exists_literal.mp hObject with
-    ⟨objectLiteral, hObjectMem, hObjectSat⟩
-  have hMapped :
-      objectLiteral ∈ (link.literalLinks.map fun literal => literal.object).toList := by
-    simpa [objectClause] using hObjectMem
-  have hMappedList :
-      objectLiteral ∈
-        List.map (fun literal => literal.object) link.literalLinks.toList := by
-    simpa [Array.toList_map] using hMapped
-  rcases List.mem_map.mp hMappedList with
-    ⟨literalLink, hLinkMem, hObjectEq⟩
-  have hCheck : literalLink.check atomMap = true :=
-    array_check_of_mem hLiteralChecks hLinkMem
-  have hPropMem :
-      literalLink.prop ∈ (PropResolution.canonicalClause (link.literalLinks.map fun literal => literal.prop)).toList := by
-    apply PropResolution.mem_canonicalClause_of_mem
-    have hPropMemRaw :
-        literalLink.prop ∈
-          List.map (fun literal => literal.prop) link.literalLinks.toList :=
-      List.mem_map_of_mem hLinkMem
-    simpa [Array.toList_map] using hPropMemRaw
-  have hPropHolds :
-      literalLink.prop.Holds (PropLiteralLink.valuation base atomMap env) :=
-    PropLiteralLink.sound hCheck (by simpa [hObjectEq] using hObjectSat)
-  exact PropResolution.Clause.satisfies_of_mem hPropMem hPropHolds
 end PropParentClauseLink
 structure PropGuardActivationLink (σ : Signature) where
   parent : ParentClause σ
@@ -444,75 +144,6 @@ def check (parents : Array NodeId) (atomMap : Array (Formula σ)) (initial : Pro
       PropResolution.clauseEq initial.clause link.encodedClause &&
         link.guards.all (fun literal => PropLiteralLink.outsideAtomMap atomMap literal) &&
           link.literalLinks.all fun literal => literal.check atomMap
-theorem encodedClause_satisfies
-    {M : SetLevel.StructureAt.{x} σ} {base : PropResolution.Valuation}
-    {atomMap : Array (Formula σ)} {env : SetLevel.EnvAt.{x} M}
-    {link : PropGuardActivationLink σ} (hGuardChecks : (link.guards.all fun literal =>
-        PropLiteralLink.outsideAtomMap atomMap literal) = true) (hLiteralChecks : (link.literalLinks.all fun literal => literal.check atomMap) = true)
-    (hObjectOfGuards : (∀ lit, lit ∈ (Guards.canonical link.guards).toList → lit.Holds base) →
-        Clause.Satisfies env link.objectClause) :
-    PropResolution.Clause.Satisfies (PropLiteralLink.valuation base atomMap env) link.encodedClause := by
-  classical
-  by_cases hGuards :
-      ∀ lit, lit ∈ (Guards.canonical link.guards).toList → lit.Holds base
-  · rcases Clause.satisfies_iff_exists_literal.mp (hObjectOfGuards hGuards) with
-      ⟨objectLiteral, hObjectMem, hObjectSat⟩
-    have hMapped :
-        objectLiteral ∈ (link.literalLinks.map fun literal => literal.object).toList := by
-      simpa [objectClause] using hObjectMem
-    have hMappedList :
-        objectLiteral ∈
-          List.map (fun literal => literal.object) link.literalLinks.toList := by
-      simpa [Array.toList_map] using hMapped
-    rcases List.mem_map.mp hMappedList with
-      ⟨literalLink, hLinkMem, hObjectEq⟩
-    have hCheck : literalLink.check atomMap = true :=
-      array_check_of_mem hLiteralChecks hLinkMem
-    have hPropMemRaw :
-        literalLink.prop ∈ (link.literalLinks.map fun literal => literal.prop).toList := by
-      have hPropMemList :
-          literalLink.prop ∈
-            List.map (fun literal => literal.prop) link.literalLinks.toList :=
-        List.mem_map_of_mem hLinkMem
-      simpa [Array.toList_map] using hPropMemList
-    have hPropMem :
-        literalLink.prop ∈ link.encodedClause.toList := by
-      apply PropResolution.mem_canonicalClause_of_mem
-      simp
-      exact Or.inr ⟨literalLink, Array.mem_def.mpr hLinkMem, rfl⟩
-    have hPropHolds :
-        literalLink.prop.Holds (PropLiteralLink.valuation base atomMap env) :=
-      PropLiteralLink.sound hCheck (by simpa [hObjectEq] using hObjectSat)
-    exact PropResolution.Clause.satisfies_of_mem hPropMem hPropHolds
-  · rcases Classical.not_forall.mp hGuards with ⟨guardLit, hNotGuard⟩
-    have hGuardMem : guardLit ∈ (Guards.canonical link.guards).toList := by
-      by_cases hMem : guardLit ∈ (Guards.canonical link.guards).toList
-      · exact hMem
-      · exact False.elim (hNotGuard (by intro h; exact False.elim (hMem h)))
-    have hGuardFalse : ¬ guardLit.Holds base := by
-      intro hHold
-      exact hNotGuard (by intro _hMem; exact hHold)
-    have hRawGuardMem : guardLit ∈ link.guards.toList :=
-      Guards.mem_of_mem_canonical hGuardMem
-    have hOutside : PropLiteralLink.outsideAtomMap atomMap guardLit = true :=
-      array_check_of_mem hGuardChecks hRawGuardMem
-    have hNegOutside :
-        PropLiteralLink.outsideAtomMap atomMap guardLit.neg = true :=
-      PropLiteralLink.outsideAtomMap_neg hOutside
-    have hNegBase : guardLit.neg.Holds base := by
-      cases guardLit with
-      | mk var positive =>
-          cases positive <;>
-            simpa [PropResolution.Lit.Holds, PropResolution.Lit.neg] using hGuardFalse
-    have hNegMixed :
-        guardLit.neg.Holds (PropLiteralLink.valuation base atomMap env) := (PropLiteralLink.holds_valuation_iff_of_outsideAtomMap
-        (base := base) (env := env) hNegOutside).2 hNegBase
-    have hNegMem :
-        guardLit.neg ∈ link.encodedClause.toList := by
-      apply PropResolution.mem_canonicalClause_of_mem
-      simp
-      exact Or.inl ⟨guardLit, Array.mem_def.mpr hRawGuardMem, rfl⟩
-    exact PropResolution.Clause.satisfies_of_mem hNegMem hNegMixed
 end PropGuardActivationLink
 structure PropLearnedClauseLink where
   parent : NodeId
@@ -522,50 +153,6 @@ def check  (parents : Array NodeId) (atomMap : Array (Formula σ)) (initial : Pr
   parents.contains link.parent &&
     link.clause.all (fun literal => PropLiteralLink.outsideAtomMap atomMap literal) &&
       PropResolution.clauseEq initial.clause link.clause
-omit [DecidableEq σ.FuncSymbol] [DecidableEq σ.RelSymbol] in
-theorem satisfies_of_not_guards
-    {M : SetLevel.StructureAt.{x} σ} {base : PropResolution.Valuation}
-    {atomMap : Array (Formula σ)} {env : SetLevel.EnvAt.{x} M}
-    {link : PropLearnedClauseLink} {guards : GuardSet} (hClause : link.clause = Guards.learnedClause guards) (hOutside : (link.clause.all fun literal =>
-        PropLiteralLink.outsideAtomMap atomMap literal) = true) (hNotGuards :
-      ¬ ∀ lit, lit ∈ (Guards.canonical guards).toList → lit.Holds base) :
-    PropResolution.Clause.Satisfies (PropLiteralLink.valuation base atomMap env) link.clause := by
-  classical
-  rcases Classical.not_forall.mp hNotGuards with ⟨guardLit, hNotGuard⟩
-  have hGuardMem : guardLit ∈ (Guards.canonical guards).toList := by
-    by_cases hMem : guardLit ∈ (Guards.canonical guards).toList
-    · exact hMem
-    · exact False.elim (hNotGuard (by intro h; exact False.elim (hMem h)))
-  have hGuardFalse : ¬ guardLit.Holds base := by
-    intro hHold
-    exact hNotGuard (by intro _hMem; exact hHold)
-  have hRawGuardMem : guardLit ∈ guards.toList :=
-    Guards.mem_of_mem_canonical hGuardMem
-  have hNegMemLearned :
-      guardLit.neg ∈ (Guards.learnedClause guards).toList := by
-    have hMapMem :
-        guardLit.neg ∈ (guards.map PropResolution.Lit.neg).toList :=
-      by
-        have hMapMemList :
-            guardLit.neg ∈ List.map PropResolution.Lit.neg guards.toList :=
-          List.mem_map_of_mem (f := PropResolution.Lit.neg) hRawGuardMem
-        simpa [Array.toList_map] using hMapMemList
-    simpa [Guards.learnedClause] using
-      PropResolution.mem_canonicalClause_of_mem hMapMem
-  have hNegMemClause : guardLit.neg ∈ link.clause.toList := by
-    simpa [hClause] using hNegMemLearned
-  have hNegOutside :
-      PropLiteralLink.outsideAtomMap atomMap guardLit.neg = true :=
-    array_check_of_mem hOutside hNegMemClause
-  have hNegBase : guardLit.neg.Holds base := by
-    cases guardLit with
-    | mk var positive =>
-        cases positive <;>
-          simpa [PropResolution.Lit.Holds, PropResolution.Lit.neg] using hGuardFalse
-  have hNegMixed :
-      guardLit.neg.Holds (PropLiteralLink.valuation base atomMap env) := (PropLiteralLink.holds_valuation_iff_of_outsideAtomMap
-      (base := base) (env := env) hNegOutside).2 hNegBase
-  exact PropResolution.Clause.satisfies_of_mem hNegMemClause hNegMixed
 end PropLearnedClauseLink
 structure PropAvatarSkeletonLink where
   parent : NodeId
@@ -1122,107 +709,6 @@ def toPublicNode (node : Node σ) : Certificate.Node :=
     dependencies := node.parents
   }
 end Node
-namespace Node
-/--
-单个 DAG 节点的反证语义不变量。
-只要初始字句问题在当前 bound stack 上有效，节点结论就在当前环境成立。
--/
-def RefutationInvariant (problem : ClauseProblem σ) (node : Node σ) : Prop :=
-  ∀ {M : SetLevel.StructureAt.{x} σ}, ∀ env : SetLevel.EnvAt.{x} M,
-    problem.Valid env → Clause.Satisfies env node.conclusion
-def GuardsHold (valuation : PropResolution.Valuation) (guards : GuardSet) : Prop :=
-  ∀ lit, lit ∈ (Guards.canonical guards).toList → lit.Holds valuation
-theorem GuardsHold.of_guardSetEq {valuation : PropResolution.Valuation}
-    {left right : GuardSet} (hEq : Guards.eq left right = true) (hGuards : GuardsHold valuation left) :
-    GuardsHold valuation right := by
-  intro lit hLit
-  have hCanonical : Guards.canonical left = Guards.canonical right :=
-    PropResolution.clauseEq_eq.mp (by simpa [Guards.eq] using hEq)
-  exact hGuards lit (by simpa [hCanonical] using hLit)
-theorem guard_toList_eq_nil_of_isEmpty {guards : GuardSet} (hEmpty : guards.isEmpty = true) :
-    guards.toList = [] := by
-  have hSize : guards.size = 0 := by
-    have hBool : (guards.size == 0) = true := by
-      simpa [Array.isEmpty] using hEmpty
-    cases h : guards.size with
-    | zero => rfl
-    | succ n =>
-        have hFalse : (guards.size == 0) = false := by
-          simp [h]
-        rw [hFalse] at hBool
-        cases hBool
-  have hArray : guards = #[] :=
-    Array.eq_empty_of_size_eq_zero hSize
-  simp [hArray]
-theorem GuardsHold.of_isEmpty {valuation : PropResolution.Valuation}
-    {guards : GuardSet} (hEmpty : guards.isEmpty = true) :
-    GuardsHold valuation guards := by
-  intro lit hLit
-  have hRaw : lit ∈ guards.toList :=
-    Guards.mem_of_mem_canonical hLit
-  have hList := guard_toList_eq_nil_of_isEmpty hEmpty
-  simp [hList] at hRaw
-/--
-guarded 节点的反证语义不变量。
-它把 AVATAR/CDCL 的 guard 作为外层条件保存下来：只要当前 guard 集在命题 valuation
-下全真，对象层结论字句就必须在一阶语义下为真。
--/
-def GuardedRefutationInvariant (problem : ClauseProblem σ) (valuation : PropResolution.Valuation) (node : Node σ) : Prop :=
-  ∀ {M : SetLevel.StructureAt.{x} σ}, ∀ env : SetLevel.EnvAt.{x} M,
-    problem.Valid env → GuardsHold valuation node.guards →
-      Clause.Satisfies env node.conclusion
-omit [DecidableEq σ.FuncSymbol] [DecidableEq σ.RelSymbol] in
-theorem guardedRefutationInvariant_of_refutationInvariant
-     {problem : ClauseProblem σ}
-    {valuation : PropResolution.Valuation} {node : Node σ} (hInvariant : RefutationInvariant.{x} problem node) :
-    GuardedRefutationInvariant.{x} problem valuation node := by
-  intro M env hProblem _hGuards
-  exact hInvariant env hProblem
-omit [DecidableEq σ.FuncSymbol] [DecidableEq σ.RelSymbol] in
-theorem refutationInvariant_of_guardedRefutationInvariant
-     {problem : ClauseProblem σ}
-    {valuation : PropResolution.Valuation} {node : Node σ} (hInvariant : GuardedRefutationInvariant.{x} problem valuation node)
-    (hGuards : GuardsHold valuation node.guards) :
-    RefutationInvariant.{x} problem node := by
-  intro M env hProblem
-  exact hInvariant env hProblem hGuards
-theorem sourceRefutationInvariant_of_payload_check
-    {problem : ClauseProblem σ} {node : Node σ} {initialIndex : Nat} (hSource : node.payload = .source initialIndex)
-    (hCheck : node.payload.check problem node.parents node.conclusion = true) :
-    RefutationInvariant.{x} problem node := by
-  rw [hSource] at hCheck
-  rcases Bool.and_eq_true_iff.mp hCheck with ⟨_hParentsEmpty, hSourceCheck⟩
-  cases hLookup : problem.initialClauses[initialIndex]? with
-  | none => simp [hLookup] at hSourceCheck
-  | some initial =>
-      have hConclusion : node.conclusion = initial :=
-        Clause.eq_sound node.conclusion initial (by
-          simpa [Payload.check, hLookup] using hSourceCheck)
-      intro M env hProblem
-      rw [hConclusion]
-      exact hProblem env (fun _ _ => rfl) initialIndex initial hLookup
-theorem theoryConflictGuardedRefutationInvariant_of_payload_check
-    {problem : ClauseProblem σ} {valuation : PropResolution.Valuation}
-    {node conflictNode : Node σ} {payload : TheoryConflictPayload σ} (hPayload : node.payload = .theoryConflict payload)
-    (hConflictClause : payload.conflict.clause = conflictNode.conclusion) (hConflictGuards :
-      GuardsHold valuation node.guards → GuardsHold valuation conflictNode.guards)
-    (hConflictInvariant : GuardedRefutationInvariant.{x} problem valuation conflictNode)
-    (hCheck : node.payload.check problem node.parents node.conclusion = true) :
-    GuardedRefutationInvariant.{x} problem valuation node := by
-  rw [hPayload] at hCheck
-  have hPayloadCheck : payload.check node.parents node.conclusion = true := by
-    simpa [Payload.check] using hCheck
-  unfold TheoryConflictPayload.check at hPayloadCheck
-  rcases Bool.and_eq_true_iff.mp hPayloadCheck with ⟨hPrefix, hConclusionEmpty⟩
-  rcases Bool.and_eq_true_iff.mp hPrefix with ⟨_hParentIn, hConflictEmpty⟩
-  intro M env hProblem hGuards
-  have hConflictNodeEmpty : conflictNode.conclusion.isEmpty = true := by
-    rw [← hConflictClause]
-    exact hConflictEmpty
-  have hConflictSat :=
-    hConflictInvariant env hProblem (hConflictGuards hGuards)
-  exact False.elim (Clause.not_satisfies_of_isEmpty hConflictNodeEmpty hConflictSat)
-end Node
 /-! ## Whole certificate -/
 structure DAG (σ : Signature) where
   problem : ClauseProblem σ
@@ -1391,7 +877,7 @@ theorem guard_fields_of_eq_true
       dag.localNodeGuardsOk (dag.nodeAt index hIndex) = true ∧
         dag.propInitialLinksOk (dag.nodeAt index hIndex) = true := by
   intro index hIndex
-  simpa [guardsChecked, nodeGuardsChecked, nodeAt] using (Array.all_eq_true.mp hGuards index hIndex)
+  simpa [guardsChecked, nodeGuardsChecked, nodeAt] using! (Array.all_eq_true.mp hGuards index hIndex)
 theorem guardsChecked_of_eq_true
       {dag : DAG σ} (hGuards : dag.guardsChecked = true) :
     ∀ index (hIndex : index < dag.nodes.size),
@@ -1588,14 +1074,14 @@ theorem payloadsChecked_of_eq_true
     ∀ index (hIndex : index < dag.nodes.size), (dag.nodeAt index hIndex).check dag.problem = true := by
   intro index hIndex
   have hAll := Array.all_eq_true.mp hPayloads
-  simpa [payloadsChecked, nodeAt] using hAll index hIndex
+  simpa [payloadsChecked, nodeAt] using! hAll index hIndex
 omit [DecidableEq σ.SortSymbol] [DecidableEq σ.FuncSymbol] [DecidableEq σ.RelSymbol] in
 theorem guardedSoundnessSupported_of_eq_true {dag : DAG σ} (hSupported : dag.guardedSoundnessSupported = true) :
     ∀ index (hIndex : index < dag.nodes.size), (dag.nodeAt index hIndex).payload.guardedSoundnessSupported = true := by
   intro index hIndex
   have hAll := Array.all_eq_true.mp hSupported
   have hNode : (dag.nodeAt index hIndex).guardedSoundnessSupported = true := by
-    simpa [guardedSoundnessSupported, nodeAt] using hAll index hIndex
+    simpa [guardedSoundnessSupported, nodeAt] using! hAll index hIndex
   simpa [Node.guardedSoundnessSupported] using hNode
 def guardedNodes (dag : DAG σ) : Array (Node σ) :=
   dag.nodes.filter fun node => !node.unguarded
@@ -1680,3 +1166,4 @@ end DAGCertificateSignature
 end DAGCertificate
 end Automation
 end YesMetaZFC
+

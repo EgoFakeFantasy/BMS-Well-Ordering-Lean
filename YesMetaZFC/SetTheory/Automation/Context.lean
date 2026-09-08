@@ -1,4 +1,5 @@
 import YesMetaZFC.SetTheory.Automation
+import YesMetaZFC.Automation.KernelReplay.Source
 /-!
 # `prove_auto` 的集合论上下文来源
 本模块把同一理论下的局部语义定理转换为 proof-carrying source premises。元层过滤只决定
@@ -15,8 +16,6 @@ namespace SetTheory
 namespace Automation
 open Lean Meta
 open _root_.YesMetaZFC.Automation
-open _root_.YesMetaZFC.Automation.CoreSyntax
-open _root_.YesMetaZFC.Automation.CoreSyntax.NormalForm
 /-- 一条由原理论语义推出的上下文句子。 -/
 structure ContextFact (theory : Theory) where
   sentence : ProjectSentence
@@ -54,165 +53,133 @@ theorem entails {theory : Theory} (slice : ContextSlice theory)
   · exact Theory.entails_of_mem (slice.base.member sentence hBase)
   · rcases List.mem_map.mp hContext with ⟨fact, hFact, rfl⟩
     exact fact.sound
+/-- 一张项目句子表的唯一索引宿主像。 -/
+def hostPremisesOfPremises (premises : List ProjectSentence) :
+    List HostFirstOrder.ClosedFormula :=
+  premises.map Translate.sentence
+
 /-- 一张纯句子表进入 preprocessing core。 -/
-def sourceProblemOfPremises (premises : List ProjectSentence) (target : ProjectSentence) : SourcePreprocessing.Problem := {
-  premises := premises.map fun sentence =>
-    Translate.coreFormula sentence.formula
-  target := Translate.coreFormula target.formula
-}
-/-- 一张纯句子表进入 SearchSignature 深问题。 -/
-def deepProblemOfPremises (premises : List ProjectSentence) (target : ProjectSentence) : SourcePreprocessing.DeepProblem := {
-  premises := premises.map fun sentence =>
-    Translate.searchFormula sentence.formula
-  target := Translate.searchFormula target.formula
-}
-/-- 项目句子的结构索引保证上下文深问题全部满足公共良构性边界。 -/
-theorem deepProblemOfPremises_admissible (premises : List ProjectSentence) (target : ProjectSentence) :
-    LogicSoundness.SetLevel.DeepProblem.Admissible (deepProblemOfPremises premises target) := by
-  constructor
-  · exact Translate.searchSentence_admissible target
-  · intro premise hPremise
-    change premise ∈
-      premises.map (fun sentence =>
-        Translate.searchFormula sentence.formula) at hPremise
-    rcases List.mem_map.mp hPremise with ⟨sentence, hSentence, rfl⟩
-    exact Translate.searchSentence_admissible sentence
+def sourceProblemOfPremises (premises : List ProjectSentence)
+    (target : ProjectSentence) : SourcePreprocessing.Problem :=
+  HostFirstOrder.sourceProblemOfSyntax
+    (hostPremisesOfPremises premises) (Translate.sentence target)
+
+/-- 一张纯句子表进入可计算 DAG 搜索语法。 -/
+def searchProblemOfPremises (premises : List ProjectSentence)
+    (target : ProjectSentence) : SourcePreprocessing.DeepProblem :=
+  HostFirstOrder.searchProblemOfSyntax
+    (hostPremisesOfPremises premises) (Translate.sentence target)
+
+/-- 一张纯句子表进入内禀一阶语义问题。 -/
+def intrinsicProblemOfPremises (premises : List ProjectSentence)
+    (target : ProjectSentence) :
+    LogicSoundness.SetLevel.DeepProblem
+      SearchMaterialization.SearchSignature :=
+  HostFirstOrder.intrinsicProblemOfSyntax
+    (hostPremisesOfPremises premises) (Translate.sentence target)
+
+/-- 项目句子表直接给出搜索问题的可计算编译证书。 -/
+def checkedProblemOfPremises (premises : List ProjectSentence)
+    (target : ProjectSentence) :
+    DAGCertificate.Compile.CheckedProblem
+      (searchProblemOfPremises premises target) :=
+  HostFirstOrder.checkedProblemOfSyntax
+    (hostPremisesOfPremises premises) (Translate.sentence target)
+
+/-- 上下文切片的唯一宿主闭公式表。 -/
+def hostPremises {theory : Theory} (slice : ContextSlice theory) :
+    List HostFirstOrder.ClosedFormula :=
+  hostPremisesOfPremises slice.premises
+
 /-- 上下文句子进入 preprocessing core。 -/
-def sourceProblem {theory : Theory} (slice : ContextSlice theory) (target : ProjectSentence) : SourcePreprocessing.Problem :=
+def sourceProblem {theory : Theory} (slice : ContextSlice theory)
+    (target : ProjectSentence) : SourcePreprocessing.Problem :=
   sourceProblemOfPremises slice.premises target
-/-- 上下文句子进入 SearchSignature 深问题。 -/
-def deepProblem {theory : Theory} (slice : ContextSlice theory) (target : ProjectSentence) : SourcePreprocessing.DeepProblem :=
-  deepProblemOfPremises slice.premises target
-/-- 搜索层定理经 proof-carrying 上下文切片提升回原集合论理论。 -/
-theorem soundOfSearch {theory : Theory} (slice : ContextSlice theory) (target : ProjectSentence) (hSearch :
-      LogicSoundness.SetLevel.SemanticallyEntails (slice.deepProblem target).theory (slice.deepProblem target).target) :
+
+/-- 上下文句子进入可计算 DAG 搜索语法。 -/
+def searchProblem {theory : Theory} (slice : ContextSlice theory)
+    (target : ProjectSentence) : SourcePreprocessing.DeepProblem :=
+  searchProblemOfPremises slice.premises target
+
+/-- 上下文句子进入内禀一阶语义问题。 -/
+def intrinsicProblem {theory : Theory} (slice : ContextSlice theory)
+    (target : ProjectSentence) :
+    LogicSoundness.SetLevel.DeepProblem
+      SearchMaterialization.SearchSignature :=
+  intrinsicProblemOfPremises slice.premises target
+
+/-- 内禀搜索定理经 proof-carrying 上下文切片提升回原集合论理论。 -/
+theorem soundOfSearch {theory : Theory} (slice : ContextSlice theory)
+    (target : ProjectSentence)
+    (hSearch : LogicSoundness.SetLevel.SemanticallyEntails
+      (slice.intrinsicProblem target).theory
+      (slice.intrinsicProblem target).target) :
     SemanticallyEntails.{0} theory target := by
-  intro M hModels free
-  let env : SetTheory.Env M 0 := {
-    bound := Fin.elim0
-    free := free
-  }
-  let searchEnv := searchEnvOfSet env
-  have hAgreement : SearchAgreement env searchEnv :=
-    searchEnvOfSet_agrees env
-  have hSearchTarget :=
-    hSearch searchEnv (by
-      intro formula hFormula
-      rcases List.mem_map.mp hFormula with
-        ⟨sentence, hSentence, rfl⟩
-      exact (Translate.satisfies_searchFormula hAgreement
-          sentence.formula).mp (slice.entails hSentence M hModels free))
-  exact (Translate.satisfies_searchFormula hAgreement
-      target.formula).mpr hSearchTarget
-/-- 上下文 source/deep 问题之间的纯一阶反模型桥。 -/
-def firstOrderBridge {theory : Theory} (slice : ContextSlice theory) (target : ProjectSentence) :
-    SourcePreprocessing.FirstOrderProblemBridge (slice.sourceProblem target) (slice.deepProblem target) := by
-  constructor
-  intro M env hModels hTarget
-  refine ⟨{
-    model := coreModelOfSearch M
-    functionSort := coreModel_functionSort M
-    env := coreEnvOfSearch env
-    respectsFree := coreEnv_respectsFree env
-    satisfies := ?_
-  }⟩
-  unfold sourceProblem SourcePreprocessing.Problem.refutationSource
-  apply coreSatisfiesConjunctionList
-  intro formula hFormula
-  simp only [List.mem_append, List.mem_singleton] at hFormula
-  rcases hFormula with hPremise | hTargetFormula
-  · rcases List.mem_map.mp hPremise with
+  intro ℳ hModels
+  rw [Structure.satisfiesSentence_iff]
+  intro free
+  let interpretation := Translate.interpretation ℳ
+  have hTarget := hSearch (HostFirstOrder.Semantics.model interpretation) (by
+    intro formula hFormula
+    rcases List.mem_map.mp hFormula with
+      ⟨hostSentence, hHostSentence, rfl⟩
+    rcases List.mem_map.mp hHostSentence with
       ⟨sentence, hSentence, rfl⟩
-    exact (satisfies_coreFormula env sentence.formula).mpr <|
-        hModels (Translate.searchFormula sentence.formula) <| by
-          exact List.mem_map.mpr ⟨sentence, hSentence, rfl⟩
-  · subst formula
-    have hCoreTarget :
-        ¬ Semantics.Formula.Satisfies (coreEnvOfSearch env) (Translate.coreFormula target.formula) := by
-      intro hCore
-      exact hTarget <| (satisfies_coreFormula env target.formula).mp hCore
-    simpa [Semantics.Formula.Satisfies, Semantics.Formula.eval] using
-      hCoreTarget
-/--
-从 proof-carrying 切片和独立的纯问题快照构造后端请求。
-两个等同性只连接 soundness；可执行 closed 状态完全由纯问题快照计算。
--/
-def goalAttemptFromProblems {theory : Theory} (slice : ContextSlice theory) (target : ProjectSentence) (sourceProblem : SourcePreprocessing.Problem)
-    (problem : SourcePreprocessing.DeepProblem) (hSource : sourceProblem = slice.sourceProblem target) (hProblem : problem = slice.deepProblem target)
-    (settings : SourcePreprocessing.FirstOrderSettings := {}) (avatarConfig : SourcePreprocessing.AvatarConfig := {})
-    (label : String := "pure set theory with context") :
+    rw [HostFirstOrder.Semantics.trueIn_iff]
+    exact (Translate.eval_sentence hModels.1 free sentence).mpr
+      ((Structure.satisfiesSentence_iff ℳ sentence).mp
+        (slice.entails hSentence ℳ hModels) free))
+  exact (Translate.eval_sentence hModels.1 free target).mp
+    ((HostFirstOrder.Semantics.trueIn_iff interpretation
+      (Translate.sentence target)).mp hTarget)
+
+/-- checked preprocessing 与 DAG replay 经索引宿主语义直接提升回集合论目标。 -/
+def goalAttemptFromReplay {theory : Theory} (slice : ContextSlice theory)
+    (target : ProjectSentence) (sourceProblem : SourcePreprocessing.Problem)
+    (searchProblem : SourcePreprocessing.DeepProblem)
+    (hSource : sourceProblem = slice.sourceProblem target)
+    (payload : SourcePreprocessing.Payload)
+    (search : SourcePreprocessing.SearchInput)
+    (hReplay :
+      SourcePreprocessing.FirstOrderReplay.check sourceProblem payload = true)
+    (label : String)
+    (data : SearchReplayMaterial.SearchCertificateProvider.PreparedReplaySearchData
+      (SourcePreprocessing.FirstOrderReplay.searchInput
+        payload searchProblem search label)) :
     ProveAutoRequest.GoalAttempt (SemanticallyEntails.{0} theory target) := by
-  let bridge : SourcePreprocessing.FirstOrderProblemBridge sourceProblem problem := by
-    rw [hSource, hProblem]
-    exact slice.firstOrderBridge target
-  let attempt :=
-    SourcePreprocessing.runFirstOrderProviderAt
-      sourceProblem problem bridge settings avatarConfig label
-  exact {
-    closed :=
-      SourcePreprocessing.runFirstOrderProviderClosedAt
-        sourceProblem problem settings avatarConfig label
-    summary :=
-      SourcePreprocessing.runFirstOrderProviderSummary
-        sourceProblem problem settings avatarConfig label
-    sound := by
-      intro hClosed
-      have hAttemptClosed : attempt.closed = true := by
-        dsimp [attempt]
-        exact (SourcePreprocessing.runFirstOrderProviderAt_closed
-            sourceProblem problem bridge settings avatarConfig label).trans hClosed
-      have hSearch :
-          LogicSoundness.SetLevel.SemanticallyEntails
-            problem.theory problem.target :=
-        ProveAutoRequest.GoalAttempt.backendSoundOfClosed
-          problem attempt hAttemptClosed
-      apply slice.soundOfSearch target
-      rw [← hProblem]
-      exact hSearch
-  }
-/-- 元层搜索只引用 checked preprocessing 与 DAG replay，集合论切片负责最终提升。 -/
-def goalAttemptFromReplay {theory : Theory} (slice : ContextSlice theory) (target : ProjectSentence) (sourceProblem : SourcePreprocessing.Problem)
-    (problem : SourcePreprocessing.DeepProblem) (hSource : sourceProblem = slice.sourceProblem target) (hProblem : problem = slice.deepProblem target)
-    (payload : SourcePreprocessing.Payload) (search : SourcePreprocessing.SearchInput) (hReplay :
-      SourcePreprocessing.FirstOrderReplay.check sourceProblem payload = true) (label : String) (data :
-      SearchReplayMaterial.SearchCertificateProvider.PreparedReplaySearchData (SourcePreprocessing.FirstOrderReplay.searchInput
-          payload problem search label)) :
-    ProveAutoRequest.GoalAttempt (SemanticallyEntails.{0} theory target) := by
-  let bridge : SourcePreprocessing.FirstOrderProblemBridge sourceProblem problem := by
-    rw [hSource, hProblem]
-    exact slice.firstOrderBridge target
   let replay :=
     SourcePreprocessing.FirstOrderReplay.ofCheck
       sourceProblem payload hReplay
-  let attempt : LogicSoundness.SetLevel.BackendAttempt problem :=
-    .success (data.backendSuccessAt (replay.refutationBridgeAt bridge))
-  exact {
-    closed := true
-    summary := "DAG Arena reflection: closed"
-    sound := by
-      intro _
-      have hAttemptClosed :
-          LogicSoundness.SetLevel.BackendAttempt.closed attempt = true := rfl
-      have hSearch :
-          LogicSoundness.SetLevel.SemanticallyEntails
-            problem.theory problem.target :=
-        ProveAutoRequest.GoalAttempt.backendSoundOfClosed
-          problem attempt hAttemptClosed
-      apply slice.soundOfSearch target
-      rw [← hProblem]
-      exact hSearch
-  }
-/-- 从一个上下文切片构造完整的 proof-carrying 后端请求。 -/
-def goalAttempt {theory : Theory} (slice : ContextSlice theory) (target : ProjectSentence) (settings : SourcePreprocessing.FirstOrderSettings := {})
-    (avatarConfig : SourcePreprocessing.AvatarConfig := {}) (label : String := "pure set theory with context") :
-    ProveAutoRequest.GoalAttempt (SemanticallyEntails.{0} theory target) :=
-  goalAttemptFromProblems slice target (slice.sourceProblem target) (slice.deepProblem target)
-    rfl rfl settings avatarConfig label
+  have hSourceSyntax :
+      sourceProblem = HostFirstOrder.sourceProblemOfSyntax
+        slice.hostPremises (Translate.sentence target) := by
+    simpa [ContextSlice.sourceProblem, ContextSlice.hostPremises] using! hSource
+  cases data with
+  | avatar artifact hSupported registry hRegistry compiledDAG _ =>
+      exact ProveAutoRequest.GoalAttempt.success (by
+        apply slice.soundOfSearch target
+        exact HostFirstOrder.ReplaySemantics.avatar_semanticallyEntailsSyntaxAt
+          slice.hostPremises (Translate.sentence target) replay artifact
+          compiledDAG registry hRegistry
+          (HostFirstOrder.ReplaySemantics.artifact_initialClauses_eq_coreClauseSet
+            payload searchProblem search label artifact)
+          hSourceSyntax hSupported)
+        "set-theory AVATAR DAG replay: closed"
+  | guarded artifact hSupported compiledDAG _ =>
+      exact ProveAutoRequest.GoalAttempt.success (by
+        apply slice.soundOfSearch target
+        exact HostFirstOrder.ReplaySemantics.guarded_semanticallyEntailsSyntaxAt
+          slice.hostPremises (Translate.sentence target) replay artifact
+          compiledDAG
+          (HostFirstOrder.ReplaySemantics.artifact_initialClauses_eq_coreClauseSet
+            payload searchProblem search label artifact)
+          hSourceSyntax hSupported)
+        "set-theory guarded DAG replay: closed"
 end ContextSlice
 /--
 集合论目标的静态搜索配置。
-局部上下文 provider 在保留此配置的前提下追加相关定理；没有相关定理时，普通
-`GoalRequest` 仍然沿原路径运行。
+上下文 provider 在保留此配置的前提下追加相关定理；即使没有局部事实，也沿同一
+checked replay 主线消费显式公理切片。
 -/
 class GoalProfile (theory : Theory) (target : ProjectSentence) where
   slice : TheorySlice theory
@@ -224,18 +191,7 @@ namespace GoalProfile
 @[reducible] def empty (theory : Theory) (target : ProjectSentence) :
     GoalProfile theory target where
   slice := TheorySlice.empty theory
-/-- profile 的无局部上下文请求。 -/
-@[reducible] def request {theory : Theory} {target : ProjectSentence} (profile : GoalProfile theory target) :
-    ProveAutoRequest.GoalRequest (SemanticallyEntails.{0} theory target) where
-  run :=
-    ContextSlice.goalAttempt (ContextSlice.ofFacts profile.slice [] [] rfl)
-      target profile.settings profile.avatarConfig profile.label
 end GoalProfile
-/-- 声明了 `GoalProfile` 的目标自动获得原有裸 `prove_auto` 请求。 -/
-instance {theory : Theory} {target : ProjectSentence}
-    [profile : GoalProfile theory target] :
-    ProveAutoRequest.GoalRequest (SemanticallyEntails.{0} theory target) :=
-  profile.request
 /-! ## 元层强相关过滤 -/
 private def matchEntails? (type : Expr) : Option (Expr × Expr) :=
   let (head, arguments) := type.getAppFnArgs
@@ -338,19 +294,17 @@ private unsafe def buildContextAttemptImpl? (request : ProveAutoRequest.Prepared
   let premises ← mkAppM ``List.append #[baseAxioms, sentences]
   let sourceProblem ←
     mkAppM ``ContextSlice.sourceProblemOfPremises #[premises, target]
-  let problem ←
-    mkAppM ``ContextSlice.deepProblemOfPremises #[premises, target]
+  let searchProblem ←
+    mkAppM ``ContextSlice.searchProblemOfPremises #[premises, target]
+  let compiled ←
+    mkAppM ``ContextSlice.checkedProblemOfPremises #[premises, target]
   let expectedSource ← mkAppM ``ContextSlice.sourceProblem #[slice, target]
-  let expectedProblem ← mkAppM ``ContextSlice.deepProblem #[slice, target]
+  let expectedSearch ← mkAppM ``ContextSlice.searchProblem #[slice, target]
   unless ← isDefEq sourceProblem expectedSource do
     throwError "internal context source problem lost premise alignment"
-  unless ← isDefEq problem expectedProblem do
-    throwError "internal context deep problem lost premise alignment"
+  unless ← isDefEq searchProblem expectedSearch do
+    throwError "internal context search problem lost premise alignment"
   let hSource ← mkEqRefl sourceProblem
-  let hProblem ← mkEqRefl problem
-  let hAdmissible ←
-    mkAppM ``ContextSlice.deepProblemOfPremises_admissible
-      #[premises, target]
   let sourceProblemValue ←
     evalExpr SourcePreprocessing.Problem (mkConst ``SourcePreprocessing.Problem) sourceProblem
   let settingsValue ←
@@ -370,11 +324,11 @@ private unsafe def buildContextAttemptImpl? (request : ProveAutoRequest.Prepared
             let settingsExpr := toExpr settingsValue.toSettings
             let replay ←
               KernelReplay.firstOrderReplayExprs sourceProblemValue
-                sourceProblem problem hAdmissible settingsExpr
+                sourceProblem searchProblem compiled settingsExpr
                 firstOrder.result.checked.payload artifact labelValue
             mkAppM ``ContextSlice.goalAttemptFromReplay
-              #[slice, target, sourceProblem, problem, hSource, hProblem,
-                replay.payload, replay.search, replay.checked, label,
+              #[slice, target, sourceProblem, searchProblem, hSource,
+                replay.payload, replay.search, replay.checked, toExpr labelValue,
                 replay.data]
   return some attempt
 /-- provider 常量保持安全；编译期元层运行使用闭合数据求值实现。 -/

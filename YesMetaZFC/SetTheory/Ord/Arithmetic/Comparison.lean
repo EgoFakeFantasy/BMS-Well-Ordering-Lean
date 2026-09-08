@@ -1203,8 +1203,12 @@ theorem ordinalDivision_existsUnique
       hZF 𝕀 hDividend hDivisor hDivisorNonempty with
     ⟨quotient, remainder, hDivision, hUnique⟩
   refine ⟨quotient, ?_, ?_⟩
-  · prove_auto
-  · prove_auto
+  · refine ⟨remainder, hDivision, ?_⟩
+    intro otherRemainder hOther
+    exact (hUnique quotient otherRemainder hOther).2
+  · intro otherQuotient hOther
+    rcases hOther with ⟨otherRemainder, hOther⟩
+    exact (hUnique otherQuotient otherRemainder hOther).1
 end ZF
 end SetTheory
 end YesMetaZFC

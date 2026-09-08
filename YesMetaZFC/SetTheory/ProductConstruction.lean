@@ -56,6 +56,7 @@ def cartesianRow (𝒞 : OrderedPairConvention) : BinarySchema 1 where
     simp [Definitional.Project.Formula.isCartesianRow,
       Definitional.Project.Formula.existsMem,
       Definitional.Formula.FreeClosed, Definitional.Term.newest]
+    exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end BinarySchema
 namespace Formula
 /-- 笛卡尔积行模式的 schema 解释。 -/
@@ -68,7 +69,7 @@ theorem denote_cartesianRow_iff
   simpa [Definitional.Project.BinarySchema.cartesianRow,
     Definitional.Project.BinarySchema.denote,
     Term.eval_bound_zero_push, Term.eval_bound_one_push,
-    Term.eval_bound_two_push] using
+    Term.eval_bound_two_push] using!
       satisfies_isCartesianRow_iff 𝕀 ((env.push left).push row) (.bound 0) (.bound 1) (.bound 2)
 end Formula
 end Project

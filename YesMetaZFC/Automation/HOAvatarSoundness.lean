@@ -810,7 +810,7 @@ theorem avatarSplitRegistryContract
     AvatarSplitPayload.RegistryContract payload := by
   rcases getElem?_eq_some_iff.mp hNode with ⟨hIndex, hGet⟩
   have hNodeAt : cert.dag.nodeAt splitId hIndex = splitNode := by
-    simpa [DAG.nodeAt] using hGet
+    simpa [DAG.nodeAt] using! hGet
   have hNodeCheck := (cert.contract.node_contract splitId hIndex).node_checked
   rw [hNodeAt] at hNodeCheck
   have hPayloadCheck : payload.check splitNode.parents = true := by
@@ -830,7 +830,7 @@ theorem avatarSelectorRegistry_positive
   have hArray : node ∈ cert.dag.nodes := Array.mem_def.mpr hNodeMem
   rcases Array.mem_iff_getElem.mp hArray with ⟨index, hIndex, hGet⟩
   have hNodeAt : cert.dag.nodeAt index hIndex = node := by
-    simpa [DAG.nodeAt] using hGet
+    simpa [DAG.nodeAt] using! hGet
   have hNodeCheck := (cert.contract.node_contract index hIndex).node_checked
   rw [hNodeAt] at hNodeCheck
   have hSplitCheck : split.check node.parents = true := by
@@ -1073,7 +1073,7 @@ theorem avatarSplitBoundStackGuardedTopologicalStep
   have hNodeOk :
       cert.dag.avatarSplitNodeOk (cert.dag.nodeAt index hIndex) payload = true := by
     have hGuards := (cert.contract.node_contract index hIndex).guards_checked
-    simpa [DAG.localNodeGuardsOk, hPayload] using hGuards
+    simpa [DAG.localNodeGuardsOk, hPayload] using! hGuards
   rcases DAG.avatarSplitNodeOk_sound hNodeOk with
     ⟨_hSplitUnguarded, hSnapshot, sourceNode, _initialIndex,
       hSourceLookup, hSourceUnguarded, _hSourcePayload⟩
@@ -1102,7 +1102,7 @@ theorem avatarComponentBoundStackGuardedTopologicalStep
   have hNodeOk :
       cert.dag.avatarComponentNodeOk (cert.dag.nodeAt index hIndex) payload = true := by
     have hGuards := (cert.contract.node_contract index hIndex).guards_checked
-    simpa [DAG.localNodeGuardsOk, hPayload] using hGuards
+    simpa [DAG.localNodeGuardsOk, hPayload] using! hGuards
   rcases DAG.avatarComponentNodeOk_sound hNodeOk with
     ⟨_hSnapshot, splitNode, splitPayload, indices, selector,
       hSplitLookup, _hSplitUnguarded, hSplitPayload, hIndices,
@@ -1264,7 +1264,7 @@ theorem avatarSoundnessSupported_of_eq_true
     ∀ index (hIndex : index < dag.nodes.size), (dag.nodeAt index hIndex).payload.avatarSoundnessSupported = true := by
   intro index hIndex
   have hAll := Array.all_eq_true.mp hSupported
-  simpa [avatarSoundnessSupported, nodeAt] using hAll index hIndex
+  simpa [avatarSoundnessSupported, nodeAt] using! hAll index hIndex
 end DAG
 namespace CheckedDAG
 /--

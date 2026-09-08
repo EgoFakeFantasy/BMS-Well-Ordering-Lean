@@ -1,5 +1,6 @@
 import Lean
 import YesMetaZFC.Automation.FirstOrderDerives.TypedView
+import YesMetaZFC.Logic.FirstOrder.Derivation.Classical
 import YesMetaZFC.Logic.FirstOrder.Derivation.Equality
 import YesMetaZFC.Logic.FirstOrder.Derivation.Quantifier
 /-!
@@ -32,8 +33,8 @@ inductive SearchMode where
 deriving Repr, BEq
 private structure GoalView where
   signature : Expr
-  decidableEq : Expr
   theory : Expr
+  free : Expr
   context : Expr
   formula : Expr
 private def goal_view_from_arguments (arguments : Array Expr) :
@@ -42,8 +43,8 @@ private def goal_view_from_arguments (arguments : Array Expr) :
     return none
   return some {
     signature := arguments[0]!
-    decidableEq := arguments[1]!
-    theory := arguments[2]!
+    theory := arguments[1]!
+    free := arguments[2]!
     context := arguments[3]!
     formula := arguments[4]!
   }
@@ -51,13 +52,7 @@ private def goal_view? (target : Expr) : MetaM (Option GoalView) := do
   let target ← instantiateMVars target
   if target.isAppOfArity ``Logic.FirstOrder.Derives 5 then
     return ← goal_view_from_arguments target.getAppArgs
-  let target ← whnf target
-  unless target.isAppOfArity ``Nonempty 1 do
-    return none
-  let payloadType ← whnf target.getAppArgs[0]!
-  unless payloadType.isAppOfArity ``Logic.FirstOrder.ND_Checked 5 do
-    return none
-  goal_view_from_arguments payloadType.getAppArgs
+  return none
 private def same_expression (left right : Expr) : MetaM Bool := do
   if Expr.equal left right then
     return true
@@ -214,153 +209,15 @@ private def ReplayState.add_fact (state : ReplayState) (fact : Fact) :
     return (state, false)
   else
     return ({ state with facts := state.facts.push fact }, true)
-private def formula_admissible_type (config : TypedView.Config) (formula : Expr) : Expr :=
-  mkAppN (mkConst ``Logic.FirstOrder.Formula.Admissible
-      config.universeLevels)
-    #[config.signature, config.decidableEq, formula]
-private def local_proof_of_type? (target : Expr) :
-    MetaM (Option Expr) := do
-  for declaration in (← getLCtx) do
-    if declaration.isImplementationDetail ||
-        declaration.isAuxDecl ||
-        declaration.binderInfo.isInstImplicit then
-      continue
-    let type ← instantiateMVars declaration.type
-    if ← same_expression type target then
-      return some (mkFVar declaration.fvarId)
-  return none
-/-- 把逻辑层 admissibility 转为内核消费的纯函数检查等式。 -/
-private def check_certificate_of_admissible
-    (hAdmissible : Expr) : MetaM Expr :=
-  mkAppM ``Logic.FirstOrder.Formula.check_admissible_complete
-    #[hAdmissible]
-/-- 把项的排序与闭性证明封装为内核消费的纯函数检查证书。 -/
-private def term_check_certificate_of_admissible
-    (hAdmissible : Expr) : MetaM Expr :=
-  mkAppM ``Logic.FirstOrder.Term.check_admissible_complete
-    #[hAdmissible]
-/--
-为证书重放恢复公式 admissibility。
-优先消费显式局部证书和已有 `Derives` 事实；随后从复合事实反演分量，最后才按
-当前目标的命题结构逐层装配。量词体不被误当作空 scope 公式，原子与量词公式若无
-外部证书会安全失败。
--/
-private partial def ReplayState.admissibility? (state : ReplayState) (node : FormulaNode) (fuel : Nat := 64) :
-    MetaM (Option Expr) := do
-  if fuel == 0 then
-    return none
-  let targetType := formula_admissible_type state.config node.raw
-  if let some proof ← local_proof_of_type? targetType then
-    return some proof
-  if let some proof ← state.find? node then
-    return some <|
-      ← mkAppM ``Logic.FirstOrder.Derives.admissible #[proof]
-  for fact in state.facts do
-    let hFact ←
-      mkAppM ``Logic.FirstOrder.Derives.admissible #[fact.proof]
-    let tryChild (child : FormulaNode) (projection : Name) :
-        MetaM (Option Expr) := do
-      let some alignment ←
-          child.alignment_with? state.config node
-        | return none
-      let projected ← mkAppM projection #[hFact]
-      return some (← cast_admissible alignment projected)
-    match fact.node.shell with
-    | .neg body =>
-        if let some proof ←
-            tryChild body ``Logic.FirstOrder.Formula.Admissible.neg_body then
-          return some proof
-    | .conj left right =>
-        if let some proof ←
-            tryChild left ``Logic.FirstOrder.Formula.Admissible.conj_left then
-          return some proof
-        if let some proof ←
-            tryChild right ``Logic.FirstOrder.Formula.Admissible.conj_right then
-          return some proof
-    | .disj left right =>
-        if let some proof ←
-            tryChild left ``Logic.FirstOrder.Formula.Admissible.disj_left then
-          return some proof
-        if let some proof ←
-            tryChild right ``Logic.FirstOrder.Formula.Admissible.disj_right then
-          return some proof
-    | .imp left right =>
-        if let some proof ←
-            tryChild left ``Logic.FirstOrder.Formula.Admissible.imp_left then
-          return some proof
-        if let some proof ←
-            tryChild right ``Logic.FirstOrder.Formula.Admissible.imp_right then
-          return some proof
-    | .iff left right =>
-        if let some proof ←
-            tryChild left ``Logic.FirstOrder.Formula.Admissible.iff_left then
-          return some proof
-        if let some proof ←
-            tryChild right ``Logic.FirstOrder.Formula.Admissible.iff_right then
-          return some proof
-    | _ =>
-        pure ()
-  match node.shell with
-  | .falsum =>
-      return some <|
-        mkAppN (mkConst ``Logic.FirstOrder.Formula.Admissible.falsum
-            state.config.universeLevels)
-          #[state.config.signature, state.config.decidableEq]
-  | .truth =>
-      return some <|
-        mkAppN (mkConst ``Logic.FirstOrder.Formula.Admissible.truth
-            state.config.universeLevels)
-          #[state.config.signature, state.config.decidableEq]
-  | .neg body =>
-      let some hBody ← state.admissibility? body (fuel - 1)
-        | return none
-      return some <|
-        ← mkAppM ``Logic.FirstOrder.Formula.Admissible.neg #[hBody]
-  | .conj left right =>
-      let some hLeft ← state.admissibility? left (fuel - 1)
-        | return none
-      let some hRight ← state.admissibility? right (fuel - 1)
-        | return none
-      return some <|
-        ← mkAppM ``Logic.FirstOrder.Formula.Admissible.conj
-          #[hLeft, hRight]
-  | .disj left right =>
-      let some hLeft ← state.admissibility? left (fuel - 1)
-        | return none
-      let some hRight ← state.admissibility? right (fuel - 1)
-        | return none
-      return some <|
-        ← mkAppM ``Logic.FirstOrder.Formula.Admissible.disj
-          #[hLeft, hRight]
-  | .imp left right =>
-      let some hLeft ← state.admissibility? left (fuel - 1)
-        | return none
-      let some hRight ← state.admissibility? right (fuel - 1)
-        | return none
-      return some <|
-        ← mkAppM ``Logic.FirstOrder.Formula.Admissible.imp
-          #[hLeft, hRight]
-  | .iff left right =>
-      let some hLeft ← state.admissibility? left (fuel - 1)
-        | return none
-      let some hRight ← state.admissibility? right (fuel - 1)
-        | return none
-      return some <|
-        ← mkAppM ``Logic.FirstOrder.Formula.Admissible.iff
-          #[hLeft, hRight]
-  | .forallE .. | .existsE .. | .equal .. | .atom =>
-      return none
 private def ReplayState.extend (state : ReplayState) (node : FormulaNode) :
     MetaM ReplayState := do
-  let some hNode ← state.admissibility? node
-    | throwError
-        "cannot recover admissibility for introduced formula {node.raw}"
   let nextContext ← mkAppM ``List.cons #[node.raw, state.context]
   let mut nextFacts := #[]
   for fact in state.facts do
     let proof ←
       mkAppOptM ``Logic.FirstOrder.Derives.context_weaken_cons
-        #[none, none, some state.theory, some state.context,
+        #[some state.config.signature, some state.theory,
+          some state.config.free, some state.context,
           some node.raw, some fact.node.raw, some fact.proof]
     nextFacts := nextFacts.push {
       node := fact.node
@@ -369,11 +226,11 @@ private def ReplayState.extend (state : ReplayState) (node : FormulaNode) :
   let membership ←
     mkAppOptM ``List.Mem.head
       #[none, some node.raw, some state.context]
-  let hCheck ← check_certificate_of_admissible hNode
   let assumption ←
     mkAppOptM ``Logic.FirstOrder.Derives.assumption
-      #[none, none, some state.theory, some nextContext,
-        some node.raw, some membership, some hCheck]
+      #[some state.config.signature, some state.theory,
+        some state.config.free, some nextContext,
+        some node.raw, some membership]
   let next : ReplayState := {
     state with
     context := nextContext
@@ -392,9 +249,9 @@ private partial def saturate_conj_facts (state : ReplayState) (fuel : Nat) : Met
     match fact.node.shell with
     | .conj left right =>
         let hLeft ←
-          mkAppM ``Logic.FirstOrder.Derives.conjElimLeft #[fact.proof]
+          mkAppM ``Logic.FirstOrder.Derives.conj_elim_left #[fact.proof]
         let hRight ←
-          mkAppM ``Logic.FirstOrder.Derives.conjElimRight #[fact.proof]
+          mkAppM ``Logic.FirstOrder.Derives.conj_elim_right #[fact.proof]
         let (afterLeft, leftAdded) ←
           next.add_fact { node := left, proof := hLeft }
         next := afterLeft
@@ -408,7 +265,7 @@ private partial def saturate_conj_facts (state : ReplayState) (fuel : Nat) : Met
     saturate_conj_facts next (fuel - 1)
   else
     return next
-private partial def discharge_context_prefix? (config : TypedView.Config) (theory : Expr) (targetContext resourceContext formula proof : Expr)
+private partial def discharge_context_prefix? (_config : TypedView.Config) (theory : Expr) (targetContext resourceContext formula proof : Expr)
     (fuel : Nat := 64) :
     MetaM (Option RawFact) := do
   let resourceContext ← whnf (← instantiateMVars resourceContext)
@@ -423,26 +280,12 @@ private partial def discharge_context_prefix? (config : TypedView.Config) (theor
   let tail := arguments[2]!
   let some fact ←
       discharge_context_prefix?
-        config theory targetContext tail formula proof (fuel - 1)
+        _config theory targetContext tail formula proof (fuel - 1)
     | return none
-  let compiled ← compile_formula config antecedent
-  let admissibilityState : ReplayState := {
-    config
-    theory
-    context := tail
-  }
-  let some hAntecedentNormalized ←
-      admissibilityState.admissibility? compiled.node
-    | return none
-  let hAntecedent ←
-    cast_admissible (← mkEqSymm compiled.alignment) hAntecedentNormalized
-  let hAntecedentCheck ←
-    check_certificate_of_admissible hAntecedent
   let nextFormula ←
     mkAppM ``Logic.FirstOrder.Formula.imp #[antecedent, fact.formula]
   let nextProof ←
-    mkAppM ``Logic.FirstOrder.Derives.impIntro
-      #[fact.proof, hAntecedentCheck]
+    mkAppM ``Logic.FirstOrder.Derives.imp_intro #[fact.proof]
   return some { formula := nextFormula, proof := nextProof }
 private def resource_fact? (config : TypedView.Config) (theory context : Expr) (resource : FVarId) :
     MetaM (Option RawFact) := do
@@ -462,27 +305,19 @@ private def collect_facts (config : TypedView.Config) (theory context : Expr) (r
       unless facts.any fun existing => Expr.equal existing.formula fact.formula do
         facts := facts.push fact
   return facts
-private def collect_theory_facts (signature decidableEq : Expr) (universeLevels : List Level) (theory context : Expr) :
+private def collect_theory_facts
+    (signature free theory context : Expr) :
     MetaM (Array RawFact) := do
   let mut facts := #[]
   for member in ← collect_theory_members theory do
-    let admissibilityType :=
-      mkAppN (mkConst ``Logic.FirstOrder.Formula.Admissible
-          universeLevels)
-        #[signature, decidableEq, member.formula]
-    if let some hAdmissible ←
-        local_proof_of_type? admissibilityType then
-      let hCheck ←
-        check_certificate_of_admissible hAdmissible
-      let proof ←
-        mkAppOptM ``Logic.FirstOrder.Derives.theoryAxiom
-          #[some signature, some decidableEq, some theory,
-            some context, some member.formula,
-            some member.membership, some hCheck]
-      facts := facts.push {
-        formula := member.formula
-        proof
-      }
+    let formula ←
+      mkAppOptM ``Logic.FirstOrder.Formula.fromSentence
+        #[some signature, some free, some member.formula]
+    let proof ←
+      mkAppOptM ``Logic.FirstOrder.Derives.theory_axiom
+        #[some signature, some theory, some free, some context,
+          some member.formula, some member.membership]
+    facts := facts.push { formula, proof }
   return facts
 private def compile_facts (config : TypedView.Config) (rawFacts : Array RawFact) :
     MetaM (Array Fact) := do
@@ -527,19 +362,16 @@ private partial def saturate_forall_facts (state : ReplayState) (fuel maxFacts :
       for candidate in state.objectVariables do
         if ← atomic_eq candidate.sort sort then
           if let some proof ← attempt_proof do
+              let term ← candidate.term state.config
               return some <|
-                mkAppN (mkConst
-                    ``Logic.FirstOrder.Derives.forall_elim_fvar
-                    state.config.universeLevels)
-                  #[state.config.signature, state.config.decidableEq,
-                    state.theory, state.context, sort,
-                    candidate.id, body.raw, fact.proof] then
+                ← mkAppM ``Logic.FirstOrder.Derives.forall_elim
+                  #[term, fact.proof] then
+            let term ← candidate.term state.config
             let opened ←
-              body.open_at
-                state.config sort 0 candidate.term candidate.key
+              body.instantiate_top state.config term
             let proof ← cast_derives opened.alignment proof
             trace[YesMetaZFC.proveAuto.firstOrderDerives]
-              "forall.saturate candidate={candidate.id}; \
+              "forall.saturate candidate={candidate.entry}; \
               opened={opened.node.raw}"
             let (after, wasAdded) ←
               next.add_fact { node := opened.node, proof }
@@ -573,23 +405,19 @@ private partial def specialize_forall_fact_to_target? (state : ReplayState) (fac
   for candidate in state.objectVariables do
     if ← atomic_eq candidate.sort sort then
       if let some proof ← attempt_proof do
-          let specialized :=
-            mkAppN (mkConst
-                ``Logic.FirstOrder.Derives.forall_elim_fvar
-                state.config.universeLevels)
-              #[state.config.signature, state.config.decidableEq,
-                state.theory, state.context, sort,
-                candidate.id, body.raw, fact.proof]
+          let term ← candidate.term state.config
+          let specialized ←
+            mkAppM ``Logic.FirstOrder.Derives.forall_elim
+              #[term, fact.proof]
           let opened ←
-            body.open_at
-              state.config sort 0 candidate.term candidate.key
+            body.instantiate_top state.config term
           let specialized ←
             cast_derives opened.alignment specialized
           specialize_forall_fact_to_target?
             state { node := opened.node, proof := specialized }
             target (fuel - 1) then
         trace[YesMetaZFC.proveAuto.firstOrderDerives]
-          "forall.target candidate={candidate.id}; target={target.raw}"
+          "forall.target candidate={candidate.entry}; target={target.raw}"
         return some proof
   return none
 private def specialize_forall_facts_to_target? (state : ReplayState) (target : FormulaNode) (fuel : Nat) :
@@ -620,82 +448,50 @@ mutual
       trace[YesMetaZFC.proveAuto.firstOrderDerives]
         "derive fact hit"
       return some proof
-    if let some (_, hFormula) ←
+    if let some (term, hFormula) ←
         formula.equality_reflexive_alignment? state.config then
       trace[YesMetaZFC.proveAuto.firstOrderDerives]
         "derive equality sameTerms=true"
-      let .equal leftNode _ := formula.shell
-        | return none
-      if let some checked ←
-          leftNode.checked_admissibility? state.config then
-        if let some proof ← attempt_proof do
-            let hAdmissible ←
-              mkAppM ``And.intro
-                #[checked.wellSorted, checked.boundClosed]
-            let hCheck ←
-              term_check_certificate_of_admissible hAdmissible
-            let reflexive :=
-              mkAppN (mkConst
-                  ``Logic.FirstOrder.Derives.eq_refl_m
-                  state.config.universeLevels)
-                #[state.config.signature, state.config.decidableEq,
-                  state.theory, state.context, checked.sort, checked.term,
-                  hCheck]
-            let equalConstructor :=
-              mkApp (mkConst ``Logic.FirstOrder.Formula.equal
-                  state.config.universeLevels)
-                state.config.signature
-            let hLeftFunction ←
-              mkCongrArg equalConstructor checked.alignment
-            let hBoth ← mkCongr hLeftFunction checked.alignment
-            let hNormalized ← mkEqSymm hBoth
-            let hTarget ← mkEqTrans hNormalized hFormula
-            let casted ← cast_derives hTarget reflexive
-            return some casted then
-          trace[YesMetaZFC.proveAuto.firstOrderDerives]
-            "derive equality proof accepted"
-          return some proof
+      if let some proof ← attempt_proof do
+          let reflexive ←
+            mkAppM ``Logic.FirstOrder.Derives.eq_refl #[term]
+          return some (← cast_derives hFormula reflexive) then
+        trace[YesMetaZFC.proveAuto.firstOrderDerives]
+          "derive equality proof accepted"
+        return some proof
     if let some proof ←
         specialize_forall_facts_to_target? state formula fuel then
       trace[YesMetaZFC.proveAuto.firstOrderDerives]
         "derive forall target hit"
       return some proof
     if let .existsE sort body := formula.shell then
-      if let some proof ← attempt_proof do
-          let some hExistential ← state.admissibility? formula
-            | return none
-          let witnessId := mkNatLit 0
-          let witness :=
-            state.config.mk_fvar_term sort witnessId
-          let opened ←
-            body.open_at state.config sort 0 witness (.fvar sort witnessId)
-          trace[YesMetaZFC.proveAuto.firstOrderDerives]
-            "derive exists opened={opened.node.raw}; \
-            shell={formula_shell_label opened.node.shell}"
-          let some hOpened ←
-              derive_formula? state opened.node (fuel - 1)
-                allowClassical active
-            | trace[YesMetaZFC.proveAuto.firstOrderDerives]
-                "derive exists body failed"
-              return none
-          let hOpened ←
-            cast_derives (← mkEqSymm opened.alignment) hOpened
-          return some <|
-            mkAppN (mkConst
-                ``Logic.FirstOrder.Derives.exists_intro_fvar
-                state.config.universeLevels)
-              #[state.config.signature, state.config.decidableEq,
-                state.theory, state.context, sort, witnessId,
-                body.raw, hExistential, hOpened] then
-        trace[YesMetaZFC.proveAuto.firstOrderDerives]
-          "derive exists proof accepted"
-        return some proof
+      for candidate in state.objectVariables do
+        if ← atomic_eq candidate.sort sort then
+          if let some proof ← attempt_proof do
+              let witness ← candidate.term state.config
+              let opened ←
+                body.instantiate_top state.config witness
+              trace[YesMetaZFC.proveAuto.firstOrderDerives]
+                "derive exists candidate={candidate.entry}; \
+                opened={opened.node.raw}"
+              let some hOpened ←
+                  derive_formula? state opened.node (fuel - 1)
+                    allowClassical active
+                | return none
+              let hOpened ←
+                cast_derives (← mkEqSymm opened.alignment) hOpened
+              return some <|
+                ← mkAppM ``Logic.FirstOrder.Derives.exists_intro
+                  #[witness, hOpened] then
+            trace[YesMetaZFC.proveAuto.firstOrderDerives]
+              "derive exists proof accepted"
+            return some proof
     match formula.shell with
     | .truth =>
         attempt_proof do
           return some <|
-            ← mkAppOptM ``Logic.FirstOrder.Derives.truthIntro
-              #[none, none, some state.theory, some state.context]
+            ← mkAppOptM ``Logic.FirstOrder.Derives.truth_intro
+              #[none, some state.theory, none, some state.context]
     | .falsum =>
         derive_false? state (fuel - 1) true active
     | .conj left right =>
@@ -709,23 +505,18 @@ mutual
                   allowClassical active
               | return none
             return some <|
-              ← mkAppM ``Logic.FirstOrder.Derives.conjIntro #[hLeft, hRight] then
+              ← mkAppM ``Logic.FirstOrder.Derives.conj_intro #[hLeft, hRight] then
           return some proof
         derive_from_facts? state formula fuel allowClassical active
     | .imp antecedent consequent =>
         if let some proof ← attempt_proof do
-            let some hAntecedent ← state.admissibility? antecedent
-              | return none
-            let hAntecedentCheck ←
-              check_certificate_of_admissible hAntecedent
             let next ← state.extend antecedent
             let some body ←
                 derive_formula? next consequent (fuel - 1)
                   allowClassical active
               | return none
             return some <|
-              ← mkAppM ``Logic.FirstOrder.Derives.impIntro
-                #[body, hAntecedentCheck] then
+              ← mkAppM ``Logic.FirstOrder.Derives.imp_intro #[body] then
           return some proof
         derive_from_facts? state formula fuel allowClassical active
     | .iff left right =>
@@ -741,94 +532,69 @@ mutual
                   allowClassical active
               | return none
             return some <|
-              ← mkAppM ``Logic.FirstOrder.Derives.iffIntro
+              ← mkAppM ``Logic.FirstOrder.Derives.iff_intro
                 #[forward, backward] then
           return some proof
         derive_from_facts? state formula fuel allowClassical active
     | .neg body =>
         if let some proof ← attempt_proof do
-            let some hBody ← state.admissibility? body
-              | return none
-            let hBodyCheck ←
-              check_certificate_of_admissible hBody
             let next ← state.extend body
             let some contradiction ←
                 derive_false? next (fuel - 1) true active
               | return none
             return some <|
-              ← mkAppM ``Logic.FirstOrder.Derives.negIntro
-                #[contradiction, hBodyCheck] then
+              ← mkAppM ``Logic.FirstOrder.Derives.neg_intro
+                #[contradiction] then
           return some proof
         derive_from_facts? state formula fuel allowClassical active
     | .disj left right =>
         if let some proof ← attempt_proof do
-            let some hRightAdmissible ← state.admissibility? right
-              | return none
-            let hRightCheck ←
-              check_certificate_of_admissible hRightAdmissible
             let some hLeft ←
                 derive_formula? state left (fuel - 1) false active
               | return none
             return some <|
-                ← mkAppOptM ``Logic.FirstOrder.Derives.disjIntroLeft
-                  #[none, none, some state.theory, some state.context,
+                ← mkAppOptM ``Logic.FirstOrder.Derives.disj_intro_left
+                  #[none, some state.theory, none, some state.context,
                     some left.raw, some right.raw,
-                    some hLeft, some hRightCheck] then
+                    some hLeft] then
           return some proof
         if let some proof ← attempt_proof do
-            let some hLeftAdmissible ← state.admissibility? left
-              | return none
-            let hLeftCheck ←
-              check_certificate_of_admissible hLeftAdmissible
             let some hRight ←
                 derive_formula? state right (fuel - 1) false active
               | return none
             return some <|
-                ← mkAppOptM ``Logic.FirstOrder.Derives.disjIntroRight
-                  #[none, none, some state.theory, some state.context,
+                ← mkAppOptM ``Logic.FirstOrder.Derives.disj_intro_right
+                  #[none, some state.theory, none, some state.context,
                     some left.raw, some right.raw,
-                    some hRight, some hLeftCheck] then
+                    some hRight] then
           return some proof
         if allowClassical then
           if let some proof ← attempt_proof do
-              let some hLeftAdmissible ← state.admissibility? left
-                | return none
-              let some hRightAdmissible ← state.admissibility? right
-                | return none
-              let hRightCheck ←
-                check_certificate_of_admissible hRightAdmissible
-              let hLeftCheck ←
-                check_certificate_of_admissible hLeftAdmissible
-              let negatedLeft := left.neg state.config
-              let hCases :=
-                mkAppN (mkConst
-                    ``Logic.FirstOrder.Derives.excluded_middle_m
-                    state.config.universeLevels)
-                  #[state.config.signature, state.config.decidableEq,
-                    state.theory, state.context, left.raw,
-                    hLeftCheck]
+              let negatedLeft ← left.neg state.config
+              let hCases ←
+                mkAppOptM ``Logic.FirstOrder.Derives.excluded_middle
+                  #[none, some state.theory, none,
+                    some state.context, some left.raw]
               let positiveState ← state.extend left
               let some hPositiveLeft ← positiveState.find? left
                 | return none
               let hPositive ←
-                mkAppOptM ``Logic.FirstOrder.Derives.disjIntroLeft
-                  #[none, none, some state.theory,
+                mkAppOptM ``Logic.FirstOrder.Derives.disj_intro_left
+                  #[none, some state.theory, none,
                     some positiveState.context, some left.raw,
-                    some right.raw, some hPositiveLeft,
-                    some hRightCheck]
+                    some right.raw, some hPositiveLeft]
               let negativeState ← state.extend negatedLeft
               let some hNegativeRight ←
                   derive_formula? negativeState right (fuel - 1)
                     true active
                 | return none
               let hNegative ←
-                mkAppOptM ``Logic.FirstOrder.Derives.disjIntroRight
-                  #[none, none, some state.theory,
+                mkAppOptM ``Logic.FirstOrder.Derives.disj_intro_right
+                  #[none, some state.theory, none,
                     some negativeState.context, some left.raw,
-                    some right.raw, some hNegativeRight,
-                    some hLeftCheck]
+                    some right.raw, some hNegativeRight]
               return some <|
-                ← mkAppM ``Logic.FirstOrder.Derives.disjElim
+                ← mkAppM ``Logic.FirstOrder.Derives.disj_elim
                   #[hCases, hPositive, hNegative] then
             return some proof
         derive_from_facts? state formula fuel allowClassical active
@@ -838,20 +604,14 @@ mutual
           return some proof
         if allowClassical then
           if let some proof ← attempt_proof do
-              let some hFormula ← state.admissibility? formula
-                | return none
-              let hFormulaCheck ←
-                check_certificate_of_admissible hFormula
-              let negated := formula.neg state.config
+              let negated ← formula.neg state.config
               let next ← state.extend negated
               let some contradiction ←
                   derive_false? next (fuel - 1) true active
                 | return none
               return some <|
-                ← mkAppOptM ``Logic.FirstOrder.Derives.byContradiction
-                  #[none, none, some state.theory, some state.context,
-                    some formula.raw, some contradiction,
-                    some hFormulaCheck] then
+                ← mkAppM ``Logic.FirstOrder.Derives.by_contradiction
+                  #[contradiction] then
             return some proof
         derive_from_facts? state formula fuel false active
   private partial def derive_from_facts? (state : ReplayState) (formula : FormulaNode) (fuel : Nat) (allowClassical : Bool) (active : Array SearchFrame) :
@@ -863,9 +623,9 @@ mutual
       | .conj left right =>
           if let some proof ← attempt_proof do
               let hLeft ←
-                mkAppM ``Logic.FirstOrder.Derives.conjElimLeft #[fact.proof]
+                mkAppM ``Logic.FirstOrder.Derives.conj_elim_left #[fact.proof]
               let hRight ←
-                mkAppM ``Logic.FirstOrder.Derives.conjElimRight #[fact.proof]
+                mkAppM ``Logic.FirstOrder.Derives.conj_elim_right #[fact.proof]
               let (next, addedLeft) ←
                 state.add_fact { node := left, proof := hLeft }
               let (next, addedRight) ←
@@ -882,7 +642,7 @@ mutual
                     false active
                 | return none
               let hConsequent ←
-                mkAppM ``Logic.FirstOrder.Derives.impElim
+                mkAppM ``Logic.FirstOrder.Derives.imp_elim
                   #[fact.proof, hAntecedent]
               let (next, added) ←
                 state.add_fact {
@@ -901,7 +661,7 @@ mutual
                     false active
                 | return none
               let hRight ←
-                mkAppM ``Logic.FirstOrder.Derives.iffElimRight
+                mkAppM ``Logic.FirstOrder.Derives.iff_elim_left
                   #[fact.proof, hLeft]
               let (next, added) ←
                 state.add_fact { node := right, proof := hRight }
@@ -916,7 +676,7 @@ mutual
                     false active
                 | return none
               let hLeft ←
-                mkAppM ``Logic.FirstOrder.Derives.iffElimLeft
+                mkAppM ``Logic.FirstOrder.Derives.iff_elim_right
                   #[fact.proof, hRight]
               let (next, added) ←
                 state.add_fact { node := left, proof := hLeft }
@@ -938,7 +698,7 @@ mutual
                     allowClassical active
                 | return none
               return some <|
-                ← mkAppM ``Logic.FirstOrder.Derives.disjElim
+                ← mkAppM ``Logic.FirstOrder.Derives.disj_elim
                   #[fact.proof, hLeft, hRight] then
             return some proof
       | .neg inner =>
@@ -946,7 +706,7 @@ mutual
           | .neg body =>
               if let some proof ← attempt_proof do
                   let hBody ←
-                    mkAppM ``Logic.FirstOrder.Derives.neg_neg_elim_m
+                    mkAppM ``Logic.FirstOrder.Derives.neg_neg_elim
                       #[fact.proof]
                   let (next, added) ←
                     state.add_fact { node := body, proof := hBody }
@@ -962,33 +722,21 @@ mutual
     if let some contradiction ←
         derive_false? state (fuel - 1) allowClassical active then
       if let some proof ← attempt_proof do
-          let some hFormula ← state.admissibility? formula
-            | return none
-          let hFormulaCheck ←
-            check_certificate_of_admissible hFormula
           return some <|
-            ← mkAppOptM ``Logic.FirstOrder.Derives.falsumElim
-              #[none, none, some state.theory, some state.context,
-                some formula.raw, some contradiction,
-                some hFormulaCheck] then
+            ← mkAppM ``Logic.FirstOrder.Derives.falsum_elim
+              #[contradiction] then
         return some proof
     unless allowClassical do
       return none
     attempt_proof do
-      let some hFormula ← state.admissibility? formula
-        | return none
-      let hFormulaCheck ←
-        check_certificate_of_admissible hFormula
-      let negated := formula.neg state.config
+      let negated ← formula.neg state.config
       let next ← state.extend negated
       let some contradiction ←
           derive_false? next (fuel - 1) true active
         | return none
       return some <|
-        ← mkAppOptM ``Logic.FirstOrder.Derives.byContradiction
-          #[none, none, some state.theory, some state.context,
-            some formula.raw, some contradiction,
-            some hFormulaCheck]
+        ← mkAppM ``Logic.FirstOrder.Derives.by_contradiction
+          #[contradiction]
   private partial def derive_false? (state : ReplayState) (fuel : Nat) (deriveNegativeBody : Bool := true) (active : Array SearchFrame := #[]) :
       MetaM (Option Expr) := do
     if fuel == 0 then
@@ -1010,7 +758,7 @@ mutual
           if let some hBody ← state.find? body then
             return ← attempt_proof do
               return some <|
-                ← mkAppM ``Logic.FirstOrder.Derives.negElim
+                ← mkAppM ``Logic.FirstOrder.Derives.neg_elim
                   #[hBody, fact.proof]
       | _ =>
           pure ()
@@ -1024,15 +772,15 @@ mutual
                       true active
                   | return none
                 return some <|
-                  ← mkAppM ``Logic.FirstOrder.Derives.negElim
+                  ← mkAppM ``Logic.FirstOrder.Derives.neg_elim
                     #[hBody, fact.proof] then
               return some proof
       | .conj left right =>
           if let some proof ← attempt_proof do
               let hLeft ←
-                mkAppM ``Logic.FirstOrder.Derives.conjElimLeft #[fact.proof]
+                mkAppM ``Logic.FirstOrder.Derives.conj_elim_left #[fact.proof]
               let hRight ←
-                mkAppM ``Logic.FirstOrder.Derives.conjElimRight #[fact.proof]
+                mkAppM ``Logic.FirstOrder.Derives.conj_elim_right #[fact.proof]
               let (next, addedLeft) ←
                 state.add_fact { node := left, proof := hLeft }
               let (next, addedRight) ←
@@ -1049,7 +797,7 @@ mutual
                     false active
                 | return none
               let hConsequent ←
-                mkAppM ``Logic.FirstOrder.Derives.impElim
+                mkAppM ``Logic.FirstOrder.Derives.imp_elim
                   #[fact.proof, hAntecedent]
               let (next, added) ←
                 state.add_fact {
@@ -1068,7 +816,7 @@ mutual
                     false active
                 | return none
               let hRight ←
-                mkAppM ``Logic.FirstOrder.Derives.iffElimRight
+                mkAppM ``Logic.FirstOrder.Derives.iff_elim_left
                   #[fact.proof, hLeft]
               let (next, added) ←
                 state.add_fact { node := right, proof := hRight }
@@ -1083,7 +831,7 @@ mutual
                     false active
                 | return none
               let hLeft ←
-                mkAppM ``Logic.FirstOrder.Derives.iffElimLeft
+                mkAppM ``Logic.FirstOrder.Derives.iff_elim_right
                   #[fact.proof, hRight]
               let (next, added) ←
                 state.add_fact { node := left, proof := hLeft }
@@ -1105,7 +853,7 @@ mutual
                     deriveNegativeBody active
                 | return none
               return some <|
-                ← mkAppM ``Logic.FirstOrder.Derives.disjElim
+                ← mkAppM ``Logic.FirstOrder.Derives.disj_elim
                   #[fact.proof, hLeft, hRight] then
             return some proof
       | .falsum | .truth | .forallE .. | .existsE .. | .equal .. | .atom =>
@@ -1135,7 +883,7 @@ unsafe def try_close (goal : MVarId) (resources : Array FVarId) (mode : SearchMo
           "first-order Derives signature has unexpected type {signatureType}"
   let config : TypedView.Config := {
     signature := view.signature
-    decidableEq := view.decidableEq
+    free := view.free
     universeLevels
   }
   let targetCompiled ← compile_formula config view.formula
@@ -1152,19 +900,17 @@ unsafe def try_close (goal : MVarId) (resources : Array FVarId) (mode : SearchMo
     objectVariables
     facts := resourceFacts
   }
-  let mut proof? : Option Expr := none
   let mut usedFactCount := resourceFacts.size
   trace[YesMetaZFC.proveAuto.firstOrderDerives]
     "start phase=local; target={view.formula}; \
     resources={resources.size}; facts={resourceFacts.size}; \
     variables={objectVariables.size}; fuel={fuel}; maxFacts={maxFacts}"
-  proof? ← derive_formula? resourceState targetNode fuel
+  let mut proof? ← derive_formula? resourceState targetNode fuel
   if proof?.isNone && mode == .withTheory then
     let mut rawFacts := resourceRawFacts
     for fact in ←
         collect_theory_facts
-          view.signature view.decidableEq universeLevels
-          view.theory view.context do
+          view.signature view.free view.theory view.context do
       unless rawFacts.any fun existing =>
           Expr.equal existing.formula fact.formula do
         rawFacts := rawFacts.push fact

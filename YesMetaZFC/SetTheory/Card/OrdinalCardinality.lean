@@ -40,6 +40,8 @@ private def ordinalCardinalCandidate (𝒞 : Definitional.Project.OrderedPairCon
       Definitional.Project.Formula.extensionalEq,
       Definitional.Formula.FreeClosed,
       Definitional.Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 序数基数候选模式的模型语义。 -/
 private theorem satisfies_ordinalCardinalCandidate_iff
     {ℳ : Structure.{u}}

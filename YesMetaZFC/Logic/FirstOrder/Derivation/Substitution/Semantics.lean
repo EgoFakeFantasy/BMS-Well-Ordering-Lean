@@ -1,11 +1,13 @@
 import YesMetaZFC.Logic.FirstOrder.Derivation.Substitution
-import YesMetaZFC.Logic.FreeVariableSupport
+import YesMetaZFC.Logic.Semantics
+import YesMetaZFC.Logic.Theory
 
 /-!
-# 一阶替换的语义定理
+# 类型化替换的语义
 
-本模块集中环境更新、项解释与公式满足关系上的替换定理。纯语法替换恒等式位于
-`Derivation.Substitution`，因此证明论编译链不依赖本模块。
+替换在语义上只做一件事：把目标环境沿变量到项的映射拉回源上下文。该表述同时
+覆盖 bound/free 替换、fresh 变量实例化及量词下的提升，不再需要单点更新、自然数
+深度或 `openAt` 插入关系。
 -/
 
 namespace YesMetaZFC
@@ -15,427 +17,795 @@ namespace FirstOrder
 universe u v w x
 
 namespace Env
-/-- 更新一个自由变量，同时保留全部 bound 栈。 -/
-def setFree {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} (env : Env M) (sort : σ.SortSymbol) (id : FreeVarId) (value : M.Domain) (hValue : M.sortInterp sort value) : Env M where
-  boundVal := env.boundVal
-  freeVal := fun targetSort targetId =>
-    if targetSort = sort ∧ targetId = id then value
-    else env.freeVal targetSort targetId
-  boundSort := env.boundSort
-  freeSort := by
-    intro targetSort targetId
-    by_cases hTarget : targetSort = sort ∧ targetId = id
-    · rcases hTarget with ⟨rfl, rfl⟩
-      simpa using hValue
-    · simpa [hTarget] using env.freeSort targetSort targetId
-@[simp] theorem setFree_self {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (env : Env M) (sort : σ.SortSymbol) (id : FreeVarId)
-    (value : M.Domain) (hValue : M.sortInterp sort value) : (env.setFree sort id value hValue).freeVal sort id = value := by
-  simp [setFree]
-/-- 同一自由变量取到相等值时，环境更新与证明参数无关。 -/
-theorem setFree_eq_of_value_eq {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (env : Env M) (sort : σ.SortSymbol) (id : FreeVarId)
-    {value value' : M.Domain} (hValue : M.sortInterp sort value) (hValue' : M.sortInterp sort value') (hEq : value = value') :
-    env.setFree sort id value hValue =
-      env.setFree sort id value' hValue' := by
-  rw [Env.mk.injEq]
-  constructor
-  · rfl
-  · funext targetSort targetId
-    by_cases hTarget : targetSort = sort ∧ targetId = id
-    · rcases hTarget with ⟨rfl, rfl⟩
-      simp [setFree, hEq]
-    · simp [setFree, hTarget]
-/-- 若支持不含被更新变量，则更新前后的环境在该支持上一致。 -/
-theorem agreesOn_setFree_of_not_mem {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (env : Env M) (support : FreeVariable.Support σ) (sort : σ.SortSymbol) (id : FreeVarId)
-    (value : M.Domain) (hValue : M.sortInterp sort value) (hFresh : (sort, id) ∉ support) :
-    AgreesOn support env (env.setFree sort id value hValue) := by
-  constructor
-  · intro targetSort index
-    rfl
-  · rintro ⟨targetSort, targetId⟩ hMem
-    have hNe : ¬ (targetSort = sort ∧ targetId = id) := by
-      intro hEq
-      rcases hEq with ⟨rfl, rfl⟩
-      exact hFresh hMem
-    simp [setFree, hNe]
-/-- `setFree` 与 bound 栈压入交换。 -/
-theorem setFree_pushBound {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (env : Env M) (freeSort : σ.SortSymbol) (id : FreeVarId)
-    (freeValue : M.Domain) (hFreeValue : M.sortInterp freeSort freeValue) (boundSort : σ.SortSymbol) (boundValue : M.Domain)
-    (hBoundValue : M.sortInterp boundSort boundValue) : (env.setFree freeSort id freeValue hFreeValue).pushBound
-        boundSort boundValue hBoundValue = (env.pushBound boundSort boundValue hBoundValue).setFree
-        freeSort id freeValue hFreeValue := by
-  rw [Env.mk.injEq]
-  constructor
-  · rfl
-  · rfl
-/--
-`inner` 的指定 sort bound 栈是在 `outer` 的深度 `depth` 处插入 `value` 得到的。
--/
-def InsertsAt {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} (target : σ.SortSymbol) (depth : Nat) (value : M.Domain) (outer inner : Env M) : Prop := (∀ sort index,
-      inner.boundVal sort index =
-        if sort = target then
-          if index < depth then
-            outer.boundVal sort index
-          else if index = depth then
-            value
-          else
-            outer.boundVal sort (index - 1)
-        else
-          outer.boundVal sort index) ∧
-    ∀ sort id, inner.freeVal sort id = outer.freeVal sort id
-/-- 普通 `pushBound` 正是在深度零插入一个 bound 值。 -/
-theorem pushBound_insertsAt_zero {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (env : Env M) (sort : σ.SortSymbol) (value : M.Domain) (hValue : M.sortInterp sort value) :
-    InsertsAt sort 0 value env (env.pushBound sort value hValue) := by
-  constructor
-  · intro target index
-    by_cases hTarget : target = sort
-    · subst hTarget
-      cases index with
-      | zero =>
-          simp [Env.pushBound]
-      | succ previous =>
-          simp [Env.pushBound]
-    · simp [Env.pushBound, hTarget]
-  · intro target id
-    rfl
-/-- 两侧压入同一值后，环境插入关系按 binder sort 调整深度。 -/
-theorem InsertsAt.pushBound {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ}
-    {target : σ.SortSymbol} {depth : Nat} {value : M.Domain}
-    {outer inner : Env M} (hInsert : InsertsAt target depth value outer inner) (binder : σ.SortSymbol) (boundValue : M.Domain)
-    (hBoundValue : M.sortInterp binder boundValue) :
-    InsertsAt target (if binder = target then depth + 1 else depth)
-      value (outer.pushBound binder boundValue hBoundValue) (inner.pushBound binder boundValue hBoundValue) := by
-  rcases hInsert with ⟨hBound, hFree⟩
-  constructor
-  · intro sort index
-    by_cases hBinderTarget : binder = target
-    · subst binder
-      by_cases hSortTarget : sort = target
-      · subst sort
-        cases index with
-        | zero =>
-            simp [Env.pushBound]
-        | succ previous =>
-            simp only [Env.pushBound, ↓reduceIte]
-            rw [hBound target previous]
-            by_cases hPrevious : previous < depth
-            · have hSucc : previous + 1 < depth + 1 := by omega
-              simp [hPrevious, hSucc]
-            · by_cases hEqual : previous = depth
-              · subst previous
-                simp
-              · cases previous with
-                | zero =>
-                    omega
-                | succ previous =>
-                    simp [hPrevious, hEqual]
-      · simp [Env.pushBound, hSortTarget, hBound]
-    · by_cases hSortBinder : sort = binder
-      · subst sort
-        cases index with
-        | zero =>
-            simp [Env.pushBound, hBinderTarget]
-        | succ previous =>
-            simpa [Env.pushBound, hBinderTarget] using hBound binder previous
-      · by_cases hSortTarget : sort = target
-        · subst sort
-          have hTargetBinder : target ≠ binder := by
-            exact fun hEq => hBinderTarget hEq.symm
-          simpa [Env.pushBound, hBinderTarget, hTargetBinder] using
-            hBound target index
-        · simpa [Env.pushBound, hBinderTarget, hSortBinder,
-            hSortTarget] using hBound sort index
-  · intro sort id
-    simpa [Env.pushBound] using hFree sort id
-end Env
-namespace Term
-/-- bound-closed 项的解释不受 bound 栈顶部扩张影响。 -/
-theorem eval_pushBound_of_boundClosed {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (env : Env M) (binder : σ.SortSymbol) (boundValue : M.Domain)
-    (hBoundValue : M.sortInterp binder boundValue) (term : Term σ) (hClosed : term.BoundClosed) :
-    eval (env.pushBound binder boundValue hBoundValue) term =
-      eval env term := by
-  cases hClosed with
-  | bvar hIndex =>
-      simp [Scope.empty] at hIndex
-  | fvar =>
-      simp [eval, Env.pushBound]
-  | app function arguments hArguments =>
-      simp only [eval]
-      apply congrArg (M.funcInterp function)
-      apply List.map_congr_left
-      intro argument hArgument
-      exact eval_pushBound_of_boundClosed
-        env binder boundValue hBoundValue argument (hArguments argument hArgument)
-/-- 自由变量替换与环境单点更新具有相同项解释。 -/
-theorem eval_substituteFree {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (env : Env M) (targetSort : σ.SortSymbol) (targetId : FreeVarId) (replacement : Term σ)
-    (hReplacement : TermWellSorted replacement targetSort) :
-    ∀ term : Term σ,
-      eval env (substituteFree targetSort targetId replacement term) =
-        eval (env.setFree targetSort targetId (eval env replacement) (eval_sort_of_wellSorted hReplacement))
-          term := by
-  refine Term.rec (motive_1 := fun term =>
-      eval env (substituteFree targetSort targetId replacement term) =
-        eval (env.setFree targetSort targetId (eval env replacement) (eval_sort_of_wellSorted hReplacement))
-          term) (motive_2 := fun terms =>
-      (terms.map (substituteFree targetSort targetId replacement)).map (eval env) =
-        terms.map (eval (env.setFree targetSort targetId (eval env replacement) (eval_sort_of_wellSorted hReplacement))))
-    ?_ ?_ ?_ ?_
-  · intro fv
-    cases fv with
-    | bvar sort index =>
-        simp [substituteFree, eval, Env.setFree]
-    | fvar sort id =>
-        by_cases hTarget : sort = targetSort ∧ id = targetId
-        · rcases hTarget with ⟨rfl, rfl⟩
-          simp [substituteFree, Env.setFree, eval]
-        · simp [substituteFree, Env.setFree, eval, hTarget]
-  · intro function arguments hArguments
-    simpa [substituteFree, eval, List.map_map] using
-      congrArg (M.funcInterp function) hArguments
-  · rfl
-  · intro head tail hHead hTail
-    simp [hHead, hTail]
-/-- 环境插入关系给出 `openAt` 前后的相同项解释。 -/
-theorem eval_openAt {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ}
-    {target : σ.SortSymbol} {depth : Nat} {replacement : Term σ}
-    {value : M.Domain} {outer inner : Env M} (hInsert : Env.InsertsAt target depth value outer inner) (hReplacement : eval outer replacement = value) :
-    ∀ term : Term σ,
-      eval outer (openAt target depth replacement term) =
-        eval inner term := by
-  refine Term.rec (motive_1 := fun term =>
-      eval outer (openAt target depth replacement term) =
-        eval inner term) (motive_2 := fun terms =>
-      (terms.map (openAt target depth replacement)).map (eval outer) =
-        terms.map (eval inner))
-    ?_ ?_ ?_ ?_
-  · intro fv
-    cases fv with
-    | fvar sort id =>
-        simpa [openAt, eval] using (hInsert.2 sort id).symm
-    | bvar sort index =>
-        by_cases hSort : sort = target
-        · subst sort
-          by_cases hEqual : index = depth
-          · subst index
-            simp [openAt, eval, hReplacement, hInsert.1]
-          · by_cases hAbove : depth < index
-            · have hNotLt : ¬ index < depth := by omega
-              simp [openAt, eval, hEqual, hAbove, hNotLt,
-                hInsert.1]
-            · have hBelow : index < depth := by omega
-              simp [openAt, eval, hEqual, hAbove, hBelow,
-                hInsert.1]
-        · simp [openAt, eval, hSort, hInsert.1]
-  · intro function arguments hArguments
-    simpa [openAt, eval, List.map_map] using
-      congrArg (M.funcInterp function) hArguments
-  · rfl
-  · intro head tail hHead hTail
-    simp [hHead, hTail]
-end Term
-/-- 把 bound-closed 替换项在压栈后的环境更新恢复到压栈前的更新。 -/
-theorem Env.setFree_pushBound_eval {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (env : Env M) (targetSort : σ.SortSymbol) (targetId : FreeVarId)
-    (replacement : Term σ) (hReplacement : TermWellSorted replacement targetSort) (hClosed : replacement.BoundClosed)
-    (binder : σ.SortSymbol) (boundValue : M.Domain) (hBoundValue : M.sortInterp binder boundValue) : (env.pushBound binder boundValue hBoundValue).setFree
-        targetSort targetId (Term.eval (env.pushBound binder boundValue hBoundValue) replacement) (Term.eval_sort_of_wellSorted
-          (env := env.pushBound binder boundValue hBoundValue) hReplacement) = (env.setFree targetSort targetId (Term.eval env replacement)
-        (Term.eval_sort_of_wellSorted (env := env) hReplacement)).pushBound
-          binder boundValue hBoundValue := by
-  have hEval :
-      Term.eval (env.pushBound binder boundValue hBoundValue) replacement =
-        Term.eval env replacement :=
-    Term.eval_pushBound_of_boundClosed
-      env binder boundValue hBoundValue replacement hClosed
-  have hSet : (env.pushBound binder boundValue hBoundValue).setFree
-          targetSort targetId (Term.eval (env.pushBound binder boundValue hBoundValue) replacement) (Term.eval_sort_of_wellSorted
-            (env := env.pushBound binder boundValue hBoundValue) hReplacement) = (env.pushBound binder boundValue hBoundValue).setFree
-          targetSort targetId (Term.eval env replacement) (Term.eval_sort_of_wellSorted (env := env) hReplacement) := by
-    rw [Env.mk.injEq]
-    constructor
-    · rfl
-    · funext sort id
-      by_cases hTarget : sort = targetSort ∧ id = targetId
-      · rcases hTarget with ⟨rfl, rfl⟩
-        simp [Env.setFree, hEval]
-      · simp [Env.setFree, hTarget]
-  calc
-    _ = (env.pushBound binder boundValue hBoundValue).setFree
-        targetSort targetId (Term.eval env replacement) (Term.eval_sort_of_wellSorted (env := env) hReplacement) := hSet
-    _ = _ := (Env.setFree_pushBound
-      env targetSort targetId (Term.eval env replacement) (Term.eval_sort_of_wellSorted (env := env) hReplacement)
-        binder boundValue hBoundValue).symm
-namespace Formula
-/-- 自由变量替换与环境更新具有相同公式语义。 -/
-theorem satisfies_substituteFree {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (env : Env M) (targetSort : σ.SortSymbol) (targetId : FreeVarId) (replacement : Term σ)
-    (hReplacement : TermWellSorted replacement targetSort) (hClosed : replacement.BoundClosed) :
-    ∀ formula : Formula σ,
-      satisfies env (substituteFree targetSort targetId replacement formula) ↔
-        satisfies (env.setFree targetSort targetId (Term.eval env replacement) (Term.eval_sort_of_wellSorted hReplacement))
-          formula := by
-  intro formula
-  induction formula generalizing env with
-  | falsum =>
-      simp [substituteFree, satisfies]
-  | truth =>
-      simp [substituteFree, satisfies]
-  | rel relation arguments =>
-      have hArguments : (arguments.map (Term.substituteFree targetSort targetId replacement)).map (Term.eval env) =
-            arguments.map (Term.eval (env.setFree targetSort targetId (Term.eval env replacement) (Term.eval_sort_of_wellSorted hReplacement))) := by
-        rw [List.map_map]
-        apply List.map_congr_left
-        intro argument hArgument
-        exact Term.eval_substituteFree env targetSort targetId
-          replacement hReplacement argument
-      simp [substituteFree, satisfies, hArguments]
-  | equal left right =>
-      simp [substituteFree, satisfies,
-        Term.eval_substituteFree env targetSort targetId
-          replacement hReplacement]
-  | neg body ih =>
-      simpa [substituteFree, satisfies] using not_congr (ih env)
-  | conj left right ihLeft ihRight =>
-      simp [substituteFree, satisfies, ihLeft env, ihRight env]
-  | disj left right ihLeft ihRight =>
-      simp [substituteFree, satisfies, ihLeft env, ihRight env]
-  | imp left right ihLeft ihRight =>
-      simp [substituteFree, satisfies, ihLeft env, ihRight env]
-  | iff left right ihLeft ihRight =>
-      simp [substituteFree, satisfies, ihLeft env, ihRight env]
-  | forallE binder body ih =>
-      constructor
-      · intro hAll value hValue
-        have hBody := (ih (env.pushBound binder value hValue)).mp (hAll value hValue)
-        simpa only [Env.setFree_pushBound_eval env targetSort targetId
-          replacement hReplacement hClosed binder value hValue] using hBody
-      · intro hAll value hValue
-        have hBody := hAll value hValue
-        rw [← Env.setFree_pushBound_eval env targetSort targetId
-          replacement hReplacement hClosed binder value hValue] at hBody
-        exact (ih (env.pushBound binder value hValue)).mpr hBody
-  | existsE binder body ih =>
-      constructor
-      · rintro ⟨value, hValue, hBody⟩
-        refine ⟨value, hValue, ?_⟩
-        have hResult := (ih (env.pushBound binder value hValue)).mp hBody
-        simpa only [Env.setFree_pushBound_eval env targetSort targetId
-          replacement hReplacement hClosed binder value hValue] using hResult
-      · rintro ⟨value, hValue, hBody⟩
-        refine ⟨value, hValue, ?_⟩
-        rw [← Env.setFree_pushBound_eval env targetSort targetId
-          replacement hReplacement hClosed binder value hValue] at hBody
-        exact (ih (env.pushBound binder value hValue)).mpr hBody
-/-- `openAt` 把环境中指定深度的 bound 值替换为一个 bound-closed 项。 -/
-theorem satisfies_openAt {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ}
-    {target : σ.SortSymbol} {depth : Nat} {replacement : Term σ}
-    {value : M.Domain} {outer inner : Env M} (hClosed : replacement.BoundClosed) (hInsert : Env.InsertsAt target depth value outer inner)
-    (hReplacement : Term.eval outer replacement = value) :
-    ∀ formula : Formula σ,
-      satisfies outer (openAt target depth replacement formula) ↔
-        satisfies inner formula := by
-  intro formula
-  induction formula generalizing depth outer inner with
-  | falsum =>
-      simp [openAt, satisfies]
-  | truth =>
-      simp [openAt, satisfies]
-  | rel relation arguments =>
-      have hArguments : (arguments.map (Term.openAt target depth replacement)).map (Term.eval outer) =
-            arguments.map (Term.eval inner) := by
-        induction arguments with
-        | nil =>
-            rfl
-        | cons head tail ih =>
-            simp [Term.eval_openAt hInsert hReplacement head, ih]
-      simp [openAt, satisfies, hArguments]
-  | equal left right =>
-      simp [openAt, satisfies,
-        Term.eval_openAt hInsert hReplacement left,
-        Term.eval_openAt hInsert hReplacement right]
-  | neg body ih =>
-      simpa [openAt, satisfies] using
-        not_congr (ih hInsert hReplacement)
-  | conj left right ihLeft ihRight =>
-      simp [openAt, satisfies,
-        ihLeft hInsert hReplacement,
-        ihRight hInsert hReplacement]
-  | disj left right ihLeft ihRight =>
-      simp [openAt, satisfies,
-        ihLeft hInsert hReplacement,
-        ihRight hInsert hReplacement]
-  | imp left right ihLeft ihRight =>
-      simp [openAt, satisfies,
-        ihLeft hInsert hReplacement,
-        ihRight hInsert hReplacement]
-  | iff left right ihLeft ihRight =>
-      simp [openAt, satisfies,
-        ihLeft hInsert hReplacement,
-        ihRight hInsert hReplacement]
-  | forallE binder body ih =>
-      constructor
-      · intro hAll boundValue hBoundValue
-        have hEval :
-            Term.eval (outer.pushBound binder boundValue hBoundValue)
-                replacement =
-              value := (Term.eval_pushBound_of_boundClosed
-            outer binder boundValue hBoundValue replacement hClosed).trans
-              hReplacement
-        exact (ih (hInsert.pushBound binder boundValue hBoundValue)
-            hEval).mp (hAll boundValue hBoundValue)
-      · intro hAll boundValue hBoundValue
-        have hEval :
-            Term.eval (outer.pushBound binder boundValue hBoundValue)
-                replacement =
-              value := (Term.eval_pushBound_of_boundClosed
-            outer binder boundValue hBoundValue replacement hClosed).trans
-              hReplacement
-        exact (ih (hInsert.pushBound binder boundValue hBoundValue)
-            hEval).mpr (hAll boundValue hBoundValue)
-  | existsE binder body ih =>
-      constructor
-      · rintro ⟨boundValue, hBoundValue, hBody⟩
-        refine ⟨boundValue, hBoundValue, ?_⟩
-        have hEval :
-            Term.eval (outer.pushBound binder boundValue hBoundValue)
-                replacement =
-              value := (Term.eval_pushBound_of_boundClosed
-            outer binder boundValue hBoundValue replacement hClosed).trans
-              hReplacement
-        exact (ih (hInsert.pushBound binder boundValue hBoundValue)
-            hEval).mp hBody
-      · rintro ⟨boundValue, hBoundValue, hBody⟩
-        refine ⟨boundValue, hBoundValue, ?_⟩
-        have hEval :
-            Term.eval (outer.pushBound binder boundValue hBoundValue)
-                replacement =
-              value := (Term.eval_pushBound_of_boundClosed
-            outer binder boundValue hBoundValue replacement hClosed).trans
-              hReplacement
-        exact (ih (hInsert.pushBound binder boundValue hBoundValue)
-            hEval).mpr hBody
-/-- 深度零打开公式的常用语义形式。 -/
-theorem satisfies_openAt_zero {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (env : Env M) (sort : σ.SortSymbol) (replacement : Term σ)
-    (hSorted : TermWellSorted replacement sort) (hClosed : replacement.BoundClosed) (body : Formula σ) :
-    satisfies env (openAt sort 0 replacement body) ↔
-      satisfies (env.pushBound sort (Term.eval env replacement) (Term.eval_sort_of_wellSorted hSorted))
-        body := by
-  apply satisfies_openAt hClosed (Env.pushBound_insertsAt_zero env sort (Term.eval env replacement) (Term.eval_sort_of_wellSorted hSorted))
-  rfl
-end Formula
 
+/-- 在 free 上下文头部压入一个值。 -/
+def pushFree {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier sort) :
+    Env M bound (sort :: free) where
+  boundVal := env.boundVal
+  freeVal := Assignment.push value env.freeVal
+
+@[simp] theorem pushFree_bound {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {introduced sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier introduced)
+    (entry : Variable bound sort) :
+    (env.pushFree value).boundVal entry = env.boundVal entry :=
+  rfl
+
+@[simp] theorem pushFree_here {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier sort) :
+    (env.pushFree value).freeVal
+      (.here : Variable (sort :: free) sort) = value :=
+  rfl
+
+@[simp] theorem pushFree_there {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {introduced sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier introduced)
+    (entry : Variable free sort) :
+    (env.pushFree value).freeVal (.there entry) = env.freeVal entry :=
+  rfl
+
+/-- 将目标环境沿一个类型化替换拉回源上下文。恒等替换保持根级快路径。 -/
+def pullback {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {sourceBound sourceFree targetBound targetFree : SortContext σ}
+    (env : Env M targetBound targetFree) :
+    Substitution σ sourceBound sourceFree targetBound targetFree →
+      Env M sourceBound sourceFree
+  | .id => env
+  | .map boundSubstitution freeSubstitution =>
+      { boundVal := fun entry => (boundSubstitution entry).eval env
+        freeVal := fun entry => (freeSubstitution entry).eval env }
+
+/-- 将目标环境沿一个类型化重命名拉回源上下文。 -/
+def pullbackRenaming {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {sourceBound sourceFree targetBound targetFree : SortContext σ}
+    (env : Env M targetBound targetFree) :
+    Renaming σ sourceBound sourceFree targetBound targetFree →
+      Env M sourceBound sourceFree
+  | .id => env
+  | .map boundRenaming freeRenaming =>
+      { boundVal := fun entry => env.boundVal (boundRenaming entry)
+        freeVal := fun entry => env.freeVal (freeRenaming entry) }
+
+end Env
+
+mutual
+
+/-- 项重命名后的解释等于在拉回环境中解释原项。 -/
+theorem Term.eval_rename {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {sourceBound sourceFree targetBound targetFree : SortContext σ}
+    (env : Env M targetBound targetFree)
+    (ρ : Renaming σ sourceBound sourceFree targetBound targetFree)
+    {sort : σ.SortSymbol} (term : Term σ sourceBound sourceFree sort) :
+    (term.rename ρ).eval env =
+      term.eval (env.pullbackRenaming ρ) := by
+  cases ρ with
+  | id =>
+      rfl
+  | map boundRenaming freeRenaming =>
+      cases term with
+      | bvar entry =>
+          rfl
+      | fvar entry =>
+          rfl
+      | app function arguments =>
+          exact congrArg (M.funcInterp function)
+            (Arguments.eval_rename env
+              (.map boundRenaming freeRenaming) arguments)
+
+/-- 参数列重命名后的解释等于在拉回环境中解释原参数列。 -/
+theorem Arguments.eval_rename {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {sourceBound sourceFree targetBound targetFree : SortContext σ}
+    (env : Env M targetBound targetFree)
+    (ρ : Renaming σ sourceBound sourceFree targetBound targetFree)
+    {sorts : List σ.SortSymbol}
+    (arguments : Arguments σ sourceBound sourceFree sorts) :
+    (arguments.rename ρ).eval env =
+      arguments.eval (env.pullbackRenaming ρ) := by
+  cases ρ with
+  | id =>
+      rfl
+  | map boundRenaming freeRenaming =>
+      cases arguments with
+      | nil =>
+          rfl
+      | cons term rest =>
+          let ρ := Renaming.map boundRenaming freeRenaming
+          change Values.cons
+              ((term.rename ρ).eval env)
+              ((rest.rename ρ).eval env) =
+            Values.cons
+              (term.eval (env.pullbackRenaming ρ))
+              (rest.eval (env.pullbackRenaming ρ))
+          rw [Term.eval_rename, Arguments.eval_rename]
+
+/-- 项穿过新 binder 后，在压入环境中的解释保持不变。 -/
+theorem Term.eval_weakenBound {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {introduced sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier introduced)
+    (term : Term σ bound free sort) :
+    (term.weakenBound introduced).eval (env.pushBound value) =
+      term.eval env := by
+  cases term with
+  | bvar entry =>
+      rfl
+  | fvar entry =>
+      rfl
+  | app function arguments =>
+      exact congrArg (M.funcInterp function)
+        (Arguments.eval_weakenBound env value arguments)
+
+/-- 异质参数列穿过新 binder 后的解释保持不变。 -/
+theorem Arguments.eval_weakenBound {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {introduced : σ.SortSymbol}
+    {sorts : List σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier introduced)
+    (arguments : Arguments σ bound free sorts) :
+    (arguments.weakenBound introduced).eval (env.pushBound value) =
+      arguments.eval env := by
+  cases arguments with
+  | nil =>
+      rfl
+  | cons term rest =>
+      change Values.cons
+          ((term.weakenBound introduced).eval (env.pushBound value))
+          ((rest.weakenBound introduced).eval (env.pushBound value)) =
+        Values.cons (term.eval env) (rest.eval env)
+      rw [Term.eval_weakenBound, Arguments.eval_weakenBound]
+
+/-- 项穿过新 free 变量后，在压入环境中的解释保持不变。 -/
+theorem Term.eval_weakenFree {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {introduced sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier introduced)
+    (term : Term σ bound free sort) :
+    (term.weakenFree introduced).eval (env.pushFree value) =
+      term.eval env := by
+  cases term with
+  | bvar entry =>
+      rfl
+  | fvar entry =>
+      rfl
+  | app function arguments =>
+      exact congrArg (M.funcInterp function)
+        (Arguments.eval_weakenFree env value arguments)
+
+/-- 异质参数列穿过新 free 变量后的解释保持不变。 -/
+theorem Arguments.eval_weakenFree {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {introduced : σ.SortSymbol}
+    {sorts : List σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier introduced)
+    (arguments : Arguments σ bound free sorts) :
+    (arguments.weakenFree introduced).eval (env.pushFree value) =
+      arguments.eval env := by
+  cases arguments with
+  | nil =>
+      rfl
+  | cons term rest =>
+      change Values.cons
+          ((term.weakenFree introduced).eval (env.pushFree value))
+          ((rest.weakenFree introduced).eval (env.pushFree value)) =
+        Values.cons (term.eval env) (rest.eval env)
+      rw [Term.eval_weakenFree, Arguments.eval_weakenFree]
+
+/-- 项替换后的解释等于在拉回环境中解释原项。 -/
+theorem Term.eval_substitute {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {sourceBound sourceFree targetBound targetFree : SortContext σ}
+    (env : Env M targetBound targetFree)
+    (substitution :
+      Substitution σ sourceBound sourceFree targetBound targetFree)
+    {sort : σ.SortSymbol} (term : Term σ sourceBound sourceFree sort) :
+    (term.substitute substitution).eval env =
+      term.eval (env.pullback substitution) := by
+  cases substitution with
+  | id =>
+      rfl
+  | map boundSubstitution freeSubstitution =>
+      cases term with
+      | bvar entry =>
+          rfl
+      | fvar entry =>
+          rfl
+      | app function arguments =>
+          exact congrArg (M.funcInterp function)
+            (Arguments.eval_substitute env
+              (.map boundSubstitution freeSubstitution) arguments)
+
+/-- 参数列替换后的解释等于在拉回环境中解释原参数列。 -/
+theorem Arguments.eval_substitute {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {sourceBound sourceFree targetBound targetFree : SortContext σ}
+    (env : Env M targetBound targetFree)
+    (substitution :
+      Substitution σ sourceBound sourceFree targetBound targetFree)
+    {sorts : List σ.SortSymbol}
+    (arguments : Arguments σ sourceBound sourceFree sorts) :
+    (arguments.substitute substitution).eval env =
+      arguments.eval (env.pullback substitution) := by
+  cases substitution with
+  | id =>
+      rfl
+  | map boundSubstitution freeSubstitution =>
+      cases arguments with
+      | nil =>
+          rfl
+      | cons term rest =>
+          let substitution :
+              Substitution σ sourceBound sourceFree targetBound targetFree :=
+            .map boundSubstitution freeSubstitution
+          change Values.cons
+              ((term.substitute substitution).eval env)
+              ((rest.substitute substitution).eval env) =
+            Values.cons
+              (term.eval (env.pullback substitution))
+              (rest.eval (env.pullback substitution))
+          rw [Term.eval_substitute, Arguments.eval_substitute]
+
+end
+
+namespace Env
+
+/-- 重命名环境拉回与 binder 提升交换。 -/
+theorem pullbackRenaming_liftBound {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {sourceBound sourceFree targetBound targetFree : SortContext σ}
+    (env : Env M targetBound targetFree)
+    (ρ : Renaming σ sourceBound sourceFree targetBound targetFree)
+    (introduced : σ.SortSymbol) (value : M.Carrier introduced) :
+    (env.pushBound value).pullbackRenaming
+        (ρ.liftBound introduced) =
+      (env.pullbackRenaming ρ).pushBound value := by
+  cases ρ with
+  | id =>
+      rfl
+  | map boundRenaming freeRenaming =>
+      rw [Env.mk.injEq]
+      constructor
+      · funext sort entry
+        cases entry <;> rfl
+      · rfl
+
+/-- 空 bound/free 上下文中的环境唯一。 -/
+theorem empty_unique {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ} (env : Env M [] []) :
+    env = Env.empty := by
+  rw [Env.mk.injEq]
+  constructor
+  · funext sort entry
+    exact nomatch entry
+  · funext sort entry
+    exact nomatch entry
+
+/-- 闭句重命名到任意 free 上下文时，拉回环境仍是唯一空环境。 -/
+@[simp] theorem pullbackRenaming_emptyFree {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ} {free : SortContext σ}
+    (env : Env M [] free) :
+    env.pullbackRenaming
+        (Renaming.emptyFree : Renaming σ [] [] [] free) = Env.empty :=
+  empty_unique _
+
+/-- 环境拉回与 binder 提升交换。 -/
+theorem pullback_liftBound {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {sourceBound sourceFree targetBound targetFree : SortContext σ}
+    (env : Env M targetBound targetFree)
+    (substitution :
+      Substitution σ sourceBound sourceFree targetBound targetFree)
+    (introduced : σ.SortSymbol) (value : M.Carrier introduced) :
+    (env.pushBound value).pullback
+        (substitution.liftBound introduced) =
+      (env.pullback substitution).pushBound value := by
+  cases substitution with
+  | id =>
+      rfl
+  | map boundSubstitution freeSubstitution =>
+      rw [Env.mk.injEq]
+      constructor
+      · funext sort entry
+        cases entry with
+        | here =>
+            rfl
+        | there previous =>
+            exact Term.eval_weakenBound env value
+              (boundSubstitution previous)
+      · funext sort entry
+        exact Term.eval_weakenBound env value
+          (freeSubstitution entry)
+
+/-- 顶部 free 实例化的拉回环境就是压入见证值。 -/
+@[simp] theorem pullback_instantiateTop
+    {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (replacement : Term σ bound free sort) :
+    env.pullback (Substitution.instantiateTop replacement) =
+      env.pushBound (replacement.eval env) := by
+  rw [Env.mk.injEq]
+  constructor
+  · funext target entry
+    cases entry with
+    | here =>
+        rfl
+    | there previous =>
+        rfl
+  · rfl
+
+/-- 顶部 free 实例化的拉回环境就是压入见证值。 -/
+@[simp] theorem pullback_instantiateFreeTop
+    {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (replacement : Term σ bound free sort) :
+    env.pullback (Substitution.instantiateFreeTop replacement) =
+      env.pushFree (replacement.eval env) := by
+  rw [Env.mk.injEq]
+  constructor
+  · rfl
+  · funext target entry
+    cases entry with
+    | here =>
+        rfl
+    | there previous =>
+        rfl
+
+/-- fresh 变量抽象为 binder 后的拉回环境恢复原 fresh 环境。 -/
+@[simp] theorem pullback_abstractFreeTop
+    {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier sort) :
+    (env.pushBound value).pullback
+        (Substitution.abstractFreeTop :
+          Substitution σ bound (sort :: free)
+            (sort :: bound) free) =
+      env.pushFree value := by
+  rw [Env.mk.injEq]
+  constructor
+  · funext target entry
+    rfl
+  · funext target entry
+    cases entry with
+    | here =>
+        rfl
+    | there previous =>
+        rfl
+
+end Env
+
+namespace Formula
+
+/-- 公式重命名后的满足关系等价于在拉回环境中满足原公式。 -/
+theorem satisfies_rename {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {sourceBound sourceFree targetBound targetFree : SortContext σ}
+    (env : Env M targetBound targetFree)
+    (ρ : Renaming σ sourceBound sourceFree targetBound targetFree)
+    (formula : Formula σ sourceBound sourceFree) :
+    satisfies env (formula.rename ρ) ↔
+      satisfies (env.pullbackRenaming ρ) formula := by
+  induction formula generalizing targetBound targetFree with
+  | falsum =>
+      cases ρ <;> rfl
+  | truth =>
+      cases ρ <;> rfl
+  | rel relation arguments =>
+      cases ρ with
+      | id =>
+          rfl
+      | map boundRenaming freeRenaming =>
+          let ρ := Renaming.map boundRenaming freeRenaming
+          change M.relInterp relation ((arguments.rename ρ).eval env) ↔
+            M.relInterp relation
+              (arguments.eval (env.pullbackRenaming ρ))
+          rw [Arguments.eval_rename]
+  | equal left right =>
+      cases ρ with
+      | id =>
+          rfl
+      | map boundRenaming freeRenaming =>
+          let ρ := Renaming.map boundRenaming freeRenaming
+          change
+            (left.rename ρ).eval env = (right.rename ρ).eval env ↔
+              left.eval (env.pullbackRenaming ρ) =
+                right.eval (env.pullbackRenaming ρ)
+          rw [Term.eval_rename, Term.eval_rename]
+  | neg body ih =>
+      cases ρ with
+      | id =>
+          rfl
+      | map boundRenaming freeRenaming =>
+          let ρ := Renaming.map boundRenaming freeRenaming
+          change (¬ satisfies env (body.rename ρ)) ↔
+            ¬ satisfies (env.pullbackRenaming ρ) body
+          exact not_congr (ih env ρ)
+  | conj left right ihLeft ihRight =>
+      cases ρ with
+      | id =>
+          rfl
+      | map boundRenaming freeRenaming =>
+          let ρ := Renaming.map boundRenaming freeRenaming
+          change
+            (satisfies env (left.rename ρ) ∧
+              satisfies env (right.rename ρ)) ↔
+            (satisfies (env.pullbackRenaming ρ) left ∧
+              satisfies (env.pullbackRenaming ρ) right)
+          exact and_congr (ihLeft env ρ) (ihRight env ρ)
+  | disj left right ihLeft ihRight =>
+      cases ρ with
+      | id =>
+          rfl
+      | map boundRenaming freeRenaming =>
+          let ρ := Renaming.map boundRenaming freeRenaming
+          change
+            (satisfies env (left.rename ρ) ∨
+              satisfies env (right.rename ρ)) ↔
+            (satisfies (env.pullbackRenaming ρ) left ∨
+              satisfies (env.pullbackRenaming ρ) right)
+          exact or_congr (ihLeft env ρ) (ihRight env ρ)
+  | imp left right ihLeft ihRight =>
+      cases ρ with
+      | id =>
+          rfl
+      | map boundRenaming freeRenaming =>
+          let ρ := Renaming.map boundRenaming freeRenaming
+          change
+            (satisfies env (left.rename ρ) →
+              satisfies env (right.rename ρ)) ↔
+            (satisfies (env.pullbackRenaming ρ) left →
+              satisfies (env.pullbackRenaming ρ) right)
+          exact imp_congr (ihLeft env ρ) (ihRight env ρ)
+  | iff left right ihLeft ihRight =>
+      cases ρ with
+      | id =>
+          rfl
+      | map boundRenaming freeRenaming =>
+          let ρ := Renaming.map boundRenaming freeRenaming
+          change
+            (satisfies env (left.rename ρ) ↔
+              satisfies env (right.rename ρ)) ↔
+            (satisfies (env.pullbackRenaming ρ) left ↔
+              satisfies (env.pullbackRenaming ρ) right)
+          exact iff_congr (ihLeft env ρ) (ihRight env ρ)
+  | forallE sort body ih =>
+      cases ρ with
+      | id =>
+          rfl
+      | map boundRenaming freeRenaming =>
+          let ρ := Renaming.map boundRenaming freeRenaming
+          change
+            (∀ value, satisfies (env.pushBound value)
+              (body.rename (ρ.liftBound sort))) ↔
+            ∀ value,
+              satisfies
+                ((env.pullbackRenaming ρ).pushBound value) body
+          constructor
+          · intro hFormula value
+            have hBody :=
+              (ih (env.pushBound value) (ρ.liftBound sort)).mp
+                (hFormula value)
+            simpa [Env.pullbackRenaming_liftBound] using hBody
+          · intro hFormula value
+            have hBody : satisfies
+                ((env.pushBound value).pullbackRenaming
+                  (ρ.liftBound sort)) body := by
+              simpa [Env.pullbackRenaming_liftBound] using hFormula value
+            exact
+              (ih (env.pushBound value) (ρ.liftBound sort)).mpr hBody
+  | existsE sort body ih =>
+      cases ρ with
+      | id =>
+          rfl
+      | map boundRenaming freeRenaming =>
+          let ρ := Renaming.map boundRenaming freeRenaming
+          change
+            (∃ value, satisfies (env.pushBound value)
+              (body.rename (ρ.liftBound sort))) ↔
+            ∃ value,
+              satisfies
+                ((env.pullbackRenaming ρ).pushBound value) body
+          constructor
+          · rintro ⟨value, hBody⟩
+            refine ⟨value, ?_⟩
+            have hPulled :=
+              (ih (env.pushBound value) (ρ.liftBound sort)).mp hBody
+            simpa [Env.pullbackRenaming_liftBound] using hPulled
+          · rintro ⟨value, hBody⟩
+            refine ⟨value, ?_⟩
+            have hPulled : satisfies
+                ((env.pushBound value).pullbackRenaming
+                  (ρ.liftBound sort)) body := by
+              simpa [Env.pullbackRenaming_liftBound] using hBody
+            exact
+              (ih (env.pushBound value) (ρ.liftBound sort)).mpr hPulled
+
+/-- 闭句嵌入任意 free 上下文后保持其闭语义。 -/
+theorem satisfies_fromSentence {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ} {free : SortContext σ}
+    (env : Env M [] free) (sentence : Sentence σ) :
+    satisfies env (Formula.fromSentence sentence) ↔
+      sentence.TrueIn M := by
+  simpa [Formula.fromSentence, Formula.TrueIn] using
+    satisfies_rename env
+      (Renaming.emptyFree : Renaming σ [] [] [] free) sentence
+
+/-- 公式替换后的满足关系等价于在拉回环境中满足原公式。 -/
+theorem satisfies_substitute {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {sourceBound sourceFree targetBound targetFree : SortContext σ}
+    (env : Env M targetBound targetFree)
+    (substitution :
+      Substitution σ sourceBound sourceFree targetBound targetFree)
+    (formula : Formula σ sourceBound sourceFree) :
+    satisfies env (formula.substitute substitution) ↔
+      satisfies (env.pullback substitution) formula := by
+  induction formula generalizing targetBound targetFree with
+  | falsum =>
+      cases substitution <;> rfl
+  | truth =>
+      cases substitution <;> rfl
+  | rel relation arguments =>
+      cases substitution with
+      | id =>
+          rfl
+      | map boundSubstitution freeSubstitution =>
+          let τ := Substitution.map boundSubstitution freeSubstitution
+          change M.relInterp relation
+              ((arguments.substitute τ).eval env) ↔
+            M.relInterp relation
+              (arguments.eval (env.pullback τ))
+          rw [Arguments.eval_substitute]
+  | equal left right =>
+      cases substitution with
+      | id =>
+          rfl
+      | map boundSubstitution freeSubstitution =>
+          let τ := Substitution.map boundSubstitution freeSubstitution
+          change
+            (left.substitute τ).eval env =
+                (right.substitute τ).eval env ↔
+              left.eval (env.pullback τ) =
+                right.eval (env.pullback τ)
+          rw [Term.eval_substitute, Term.eval_substitute]
+  | neg body ih =>
+      cases substitution with
+      | id =>
+          rfl
+      | map boundSubstitution freeSubstitution =>
+          let τ := Substitution.map boundSubstitution freeSubstitution
+          change (¬ satisfies env (body.substitute τ)) ↔
+            ¬ satisfies (env.pullback τ) body
+          exact not_congr (ih env τ)
+  | conj left right ihLeft ihRight =>
+      cases substitution with
+      | id =>
+          rfl
+      | map boundSubstitution freeSubstitution =>
+          let τ := Substitution.map boundSubstitution freeSubstitution
+          change
+            (satisfies env (left.substitute τ) ∧
+              satisfies env (right.substitute τ)) ↔
+            (satisfies (env.pullback τ) left ∧
+              satisfies (env.pullback τ) right)
+          exact and_congr (ihLeft env τ) (ihRight env τ)
+  | disj left right ihLeft ihRight =>
+      cases substitution with
+      | id =>
+          rfl
+      | map boundSubstitution freeSubstitution =>
+          let τ := Substitution.map boundSubstitution freeSubstitution
+          change
+            (satisfies env (left.substitute τ) ∨
+              satisfies env (right.substitute τ)) ↔
+            (satisfies (env.pullback τ) left ∨
+              satisfies (env.pullback τ) right)
+          exact or_congr (ihLeft env τ) (ihRight env τ)
+  | imp left right ihLeft ihRight =>
+      cases substitution with
+      | id =>
+          rfl
+      | map boundSubstitution freeSubstitution =>
+          let τ := Substitution.map boundSubstitution freeSubstitution
+          change
+            (satisfies env (left.substitute τ) →
+              satisfies env (right.substitute τ)) ↔
+            (satisfies (env.pullback τ) left →
+              satisfies (env.pullback τ) right)
+          exact imp_congr (ihLeft env τ) (ihRight env τ)
+  | iff left right ihLeft ihRight =>
+      cases substitution with
+      | id =>
+          rfl
+      | map boundSubstitution freeSubstitution =>
+          let τ := Substitution.map boundSubstitution freeSubstitution
+          change
+            (satisfies env (left.substitute τ) ↔
+              satisfies env (right.substitute τ)) ↔
+            (satisfies (env.pullback τ) left ↔
+              satisfies (env.pullback τ) right)
+          exact iff_congr (ihLeft env τ) (ihRight env τ)
+  | forallE sort body ih =>
+      cases substitution with
+      | id =>
+          rfl
+      | map boundSubstitution freeSubstitution =>
+          let τ := Substitution.map boundSubstitution freeSubstitution
+          change
+            (∀ value, satisfies (env.pushBound value)
+              (body.substitute (τ.liftBound sort))) ↔
+            ∀ value,
+              satisfies ((env.pullback τ).pushBound value) body
+          constructor
+          · intro hFormula value
+            have hBody :=
+              (ih (env.pushBound value)
+                (τ.liftBound sort)).mp (hFormula value)
+            simpa [Env.pullback_liftBound] using hBody
+          · intro hFormula value
+            have hBody : satisfies
+                ((env.pullback
+                  τ).pushBound value)
+                body :=
+              hFormula value
+            have hPulled : satisfies
+                ((env.pushBound value).pullback
+                  (τ.liftBound sort)) body := by
+              simpa [Env.pullback_liftBound] using hBody
+            exact
+              (ih (env.pushBound value)
+                (τ.liftBound sort)).mpr hPulled
+  | existsE sort body ih =>
+      cases substitution with
+      | id =>
+          rfl
+      | map boundSubstitution freeSubstitution =>
+          let τ := Substitution.map boundSubstitution freeSubstitution
+          change
+            (∃ value, satisfies (env.pushBound value)
+              (body.substitute (τ.liftBound sort))) ↔
+            ∃ value,
+              satisfies ((env.pullback τ).pushBound value) body
+          constructor
+          · rintro ⟨value, hBody⟩
+            refine ⟨value, ?_⟩
+            have hPulled :=
+              (ih (env.pushBound value)
+                (τ.liftBound sort)).mp hBody
+            simpa [Env.pullback_liftBound] using hPulled
+          · rintro ⟨value, hBody⟩
+            refine ⟨value, ?_⟩
+            have hPulled : satisfies
+                ((env.pushBound value).pullback
+                  (τ.liftBound sort)) body := by
+              simpa [Env.pullback_liftBound] using hBody
+            exact
+              (ih (env.pushBound value)
+                (τ.liftBound sort)).mpr hPulled
+
+/-- free 替换语义是统一替换语义的直接特例。 -/
+theorem satisfies_substituteFree {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound sourceFree targetFree : SortContext σ}
+    (env : Env M bound targetFree)
+    (substitution :
+      VariableSubstitution σ sourceFree bound targetFree)
+    (formula : Formula σ bound sourceFree) :
+    satisfies env (formula.substituteFree substitution) ↔
+      satisfies (env.pullback (Substitution.free_map substitution)) formula := by
+  simpa [Formula.substituteFree] using
+    satisfies_substitute env (Substitution.free_map substitution) formula
+
+/-- fresh 变量实例化的语义等于把见证值压入 free 环境。 -/
+theorem satisfies_instantiateFreeTop {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (replacement : Term σ bound free sort)
+    (body : Formula σ bound (sort :: free)) :
+    satisfies env (body.instantiateFreeTop replacement) ↔
+      satisfies (env.pushFree (replacement.eval env)) body := by
+  simpa [Formula.instantiateFreeTop] using
+    satisfies_substitute env
+      (Substitution.instantiateFreeTop replacement) body
+
+/-- binder 顶部实例化的语义等于把见证值压入 bound 环境。 -/
+theorem satisfies_instantiateTop {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (replacement : Term σ bound free sort)
+    (body : Formula σ (sort :: bound) free) :
+    satisfies env (body.instantiateTop replacement) ↔
+      satisfies (env.pushBound (replacement.eval env)) body := by
+  simpa [Formula.instantiateTop] using
+    satisfies_substitute env
+      (Substitution.instantiateTop replacement) body
+
+/-- fresh 变量抽象为 binder 后保持满足关系。 -/
+theorem satisfies_abstractFreeTop {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier sort)
+    (body : Formula σ bound (sort :: free)) :
+    satisfies (env.pushBound value) body.abstractFreeTop ↔
+      satisfies (env.pushFree value) body := by
+  simpa [Formula.abstractFreeTop] using
+    satisfies_substitute (env.pushBound value)
+      (Substitution.abstractFreeTop :
+        Substitution σ bound (sort :: free) (sort :: bound) free) body
+
+/-- 全称量化 fresh 顶部变量的直接语义。 -/
+theorem satisfies_forallFreeTop {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (body : Formula σ bound (sort :: free)) :
+    satisfies env (body.forallFreeTop sort) ↔
+      ∀ value, satisfies (env.pushFree value) body := by
+  simp [Formula.forallFreeTop, satisfies, satisfies_abstractFreeTop]
+
+/-- 存在量化 fresh 顶部变量的直接语义。 -/
+theorem satisfies_existsFreeTop {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (body : Formula σ bound (sort :: free)) :
+    satisfies env (body.existsFreeTop sort) ↔
+      ∃ value, satisfies (env.pushFree value) body := by
+  simp [Formula.existsFreeTop, satisfies, satisfies_abstractFreeTop]
+
+/-- 旧公式穿过 fresh free 变量后，满足关系不依赖新变量的值。 -/
+theorem satisfies_weakenFree {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {introduced : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier introduced)
+    (formula : Formula σ bound free) :
+    satisfies (env.pushFree value) (formula.weakenFree introduced) ↔
+      satisfies env formula := by
+  induction formula with
+  | falsum =>
+      rfl
+  | truth =>
+      rfl
+  | rel relation arguments =>
+      simp [satisfies, Arguments.eval_weakenFree]
+  | equal left right =>
+      simp [satisfies, Term.eval_weakenFree]
+  | neg body ih =>
+      simpa [satisfies] using not_congr (ih env)
+  | conj left right ihLeft ihRight =>
+      exact and_congr (ihLeft env) (ihRight env)
+  | disj left right ihLeft ihRight =>
+      exact or_congr (ihLeft env) (ihRight env)
+  | imp left right ihLeft ihRight =>
+      exact imp_congr (ihLeft env) (ihRight env)
+  | iff left right ihLeft ihRight =>
+      exact iff_congr (ihLeft env) (ihRight env)
+  | forallE sort body ih =>
+      simp only [Formula.weakenFree_forallE, satisfies]
+      constructor
+      · intro hFormula boundValue
+        exact (ih (env.pushBound boundValue)).mp (hFormula boundValue)
+      · intro hFormula boundValue
+        exact (ih (env.pushBound boundValue)).mpr (hFormula boundValue)
+  | existsE sort body ih =>
+      simp only [Formula.weakenFree_existsE, satisfies]
+      constructor
+      · rintro ⟨boundValue, hBody⟩
+        exact ⟨boundValue, (ih (env.pushBound boundValue)).mp hBody⟩
+      · rintro ⟨boundValue, hBody⟩
+        exact ⟨boundValue, (ih (env.pushBound boundValue)).mpr hBody⟩
+
+end Formula
 end FirstOrder
 end Logic
 end YesMetaZFC

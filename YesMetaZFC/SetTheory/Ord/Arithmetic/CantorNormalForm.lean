@@ -257,10 +257,12 @@ private def cantorNormalFormExistence (𝒞 : OrderedPairConvention) : UnarySche
       Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed,
       Term.newest, Term.weaken]
-    all_goals repeat' constructor
+    repeat' apply And.intro
     all_goals
-      apply Formula.related_freeClosed_of_closed <;>
-        simp [TermVector.FreeClosed, TermVector.singleton]
+      first
+      | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
+      | apply Formula.related_freeClosed_of_closed <;>
+          simp [TermVector.FreeClosed, TermVector.singleton]
 /-- 当前指数的 `ω` 幂严格越过固定序数。 -/
 private def ordinalExponentiationStrictUpperBound (𝒞 : OrderedPairConvention) : UnarySchema 2 where
   body := .existsE <| .conj (Formula.isOrdinalExponentiation 𝒞
@@ -300,10 +302,12 @@ private def cantorNormalFormBelowUniqueness (𝒞 : OrderedPairConvention) : Una
       Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed,
       Term.newest, Term.weaken]
-    all_goals repeat' constructor
+    repeat' apply And.intro
     all_goals
-      apply Formula.related_freeClosed_of_closed <;>
-        simp [TermVector.FreeClosed, TermVector.singleton]
+      first
+      | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
+      | apply Formula.related_freeClosed_of_closed <;>
+          simp [TermVector.FreeClosed, TermVector.singleton]
 end UnarySchema
 namespace Formula
 private theorem satisfies_cantorNormalFormExistence_iff

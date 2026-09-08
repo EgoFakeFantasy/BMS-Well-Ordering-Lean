@@ -1,6 +1,4 @@
 import YesMetaZFC.Logic.FirstOrder.Metatheory.Notation
-import YesMetaZFC.Logic.FirstOrder.Metatheory.Substitution
-import YesMetaZFC.Logic.FirstOrder.Metatheory.Derivability
 import YesMetaZFC.Logic.FirstOrder.Metatheory.Basic
 import YesMetaZFC.Logic.FirstOrder.Metatheory.Propositional
 import YesMetaZFC.Logic.FirstOrder.Metatheory.Quantifier

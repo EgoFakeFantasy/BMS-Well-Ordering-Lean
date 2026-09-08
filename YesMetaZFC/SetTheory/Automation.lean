@@ -1,701 +1,306 @@
 import YesMetaZFC.SetTheory.Extension
-import YesMetaZFC.Automation.HostAvatar.Dispatch
+import YesMetaZFC.Automation.HostFirstOrder.ReplaySemantics
+
 /-!
-# 纯集合论公理切片到 `prove_auto`
-KP、ZF、ZFC 含有无限公理模式，搜索器不能也不应枚举整个理论。本模块使用显式有限
-`TheorySlice`：
-1. 每个切片条目都携带其属于原理论的证明；
-2. 句子稳定翻译到 preprocessing core 与 SearchSignature；
-3. source/deep problem 之间的反模型桥由语义归纳证明；
-4. 搜索成功后先得到切片定理，再由成员证明自动提升到完整理论。
-materializer 不猜测公理模式来源；所有来源都由 `TheorySlice.member` 固定。
+# 纯集合论公理切片到内禀一阶自动化
+
+项目句子先进入 `HostFirstOrder.Formula` 的深度索引语法，再由公共前端同时生成
+preprocessing core、原始搜索问题和内禀问题。自由闭合、bound scope 与 arity 不再形成
+独立证明层；旧扁平 `searchFormula`、`FormulaScoped` 与 source/deep 反模型桥已删除。
 -/
+
 namespace YesMetaZFC
 namespace SetTheory
 namespace Automation
+
 open _root_.YesMetaZFC.Automation
-open _root_.YesMetaZFC.Automation.CoreSyntax
-open _root_.YesMetaZFC.Automation.CoreSyntax.NormalForm
-abbrev SearchSignature := SearchMaterialization.SearchSignature
-abbrev SearchStructure :=
-  LogicSoundness.SetLevel.Structure SearchSignature
-abbrev SearchEnv {M : SearchStructure} :=
-  LogicSoundness.SetLevel.Env M
-abbrev SearchTerm :=
-  Logic.FirstOrder.Term SearchSignature
-abbrev SearchFormula :=
-  Logic.FirstOrder.Formula SearchSignature
+
 abbrev ProjectTerm (depth : Nat) :=
   Definitional.Project.Term depth
+
 abbrev ProjectFormula (depth : Nat) :=
   Definitional.Project.Formula 1 depth
+
 abbrev ProjectSentence :=
   Definitional.Project.Sentence
-/-- 纯集合论隶属原子在 preprocessing core 中的唯一谓词描述。 -/
-def membershipPredicate : CoreSyntax.PredicateSymbol := {
-  id := 1
-  arity := 2
-  role := .membership
-  inputSorts := [.object, .object]
-}
-/-- 项目外延等同原子在搜索层中的稳定谓词描述。 -/
-def extensionalEqPredicate : CoreSyntax.PredicateSymbol := {
-  id := 3
-  arity := 2
-  role := .relation
-  inputSorts := [.object, .object]
-}
-/-- 项目子集原子在搜索层中的稳定谓词描述。 -/
-def subsetPredicate : CoreSyntax.PredicateSymbol := {
-  id := 4
-  arity := 2
-  role := .relation
-  inputSorts := [.object, .object]
-}
-@[simp] theorem extensionalEqPredicate_ne_membership :
-    extensionalEqPredicate ≠ membershipPredicate := by
-  decide
-@[simp] theorem subsetPredicate_ne_membership :
-    subsetPredicate ≠ membershipPredicate := by
-  decide
-@[simp] theorem subsetPredicate_ne_extensionalEq :
-    subsetPredicate ≠ extensionalEqPredicate := by
-  decide
+
 namespace Translate
-/-- 纯集合论项到 preprocessing core。 -/
-def coreTerm {depth : Nat} : ProjectTerm depth → CoreSyntax.Term
-  | .bound entry => .bvar .object entry.val
-  | .free id => .fvar .object id
-/-- 项目原子核公式到 preprocessing core，定义原子保持为搜索谓词。 -/
-def coreFormula {depth : Nat} : ProjectFormula depth → CoreSyntax.Formula
-  | .falsum => .falseE
-  | .truth => .trueE
-  | .mem left right =>
-      .atom membershipPredicate [coreTerm left, coreTerm right]
-  | .atom symbol _ arguments =>
-      match symbol with
-      | .extensionalEq =>
-          .atom extensionalEqPredicate
-            [coreTerm (arguments 0), coreTerm (arguments 1)]
-      | .subset =>
-          .atom subsetPredicate
-            [coreTerm (arguments 0), coreTerm (arguments 1)]
-  | .neg body => .neg (coreFormula body)
-  | .conj left right => .conj (coreFormula left) (coreFormula right)
-  | .disj left right => .disj (coreFormula left) (coreFormula right)
-  | .imp left right => .imp (coreFormula left) (coreFormula right)
-  | .iff left right => .iffE (coreFormula left) (coreFormula right)
-  | .forallE body => .forallE .object (coreFormula body)
-  | .existsE body => .existsE .object (coreFormula body)
-/-- 纯集合论项到一阶 DAG 搜索签名。 -/
-def searchTerm {depth : Nat} : ProjectTerm depth → SearchTerm
-  | .bound entry => .var (.bvar .object entry.val)
-  | .free id => .var (.fvar .object id)
-/-- 项目原子核公式到一阶 DAG 搜索签名。 -/
-def searchFormula {depth : Nat} : ProjectFormula depth → SearchFormula
-  | .falsum => .falsum
-  | .truth => .truth
-  | .mem left right =>
-      .rel .member [searchTerm left, searchTerm right]
-  | .atom symbol _ arguments =>
-      match symbol with
-      | .extensionalEq =>
-          .rel (.predicate extensionalEqPredicate)
-            [searchTerm (arguments 0), searchTerm (arguments 1)]
-      | .subset =>
-          .rel (.predicate subsetPredicate)
-            [searchTerm (arguments 0), searchTerm (arguments 1)]
-  | .neg body => .neg (searchFormula body)
-  | .conj left right => .conj (searchFormula left) (searchFormula right)
-  | .disj left right => .disj (searchFormula left) (searchFormula right)
-  | .imp left right => .imp (searchFormula left) (searchFormula right)
-  | .iff left right => .iff (searchFormula left) (searchFormula right)
-  | .forallE body => .forallE .object (searchFormula body)
-  | .existsE body => .existsE .object (searchFormula body)
-/-! ## 项目语法到公共 proof layer 的良构性 -/
-@[simp] theorem search_relDomain_member :
-    SearchSignature.relDomain SearchMaterialization.RelSymbol.member =
-      [CoreSort.object, CoreSort.object] :=
-  rfl
-@[simp] theorem search_relDomain_extensionalEq :
-    SearchSignature.relDomain (.predicate extensionalEqPredicate) =
-      [CoreSort.object, CoreSort.object] :=
-  rfl
-@[simp] theorem search_relDomain_subset :
-    SearchSignature.relDomain (.predicate subsetPredicate) =
-      [CoreSort.object, CoreSort.object] :=
-  rfl
-/-- 项目公式深度对应搜索签名中唯一对象 sort 的 bound scope。 -/
-def search_scope (depth : Nat) : Logic.FirstOrder.Scope SearchSignature :=
-  fun sort => if sort = CoreSort.object then depth else 0
-/-- 零深度项目公式正好落在公共 proof layer 的空 scope。 -/
-@[simp] theorem search_scope_zero :
-    search_scope 0 = (Logic.FirstOrder.Scope.empty :
-        Logic.FirstOrder.Scope SearchSignature) := by
-  funext sort
-  simp [search_scope, Logic.FirstOrder.Scope.empty]
-/-- 进入一个项目量词与向对象 sort scope 压入一个 binder 一致。 -/
-@[simp] theorem search_scope_push (depth : Nat) :
-    Logic.FirstOrder.Scope.push (search_scope depth) CoreSort.object =
-      search_scope (depth + 1) := by
-  funext sort
-  by_cases hSort : sort = CoreSort.object
-  · subst sort
-    simp [search_scope, Logic.FirstOrder.Scope.push]
-  · simp [search_scope, Logic.FirstOrder.Scope.push, hSort]
-/-- 项目项翻译后始终具有对象 sort。 -/
-theorem searchTerm_wellSorted {depth : Nat} :
-    ∀ term : ProjectTerm depth,
-      Logic.FirstOrder.TermWellSorted (searchTerm term) CoreSort.object
-  | .bound entry => by
-      simpa only [searchTerm] using (Logic.FirstOrder.TermWellSorted.bvar (σ := SearchSignature) CoreSort.object entry.val)
+
+/-- 搜索签名中保留给纯隶属关系的稳定编号。 -/
+def membership_symbol : Nat := 1
+
+/-- 自由闭合的项目项直接进入深度索引宿主一阶项。 -/
+def term {depth : Nat} (source : ProjectTerm depth)
+    (hClosed : source.freeSupport = []) :
+    HostFirstOrder.Term depth :=
+  match source with
+  | .bound entry => .bvar entry
   | .free id => by
-      simpa only [searchTerm] using (Logic.FirstOrder.TermWellSorted.fvar (σ := SearchSignature) CoreSort.object id)
-/-- 项目项的 `Fin depth` 索引直接给出搜索项的 scope 证书。 -/
-theorem searchTerm_scoped {depth : Nat} :
-    ∀ term : ProjectTerm depth,
-      Logic.FirstOrder.TermScoped (search_scope depth) (searchTerm term)
-  | .bound entry => by
-      have hIndex : entry.val < search_scope depth CoreSort.object := by
-        simp [search_scope, entry.isLt]
-      simpa only [searchTerm] using (Logic.FirstOrder.TermScoped.bvar (σ := SearchSignature) (ctx := search_scope depth) hIndex)
-  | .free id => by
-      simpa only [searchTerm] using (Logic.FirstOrder.TermScoped.fvar (σ := SearchSignature) (ctx := search_scope depth)
-          CoreSort.object id)
-/-- 两个项目项翻译后形成对象 sort 参数对。 -/
-private theorem searchPair_wellSorted {depth : Nat} (left right : ProjectTerm depth) :
-    Logic.FirstOrder.ArgsWellSorted
-      [searchTerm left, searchTerm right]
-      [CoreSort.object, CoreSort.object] :=
-  .cons (searchTerm_wellSorted left) (.cons (searchTerm_wellSorted right) .nil)
-/-- 两个项目项翻译后的参数对保持当前项目 scope。 -/
-private theorem searchPair_scoped {depth : Nat} (left right : ProjectTerm depth) :
-    ∀ term, term ∈ [searchTerm left, searchTerm right] →
-      Logic.FirstOrder.TermScoped (search_scope depth) term := by
-  intro term hTerm
-  rcases List.mem_cons.mp hTerm with rfl | hTerm
-  · exact searchTerm_scoped left
-  · have hRight : term = searchTerm right :=
-      List.mem_singleton.mp hTerm
-    subst term
-    exact searchTerm_scoped right
-/-- 项目公式翻译后始终满足搜索签名的 sort/arity 合同。 -/
-theorem searchFormula_wellFormed {depth : Nat} :
-    ∀ formula : ProjectFormula depth,
-      Logic.FirstOrder.FormulaWellFormed (searchFormula formula)
-  | .falsum => .falsum
-  | .truth => .truth
-  | .mem left right => by
-      have hArguments :
-          Logic.FirstOrder.ArgsWellSorted
-            [searchTerm left, searchTerm right] (SearchSignature.relDomain
-              SearchMaterialization.RelSymbol.member) := by
-        simpa using searchPair_wellSorted left right
-      simpa only [searchFormula] using (Logic.FirstOrder.FormulaWellFormed.rel (σ := SearchSignature)
-          SearchMaterialization.RelSymbol.member hArguments)
-  | .atom symbol _ arguments =>
-      match symbol with
-      | .extensionalEq => by
-          have hArguments :
-              Logic.FirstOrder.ArgsWellSorted
-                [searchTerm (arguments 0), searchTerm (arguments 1)] (SearchSignature.relDomain (.predicate extensionalEqPredicate)) := by
-            simpa using
-              searchPair_wellSorted (arguments 0) (arguments 1)
-          simpa only [searchFormula] using (Logic.FirstOrder.FormulaWellFormed.rel (σ := SearchSignature) (.predicate extensionalEqPredicate) hArguments)
-      | .subset => by
-          have hArguments :
-              Logic.FirstOrder.ArgsWellSorted
-                [searchTerm (arguments 0), searchTerm (arguments 1)] (SearchSignature.relDomain (.predicate subsetPredicate)) := by
-            simpa using
-              searchPair_wellSorted (arguments 0) (arguments 1)
-          simpa only [searchFormula] using (Logic.FirstOrder.FormulaWellFormed.rel (σ := SearchSignature) (.predicate subsetPredicate) hArguments)
-  | .neg body =>
-      .neg (searchFormula_wellFormed body)
-  | .conj left right =>
-      .conj (searchFormula_wellFormed left) (searchFormula_wellFormed right)
-  | .disj left right =>
-      .disj (searchFormula_wellFormed left) (searchFormula_wellFormed right)
-  | .imp left right =>
-      .imp (searchFormula_wellFormed left) (searchFormula_wellFormed right)
-  | .iff left right =>
-      .iff (searchFormula_wellFormed left) (searchFormula_wellFormed right)
-  | .forallE body => by
-      simpa only [searchFormula] using (Logic.FirstOrder.FormulaWellFormed.forallE (σ := SearchSignature) CoreSort.object (searchFormula_wellFormed body))
-  | .existsE body => by
-      simpa only [searchFormula] using (Logic.FirstOrder.FormulaWellFormed.existsE (σ := SearchSignature) CoreSort.object (searchFormula_wellFormed body))
-/-- 项目公式翻译后的 bound scope 与其类型索引深度一致。 -/
-theorem searchFormula_scoped {depth : Nat} :
-    ∀ formula : ProjectFormula depth,
-      Logic.FirstOrder.FormulaScoped (search_scope depth) (searchFormula formula)
-  | .falsum => .falsum
-  | .truth => .truth
-  | .mem left right => by
-      simpa only [searchFormula] using (Logic.FirstOrder.FormulaScoped.rel (σ := SearchSignature) (ctx := search_scope depth)
-          SearchMaterialization.RelSymbol.member
-          [searchTerm left, searchTerm right] (searchPair_scoped left right))
-  | .atom symbol _ arguments =>
-      match symbol with
-      | .extensionalEq => by
-          simpa only [searchFormula] using (Logic.FirstOrder.FormulaScoped.rel (σ := SearchSignature) (ctx := search_scope depth)
-              (.predicate extensionalEqPredicate)
-              [searchTerm (arguments 0), searchTerm (arguments 1)] (searchPair_scoped (arguments 0) (arguments 1)))
-      | .subset => by
-          simpa only [searchFormula] using (Logic.FirstOrder.FormulaScoped.rel (σ := SearchSignature) (ctx := search_scope depth) (.predicate subsetPredicate)
-              [searchTerm (arguments 0), searchTerm (arguments 1)] (searchPair_scoped (arguments 0) (arguments 1)))
-  | .neg body =>
-      .neg (searchFormula_scoped body)
-  | .conj left right =>
-      .conj (searchFormula_scoped left) (searchFormula_scoped right)
-  | .disj left right =>
-      .disj (searchFormula_scoped left) (searchFormula_scoped right)
-  | .imp left right =>
-      .imp (searchFormula_scoped left) (searchFormula_scoped right)
-  | .iff left right =>
-      .iff (searchFormula_scoped left) (searchFormula_scoped right)
-  | .forallE body => by
-      have hBody :
-          Logic.FirstOrder.FormulaScoped (Logic.FirstOrder.Scope.push (search_scope depth) CoreSort.object) (searchFormula body) := by
-        simpa only [search_scope_push] using
-          searchFormula_scoped body
-      simpa only [searchFormula] using (Logic.FirstOrder.FormulaScoped.forallE (σ := SearchSignature) (ctx := search_scope depth)
-          CoreSort.object hBody)
-  | .existsE body => by
-      have hBody :
-          Logic.FirstOrder.FormulaScoped (Logic.FirstOrder.Scope.push (search_scope depth) CoreSort.object) (searchFormula body) := by
-        simpa only [search_scope_push] using
-          searchFormula_scoped body
-      simpa only [searchFormula] using (Logic.FirstOrder.FormulaScoped.existsE (σ := SearchSignature) (ctx := search_scope depth)
-          CoreSort.object hBody)
-/-- 零深度项目公式翻译后可直接进入公共 proof layer。 -/
-theorem searchFormula_admissible (formula : ProjectFormula 0) :
-    Logic.FirstOrder.Formula.Admissible (searchFormula formula) := by
-  constructor
-  · exact searchFormula_wellFormed formula
-  · simpa only [search_scope_zero] using
-      searchFormula_scoped formula
-/-- 每个项目句子的搜索翻译都携带公共 admissibility 证书。 -/
-theorem searchSentence_admissible (sentence : ProjectSentence) :
-    Logic.FirstOrder.Formula.Admissible (searchFormula sentence.formula) :=
-  searchFormula_admissible sentence.formula
-end Translate
-/-! ## Search countermodel 到 preprocessing core -/
-/-- 搜索模型扩张为纯一阶 core preprocessing 模型。 -/
-@[reducible] noncomputable def coreModelOfSearch (M : SearchStructure) :
-    Semantics.Model := by
-  classical
-  exact {
-    Carrier := M.Domain
-    default := Classical.choice M.nonempty
-    sortInterp := M.sortInterp
-    sortNonempty := M.sortNonempty
-    functionInterp := fun symbol arguments =>
-      if hArguments :
-          Logic.FirstOrder.ArgsSatisfy M.sortInterp arguments (SearchSignature.funcDomain (FirstOrderProjection.functionSymbol symbol)) then
-        M.funcInterp (FirstOrderProjection.functionSymbol symbol) arguments
-      else
-        Classical.choose (M.sortNonempty symbol.outputSort)
-    predicateInterp := fun predicate arguments =>
-      if predicate = membershipPredicate then
-        M.relInterp .member arguments
-      else
-        M.relInterp (.predicate predicate) arguments
-    applyInterp := fun _ _ => Classical.choice M.nonempty
-    boolValue := fun _ => Classical.choice M.nonempty
-    notValue := fun _ => Classical.choice M.nonempty
-    andValue := fun _ _ => Classical.choice M.nonempty
-    orValue := fun _ _ => Classical.choice M.nonempty
-    impValue := fun _ _ => Classical.choice M.nonempty
-    iffValue := fun _ _ => Classical.choice M.nonempty
-    quoteValue := fun _ => Classical.choice M.nonempty
-    lambdaValue := fun _ _ _ => Classical.choice M.nonempty
-    iteValue := fun _ _ _ => Classical.choice M.nonempty
-    boolHolds := fun _ => False
-  }
-/-- 搜索环境在 core 模型中的对应环境。 -/
-@[reducible] noncomputable def coreEnvOfSearch
-    {M : SearchStructure} (env : SearchEnv (M := M)) :
-    Semantics.Env (coreModelOfSearch M) where
-  boundVal := fun index => env.boundVal .object index
-  freeVal := env.freeVal
-/-- 搜索对象压栈与 core 压栈交换。 -/
-theorem coreEnvOfSearch_pushBound
-    {M : SearchStructure} (env : SearchEnv (M := M)) (value : M.Domain) (hValue : M.sortInterp .object value) :
-    coreEnvOfSearch (env.pushBound .object value hValue) = (coreEnvOfSearch env).push value := by
-  unfold coreEnvOfSearch Semantics.Env.push Logic.FirstOrder.Env.pushBound
-  rw [Semantics.Env.mk.injEq]
-  constructor
-  · funext index
-    cases index <;> rfl
-  · prove_auto
-/-- core 模型中的函数解释保持 codomain sort。 -/
-theorem coreModel_functionSort (M : SearchStructure) :
-    ∀ symbol arguments, (coreModelOfSearch M).sortInterp symbol.outputSort ((coreModelOfSearch M).functionInterp symbol arguments) := by
-  intro symbol arguments
-  classical
-  by_cases hArguments :
-      Logic.FirstOrder.ArgsSatisfy M.sortInterp arguments (SearchSignature.funcDomain (FirstOrderProjection.functionSymbol symbol))
-  · simpa only [coreModelOfSearch, hArguments, ↓reduceDIte] using
-      M.funcSort (FirstOrderProjection.functionSymbol symbol)
-        arguments hArguments
-  · simpa only [coreModelOfSearch, hArguments, ↓reduceDIte] using
-      Classical.choose_spec (M.sortNonempty symbol.outputSort)
-/-- 搜索环境保持全部 typed free assignment。 -/
-theorem coreEnv_respectsFree
-    {M : SearchStructure} (env : SearchEnv (M := M)) :
-    Semantics.Env.RespectsFree (coreEnvOfSearch env) := by
-  intro sort id
-  exact env.freeSort sort id
-mutual
-  /-- core/search 翻译给出相同项解释。 -/
-  theorem eval_coreTerm
-      {M : SearchStructure} (env : SearchEnv (M := M)) {depth : Nat} :
-      ∀ term : ProjectTerm depth,
-        Semantics.Term.eval (coreEnvOfSearch env) (Translate.coreTerm term) =
-          Logic.FirstOrder.Term.eval env (Translate.searchTerm term)
-    | .bound entry => by
-        simp [Translate.coreTerm, Translate.searchTerm,
-          Semantics.Term.eval, Logic.FirstOrder.Term.eval,
-          coreEnvOfSearch]
-    | .free id => by
-        simp [Translate.coreTerm, Translate.searchTerm,
-          Semantics.Term.eval, Logic.FirstOrder.Term.eval,
-          coreEnvOfSearch]
-  /-- core/search 翻译给出相同参数列表解释。 -/
-  theorem eval_coreTermList
-      {M : SearchStructure} (env : SearchEnv (M := M))
-      {depth : Nat} :
-      ∀ terms : List (ProjectTerm depth),
-        terms.map (Semantics.Term.eval (coreEnvOfSearch env) ∘
-              Translate.coreTerm) =
-          terms.map (Logic.FirstOrder.Term.eval env ∘ Translate.searchTerm)
-    | [] => rfl
-    | term :: rest => by
-        simp only [List.map_cons, Function.comp_apply]
-        rw [eval_coreTerm env term, eval_coreTermList env rest]
-end
-/-- 搜索公式与 core source 翻译语义一致。 -/
-theorem satisfies_coreFormula
-    {M : SearchStructure} (env : SearchEnv (M := M)) {depth : Nat} :
-    ∀ formula : ProjectFormula depth,
-      Semantics.Formula.Satisfies (coreEnvOfSearch env) (Translate.coreFormula formula) ↔
-        Logic.FirstOrder.Formula.satisfies
-          env (Translate.searchFormula formula)
-  | .falsum => by
-      simp [Translate.coreFormula, Translate.searchFormula,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies]
-  | .truth => by
-      simp [Translate.coreFormula, Translate.searchFormula,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies]
-  | .mem left right => by
-      simp only [Translate.coreFormula, Translate.searchFormula,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies, coreModelOfSearch,
-        membershipPredicate, ↓reduceIte]
-      simp only [List.map_cons, List.map_nil]
-      have hLeft :
-          Semantics.Term.eval (coreEnvOfSearch env) (Translate.coreTerm left) =
-            Logic.FirstOrder.Term.eval env (Translate.searchTerm left) :=
-        eval_coreTerm env left
-      have hRight :
-          Semantics.Term.eval (coreEnvOfSearch env) (Translate.coreTerm right) =
-            Logic.FirstOrder.Term.eval env (Translate.searchTerm right) :=
-        eval_coreTerm env right
-      have hArguments :
-          [Semantics.Term.eval (coreEnvOfSearch env) (Translate.coreTerm left),
-            Semantics.Term.eval (coreEnvOfSearch env) (Translate.coreTerm right)] =
-          [Logic.FirstOrder.Term.eval env (Translate.searchTerm left),
-            Logic.FirstOrder.Term.eval env (Translate.searchTerm right)] := by
-        rw [hLeft, hRight]
-      constructor
-      · intro h
-        exact hArguments ▸ h
-      · intro h
-        exact hArguments.symm ▸ h
-  | .atom symbol _ arguments => by
-      cases symbol with
-      | extensionalEq =>
-          simp only [Translate.coreFormula, Translate.searchFormula,
-            Semantics.Formula.Satisfies, Semantics.Formula.eval,
-            Logic.FirstOrder.Formula.satisfies, coreModelOfSearch,
-            extensionalEqPredicate_ne_membership, ↓reduceIte]
-          simp only [List.map_cons, List.map_nil]
-          rw [eval_coreTerm env (arguments 0),
-            eval_coreTerm env (arguments 1)]
-      | subset =>
-          simp only [Translate.coreFormula, Translate.searchFormula,
-            Semantics.Formula.Satisfies, Semantics.Formula.eval,
-            Logic.FirstOrder.Formula.satisfies, coreModelOfSearch,
-            subsetPredicate_ne_membership, ↓reduceIte]
-          simp only [List.map_cons, List.map_nil]
-          rw [eval_coreTerm env (arguments 0),
-            eval_coreTerm env (arguments 1)]
-  | .neg body => by
-      simpa [Translate.coreFormula, Translate.searchFormula,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies] using
-          not_congr (satisfies_coreFormula env body)
-  | .conj left right => by
-      simp only [Translate.coreFormula, Translate.searchFormula,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies]
-      exact and_congr (satisfies_coreFormula env left) (satisfies_coreFormula env right)
-  | .disj left right => by
-      simp only [Translate.coreFormula, Translate.searchFormula,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies]
-      exact or_congr (satisfies_coreFormula env left) (satisfies_coreFormula env right)
-  | .imp left right => by
-      simp only [Translate.coreFormula, Translate.searchFormula,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies]
-      exact imp_congr (satisfies_coreFormula env left) (satisfies_coreFormula env right)
-  | .iff left right => by
-      simp only [Translate.coreFormula, Translate.searchFormula,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies]
-      exact iff_congr (satisfies_coreFormula env left) (satisfies_coreFormula env right)
-  | .forallE body => by
-      simp only [Translate.coreFormula, Translate.searchFormula,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies]
-      constructor
-      · intro hAll value hValue
-        have hBody := hAll value hValue
-        rw [← coreEnvOfSearch_pushBound env value hValue] at hBody
-        exact (satisfies_coreFormula (env.pushBound .object value hValue) body).mp hBody
-      · intro hAll value hValue
-        have hBody := (satisfies_coreFormula (env.pushBound .object value hValue) body).mpr (hAll value hValue)
-        rw [coreEnvOfSearch_pushBound env value hValue] at hBody
-        exact hBody
-  | .existsE body => by
-      simp only [Translate.coreFormula, Translate.searchFormula,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval,
-        Logic.FirstOrder.Formula.satisfies]
-      constructor
-      · rintro ⟨value, hValue, hBody⟩
-        refine ⟨value, hValue, ?_⟩
-        rw [← coreEnvOfSearch_pushBound env value hValue] at hBody
-        exact (satisfies_coreFormula (env.pushBound .object value hValue) body).mp hBody
-      · rintro ⟨value, hValue, hBody⟩
-        refine ⟨value, hValue, ?_⟩
-        have hCore := (satisfies_coreFormula (env.pushBound .object value hValue) body).mpr hBody
-        rw [coreEnvOfSearch_pushBound env value hValue] at hCore
-        exact hCore
-/-! ## 纯集合模型到 SearchSignature -/
-/-- 把纯隶属结构扩张为所有 sort 都由同一对象域解释的搜索结构。 -/
-@[reducible] noncomputable def searchStructureOfSet (ℳ : SetTheory.Structure.{0}) : SearchStructure where
-  Domain := ℳ.Domain
-  nonempty := ℳ.nonempty
-  sortInterp := fun _ _ => True
-  sortNonempty := fun _ =>
-    let ⟨value⟩ := ℳ.nonempty
-    ⟨value, trivial⟩
-  funcInterp := fun _ _ =>
-    Classical.choice ℳ.nonempty
-  funcSort := by
-    intro symbol arguments hArguments
-    trivial
-  relInterp := fun relation arguments =>
-    match relation, arguments with
-    | .member, [left, right] => ℳ.mem left right
-    | .predicate symbol, [left, right] =>
-        if symbol = extensionalEqPredicate then
-          ∀ value, ℳ.mem value left ↔ ℳ.mem value right
-        else if symbol = subsetPredicate then
-          ∀ value, ℳ.mem value left → ℳ.mem value right
-        else
-          False
+      change [id] = [] at hClosed
+      cases hClosed
+
+/-- 深度索引宿主语法中的纯隶属原子。 -/
+def mem {depth : Nat} (left right : HostFirstOrder.Term depth) :
+    HostFirstOrder.Formula depth :=
+  .atom membership_symbol [left, right]
+
+/--
+自由闭合的项目公式直接进入深度索引宿主一阶公式。
+外延等同落到内建等号，子集原子落到其一阶定义；因此搜索签名只保留真正原始的隶属关系。
+-/
+def formula :
+    {depth : Nat} → (source : ProjectFormula depth) →
+      source.FreeClosed → HostFirstOrder.Formula depth
+  | _, .falsum, _ =>
+      .falsum
+  | _, .truth, _ =>
+      .truth
+  | _, .mem left right, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      exact mem (term left hClosed.1) (term right hClosed.2)
+  | _, .atom .extensionalEq _ arguments, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      exact .equal
+        (term (arguments 0) (hClosed 0))
+        (term (arguments 1) (hClosed 1))
+  | _, .atom .subset _ arguments, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      exact .forallE <| .imp
+        (mem (.bvar 0)
+          (term (arguments 0).weaken (by simpa using hClosed 0)))
+        (mem (.bvar 0)
+          (term (arguments 1).weaken (by simpa using hClosed 1)))
+  | _, .neg body, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      exact .neg (formula body hClosed)
+  | _, .conj left right, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      exact .conj
+        (formula left hClosed.1)
+        (formula right hClosed.2)
+  | _, .disj left right, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      exact .disj
+        (formula left hClosed.1)
+        (formula right hClosed.2)
+  | _, .imp left right, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      exact .imp
+        (formula left hClosed.1)
+        (formula right hClosed.2)
+  | _, .iff left right, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      exact .iff
+        (formula left hClosed.1)
+        (formula right hClosed.2)
+  | _, .forallE body, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      exact .forallE (formula body hClosed)
+  | _, .existsE body, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      exact .existsE (formula body hClosed)
+
+/-- 项目句子的唯一自动化像。 -/
+def sentence (source : ProjectSentence) : HostFirstOrder.ClosedFormula :=
+  formula source.formula source.freeClosed
+
+/-- 集合结构对自动化宿主语法的标准解释。 -/
+noncomputable def interpretation (ℳ : SetTheory.Structure.{u}) :
+    HostFirstOrder.Interpretation ℳ.Domain where
+  default := Classical.choice ℳ.nonempty
+  function := fun _ _ => Classical.choice ℳ.nonempty
+  predicate := fun symbol arguments =>
+    match symbol, arguments with
+    | 1, [left, right] => ℳ.mem left right
     | _, _ => False
-/-- 纯集合环境与扩张后的搜索环境在有效对象变量上相符。 -/
-structure SearchAgreement {ℳ : SetTheory.Structure.{0}} {depth : Nat} (env : SetTheory.Env ℳ depth)
-    (searchEnv : SearchEnv (M := searchStructureOfSet ℳ)) : Prop where
-  bound :
-    ∀ entry : Fin depth,
-      searchEnv.boundVal .object entry.val = env.bound entry
-  free :
-    ∀ id, searchEnv.freeVal .object id = env.free id
-namespace SearchAgreement
-/-- 同时压入同一对象后环境相符关系保持。 -/
-theorem push {ℳ : SetTheory.Structure.{0}} {depth : Nat}
-    {env : SetTheory.Env ℳ depth}
-    {searchEnv : SearchEnv (M := searchStructureOfSet ℳ)} (hEnv : SearchAgreement env searchEnv) (value : ℳ.Domain) :
-    SearchAgreement (env.push value) (searchEnv.pushBound .object value trivial) := by
-  constructor
-  · intro entry
-    refine Fin.cases ?_ (fun previous => ?_) entry
-    · rfl
-    · simpa [Logic.FirstOrder.Env.pushBound, SetTheory.Env.push] using
-        hEnv.bound previous
-  · intro id
-    simpa [Logic.FirstOrder.Env.pushBound, SetTheory.Env.push] using
-      hEnv.free id
-end SearchAgreement
-namespace Translate
-/-- 相符环境对纯集合项与搜索项给出相同解释。 -/
-theorem eval_searchTerm
-    {ℳ : SetTheory.Structure.{0}} {depth : Nat}
-    {env : SetTheory.Env ℳ depth}
-    {searchEnv : SearchEnv (M := searchStructureOfSet ℳ)} (hEnv : SearchAgreement env searchEnv) :
-    ∀ term : ProjectTerm depth,
-      Logic.FirstOrder.Term.eval searchEnv (searchTerm term) =
-        Definitional.Term.eval env term
-  | .bound entry => by
-      simpa [searchTerm, Logic.FirstOrder.Term.eval,
-        Definitional.Term.eval] using hEnv.bound entry
-  | .free id => by
-      simpa [searchTerm, Logic.FirstOrder.Term.eval,
-        Definitional.Term.eval] using hEnv.free id
-/-- 纯集合语义与搜索签名语义一致。 -/
-theorem satisfies_searchFormula
-    {ℳ : SetTheory.Structure.{0}} {depth : Nat}
-    {env : SetTheory.Env ℳ depth}
-    {searchEnv : SearchEnv (M := searchStructureOfSet ℳ)} (hEnv : SearchAgreement env searchEnv) :
-    ∀ formula : ProjectFormula depth,
-      Definitional.Project.Formula.satisfies env formula ↔
-        Logic.FirstOrder.Formula.satisfies searchEnv (searchFormula formula)
-  | .falsum => by
-      simp [Definitional.Project.Formula.satisfies_falsum_iff, searchFormula,
-        Logic.FirstOrder.Formula.satisfies]
-  | .truth => by
-      simp [Definitional.Project.Formula.satisfies_truth_iff, searchFormula,
-        Logic.FirstOrder.Formula.satisfies]
-  | .mem left right => by
+
+/-- 标准解释只把稳定编号 `1` 解释为二元隶属。 -/
+@[simp] theorem interpretation_membership
+    {ℳ : SetTheory.Structure.{u}} (left right : ℳ.Domain) :
+    (interpretation ℳ).predicate membership_symbol [left, right] ↔
+      ℳ.mem left right := by
+  rfl
+
+/-- 宿主量词压栈与集合环境压栈逐字一致。 -/
+theorem push_bound_eq {ℳ : SetTheory.Structure.{u}} {depth : Nat}
+    (env : SetTheory.Env ℳ depth) (value : ℳ.Domain) :
+    HostFirstOrder.Formula.pushBound value env.bound =
+      (env.push value).bound := by
+  funext entry
+  refine Fin.cases ?_ (fun previous => ?_) entry <;> rfl
+
+/-- 项目闭项与其宿主一阶像取值相同。 -/
+@[simp] theorem eval_term {ℳ : SetTheory.Structure.{u}} {depth : Nat}
+    (env : SetTheory.Env ℳ depth) (source : ProjectTerm depth)
+    (hClosed : source.freeSupport = []) :
+    HostFirstOrder.Term.eval (interpretation ℳ) env.bound
+        (term source hClosed) =
+      Definitional.Term.eval env source := by
+  cases source with
+  | bound entry =>
+      simp [term, HostFirstOrder.Term.eval,
+        Definitional.Term.eval]
+  | free id =>
+      change [id] = [] at hClosed
+      cases hClosed
+
+/-- 新 binder 下提升的项目项仍按原环境取值。 -/
+@[simp] theorem eval_term_weaken {ℳ : SetTheory.Structure.{u}}
+    {depth : Nat} (env : SetTheory.Env ℳ depth) (value : ℳ.Domain)
+    (source : ProjectTerm depth)
+    (hClosed : source.weaken.freeSupport = []) :
+    HostFirstOrder.Term.eval (interpretation ℳ)
+        (HostFirstOrder.Formula.pushBound value env.bound)
+        (term source.weaken hClosed) =
+      Definitional.Term.eval env source := by
+  rw [push_bound_eq]
+  rw [eval_term (env.push value)]
+  exact Definitional.Term.eval_weaken env value source
+
+/-- 宿主语法最新绑定变量取栈顶值。 -/
+@[simp] theorem eval_newest {ℳ : SetTheory.Structure.{u}}
+    {depth : Nat} (env : SetTheory.Env ℳ depth) (value : ℳ.Domain) :
+    HostFirstOrder.Term.eval (interpretation ℳ)
+        (HostFirstOrder.Formula.pushBound value env.bound)
+        (.bvar 0 : HostFirstOrder.Term (depth + 1)) = value := by
+  rw [HostFirstOrder.Term.eval]
+  rw [push_bound_eq]
+  rfl
+
+/-- 项目公式与唯一自动化像在外延集合结构中语义一致。 -/
+theorem eval_formula {ℳ : SetTheory.Structure.{u}}
+    (hExt : Extensional ℳ) {depth : Nat} (env : SetTheory.Env ℳ depth) :
+    ∀ (source : ProjectFormula depth) (hClosed : source.FreeClosed),
+      HostFirstOrder.Formula.eval (interpretation ℳ) env.bound
+          (formula source hClosed) ↔
+        Definitional.Project.Formula.satisfies env source
+  | .falsum, _ => by
+      simp [formula, HostFirstOrder.Formula.eval,
+        Definitional.Project.Formula.satisfies_falsum_iff]
+  | .truth, _ => by
+      simp [formula, HostFirstOrder.Formula.eval,
+        Definitional.Project.Formula.satisfies_truth_iff]
+  | .mem left right, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
       rw [Definitional.Project.Formula.satisfies_mem_iff]
-      simp only [searchFormula, Logic.FirstOrder.Formula.satisfies]
-      change
-        ℳ.mem (Definitional.Term.eval env left) (Definitional.Term.eval env right) ↔
-          ℳ.mem (Logic.FirstOrder.Term.eval searchEnv (searchTerm left)) (Logic.FirstOrder.Term.eval searchEnv (searchTerm right))
-      rw [eval_searchTerm hEnv left, eval_searchTerm hEnv right]
-  | .atom symbol hStage arguments => by
-      cases symbol with
-      | extensionalEq =>
-          rw [Definitional.Project.Formula.satisfies_atom_extensionalEq_iff]
-          simp only [searchFormula,
-            Logic.FirstOrder.Formula.satisfies, searchStructureOfSet,
-            List.map_cons, List.map_nil,
-            ↓reduceIte]
-          rw [← eval_searchTerm hEnv (arguments 0),
-            ← eval_searchTerm hEnv (arguments 1)]
-      | subset =>
-          rw [Definitional.Project.Formula.satisfies_atom_subset_iff]
-          simp only [searchFormula,
-            Logic.FirstOrder.Formula.satisfies, searchStructureOfSet,
-            List.map_cons, List.map_nil, subsetPredicate_ne_extensionalEq,
-            ↓reduceIte]
-          rw [← eval_searchTerm hEnv (arguments 0),
-            ← eval_searchTerm hEnv (arguments 1)]
-  | .neg body =>
-      by
-        simpa [Definitional.Project.Formula.satisfies_neg_iff, searchFormula,
-          Logic.FirstOrder.Formula.satisfies] using
-            not_congr (satisfies_searchFormula hEnv body)
-  | .conj left right => by
-      simpa [Definitional.Project.Formula.satisfies_conj_iff, searchFormula,
-        Logic.FirstOrder.Formula.satisfies] using
-        and_congr (satisfies_searchFormula hEnv left) (satisfies_searchFormula hEnv right)
-  | .disj left right => by
-      simpa [Definitional.Project.Formula.satisfies_disj_iff, searchFormula,
-        Logic.FirstOrder.Formula.satisfies] using
-        or_congr (satisfies_searchFormula hEnv left) (satisfies_searchFormula hEnv right)
-  | .imp left right => by
-      simpa [Definitional.Project.Formula.satisfies_imp_iff, searchFormula,
-        Logic.FirstOrder.Formula.satisfies] using
-        imp_congr (satisfies_searchFormula hEnv left) (satisfies_searchFormula hEnv right)
-  | .iff left right => by
-      simpa [Definitional.Project.Formula.satisfies_iff_iff, searchFormula,
-        Logic.FirstOrder.Formula.satisfies] using
-        iff_congr (satisfies_searchFormula hEnv left) (satisfies_searchFormula hEnv right)
-  | .forallE body => by
-      rw [Definitional.Project.Formula.satisfies_forall_iff]
-      simp only [searchFormula,
-        Logic.FirstOrder.Formula.satisfies]
+      simp only [formula, mem, HostFirstOrder.Formula.eval,
+        HostFirstOrder.Term.evalList, interpretation_membership]
+      rw [eval_term env left, eval_term env right]
+  | .atom .extensionalEq hStage arguments, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      rw [Definitional.Project.Formula.satisfies_atom_extensionalEq_iff]
+      simp only [formula, HostFirstOrder.Formula.eval,
+        eval_term env (arguments 0) (hClosed 0),
+        eval_term env (arguments 1) (hClosed 1)]
       constructor
-      · intro hAll value _hValue
-        exact (satisfies_searchFormula (hEnv.push value) body).mp (hAll value)
-      · intro hAll value
-        exact (satisfies_searchFormula (hEnv.push value) body).mpr (hAll value trivial)
-  | .existsE body => by
+      · intro hEqual value
+        simp [hEqual]
+      · exact hExt.eq_of_same_members _ _
+  | .atom .subset hStage arguments, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      rw [Definitional.Project.Formula.satisfies_atom_subset_iff]
+      simp only [formula, HostFirstOrder.Formula.eval, mem,
+        HostFirstOrder.Term.evalList, interpretation_membership]
+      simp only [eval_newest, eval_term_weaken]
+  | .neg body, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      simpa [formula, HostFirstOrder.Formula.eval,
+        Definitional.Project.Formula.satisfies_neg_iff] using
+        not_congr (eval_formula hExt env body hClosed)
+  | .conj left right, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      simpa [formula, HostFirstOrder.Formula.eval,
+        Definitional.Project.Formula.satisfies_conj_iff] using
+        and_congr
+          (eval_formula hExt env left hClosed.1)
+          (eval_formula hExt env right hClosed.2)
+  | .disj left right, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      simpa [formula, HostFirstOrder.Formula.eval,
+        Definitional.Project.Formula.satisfies_disj_iff] using
+        or_congr
+          (eval_formula hExt env left hClosed.1)
+          (eval_formula hExt env right hClosed.2)
+  | .imp left right, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      simpa [formula, HostFirstOrder.Formula.eval,
+        Definitional.Project.Formula.satisfies_imp_iff] using
+        imp_congr
+          (eval_formula hExt env left hClosed.1)
+          (eval_formula hExt env right hClosed.2)
+  | .iff left right, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      simpa [formula, HostFirstOrder.Formula.eval,
+        Definitional.Project.Formula.satisfies_iff_iff] using
+        iff_congr
+          (eval_formula hExt env left hClosed.1)
+          (eval_formula hExt env right hClosed.2)
+  | .forallE body, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
+      rw [Definitional.Project.Formula.satisfies_forall_iff]
+      simp only [formula, HostFirstOrder.Formula.eval]
+      constructor <;> intro h value
+      · exact (eval_formula hExt (env.push value) body hClosed).mp <| by
+          simpa [push_bound_eq] using h value
+      · simpa [push_bound_eq] using
+          (eval_formula hExt (env.push value) body hClosed).mpr (h value)
+  | .existsE body, hClosed => by
+      simp only [Definitional.Formula.FreeClosed] at hClosed
       rw [Definitional.Project.Formula.satisfies_exists_iff]
-      simp only [searchFormula,
-        Logic.FirstOrder.Formula.satisfies]
+      simp only [formula, HostFirstOrder.Formula.eval]
       constructor
       · rintro ⟨value, hBody⟩
-        exact ⟨value, trivial, (satisfies_searchFormula (hEnv.push value) body).mp hBody⟩
-      · rintro ⟨value, _hValue, hBody⟩
-        exact ⟨value, (satisfies_searchFormula (hEnv.push value) body).mpr hBody⟩
+        refine ⟨value, ?_⟩
+        exact (eval_formula hExt (env.push value) body hClosed).mp <| by
+          simpa [push_bound_eq] using hBody
+      · rintro ⟨value, hBody⟩
+        refine ⟨value, ?_⟩
+        simpa [push_bound_eq] using
+          (eval_formula hExt (env.push value) body hClosed).mpr hBody
+
+/-- 项目句子满足关系与闭宿主公式求值一致。 -/
+theorem eval_sentence {ℳ : SetTheory.Structure.{u}}
+    (hExt : Extensional ℳ) (free : FreeVarId → ℳ.Domain)
+    (source : ProjectSentence) :
+    HostFirstOrder.Semantics.closedEval (interpretation ℳ)
+        (sentence source) ↔
+      Definitional.Project.Formula.satisfies
+        ({ bound := Fin.elim0, free := free } : SetTheory.Env ℳ 0)
+        source.formula := by
+  simpa [HostFirstOrder.Semantics.closedEval, sentence] using!
+    eval_formula hExt
+      ({ bound := Fin.elim0, free := free } : SetTheory.Env ℳ 0)
+      source.formula source.freeClosed
+
 end Translate
-/-- 为纯集合环境构造一个相符的全 sort 搜索环境。 -/
-@[reducible] noncomputable def searchEnvOfSet
-    {ℳ : SetTheory.Structure.{0}} {depth : Nat} (env : SetTheory.Env ℳ depth) :
-    SearchEnv (M := searchStructureOfSet ℳ) := by
-  classical
-  exact {
-    boundVal := fun _ index =>
-      if hIndex : index < depth then
-        env.bound ⟨index, hIndex⟩
-      else
-        Classical.choice ℳ.nonempty
-    freeVal := fun _ id => env.free id
-    boundSort := by
-      intro sort index
-      trivial
-    freeSort := by
-      intro sort id
-      trivial
-  }
-/-- `searchEnvOfSet` 与原纯集合环境相符。 -/
-theorem searchEnvOfSet_agrees
-    {ℳ : SetTheory.Structure.{0}} {depth : Nat} (env : SetTheory.Env ℳ depth) :
-    SearchAgreement env (searchEnvOfSet env) := by
-  constructor
-  · intro entry
-    simp [entry.isLt]
-  · intro id
-    rfl
-/-- core 合取列表逐项满足时，其整体也满足。 -/
-theorem coreSatisfiesConjunctionList
-    {M : Semantics.Model} (env : Semantics.Env M) (formulas : List CoreSyntax.Formula) (hFormulas :
-      ∀ formula ∈ formulas, Semantics.Formula.Satisfies env formula) :
-    Semantics.Formula.Satisfies env (CoreSyntax.Formula.conjunctionList formulas) := by
-  induction formulas with
-  | nil =>
-      simp [CoreSyntax.Formula.conjunctionList,
-        Semantics.Formula.Satisfies, Semantics.Formula.eval]
-  | cons head tail ih =>
-      cases tail with
-      | nil =>
-          simpa [CoreSyntax.Formula.conjunctionList] using
-            hFormulas head (by simp)
-      | cons next rest =>
-          simp only [CoreSyntax.Formula.conjunctionList,
-            Semantics.Formula.Satisfies, Semantics.Formula.eval]
-          constructor
-          · exact hFormulas head (by simp)
-          · apply ih
-            intro formula hFormula
-            exact hFormulas formula (by simp [hFormula])
+
 /-! ## 有限理论切片 -/
-/-- 无限集合论公理系统的显式有限搜索切片。 -/
+
+/-- 无限集合论理论的显式有限搜索切片。 -/
 structure TheorySlice (theory : Theory) where
   axioms : List ProjectSentence
   member : ∀ sentence, sentence ∈ axioms → theory sentence
+
 namespace TheorySlice
+
 /-- 空切片。 -/
 def empty (theory : Theory) : TheorySlice theory where
   axioms := []
   member := by simp
-/-- 由一条已证明属于理论的公理构造单元素切片。 -/
-def singleton {theory : Theory} (sentence : ProjectSentence) (hSentence : theory sentence) : TheorySlice theory where
+
+/-- 单公理切片。 -/
+def singleton {theory : Theory} (sentence : ProjectSentence)
+    (hSentence : theory sentence) : TheorySlice theory where
   axioms := [sentence]
   member := by
     intro candidate hCandidate
     simp only [List.mem_singleton] at hCandidate
     subst candidate
     exact hSentence
+
 /-- 向切片前端加入一条来源已证明的公理。 -/
-def push {theory : Theory} (slice : TheorySlice theory) (sentence : ProjectSentence) (hSentence : theory sentence) :
+def push {theory : Theory} (slice : TheorySlice theory)
+    (sentence : ProjectSentence) (hSentence : theory sentence) :
     TheorySlice theory where
   axioms := sentence :: slice.axioms
   member := by
@@ -703,102 +308,79 @@ def push {theory : Theory} (slice : TheorySlice theory) (sentence : ProjectSente
     rcases List.mem_cons.mp hCandidate with rfl | hTail
     · exact hSentence
     · exact slice.member candidate hTail
-/-- 沿公理逐字映射把一个切片提升到更强理论。 -/
-def mapTheory {weak strong : Theory} (slice : TheorySlice weak) (hMap : ∀ sentence, weak sentence → strong sentence) :
+
+/-- 沿理论包含映射提升切片。 -/
+def mapTheory {weak strong : Theory} (slice : TheorySlice weak)
+    (hMap : ∀ sentence, weak sentence → strong sentence) :
     TheorySlice strong where
   axioms := slice.axioms
-  member := by
-    intro sentence hSentence
-    exact hMap sentence (slice.member sentence hSentence)
+  member := fun sentence hSentence =>
+    hMap sentence (slice.member sentence hSentence)
+
 /-- 切片自身形成的有限理论。 -/
 def asTheory {theory : Theory} (slice : TheorySlice theory) : Theory :=
   fun sentence => sentence ∈ slice.axioms
+
 /-- 切片公理逐字包含于原理论。 -/
 theorem subtheory {theory : Theory} (slice : TheorySlice theory) :
     Theory.Subtheory slice.asTheory theory :=
   slice.member
-/-- 切片句子进入 preprocessing core。 -/
-def sourceProblem {theory : Theory} (slice : TheorySlice theory) (target : ProjectSentence) : SourcePreprocessing.Problem := {
-  premises := slice.axioms.map fun sentence =>
-    Translate.coreFormula sentence.formula
-  target := Translate.coreFormula target.formula
-}
-/-- 切片句子进入 SearchSignature 深问题。 -/
-def deepProblem {theory : Theory} (slice : TheorySlice theory) (target : ProjectSentence) : SourcePreprocessing.DeepProblem := {
-  premises := slice.axioms.map fun sentence =>
-    Translate.searchFormula sentence.formula
-  target := Translate.searchFormula target.formula
-}
-/-- SearchSignature 上的切片定理提升为原集合论理论的定理。 -/
-theorem soundOfSearch {theory : Theory} (slice : TheorySlice theory) (target : ProjectSentence) (hSearch :
-      LogicSoundness.SetLevel.SemanticallyEntails (slice.deepProblem target).theory (slice.deepProblem target).target) :
+
+/-- 切片的唯一宿主闭公式表。 -/
+def hostPremises {theory : Theory} (slice : TheorySlice theory) :
+    List HostFirstOrder.ClosedFormula :=
+  slice.axioms.map Translate.sentence
+
+/-- 切片进入 preprocessing core。 -/
+def sourceProblem {theory : Theory} (slice : TheorySlice theory)
+    (target : ProjectSentence) : SourcePreprocessing.Problem :=
+  HostFirstOrder.sourceProblemOfSyntax slice.hostPremises
+    (Translate.sentence target)
+
+/-- 切片进入可计算 DAG 搜索语法。 -/
+def searchProblem {theory : Theory} (slice : TheorySlice theory)
+    (target : ProjectSentence) : SourcePreprocessing.DeepProblem :=
+  HostFirstOrder.searchProblemOfSyntax slice.hostPremises
+    (Translate.sentence target)
+
+/-- 切片进入内禀一阶语义问题。 -/
+def intrinsicProblem {theory : Theory} (slice : TheorySlice theory)
+    (target : ProjectSentence) :
+    LogicSoundness.SetLevel.DeepProblem
+      SearchMaterialization.SearchSignature :=
+  HostFirstOrder.intrinsicProblemOfSyntax slice.hostPremises
+    (Translate.sentence target)
+
+/-- 内禀搜索定理提升为原集合论理论的语义定理。 -/
+theorem soundOfSearch {theory : Theory} (slice : TheorySlice theory)
+    (target : ProjectSentence)
+    (hSearch : LogicSoundness.SetLevel.SemanticallyEntails
+      (slice.intrinsicProblem target).theory
+      (slice.intrinsicProblem target).target) :
     SemanticallyEntails.{0} theory target := by
-  intro ℳ hModels free
-  let env : SetTheory.Env ℳ 0 := {
-    bound := Fin.elim0
-    free := free
-  }
-  let searchEnv := searchEnvOfSet env
-  have hAgreement : SearchAgreement env searchEnv :=
-    searchEnvOfSet_agrees env
-  have hSearchTarget :=
-    hSearch searchEnv (by
-      intro formula hFormula
-      rcases List.mem_map.mp hFormula with
-        ⟨sentence, hSentence, rfl⟩
-      exact (Translate.satisfies_searchFormula hAgreement
-          sentence.formula).mp (hModels.2 sentence (slice.member sentence hSentence) free))
-  exact (Translate.satisfies_searchFormula hAgreement
-      target.formula).mpr hSearchTarget
-/-- 切片 source/deep 问题之间的纯一阶反模型桥。 -/
-def firstOrderBridge {theory : Theory} (slice : TheorySlice theory) (target : ProjectSentence) :
-    SourcePreprocessing.FirstOrderProblemBridge (slice.sourceProblem target) (slice.deepProblem target) := by
-  constructor
-  intro M env hModels hTarget
-  refine ⟨{
-    model := coreModelOfSearch M
-    functionSort := coreModel_functionSort M
-    env := coreEnvOfSearch env
-    respectsFree := coreEnv_respectsFree env
-    satisfies := ?_
-  }⟩
-  unfold sourceProblem SourcePreprocessing.Problem.refutationSource
-  apply coreSatisfiesConjunctionList
-  intro formula hFormula
-  simp only [List.mem_append, List.mem_singleton] at hFormula
-  rcases hFormula with hPremise | hTargetFormula
-  · rcases List.mem_map.mp hPremise with
+  intro ℳ hModels
+  rw [Structure.satisfiesSentence_iff]
+  intro free
+  let interpretation := Translate.interpretation ℳ
+  have hTarget := hSearch (HostFirstOrder.Semantics.model interpretation) (by
+    intro formula hFormula
+    rcases List.mem_map.mp hFormula with
+      ⟨hostSentence, hHostSentence, rfl⟩
+    rcases List.mem_map.mp hHostSentence with
       ⟨sentence, hSentence, rfl⟩
-    exact (satisfies_coreFormula env sentence.formula).mpr <|
-        hModels (Translate.searchFormula sentence.formula) <| by
-          exact List.mem_map.mpr ⟨sentence, hSentence, rfl⟩
-  · subst formula
-    have hCoreTarget :
-        ¬ Semantics.Formula.Satisfies (coreEnvOfSearch env) (Translate.coreFormula target.formula) := by
-      intro hCore
-      exact hTarget <| (satisfies_coreFormula env target.formula).mp hCore
-    simpa [Semantics.Formula.Satisfies, Semantics.Formula.eval] using
-      hCoreTarget
-/-- 一个集合论切片对应的裸 `prove_auto` proof-carrying 请求。 -/
-@[reducible] def goalRequest {theory : Theory} (slice : TheorySlice theory) (target : ProjectSentence) (settings : SourcePreprocessing.FirstOrderSettings := {})
-    (avatarConfig : SourcePreprocessing.AvatarConfig := {}) (label : String := "pure set theory") :
-    ProveAutoRequest.GoalRequest (SemanticallyEntails.{0} theory target) where
-  run :=
-    let problem := slice.deepProblem target
-    let attempt :=
-      SourcePreprocessing.runFirstOrderProviderAt (slice.sourceProblem target) problem (slice.firstOrderBridge target)
-        settings avatarConfig label
-    {
-      closed := attempt.closed
-      summary := attempt.summary
-      sound := fun hClosed =>
-        slice.soundOfSearch target <|
-          ProveAutoRequest.GoalAttempt.backendSoundOfClosed
-            problem attempt hClosed
-    }
+    rw [HostFirstOrder.Semantics.trueIn_iff]
+    exact (Translate.eval_sentence hModels.1 free sentence).mpr
+      ((Structure.satisfiesSentence_iff ℳ sentence).mp
+        (hModels.2 sentence (slice.member sentence hSentence)) free))
+  exact (Translate.eval_sentence hModels.1 free target).mp
+    ((HostFirstOrder.Semantics.trueIn_iff interpretation
+      (Translate.sentence target)).mp hTarget)
+
 end TheorySlice
 end Automation
+
 namespace KP
+
 /-- KP 的固定有限公理切片；模式实例按证明需要继续 `push`。 -/
 def automationCoreSlice : Automation.TheorySlice SetTheory.KP :=
   Automation.TheorySlice.empty SetTheory.KP
@@ -808,8 +390,11 @@ def automationCoreSlice : Automation.TheorySlice SetTheory.KP :=
     |>.push Axioms.union Axiom.union
     |>.push Axioms.infinity Axiom.infinity
     |>.push Axioms.foundation Axiom.foundation
+
 end KP
+
 namespace ZF
+
 /-- ZF 的固定有限公理切片；分离/收集实例按证明需要继续 `push`。 -/
 def automationCoreSlice : Automation.TheorySlice SetTheory.ZF :=
   Automation.TheorySlice.empty SetTheory.ZF
@@ -820,13 +405,17 @@ def automationCoreSlice : Automation.TheorySlice SetTheory.ZF :=
     |>.push Axioms.powerSet Axiom.powerSet
     |>.push Axioms.infinity Axiom.infinity
     |>.push Axioms.foundation Axiom.foundation
+
 end ZF
+
 namespace ZFC
+
 /-- ZFC 的固定有限公理切片；模式实例按证明需要继续 `push`。 -/
 def automationCoreSlice : Automation.TheorySlice SetTheory.ZFC :=
   ZF.automationCoreSlice
     |>.mapTheory (fun _ hSentence => Axiom.zf hSentence)
     |>.push Axioms.choice Axiom.choice
+
 end ZFC
 end SetTheory
 end YesMetaZFC

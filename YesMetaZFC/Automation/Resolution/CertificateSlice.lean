@@ -118,7 +118,10 @@ retained literals)` 运行。末尾仍调用原 checker 复核紧凑输出；该
 private def compactCore?
     (originalInitialClauses : Array InitialClause) (proof : CdclProof)
     (checkedOriginal : Option CheckedUnsatCertificate) :
-    Option CertificateSlice := do
+    Option CertificateSlice :=
+  -- Lean 4.33.1 的新 do elaborator 在本函数的循环连接点报内部错误。
+  -- 仅此函数使用工具链自带的原 elaborator，保留原切片算法和 checker。
+  set_option backward.do.legacy true in do
   let initialSize := originalInitialClauses.size
   let learnedSize := proof.journal.learns.size
   let stepSize := proof.journal.steps.size

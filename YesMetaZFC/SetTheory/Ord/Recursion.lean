@@ -102,8 +102,18 @@ theorem empty {ℳ : Structure.{u}}
     {empty : ℳ.Domain} (hEmpty : ∀ value, ¬ ℳ.mem value empty) :
     ℳ.IsSequenceOfLength 𝕀 empty empty := by
   refine ⟨Structure.IsOrdinal.of_no_members hEmpty, ?_, ?_⟩
-  · prove_auto
-  · prove_auto
+  · refine ⟨?_, ?_⟩
+    · intro pair hPair
+      exact False.elim (hEmpty pair hPair)
+    · intro input first second hFirst hSecond
+      rcases hFirst with ⟨pair, _, hPair⟩
+      exact False.elim (hEmpty pair hPair)
+  · intro input
+    constructor
+    · intro hInput
+      exact False.elim (hEmpty input hInput)
+    · rintro ⟨output, pair, _, hPair⟩
+      exact False.elim (hEmpty pair hPair)
 /--
 向长度为 `length` 的序列末尾追加一个值。
 结果序列的定义域是 `length` 的给定后继；其坐标恰为旧坐标，或新末坐标
@@ -561,30 +571,30 @@ theorem satisfies_obeysRecursion_iff
         satisfies ((env.push index).push value) (orderedPairMem 𝒞 (.bound 1) (.bound 0)
             sequence.weaken.weaken) := by
       rw [satisfies_orderedPairMem_iff 𝕀]
-      simpa using hValue
+      simpa using! hValue
     rcases h index hIndex value hValueFormula with
       ⟨restriction, hRestriction, hOperator⟩
     refine ⟨restriction, ?_, ?_⟩
     · have hRestriction' := (satisfies_isRestriction_iff 𝕀 (((env.push index).push value).push restriction)
           Term.newest sequence.weaken.weaken.weaken (.bound 2)).mp hRestriction
-      simpa using hRestriction'
+      simpa using! hRestriction'
     · have hOperator' := (satisfies_related_iff (((env.push index).push value).push restriction)
           operator parameters.weaken.weaken.weaken
           Term.newest (.bound 1)).mp hOperator
-      simpa using hOperator'
+      simpa using! hOperator'
   · intro h index hIndex value hValue
     have hValue' := (satisfies_orderedPairMem_iff 𝕀 ((env.push index).push value) (.bound 1) (.bound 0)
         sequence.weaken.weaken).mp hValue
-    rcases h index hIndex value (by simpa using hValue') with
+    rcases h index hIndex value (by simpa using! hValue') with
       ⟨restriction, hRestriction, hOperator⟩
     refine ⟨restriction, ?_, ?_⟩
     · apply (satisfies_isRestriction_iff 𝕀 (((env.push index).push value).push restriction)
           Term.newest sequence.weaken.weaken.weaken (.bound 2)).mpr
-      simpa using hRestriction
+      simpa using! hRestriction
     · apply (satisfies_related_iff (((env.push index).push value).push restriction)
           operator parameters.weaken.weaken.weaken
           Term.newest (.bound 1)).mpr
-      simpa using hOperator
+      simpa using! hOperator
 /-- 递归序列公式与纸面语义一致。 -/
 theorem satisfies_isRecursiveSequence_iff
     {ℳ : Structure.{u}} {𝒞 : OrderedPairConvention} (𝕀 : 𝒞.Interpretation ℳ) (hExt : Extensional ℳ)

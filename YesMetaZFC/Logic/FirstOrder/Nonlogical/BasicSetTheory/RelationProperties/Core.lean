@@ -1,1380 +1,785 @@
 import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.CartesianProduct
 import YesMetaZFC.Logic.FirstOrder.Nonlogical.BasicSetTheory.Relation
+
 /-!
-# 关系的平面性质
-本模块承接关系谓词、双重并集、笛卡尔积与有序对反转的组合定理。文献中的
-`GX`、`YXD` 与 `rng` 仅在注释中作为索引；公共接口统一使用
-`is_relation`、`is_ordered_pair` 与 `range`。
-定义层继续保持最小理论，本模块才组合后续平面论证真正需要的公理。这样定义域、
-值域和笛卡尔积可以独立复用，而关系的平方界与反转对称性共享同一个显式理论边界。
+# 关系的平面性质：核心
+
+本模块只保留关系平面层真正使用的数学合同。所有项与公式都由宿主类型保证良构；
+量词证明统一使用规范 fresh 上下文，不再携带变量编号、开项等式或闭性证书。
 -/
+
 namespace YesMetaZFC
 namespace Logic
 namespace FirstOrder
 namespace Nonlogical
 namespace BasicSetTheory
+
 open scoped Symbols
+
 /-! ## 统一理论边界 -/
+
 /-- 关系平面定理所需的最小显式组合理论。 -/
 def relation_plane_theory : SetTheory :=
-  Theory.union
-    relation_range_operator_theory (Theory.union
-      cartesian_product_operator_theory
+  Theory.union relation_range_operator_theory
+    (Theory.union cartesian_product_operator_theory
       ordered_pair_reverse_operator_theory)
-/-- 关系值域函数符号理论嵌入关系平面理论。 -/
+
 theorem relation_range_operator_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula :
-      relation_range_operator_theory formula) :
-    relation_plane_theory formula :=
-  Or.inl hFormula
-/-- 笛卡尔积函数符号理论嵌入关系平面理论。 -/
+    {sentence : SetSentence}
+    (hSentence : relation_range_operator_theory sentence) :
+    relation_plane_theory sentence :=
+  Or.inl hSentence
+
 theorem cartesian_product_operator_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula :
-      cartesian_product_operator_theory formula) :
-    relation_plane_theory formula :=
-  Or.inr (Or.inl hFormula)
-/-- 有序对反转函数符号理论嵌入关系平面理论。 -/
+    {sentence : SetSentence}
+    (hSentence : cartesian_product_operator_theory sentence) :
+    relation_plane_theory sentence :=
+  Or.inr (Or.inl hSentence)
+
 theorem ordered_pair_reverse_operator_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula :
-      ordered_pair_reverse_operator_theory formula) :
-    relation_plane_theory formula :=
-  Or.inr (Or.inr hFormula)
-/-- 关系谓词理论嵌入关系平面理论。 -/
+    {sentence : SetSentence}
+    (hSentence : ordered_pair_reverse_operator_theory sentence) :
+    relation_plane_theory sentence :=
+  Or.inr (Or.inr hSentence)
+
 theorem relation_predicate_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula : relation_predicate_theory formula) :
-    relation_plane_theory formula :=
-  relation_range_operator_theory_subset_relation_plane_theory (relation_range_theory_subset_relation_range_operator_theory
-      (relation_domain_operator_theory_subset_relation_range_theory (relation_domain_theory_subset_relation_domain_operator_theory
+    {sentence : SetSentence}
+    (hSentence : relation_predicate_theory sentence) :
+    relation_plane_theory sentence :=
+  relation_range_operator_theory_subset_relation_plane_theory
+    (relation_range_theory_subset_relation_range_operator_theory
+      (relation_domain_operator_theory_subset_relation_range_theory
+        (relation_domain_theory_subset_relation_domain_operator_theory
           (relation_predicate_theory_subset_relation_domain_theory
-            hFormula))))
-/-- 关系与函数基础理论嵌入关系平面理论。 -/
+            hSentence))))
+
 theorem relation_function_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula : relation_function_theory formula) :
-    relation_plane_theory formula :=
-  relation_predicate_theory_subset_relation_plane_theory (relation_base_theory_subset_relation_predicate_theory
-      (relation_function_theory_subset_relation_base_theory
-        hFormula))
-/-- 一元并集函数符号理论嵌入关系平面理论。 -/
+    {sentence : SetSentence}
+    (hSentence : relation_function_theory sentence) :
+    relation_plane_theory sentence :=
+  relation_predicate_theory_subset_relation_plane_theory
+    (relation_base_theory_subset_relation_predicate_theory
+      (relation_function_theory_subset_relation_base_theory hSentence))
+
 theorem union_operator_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula : union_operator_theory formula) :
-    relation_plane_theory formula :=
-  relation_range_operator_theory_subset_relation_plane_theory (relation_range_theory_subset_relation_range_operator_theory
-      (relation_base_theory_subset_relation_range_theory (union_operator_theory_subset_relation_base_theory
-          hFormula)))
-/-- 右投影函数符号理论嵌入关系平面理论。 -/
+    {sentence : SetSentence}
+    (hSentence : union_operator_theory sentence) :
+    relation_plane_theory sentence :=
+  relation_range_operator_theory_subset_relation_plane_theory
+    (relation_range_theory_subset_relation_range_operator_theory
+      (relation_base_theory_subset_relation_range_theory
+        (union_operator_theory_subset_relation_base_theory hSentence)))
+
 theorem right_projection_operator_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula :
-      right_projection_operator_theory formula) :
-    relation_plane_theory formula :=
-  relation_range_operator_theory_subset_relation_plane_theory (relation_range_theory_subset_relation_range_operator_theory
-      (relation_base_theory_subset_relation_range_theory (right_projection_operator_theory_subset_relation_base_theory
-          hFormula)))
-/-- 子集定义理论嵌入关系平面理论。 -/
+    {sentence : SetSentence}
+    (hSentence : right_projection_operator_theory sentence) :
+    relation_plane_theory sentence :=
+  relation_range_operator_theory_subset_relation_plane_theory
+    (relation_range_theory_subset_relation_range_operator_theory
+      (relation_base_theory_subset_relation_range_theory
+        (right_projection_operator_theory_subset_relation_base_theory
+          hSentence)))
+
 theorem subset_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula : subset_theory formula) :
-    relation_plane_theory formula :=
-  cartesian_product_operator_theory_subset_relation_plane_theory (cartesian_product_base_theory_subset_cartesian_product_operator_theory
-      (power_set_operator_theory_subset_cartesian_product_base_theory (Or.inr (Or.inr hFormula))))
-/-- 二元并函数符号理论嵌入关系平面理论。 -/
-theorem binary_union_operator_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula : binary_union_operator_theory formula) :
-    relation_plane_theory formula :=
-  cartesian_product_operator_theory_subset_relation_plane_theory (cartesian_product_base_theory_subset_cartesian_product_operator_theory
-      (binary_union_operator_theory_subset_cartesian_product_base_theory
-        hFormula))
-/-- 幂集函数符号理论嵌入关系平面理论。 -/
-theorem power_set_operator_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula : power_set_operator_theory formula) :
-    relation_plane_theory formula :=
-  cartesian_product_operator_theory_subset_relation_plane_theory (cartesian_product_base_theory_subset_cartesian_product_operator_theory
+    {sentence : SetSentence}
+    (hSentence : subset_theory sentence) :
+    relation_plane_theory sentence :=
+  cartesian_product_operator_theory_subset_relation_plane_theory
+    (cartesian_product_base_theory_subset_cartesian_product_operator_theory
       (power_set_operator_theory_subset_cartesian_product_base_theory
-        hFormula))
-/-- 有序对函数符号理论嵌入关系平面理论。 -/
+        (Or.inr (Or.inr hSentence))))
+
+theorem binary_union_operator_theory_subset_relation_plane_theory
+    {sentence : SetSentence}
+    (hSentence : binary_union_operator_theory sentence) :
+    relation_plane_theory sentence :=
+  cartesian_product_operator_theory_subset_relation_plane_theory
+    (cartesian_product_base_theory_subset_cartesian_product_operator_theory
+      (binary_union_operator_theory_subset_cartesian_product_base_theory
+        hSentence))
+
+theorem power_set_operator_theory_subset_relation_plane_theory
+    {sentence : SetSentence}
+    (hSentence : power_set_operator_theory sentence) :
+    relation_plane_theory sentence :=
+  cartesian_product_operator_theory_subset_relation_plane_theory
+    (cartesian_product_base_theory_subset_cartesian_product_operator_theory
+      (power_set_operator_theory_subset_cartesian_product_base_theory
+        hSentence))
+
 theorem ordered_pair_operator_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula : ordered_pair_operator_theory formula) :
-    relation_plane_theory formula :=
-  cartesian_product_operator_theory_subset_relation_plane_theory (cartesian_product_base_theory_subset_cartesian_product_operator_theory
+    {sentence : SetSentence}
+    (hSentence : ordered_pair_operator_theory sentence) :
+    relation_plane_theory sentence :=
+  cartesian_product_operator_theory_subset_relation_plane_theory
+    (cartesian_product_base_theory_subset_cartesian_product_operator_theory
       (ordered_pair_operator_theory_subset_cartesian_product_base_theory
-        hFormula))
-/-- 配对函数符号理论嵌入关系平面理论。 -/
+        hSentence))
+
 theorem pairing_operator_theory_subset_relation_plane_theory
-    {formula : SetFormula} (hFormula : pairing_operator_theory formula) :
-    relation_plane_theory formula :=
-  ordered_pair_operator_theory_subset_relation_plane_theory (singleton_operator_theory_subset_ordered_pair_operator_theory (Or.inr hFormula))
-/-- 关系平面理论满足公共良构性边界。 -/
-theorem relation_plane_theory_admissible :
-    Theory.Admissible relation_plane_theory := by
-  intro formula hFormula
-  rcases hFormula with hFormula | hFormula
-  · exact relation_range_operator_theory_admissible
-      formula hFormula
-  · rcases hFormula with hFormula | hFormula
-    · exact cartesian_product_operator_theory_admissible
-        formula hFormula
-    · exact ordered_pair_reverse_operator_theory_admissible
-        formula hFormula
-/-- 关系平面理论中的每条公理都是闭公式。 -/
-@[derive_close_sentence]
-theorem relation_plane_theory_sentence
-    {formula : SetFormula} (hFormula : relation_plane_theory formula) :
-    Formula.Sentence formula := by
-  rcases hFormula with hFormula | hFormula
-  · exact relation_range_operator_theory_sentence hFormula
-  · rcases hFormula with hFormula | hFormula
-    · exact cartesian_product_operator_theory_sentence hFormula
-    · exact ordered_pair_reverse_operator_theory_sentence hFormula
-/-! ## 并集与子集的通用合同 -/
-/-- 集合族成员到其并集的子集成员条件。 -/
-theorem member_implies_subset_condition_union (source member : SetTerm) (hSource : Term.Admissible source SetSort.set)
-    (hMember : Term.Admissible member SetSort.set) :
-    ⊢ₘ[union_operator_theory] (member ∈ₘ source) ⟶ₘ
-        subset_condition member (⋃ₘ source) := by
-  let member_mem : SetFormula :=
-    member ∈ₘ source
-  let subset_body : SetFormula := (bₛ#0 ∈ₘ member) ⟶ₘ (bₛ#0 ∈ₘ ⋃ₘ source)
-  let element :=
-    FreshVariable.fresh_id SetSort.set
-      [member_mem, subset_body]
-  have hElementFreshMember : (SetSort.set, element) freshForₘ
-        member_mem := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hElementFreshSubset : (SetSort.set, element) freshForₘ
-        subset_body := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hSourceOpenOne :
-      Term.openAt SetSort.set 1 (x#element) source =
-        source :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 1 (x#element) source hSource.2
-  have hUnionOpenZero :
-      Term.openAt SetSort.set 0 (x#element) (⋃ₘ source) =
-        ⋃ₘ source :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) (⋃ₘ source) (union_term_admissible source hSource).2
-  have hMemberOpenZero :
-      Term.openAt SetSort.set 0 (x#element) member =
-        member :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) member hMember.2
-  have hSourceOpenZero :
-      Term.openAt SetSort.set 0 (x#element) source =
-        source :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) source hSource.2
-  change
-    ⊢ₘ[union_operator_theory]
-      member_mem ⟶ₘ (∀ₘ[SetSort.set], subset_body)
-  nd_apply FirstOrder.Derives.impIntro
-  have hUnionSpec :
-      [member_mem] ⊢ₘ[union_operator_theory]
-        union_spec source (⋃ₘ source) :=
-    FirstOrder.Derives.context_weaken_cons (union_term_spec_derives source hSource)
-  have hUnionAtRaw :=
-    FirstOrder.Derives.forall_elim (term := x#element) hUnionSpec
-  have hUnionAt :
-      [member_mem] ⊢ₘ[union_operator_theory] (x#element ∈ₘ ⋃ₘ source) ↔ₘ (∃ₘ[SetSort.set], (bₛ#0 ∈ₘ source) ∧ₘ (x#element ∈ₘ bₛ#0)) := by
-    simpa [union_spec, Formula.openAt,
-      Formula.next_depth, Term.openAt,
-      hSourceOpenOne, hUnionOpenZero] using
-      hUnionAtRaw
-  have hSubsetAt :
-      [member_mem] ⊢ₘ[union_operator_theory] (x#element ∈ₘ member) ⟶ₘ (x#element ∈ₘ ⋃ₘ source) := by
-    nd_apply FirstOrder.Derives.impIntro
-    have hExists : (x#element ∈ₘ member) :: [member_mem]
-          ⊢ₘ[union_operator_theory]
-            ∃ₘ[SetSort.set], (bₛ#0 ∈ₘ source) ∧ₘ (x#element ∈ₘ bₛ#0) := by
-      nd_apply FirstOrder.Derives.exists_intro (term := member)
-      have hSourceOpen :
-          Term.openAt SetSort.set 0 member source =
-            source :=
-        Term.openAt_eq_self_of_boundClosed
-          SetSort.set 0 member source hSource.2
-      simpa [Formula.openAt, Term.openAt,
-        hSourceOpen] using (FirstOrder.Derives.conjIntro (show (x#element ∈ₘ member) :: [member_mem]
-              ⊢ₘ[union_operator_theory]
-                member_mem from
-            .assumption (by simp)) (show (x#element ∈ₘ member) :: [member_mem]
-              ⊢ₘ[union_operator_theory]
-                x#element ∈ₘ member from
-            .assumption (by simp)))
-    exact FirstOrder.Derives.iffElimLeft (FirstOrder.Derives.context_weaken_cons
-        hUnionAt)
-      hExists
-  have hSubsetAtOpened :
-      [member_mem] ⊢ₘ[union_operator_theory]
-        Formula.openAt SetSort.set 0 (x#element) subset_body := by
-    simpa [subset_body, Formula.openAt,
-      Term.openAt, hMemberOpenZero,
-      hSourceOpenZero] using hSubsetAt
-  have hGeneralized :=
-    FirstOrder.Derives.forall_intro (T := union_operator_theory) (Γ := [member_mem]) (sort := SetSort.set) (eigen := element) (body :=
-        Formula.openAt SetSort.set 0 (x#element) subset_body) (by
-        intro formula hFormula
-        have hSentence :=
-          union_operator_theory_sentence hFormula
-        rw [hSentence.2]
-        simp) (by
-        intro formula hFormula
-        rcases List.mem_singleton.mp hFormula with rfl
-        exact hElementFreshMember)
-      hSubsetAtOpened
-  simpa [subset_condition,
-    Formula.closeFreeAt_openAt
-      SetSort.set element 0 subset_body
-      hElementFreshSubset] using hGeneralized
-/-- 文献引理 2.7(1)：集合族的任一成员都包含于该集合族的并集。 -/
-theorem member_subset_union (source member : SetTerm) (hSource : Term.Admissible source SetSort.set) (hMember : Term.Admissible member SetSort.set) :
-    ⊢ₘ[relation_plane_theory] (member ∈ₘ source) ⟶ₘ (member ⊆ₘ ⋃ₘ source) := by
-  nd_apply FirstOrder.Derives.impIntro
-  let member_mem : SetFormula :=
-    member ∈ₘ source
-  have hConditionImp :
-      [member_mem] ⊢ₘ[relation_plane_theory]
-        member_mem ⟶ₘ
-          subset_condition member (⋃ₘ source) :=
-    FirstOrder.Derives.context_weaken_cons <|
-      FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          union_operator_theory_subset_relation_plane_theory
-            hFormula) (member_implies_subset_condition_union
-          source member hSource hMember)
-  have hCondition :
-      [member_mem] ⊢ₘ[relation_plane_theory]
-        subset_condition member (⋃ₘ source) :=
-    FirstOrder.Derives.impElim
-      hConditionImp (.assumption (by simp))
-  have hDefinition :
-      [member_mem] ⊢ₘ[relation_plane_theory]
-        subset_definition_instance
-          member (⋃ₘ source) :=
-    FirstOrder.Derives.context_weaken_cons <|
-      FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          subset_theory_subset_relation_plane_theory
-            hFormula) (subset_definition_instance_derives_of_admissible
-          member (⋃ₘ source)
-          hMember (union_term_admissible source hSource))
-  exact FirstOrder.Derives.iffElimLeft
-    hDefinition hCondition
-/-- 文献引理 2.7(2)：一元并集关于子集关系单调。 -/
-theorem subset_implies_union_subset_condition (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[relation_plane_theory] (left ⊆ₘ right) ⟶ₘ
-        subset_condition (⋃ₘ left) (⋃ₘ right) := by
-  let subset_formula : SetFormula :=
-    left ⊆ₘ right
-  let subset_body : SetFormula := (bₛ#0 ∈ₘ ⋃ₘ left) ⟶ₘ (bₛ#0 ∈ₘ ⋃ₘ right)
-  let element :=
-    FreshVariable.fresh_id SetSort.set
-      [subset_formula, subset_body]
-  let left_witness_body : SetFormula := (bₛ#0 ∈ₘ left) ∧ₘ (x#element ∈ₘ bₛ#0)
-  let conclusion : SetFormula :=
-    x#element ∈ₘ ⋃ₘ right
-  let witness :=
-    FreshVariable.fresh_id SetSort.set
-      [subset_formula, subset_body,
-        left_witness_body, conclusion,
-        x#element ∈ₘ ⋃ₘ left]
-  let witness_point :=
-    Formula.openAt SetSort.set 0 (x#witness) left_witness_body
-  have hElementFreshSubsetFormula : (SetSort.set, element) freshForₘ
-        subset_formula := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hElementFreshSubsetBody : (SetSort.set, element) freshForₘ
-        subset_body := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hWitnessFreshSubsetFormula : (SetSort.set, witness) freshForₘ
-        subset_formula := by
-    dsimp [witness]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hWitnessFreshLeftMembership : (SetSort.set, witness) freshForₘ (x#element ∈ₘ ⋃ₘ left) := by
-    dsimp [witness]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hWitnessFreshBody : (SetSort.set, witness) freshForₘ
-        left_witness_body := by
-    dsimp [witness]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hWitnessFreshConclusion : (SetSort.set, witness) freshForₘ
-        conclusion := by
-    dsimp [witness]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hLeftOpenOne :
-      Term.openAt SetSort.set 1 (x#element) left =
-        left :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 1 (x#element) left hLeft.2
-  have hRightOpenOne :
-      Term.openAt SetSort.set 1 (x#element) right =
-        right :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 1 (x#element) right hRight.2
-  have hLeftUnionOpenZero :
-      Term.openAt SetSort.set 0 (x#element) (⋃ₘ left) =
-        ⋃ₘ left :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) (⋃ₘ left) (union_term_admissible left hLeft).2
-  have hRightUnionOpenZero :
-      Term.openAt SetSort.set 0 (x#element) (⋃ₘ right) =
-        ⋃ₘ right :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) (⋃ₘ right) (union_term_admissible right hRight).2
-  change
-    ⊢ₘ[relation_plane_theory]
-      subset_formula ⟶ₘ (∀ₘ[SetSort.set], subset_body)
-  nd_apply FirstOrder.Derives.impIntro
-  have hSubsetDefinition :
-      [subset_formula] ⊢ₘ[relation_plane_theory]
-        subset_definition_instance left right :=
-    FirstOrder.Derives.context_weaken_cons <|
-      FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          subset_theory_subset_relation_plane_theory
-            hFormula) (subset_definition_instance_derives_of_admissible
-          left right hLeft hRight)
-  have hSubsetCondition :
-      [subset_formula] ⊢ₘ[relation_plane_theory]
-        subset_condition left right :=
-    FirstOrder.Derives.iffElimRight
-      hSubsetDefinition (by
-        simpa [subset_formula] using (show
-            [subset_formula] ⊢ₘ[relation_plane_theory]
-              subset_formula from
-            .assumption (by simp)))
-  have hLeftSpec :
-      [subset_formula] ⊢ₘ[relation_plane_theory]
-        union_spec left (⋃ₘ left) :=
-    FirstOrder.Derives.context_weaken_cons <|
-      FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          union_operator_theory_subset_relation_plane_theory
-            hFormula) (union_term_spec_derives left hLeft)
-  have hRightSpec :
-      [subset_formula] ⊢ₘ[relation_plane_theory]
-        union_spec right (⋃ₘ right) :=
-    FirstOrder.Derives.context_weaken_cons <|
-      FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          union_operator_theory_subset_relation_plane_theory
-            hFormula) (union_term_spec_derives right hRight)
-  have hLeftAtRaw :=
-    FirstOrder.Derives.forall_elim (term := x#element) hLeftSpec
-  have hRightAtRaw :=
-    FirstOrder.Derives.forall_elim (term := x#element) hRightSpec
-  have hLeftAt :
-      [subset_formula] ⊢ₘ[relation_plane_theory] (x#element ∈ₘ ⋃ₘ left) ↔ₘ (∃ₘ[SetSort.set], (bₛ#0 ∈ₘ left) ∧ₘ (x#element ∈ₘ bₛ#0)) := by
-    simpa [union_spec, Formula.openAt,
-      Formula.next_depth, Term.openAt,
-      hLeftOpenOne, hLeftUnionOpenZero] using
-      hLeftAtRaw
-  have hRightAt :
-      [subset_formula] ⊢ₘ[relation_plane_theory] (x#element ∈ₘ ⋃ₘ right) ↔ₘ (∃ₘ[SetSort.set], (bₛ#0 ∈ₘ right) ∧ₘ (x#element ∈ₘ bₛ#0)) := by
-    simpa [union_spec, Formula.openAt,
-      Formula.next_depth, Term.openAt,
-      hRightOpenOne, hRightUnionOpenZero] using
-      hRightAtRaw
-  have hSubsetAt :
-      [subset_formula] ⊢ₘ[relation_plane_theory] (x#element ∈ₘ ⋃ₘ left) ⟶ₘ
-          conclusion := by
-    nd_apply FirstOrder.Derives.impIntro
-    let Γ : Context signature := (x#element ∈ₘ ⋃ₘ left) :: [subset_formula]
-    have hLeftAtInContext :
-        Γ ⊢ₘ[relation_plane_theory] (x#element ∈ₘ ⋃ₘ left) ↔ₘ (∃ₘ[SetSort.set],
-              left_witness_body) := by
-      simpa [Γ, left_witness_body] using
-        FirstOrder.Derives.context_weaken_cons hLeftAt
-    have hExists :
-        Γ ⊢ₘ[relation_plane_theory]
-          ∃ₘ[SetSort.set],
-            left_witness_body :=
-      FirstOrder.Derives.iffElimRight
-        hLeftAtInContext (.assumption (by simp [Γ]))
-    have hWitnessPointAdmissible :
-        Formula.Admissible witness_point := by
-      have hOpened :=
-        Formula.Admissible.exists_openAt (σ := signature) (body := left_witness_body) (term := x#witness)
-          SetSort.set
-          hExists.admissible (set_variable_admissible witness)
-      simpa [witness_point] using hOpened
-    have hExistsClosed :
-        Γ ⊢ₘ[relation_plane_theory]
-          ∃ₘ[SetSort.set],
-            Formula.closeFreeAt
-              SetSort.set witness 0 witness_point := by
-      have hCloseOpen :
-          Formula.closeFreeAt
-              SetSort.set witness 0 witness_point =
-            left_witness_body := by
-        dsimp [witness_point]
-        exact Formula.closeFreeAt_openAt
-          SetSort.set witness 0
-          left_witness_body hWitnessFreshBody
-      simpa [hCloseOpen] using hExists
-    have hCase :
-        witness_point :: Γ
-          ⊢ₘ[relation_plane_theory]
-            conclusion := by
-      have hLeftOpenWitness :
-          Term.openAt SetSort.set 0 (x#witness) left =
-            left :=
-        Term.openAt_eq_self_of_boundClosed
-          SetSort.set 0 (x#witness) left hLeft.2
-      have hWitnessConjunction :
-          witness_point :: Γ
-            ⊢ₘ[relation_plane_theory] ((x#witness ∈ₘ left) ∧ₘ (x#element ∈ₘ x#witness)) := by
-        simpa [witness_point,
-          left_witness_body,
-          Formula.openAt, Term.openAt,
-          hLeftOpenWitness] using (show
-            witness_point :: Γ
-              ⊢ₘ[relation_plane_theory]
-                witness_point from
-            .assumption (by simp))
-      have hSubsetConditionInCase :
-          witness_point :: Γ
-            ⊢ₘ[relation_plane_theory]
-              subset_condition left right :=
-        FirstOrder.Derives.context_weaken_cons (assumption := witness_point) <|
-          FirstOrder.Derives.context_weaken_cons (assumption :=
-              x#element ∈ₘ ⋃ₘ left)
-            hSubsetCondition
-      have hSubsetAtWitnessRaw :=
-        FirstOrder.Derives.forall_elim
-          (term := x#witness) hSubsetConditionInCase
-      have hRightOpenWitness :
-          Term.openAt SetSort.set 0 (x#witness) right =
-            right :=
-        Term.openAt_eq_self_of_boundClosed
-          SetSort.set 0 (x#witness) right hRight.2
-      have hSubsetAtWitness :
-          witness_point :: Γ
-            ⊢ₘ[relation_plane_theory] (x#witness ∈ₘ left) ⟶ₘ (x#witness ∈ₘ right) := by
-        simpa [subset_condition,
-          Formula.openAt, Term.openAt,
-          hLeftOpenWitness,
-          hRightOpenWitness] using
-          hSubsetAtWitnessRaw
-      have hWitnessInRight :
-          witness_point :: Γ
-            ⊢ₘ[relation_plane_theory]
-              x#witness ∈ₘ right :=
-        FirstOrder.Derives.impElim
-          hSubsetAtWitness (FirstOrder.Derives.conjElimLeft
-            hWitnessConjunction)
-      have hRightExists :
-          witness_point :: Γ
-            ⊢ₘ[relation_plane_theory]
-              ∃ₘ[SetSort.set], (bₛ#0 ∈ₘ right) ∧ₘ (x#element ∈ₘ bₛ#0) := by
-        nd_apply FirstOrder.Derives.exists_intro
-          (term := x#witness)
-        simpa [Formula.openAt, Term.openAt,
-          hRightOpenWitness] using (FirstOrder.Derives.conjIntro
-            hWitnessInRight (FirstOrder.Derives.conjElimRight
-              hWitnessConjunction))
-      exact FirstOrder.Derives.iffElimLeft (FirstOrder.Derives.context_weaken_cons <|
-          FirstOrder.Derives.context_weaken_cons
-            hRightAt)
-        hRightExists
-    exact FirstOrder.Derives.exists_elim (by
-        intro formula hFormula
-        have hSentence :=
-          relation_plane_theory_sentence hFormula
-        rw [hSentence.2]
-        simp) (by
-        intro formula hFormula
-        rcases List.mem_cons.mp hFormula with rfl | hFormula
-        · exact hWitnessFreshLeftMembership
-        · rcases List.mem_singleton.mp hFormula with rfl
-          exact hWitnessFreshSubsetFormula)
-      hWitnessFreshConclusion
-      hExistsClosed hCase
-  have hSubsetAtOpened :
-      [subset_formula] ⊢ₘ[relation_plane_theory]
-        Formula.openAt SetSort.set 0 (x#element) subset_body := by
-    simpa [subset_body, conclusion,
-      Formula.openAt, Term.openAt,
-      hLeftUnionOpenZero,
-      hRightUnionOpenZero] using hSubsetAt
-  have hGeneralized :=
-    FirstOrder.Derives.forall_intro (T := relation_plane_theory) (Γ := [subset_formula]) (sort := SetSort.set) (eigen := element) (body :=
-        Formula.openAt SetSort.set 0 (x#element) subset_body) (by
-        intro formula hFormula
-        have hSentence :=
-          relation_plane_theory_sentence hFormula
-        rw [hSentence.2]
-        simp) (by
-        intro formula hFormula
-        rcases List.mem_singleton.mp hFormula with rfl
-        exact hElementFreshSubsetFormula)
-      hSubsetAtOpened
-  simpa [subset_condition,
-    Formula.closeFreeAt_openAt
-      SetSort.set element 0 subset_body
-      hElementFreshSubsetBody] using hGeneralized
-/-- 文献引理 2.7(2)：一元并集关于子集关系单调。 -/
-theorem union_mono (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[relation_plane_theory] (left ⊆ₘ right) ⟶ₘ (⋃ₘ left ⊆ₘ ⋃ₘ right) := by
-  nd_apply FirstOrder.Derives.impIntro
-  let subset_formula : SetFormula :=
-    left ⊆ₘ right
-  have hConditionImp :
-      [subset_formula] ⊢ₘ[relation_plane_theory]
-        subset_formula ⟶ₘ
-          subset_condition (⋃ₘ left) (⋃ₘ right) :=
-    FirstOrder.Derives.context_weaken_cons (subset_implies_union_subset_condition
-        left right hLeft hRight)
-  have hCondition :
-      [subset_formula] ⊢ₘ[relation_plane_theory]
-        subset_condition (⋃ₘ left) (⋃ₘ right) :=
-    FirstOrder.Derives.impElim
-      hConditionImp (.assumption (by simp))
-  have hDefinition :
-      [subset_formula] ⊢ₘ[relation_plane_theory]
-        subset_definition_instance (⋃ₘ left) (⋃ₘ right) :=
-    FirstOrder.Derives.context_weaken_cons <|
-      FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          subset_theory_subset_relation_plane_theory
-            hFormula) (subset_definition_instance_derives_of_admissible (⋃ₘ left) (⋃ₘ right) (union_term_admissible left hLeft)
-          (union_term_admissible right hRight))
-  exact FirstOrder.Derives.iffElimLeft
-    hDefinition hCondition
-/-- 两层成员关系可折叠为一元并集成员关系。 -/
-theorem mem_union_of_mem_of_mem (source container element : SetTerm) (hSource : Term.Admissible source SetSort.set)
-    (hContainer : Term.Admissible container SetSort.set) (hElement : Term.Admissible element SetSort.set) :
-    ⊢ₘ[relation_plane_theory] (container ∈ₘ source) ⟶ₘ (element ∈ₘ container) ⟶ₘ (element ∈ₘ ⋃ₘ source) := by
-  have hSpec :
-      ⊢ₘ[relation_plane_theory]
-        union_spec source (⋃ₘ source) :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        union_operator_theory_subset_relation_plane_theory
-          hFormula) (union_term_spec_derives source hSource)
-  have hAtRaw :=
-    FirstOrder.Derives.forall_elim (term := element) hSpec
-  have hSourceOpen :
-      Term.openAt SetSort.set 1 element source =
-        source :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 1 element source hSource.2
-  have hUnionOpen :
-      Term.openAt SetSort.set 0
-          element (⋃ₘ source) =
-        ⋃ₘ source :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 element (⋃ₘ source) (union_term_admissible source hSource).2
-  have hAt :
-      ⊢ₘ[relation_plane_theory] (element ∈ₘ ⋃ₘ source) ↔ₘ (∃ₘ[SetSort.set], (bₛ#0 ∈ₘ source) ∧ₘ (element ∈ₘ bₛ#0)) := by
-    simpa [union_spec, Formula.openAt,
-      Formula.next_depth, Term.openAt,
-      hSourceOpen, hUnionOpen] using hAtRaw
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  have hExists :
-      [element ∈ₘ container,
-          container ∈ₘ source]
-        ⊢ₘ[relation_plane_theory]
-          ∃ₘ[SetSort.set], (bₛ#0 ∈ₘ source) ∧ₘ (element ∈ₘ bₛ#0) := by
-    nd_apply FirstOrder.Derives.exists_intro (term := container)
-    have hSourceOpenContainer :
-        Term.openAt SetSort.set 0
-            container source =
-          source :=
-      Term.openAt_eq_self_of_boundClosed
-        SetSort.set 0 container source hSource.2
-    have hElementOpenContainer :
-        Term.openAt SetSort.set 0
-            container element =
-          element :=
-      Term.openAt_eq_self_of_boundClosed
-        SetSort.set 0 container element hElement.2
-    simpa [Formula.openAt, Term.openAt,
-      hSourceOpenContainer,
-      hElementOpenContainer] using (FirstOrder.Derives.conjIntro (show
-          [element ∈ₘ container,
-              container ∈ₘ source]
-            ⊢ₘ[relation_plane_theory]
-              container ∈ₘ source from
-          .assumption (by simp)) (show
-          [element ∈ₘ container,
-              container ∈ₘ source]
-            ⊢ₘ[relation_plane_theory]
-              element ∈ₘ container from
-          .assumption (by simp)))
-  exact FirstOrder.Derives.iffElimLeft (FirstOrder.Derives.context_weaken_cons <|
-      FirstOrder.Derives.context_weaken_cons hAt)
-    hExists
-/-! ## 二元并的成员注入 -/
-/-- 左侧成员可注入二元并。 -/
-theorem mem_binary_union_left (left right element : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set)
-    (hElement : Term.Admissible element SetSort.set) :
-    ⊢ₘ[relation_plane_theory] (element ∈ₘ left) ⟶ₘ (element ∈ₘ (left ∪ₘ right)) := by
-  have hSpec :
-      ⊢ₘ[relation_plane_theory]
-        binary_union_spec
-          left right (left ∪ₘ right) :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        binary_union_operator_theory_subset_relation_plane_theory
-          hFormula) (binary_union_term_spec_derives
-        left right hLeft hRight)
-  have hAtRaw :=
-    FirstOrder.Derives.forall_elim (term := element) hSpec
-  have hLeftOpen :
-      Term.openAt SetSort.set 0 element left =
-        left :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 element left hLeft.2
-  have hRightOpen :
-      Term.openAt SetSort.set 0 element right =
-        right :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 element right hRight.2
-  have hUnionOpen :
-      Term.openAt SetSort.set 0
-          element (left ∪ₘ right) =
-        left ∪ₘ right :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 element (left ∪ₘ right) (binary_union_term_admissible
-        left right hLeft hRight).2
-  have hAt :
-      ⊢ₘ[relation_plane_theory] (element ∈ₘ (left ∪ₘ right)) ↔ₘ ((element ∈ₘ left) ∨ₘ (element ∈ₘ right)) := by
-    simpa [binary_union_spec,
-      Formula.openAt, Term.openAt,
-      hLeftOpen, hRightOpen,
-      hUnionOpen] using hAtRaw
-  nd_apply FirstOrder.Derives.impIntro
-  exact FirstOrder.Derives.iffElimLeft
-    (FirstOrder.Derives.context_weaken_cons hAt)
-    (FirstOrder.Derives.disjIntroLeft (show
-        [element ∈ₘ left] ⊢ₘ[relation_plane_theory]
-          element ∈ₘ left from
-        .assumption (by simp)))
-/-- 右侧成员可注入二元并。 -/
-theorem mem_binary_union_right (left right element : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set)
-    (hElement : Term.Admissible element SetSort.set) :
-    ⊢ₘ[relation_plane_theory] (element ∈ₘ right) ⟶ₘ (element ∈ₘ (left ∪ₘ right)) := by
-  have hSpec :
-      ⊢ₘ[relation_plane_theory]
-        binary_union_spec
-          left right (left ∪ₘ right) :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        binary_union_operator_theory_subset_relation_plane_theory
-          hFormula) (binary_union_term_spec_derives
-        left right hLeft hRight)
-  have hAtRaw :=
-    FirstOrder.Derives.forall_elim (term := element) hSpec
-  have hLeftOpen :
-      Term.openAt SetSort.set 0 element left =
-        left :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 element left hLeft.2
-  have hRightOpen :
-      Term.openAt SetSort.set 0 element right =
-        right :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 element right hRight.2
-  have hUnionOpen :
-      Term.openAt SetSort.set 0
-          element (left ∪ₘ right) =
-        left ∪ₘ right :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 element (left ∪ₘ right) (binary_union_term_admissible
-        left right hLeft hRight).2
-  have hAt :
-      ⊢ₘ[relation_plane_theory] (element ∈ₘ (left ∪ₘ right)) ↔ₘ ((element ∈ₘ left) ∨ₘ (element ∈ₘ right)) := by
-    simpa [binary_union_spec,
-      Formula.openAt, Term.openAt,
-      hLeftOpen, hRightOpen,
-      hUnionOpen] using hAtRaw
-  nd_apply FirstOrder.Derives.impIntro
-  exact FirstOrder.Derives.iffElimLeft
-    (FirstOrder.Derives.context_weaken_cons hAt)
-    (FirstOrder.Derives.disjIntroRight (show
-        [element ∈ₘ right] ⊢ₘ[relation_plane_theory]
-          element ∈ₘ right from
-        .assumption (by simp)))
-/--
-若左集合包含于右集合，则二元并吸收到右集合。
-证明只展开一次子集定义和二元并成员规格，再由外延性收束为等式。
--/
-theorem binary_union_term_eq_right_of_subset (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[relation_plane_theory] (left ⊆ₘ right) ⟶ₘ ((left ∪ₘ right) ≐ₘ right) := by
-  let subset_formula : SetFormula := left ⊆ₘ right
-  let union := left ∪ₘ right
-  let agreement_body : SetFormula := (bₛ#0 ∈ₘ union) ↔ₘ (bₛ#0 ∈ₘ right)
-  let element :=
-    FreshVariable.fresh_id SetSort.set
-      [subset_formula, agreement_body]
-  let Γ : Context signature := [subset_formula]
-  have hUnion :
-      Term.Admissible union SetSort.set :=
-    binary_union_term_admissible
-      left right hLeft hRight
-  have hElementFreshSubset : (SetSort.set, element) freshForₘ
-        subset_formula := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hElementFreshAgreement : (SetSort.set, element) freshForₘ
-        agreement_body := by
-    dsimp [element]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hLeftOpen :
-      Term.openAt SetSort.set 0 (x#element) left =
-        left :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) left hLeft.2
-  have hRightOpen :
-      Term.openAt SetSort.set 0 (x#element) right =
-        right :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) right hRight.2
-  have hUnionOpen :
-      Term.openAt SetSort.set 0 (x#element) union =
-        union :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#element) union hUnion.2
-  nd_apply FirstOrder.Derives.impIntro
-  have hSubsetDefinition :
-      Γ ⊢ₘ[relation_plane_theory]
-        subset_definition_instance left right :=
-    FirstOrder.Derives.context_weaken_cons <|
-      FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          subset_theory_subset_relation_plane_theory
-            hFormula) (subset_definition_instance_derives_of_admissible
-          left right hLeft hRight)
-  have hSubsetCondition :
-      Γ ⊢ₘ[relation_plane_theory]
-        subset_condition left right :=
-    FirstOrder.Derives.iffElimRight
-      hSubsetDefinition (show
-        Γ ⊢ₘ[relation_plane_theory]
-          left ⊆ₘ right from
-        .assumption (by simp [Γ, subset_formula]))
-  have hSubsetAtRaw :=
-    FirstOrder.Derives.forall_elim
-      (term := x#element) hSubsetCondition
-  have hSubsetAt :
-      Γ ⊢ₘ[relation_plane_theory] (x#element ∈ₘ left) ⟶ₘ (x#element ∈ₘ right) := by
-    simpa [subset_condition, Formula.openAt,
-      Term.openAt, hLeftOpen,
-      hRightOpen] using hSubsetAtRaw
-  have hUnionSpec :
-      Γ ⊢ₘ[relation_plane_theory]
-        binary_union_spec left right union :=
-    FirstOrder.Derives.context_weaken_cons <|
-      FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          binary_union_operator_theory_subset_relation_plane_theory
-            hFormula) (by
-          simpa [union] using
-            binary_union_term_spec_derives
-              left right hLeft hRight)
-  have hUnionAtRaw :=
-    FirstOrder.Derives.forall_elim
-      (term := x#element) hUnionSpec
-  have hUnionAt :
-      Γ ⊢ₘ[relation_plane_theory] (x#element ∈ₘ union) ↔ₘ ((x#element ∈ₘ left) ∨ₘ (x#element ∈ₘ right)) := by
-    simpa [binary_union_spec,
-      Formula.openAt, Term.openAt,
-      hLeftOpen, hRightOpen,
-      hUnionOpen] using hUnionAtRaw
-  have hAgreementAt :
-      Γ ⊢ₘ[relation_plane_theory] (x#element ∈ₘ union) ↔ₘ (x#element ∈ₘ right) := by
-    apply FirstOrder.Derives.iffIntro
-    · have hCases : (x#element ∈ₘ union) :: Γ
-            ⊢ₘ[relation_plane_theory] (x#element ∈ₘ left) ∨ₘ (x#element ∈ₘ right) :=
-        FirstOrder.Derives.iffElimRight (FirstOrder.Derives.context_weaken_cons
-            hUnionAt) (.assumption (by simp))
-      have hSubsetAt' :=
-        FirstOrder.Derives.context_weaken_cons (assumption := x#element ∈ₘ union)
-          hSubsetAt
-      derive_prop
-    · exact FirstOrder.Derives.iffElimLeft (FirstOrder.Derives.context_weaken_cons
-      hUnionAt) (FirstOrder.Derives.disjIntroRight (show
-          (x#element ∈ₘ right) :: Γ
-              ⊢ₘ[relation_plane_theory]
-                x#element ∈ₘ right from
-            .assumption (by simp)))
-  have hAgreementAtOpened :
-      Γ ⊢ₘ[relation_plane_theory]
-        Formula.openAt SetSort.set 0 (x#element) agreement_body := by
-    simpa [agreement_body, Formula.openAt,
-      Term.openAt, hUnionOpen,
-      hRightOpen] using hAgreementAt
-  have hAgreement :
-      Γ ⊢ₘ[relation_plane_theory]
-        membership_agreement union right := by
-    have hGeneralized :=
-      FirstOrder.Derives.forall_intro (T := relation_plane_theory) (Γ := Γ) (sort := SetSort.set) (eigen := element) (body :=
-          Formula.openAt SetSort.set 0 (x#element) agreement_body) (by
-          intro formula hFormula
-          have hSentence :=
-            relation_plane_theory_sentence hFormula
-          rw [hSentence.2]
-          simp) (by
-          intro formula hFormula
-          rcases List.mem_singleton.mp hFormula with rfl
-          exact hElementFreshSubset)
-        hAgreementAtOpened
-    simpa [membership_agreement,
-      Formula.closeFreeAt_openAt
-        SetSort.set element 0 agreement_body
-        hElementFreshAgreement] using hGeneralized
-  have hExtensionality :
-      Γ ⊢ₘ[relation_plane_theory]
-        extensionality_instance union right :=
-    FirstOrder.Derives.context_weaken_cons <|
-      FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          subset_theory_subset_relation_plane_theory (Or.inr hFormula)) (extensionality_instance_derives_of_admissible
-          union right hUnion hRight)
-  exact FirstOrder.Derives.impElim
-    hExtensionality hAgreement
-/-! ## 有限配对的子集合同 -/
-/-- 配对规格在交换两个端点后保持不变。 -/
-theorem pair_spec_comm_iff (left right pair : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set)
-    (hPair : Term.Admissible pair SetSort.set) :
-    ⊢ₘ
-      pair_spec left right pair ↔ₘ
-        pair_spec right left pair := by
-  let left_body : SetFormula := (bₛ#0 ∈ₘ pair) ↔ₘ
-      pair_member_condition bₛ#0 left right
-  let right_body : SetFormula := (bₛ#0 ∈ₘ pair) ↔ₘ
-      pair_member_condition bₛ#0 right left
-  let member :=
-    FreshVariable.fresh_id SetSort.set
-      [left_body, right_body]
-  let left_point :=
-    Formula.openAt SetSort.set 0 (x#member) left_body
-  let right_point :=
-    Formula.openAt SetSort.set 0 (x#member) right_body
-  have hMemberFreshLeft : (SetSort.set, member) freshForₘ
-        left_body := by
-    dsimp [member]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hMemberFreshRight : (SetSort.set, member) freshForₘ
-        right_body := by
-    dsimp [member]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hPairOpen :
-      Term.openAt SetSort.set 0 (x#member) pair =
-        pair :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#member) pair hPair.2
-  have hLeftOpen :
-      Term.openAt SetSort.set 0 (x#member) left =
-        left :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#member) left hLeft.2
-  have hRightOpen :
-      Term.openAt SetSort.set 0 (x#member) right =
-        right :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#member) right hRight.2
-  have hPoint :
-      ⊢ₘ left_point ↔ₘ right_point := by
-    have hMemberAdmissible :
-        Formula.Admissible (x#member ∈ₘ pair) :=
-      membership_formula_admissible (set_variable_admissible member)
-        hPair
-    have hLeftEqualityAdmissible :
-        Formula.Admissible (x#member ≐ₘ left) :=
-      Formula.Admissible.equal (set_variable_admissible member)
-        hLeft
-    have hRightEqualityAdmissible :
-        Formula.Admissible (x#member ≐ₘ right) :=
-      Formula.Admissible.equal (set_variable_admissible member)
-        hRight
-    have hDisjunction :
-        ⊢ₘ ((x#member ≐ₘ left) ∨ₘ (x#member ≐ₘ right)) ↔ₘ ((x#member ≐ₘ right) ∨ₘ (x#member ≐ₘ left)) :=
-      FirstOrder.Derives.iffIntro (FirstOrder.Derives.impElim (Metatheory.Derives.disj_comm_m
-            hLeftEqualityAdmissible
-            hRightEqualityAdmissible) (.assumption (by simp))) (FirstOrder.Derives.impElim (Metatheory.Derives.disj_comm_m
-            hRightEqualityAdmissible
-            hLeftEqualityAdmissible) (.assumption (by simp)))
-    simpa [left_point, right_point,
-      left_body, right_body,
-      pair_member_condition,
-      Formula.openAt, Term.openAt,
-      hPairOpen, hLeftOpen,
-      hRightOpen] using
-      Metatheory.Derives.iff_right_congr_m
-        hMemberAdmissible hDisjunction
-  have hClosed :
-      ⊢ₘ (∀ₘ[SetSort.set, member], left_point) ↔ₘ (∀ₘ[SetSort.set, member], right_point) :=
-    Metatheory.Derives.forall_iff_mono (T := (Theory.empty : SetTheory)) (Γ := []) (sort := SetSort.set) (eigen := member) (left := left_point)
-      (right := right_point) (by
-        intro formula hFormula
-        cases hFormula) (by
-        intro formula hFormula
-        cases hFormula)
-      hPoint
-  simpa [pair_spec, left_point, right_point,
-    left_body, right_body,
-    Formula.closeFreeAt_openAt
-      SetSort.set member 0 left_body
-      hMemberFreshLeft,
-    Formula.closeFreeAt_openAt
-      SetSort.set member 0 right_body
-      hMemberFreshRight] using hClosed
-/-- 规范无序对交换两个端点后相等。 -/
-theorem unordered_pair_term_comm (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[relation_plane_theory]
-      {left, right}ₘ ≐ₘ {right, left}ₘ := by
-  have hLeftSpec :
-      ⊢ₘ[relation_plane_theory]
-        pair_spec left right {left, right}ₘ :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        pairing_operator_theory_subset_relation_plane_theory
-          hFormula) (unordered_pair_term_spec_derives
-        left right hLeft hRight)
-  have hRightCanonicalSpec :
-      ⊢ₘ[relation_plane_theory]
-        pair_spec right left {right, left}ₘ :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        pairing_operator_theory_subset_relation_plane_theory
-          hFormula) (unordered_pair_term_spec_derives
-        right left hRight hLeft)
-  have hComm :
-      ⊢ₘ[relation_plane_theory]
-        pair_spec left right {right, left}ₘ ↔ₘ
-          pair_spec right left {right, left}ₘ :=
-    FirstOrder.Derives.theory_weaken (by simp [Theory.empty]) (pair_spec_comm_iff
-        left right {right, left}ₘ
-        hLeft hRight (unordered_pair_term_admissible
-          right left hRight hLeft))
-  have hRightSpec :
-      ⊢ₘ[relation_plane_theory]
-        pair_spec left right {right, left}ₘ :=
-    FirstOrder.Derives.iffElimLeft
-      hComm hRightCanonicalSpec
-  have hUnique :
-      ⊢ₘ[relation_plane_theory]
-        pair_spec left right {left, right}ₘ ⟶ₘ
-          pair_spec left right {right, left}ₘ ⟶ₘ ({left, right}ₘ ≐ₘ {right, left}ₘ) :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        subset_theory_subset_relation_plane_theory (Or.inr hFormula)) (pair_unique
-        left right {left, right}ₘ {right, left}ₘ
-        hLeft hRight (unordered_pair_term_admissible
-          left right hLeft hRight) (unordered_pair_term_admissible
-          right left hRight hLeft))
-  exact FirstOrder.Derives.impElim (FirstOrder.Derives.impElim
-      hUnique hLeftSpec)
-    hRightSpec
-/-- 一个配对候选的两个指定成员落在同一集合中时，该候选满足相应子集成员条件。 -/
-theorem pair_spec_implies_subset_condition_of_members (left right pair source : SetTerm) (hLeft : Term.Admissible left SetSort.set)
-    (hRight : Term.Admissible right SetSort.set) (hPair : Term.Admissible pair SetSort.set) (hSource : Term.Admissible source SetSort.set) :
-    ⊢ₘ
-      pair_spec left right pair ⟶ₘ (left ∈ₘ source) ⟶ₘ (right ∈ₘ source) ⟶ₘ
-            subset_condition pair source := by
-  let spec := pair_spec left right pair
-  let left_mem : SetFormula := left ∈ₘ source
-  let right_mem : SetFormula := right ∈ₘ source
-  let subset_body : SetFormula := (bₛ#0 ∈ₘ pair) ⟶ₘ (bₛ#0 ∈ₘ source)
-  let member :=
-    FreshVariable.fresh_id SetSort.set
-      [spec, left_mem, right_mem, subset_body]
-  have hMemberFreshSpec : (SetSort.set, member) freshForₘ spec := by
-    dsimp [member]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hMemberFreshLeft : (SetSort.set, member) freshForₘ left_mem := by
-    dsimp [member]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hMemberFreshRight : (SetSort.set, member) freshForₘ right_mem := by
-    dsimp [member]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hMemberFreshSubset : (SetSort.set, member) freshForₘ
-        subset_body := by
-    dsimp [member]
-    exact FreshVariable.fresh_id_not_mem_m (by simp)
-  have hPairOpenZero :
-      Term.openAt SetSort.set 0 (x#member) pair =
-        pair :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#member) pair hPair.2
-  have hSourceOpenZero :
-      Term.openAt SetSort.set 0 (x#member) source =
-        source :=
-    Term.openAt_eq_self_of_boundClosed
-      SetSort.set 0 (x#member) source hSource.2
-  change
-    ⊢ₘ spec ⟶ₘ (left_mem ⟶ₘ (right_mem ⟶ₘ (∀ₘ[SetSort.set], subset_body)))
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  nd_apply FirstOrder.Derives.impIntro
-  let Γ : Context signature :=
-    [right_mem, left_mem, spec]
-  have hSpec :
-      Γ ⊢ₘ spec :=
-    .assumption (by simp [Γ])
-  have hPairAt :=
-    pair_spec_membership_iff
-      left right pair (x#member)
-      hLeft hRight hPair (set_variable_admissible member)
-      hSpec
-  have hSubsetAt :
-      Γ ⊢ₘ (x#member ∈ₘ pair) ⟶ₘ (x#member ∈ₘ source) := by
-    nd_apply FirstOrder.Derives.impIntro
-    have hCases : (x#member ∈ₘ pair) :: Γ ⊢ₘ ((x#member ≐ₘ left) ∨ₘ (x#member ≐ₘ right)) :=
-      FirstOrder.Derives.iffElimRight (FirstOrder.Derives.context_weaken_cons
-          hPairAt) (.assumption (by simp))
-    have hLeftCase : (x#member ∈ₘ pair) :: Γ ⊢ₘ (x#member ≐ₘ left) ⟶ₘ (x#member ∈ₘ source) := by
-      nd_apply FirstOrder.Derives.impIntro
-      have hEquality : (x#member ≐ₘ left) :: (x#member ∈ₘ pair) :: Γ ⊢ₘ
-            x#member ≐ₘ left :=
-        .assumption (by simp)
-      have hTransport :=
-        membership_left_iff_of_equality (x#member) left source (set_variable_admissible member)
-          hLeft hSource hEquality
-      exact FirstOrder.Derives.iffElimLeft
-        hTransport (show (x#member ≐ₘ left) :: (x#member ∈ₘ pair) :: Γ ⊢ₘ
-            left_mem from
-          .assumption (by simp [Γ]))
-    have hRightCase : (x#member ∈ₘ pair) :: Γ ⊢ₘ (x#member ≐ₘ right) ⟶ₘ (x#member ∈ₘ source) := by
-      nd_apply FirstOrder.Derives.impIntro
-      have hEquality : (x#member ≐ₘ right) :: (x#member ∈ₘ pair) :: Γ ⊢ₘ
-            x#member ≐ₘ right :=
-        .assumption (by simp)
-      have hTransport :=
-        membership_left_iff_of_equality (x#member) right source (set_variable_admissible member)
-          hRight hSource hEquality
-      exact FirstOrder.Derives.iffElimLeft
-        hTransport (show (x#member ≐ₘ right) :: (x#member ∈ₘ pair) :: Γ ⊢ₘ
-            right_mem from
-          .assumption (by simp [Γ]))
-    derive_prop
-  have hSubsetAtOpened :
-      Γ ⊢ₘ
-        Formula.openAt SetSort.set 0 (x#member) subset_body := by
-    simpa [subset_body, Formula.openAt,
-      Term.openAt, hPairOpenZero,
-      hSourceOpenZero] using hSubsetAt
-  have hGeneralized :=
-    FirstOrder.Derives.forall_intro (T := (Theory.empty : SetTheory)) (Γ := Γ) (sort := SetSort.set) (eigen := member) (body :=
-        Formula.openAt SetSort.set 0 (x#member) subset_body) (by
-        intro formula hFormula
-        cases hFormula) (by
-        intro formula hFormula
-        rcases List.mem_cons.mp hFormula with rfl | hFormula
-        · exact hMemberFreshRight
-        · rcases List.mem_cons.mp hFormula with rfl | hFormula
-          · exact hMemberFreshLeft
-          · rcases List.mem_singleton.mp hFormula with rfl
-            exact hMemberFreshSpec)
-      hSubsetAtOpened
-  simpa [subset_condition,
-    Formula.closeFreeAt_openAt
-      SetSort.set member 0 subset_body
-      hMemberFreshSubset] using hGeneralized
-/-- 在关系平面理论中，配对规格与两个成员事实推出真正的子集原子。 -/
-theorem pair_spec_implies_subset_of_members (left right pair source : SetTerm) (hLeft : Term.Admissible left SetSort.set)
-    (hRight : Term.Admissible right SetSort.set) (hPair : Term.Admissible pair SetSort.set) (hSource : Term.Admissible source SetSort.set) :
-    ⊢ₘ[relation_plane_theory]
-      pair_spec left right pair ⟶ₘ (left ∈ₘ source) ⟶ₘ (right ∈ₘ source) ⟶ₘ (pair ⊆ₘ source) := by
-  have hCondition :
-      ⊢ₘ[relation_plane_theory]
-        pair_spec left right pair ⟶ₘ (left ∈ₘ source) ⟶ₘ (right ∈ₘ source) ⟶ₘ
-              subset_condition pair source :=
-    FirstOrder.Derives.theory_weaken (by simp [Theory.empty]) (pair_spec_implies_subset_condition_of_members
-        left right pair source
-        hLeft hRight hPair hSource)
-  have hDefinition :
-      ⊢ₘ[relation_plane_theory]
-        subset_definition_instance pair source :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        subset_theory_subset_relation_plane_theory
-          hFormula) (subset_definition_instance_derives_of_admissible
-        pair source hPair hSource)
-  derive_prop
-/-- 无序对的两个端点属于同一集合时，该无序对是该集合的子集。 -/
-theorem unordered_pair_subset_of_members (left right source : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set)
-    (hSource : Term.Admissible source SetSort.set) :
-    ⊢ₘ[relation_plane_theory] (left ∈ₘ source) ⟶ₘ (right ∈ₘ source) ⟶ₘ ({left, right}ₘ ⊆ₘ source) := by
-  have hSpec :
-      ⊢ₘ[relation_plane_theory]
-        pair_spec left right {left, right}ₘ :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        ordered_pair_operator_theory_subset_relation_plane_theory (singleton_operator_theory_subset_ordered_pair_operator_theory (Or.inr hFormula)))
-      (unordered_pair_term_spec_derives
-        left right hLeft hRight)
-  have hSubset :=
-    pair_spec_implies_subset_of_members
-      left right {left, right}ₘ source
-      hLeft hRight (unordered_pair_term_admissible
-        left right hLeft hRight)
-      hSource
-  derive_prop
-/-- 单点集元素属于给定集合时，该单点集是该集合的子集。 -/
-theorem singleton_subset_of_mem (element source : SetTerm) (hElement : Term.Admissible element SetSort.set) (hSource : Term.Admissible source SetSort.set) :
-    ⊢ₘ[relation_plane_theory] (element ∈ₘ source) ⟶ₘ ({element}ₘ ⊆ₘ source) := by
-  have hRepeated :=
-    unordered_pair_subset_of_members
-      element element source
-      hElement hElement hSource
-  have hEquality :
-      ⊢ₘ[relation_plane_theory]
-        {element}ₘ ≐ₘ {element, element}ₘ :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        ordered_pair_operator_theory_subset_relation_plane_theory (singleton_operator_theory_subset_ordered_pair_operator_theory
-            hFormula)) (singleton_definition_instance_derives
-        element hElement)
-  have hSubsetTransport :
-      ⊢ₘ[relation_plane_theory] ({element, element}ₘ ⊆ₘ source) ⟶ₘ ({element}ₘ ⊆ₘ source) := by
-    have hSymmetry :=
-      Metatheory.Derives.equality_symm (T := relation_plane_theory) (Γ := [])
-        hEquality
-    let parameter :=
-      FreshVariable.fresh_id SetSort.set
-        [source ≐ₘ source]
-    let body : SetFormula :=
-      x#parameter ⊆ₘ source
-    have hSourceFresh : (SetSort.set, parameter) ∉
-          Term.freeSupport source := by
-      dsimp [parameter]
-      exact FreshVariable.fresh_term_not_mem_m
-        SetSort.set source
-    have hSourceFixedRepeated :
-        Term.substituteFree SetSort.set parameter
-            {element, element}ₘ source =
-          source :=
-      Term.substituteFree_eq_self_of_not_mem
-        SetSort.set parameter
-        {element, element}ₘ source hSourceFresh
-    have hSourceFixedSingleton :
-        Term.substituteFree SetSort.set parameter
-            {element}ₘ source =
-          source :=
-      Term.substituteFree_eq_self_of_not_mem
-        SetSort.set parameter
-        {element}ₘ source hSourceFresh
-    nd_apply FirstOrder.Derives.impIntro
-    have hTransport :=
-      FirstOrder.Derives.eq_subst_m
+    {sentence : SetSentence}
+    (hSentence : pairing_operator_theory sentence) :
+    relation_plane_theory sentence :=
+  ordered_pair_operator_theory_subset_relation_plane_theory
+    (singleton_operator_theory_subset_ordered_pair_operator_theory
+      (Or.inr hSentence))
+
+theorem singleton_operator_theory_subset_relation_plane_theory
+    {sentence : SetSentence}
+    (hSentence : singleton_operator_theory sentence) :
+    relation_plane_theory sentence :=
+  ordered_pair_operator_theory_subset_relation_plane_theory
+    (singleton_operator_theory_subset_ordered_pair_operator_theory
+      hSentence)
+
+theorem extensionality_theory_subset_relation_plane_theory
+    {sentence : SetSentence}
+    (hSentence : extensionality_theory sentence) :
+    relation_plane_theory sentence :=
+  cartesian_product_operator_theory_subset_relation_plane_theory
+    (cartesian_product_base_theory_subset_cartesian_product_operator_theory
+      (extensionality_theory_subset_cartesian_product_base_theory hSentence))
+
+/-! ## 并集与子集 -/
+
+/-- 集合族中的一个容器所含元素属于该集合族的并集。 -/
+theorem mem_union_of_mem_of_mem
+    {free : SetContext} {Γ : Context signature free}
+    (source container element : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      (container ∈ₘ source) ⟶ₘ
+        ((element ∈ₘ container) ⟶ₘ (element ∈ₘ ⋃ₘ source)) := by
+  apply FirstOrder.Derives.imp_intro
+  apply FirstOrder.Derives.imp_intro
+  let Δ : Context signature free :=
+    (element ∈ₘ container) :: (container ∈ₘ source) :: Γ
+  have hSpec : Δ ⊢ₘ[relation_plane_theory]
+      union_spec source (⋃ₘ source) :=
+    FirstOrder.Derives.theory_weaken
+      union_operator_theory_subset_relation_plane_theory
+      (union_term_spec_derives (Γ := Δ) source)
+  have hAt := union_spec_membership_iff
+    source (⋃ₘ source) element hSpec
+  apply FirstOrder.Derives.iff_elim_right hAt
+  apply FirstOrder.Derives.exists_intro container
+  rw [Formula.instantiateTop_abstractFreeTop]
+  simpa [Formula.instantiateFreeTop, Formula.substituteFree,
+    Substitution.free_map, Substitution.instantiateFreeTop,
+    Formula.substitute, Formula.substituteMapped,
+    Term.substituteMapped, Arguments.substituteMapped,
+    VariableSubstitution.liftFree,
+    VariableSubstitution.instantiateFreeTop,
+    VariableSubstitution.weakenBound,
+    VariableSubstitution.boundId,
+    VariableSubstitution.freeId] using
+    FirstOrder.Derives.conj_intro
+      (FirstOrder.Derives.assumption
+        (T := relation_plane_theory) (Γ := Δ) (by simp [Δ]))
+      (FirstOrder.Derives.assumption
+        (T := relation_plane_theory) (Γ := Δ) (by simp [Δ]))
+
+/-- 集合族的任意成员包含于该集合族的并集。 -/
+theorem member_subset_union
+    {free : SetContext} {Γ : Context signature free}
+    (source member : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      (member ∈ₘ source) ⟶ₘ (member ⊆ₘ ⋃ₘ source) := by
+  apply FirstOrder.Derives.imp_intro
+  apply subset_intro subset_theory_subset_relation_plane_theory
+  apply FirstOrder.Derives.imp_intro
+  let element : SetOpenTerm (SetSort.set :: free) :=
+    FreshVariable.newest
+      (σ := signature) (free := free) SetSort.set
+  let Δ : Context signature (SetSort.set :: free) :=
+    (element ∈ₘ member.weakenFree SetSort.set) ::
+      FreshVariable.extendContext SetSort.set
+        ((member ∈ₘ source) :: Γ)
+  have hMemberSource : Δ ⊢ₘ[relation_plane_theory]
+      member.weakenFree SetSort.set ∈ₘ source.weakenFree SetSort.set :=
+    FirstOrder.Derives.assumption (by
+      simp [Δ, FreshVariable.extendContext])
+  have hElementMember : Δ ⊢ₘ[relation_plane_theory]
+      element ∈ₘ member.weakenFree SetSort.set :=
+    FirstOrder.Derives.assumption (by simp [Δ])
+  exact FirstOrder.Derives.imp_elim
+    (FirstOrder.Derives.imp_elim
+      (mem_union_of_mem_of_mem
+        (Γ := Δ) (source.weakenFree SetSort.set)
+        (member.weakenFree SetSort.set) element)
+      hMemberSource)
+    hElementMember
+
+/-- 并集运算保持子集关系。 -/
+theorem union_mono
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      (left ⊆ₘ right) ⟶ₘ ((⋃ₘ left) ⊆ₘ (⋃ₘ right)) := by
+  apply FirstOrder.Derives.imp_intro
+  let Δ : Context signature free := (left ⊆ₘ right) :: Γ
+  apply subset_intro subset_theory_subset_relation_plane_theory
+  apply FirstOrder.Derives.imp_intro
+  let element : SetOpenTerm (SetSort.set :: free) :=
+    FreshVariable.newest
+      (σ := signature) (free := free) SetSort.set
+  let Θ : Context signature (SetSort.set :: free) :=
+    (element ∈ₘ ⋃ₘ (left.weakenFree SetSort.set)) ::
+      FreshVariable.extendContext SetSort.set Δ
+  have hLeftSpec : Θ ⊢ₘ[relation_plane_theory]
+      union_spec (left.weakenFree SetSort.set)
+        (⋃ₘ (left.weakenFree SetSort.set)) :=
+    FirstOrder.Derives.theory_weaken
+      union_operator_theory_subset_relation_plane_theory
+      (union_term_spec_derives
+        (Γ := Θ) (left.weakenFree SetSort.set))
+  have hLeftMember : Θ ⊢ₘ[relation_plane_theory]
+      element ∈ₘ ⋃ₘ (left.weakenFree SetSort.set) :=
+    FirstOrder.Derives.assumption (by simp [Θ])
+  have hWitness := FirstOrder.Derives.iff_elim_left
+    (union_spec_membership_iff
+      (left.weakenFree SetSort.set)
+      (⋃ₘ (left.weakenFree SetSort.set)) element hLeftSpec)
+    hLeftMember
+  unfold union_witness_condition at hWitness
+  apply FirstOrder.Derives.exists_elim hWitness
+  let witness : SetOpenTerm (SetSort.set :: SetSort.set :: free) :=
+    FreshVariable.newest
+      (σ := signature) (free := SetSort.set :: free) SetSort.set
+  let element' : SetOpenTerm (SetSort.set :: SetSort.set :: free) :=
+    element.weakenFree SetSort.set
+  let left' : SetOpenTerm (SetSort.set :: SetSort.set :: free) :=
+    (left.weakenFree SetSort.set).weakenFree SetSort.set
+  let right' : SetOpenTerm (SetSort.set :: SetSort.set :: free) :=
+    (right.weakenFree SetSort.set).weakenFree SetSort.set
+  let witnessBody : SetOpenFormula
+      (SetSort.set :: SetSort.set :: free) :=
+    (witness ∈ₘ left') ∧ₘ (element' ∈ₘ witness)
+  let Ω : Context signature (SetSort.set :: SetSort.set :: free) :=
+    witnessBody :: FreshVariable.extendContext SetSort.set Θ
+  have hConjunction : Ω ⊢ₘ[relation_plane_theory] witnessBody :=
+    FirstOrder.Derives.assumption List.mem_cons_self
+  have hWitnessLeft : Ω ⊢ₘ[relation_plane_theory]
+      witness ∈ₘ left' :=
+    FirstOrder.Derives.conj_elim_left hConjunction
+  have hElementWitness : Ω ⊢ₘ[relation_plane_theory]
+      element' ∈ₘ witness :=
+    FirstOrder.Derives.conj_elim_right hConjunction
+  have hSubset : Ω ⊢ₘ[relation_plane_theory] left' ⊆ₘ right' :=
+    FirstOrder.Derives.assumption (by
+      simp [Ω, Θ, Δ, left', right', FreshVariable.extendContext])
+  have hWitnessRight : Ω ⊢ₘ[relation_plane_theory]
+      witness ∈ₘ right' :=
+    subset_membership subset_theory_subset_relation_plane_theory
+      left' right' witness hSubset hWitnessLeft
+  have hResult := FirstOrder.Derives.imp_elim
+    (FirstOrder.Derives.imp_elim
+      (mem_union_of_mem_of_mem
+        (Γ := Ω) right' witness element')
+      hWitnessRight)
+    hElementWitness
+  simpa [element', right'] using! hResult
+
+/-- 关系的任意子集仍是关系。 -/
+theorem is_relation_of_subset
+    {free : SetContext} {Γ : Context signature free}
+    (relation candidate : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      is_relation_formula relation ⟶ₘ
+        (candidate ⊆ₘ relation) ⟶ₘ
+          is_relation_formula candidate := by
+  apply FirstOrder.Derives.imp_intro
+  apply FirstOrder.Derives.imp_intro
+  let relationFormula : SetOpenFormula free :=
+    is_relation_formula relation
+  let subsetFormula : SetOpenFormula free := candidate ⊆ₘ relation
+  let Δ : Context signature free := subsetFormula :: relationFormula :: Γ
+  change Δ ⊢ₘ[relation_plane_theory] is_relation_formula candidate
+  apply is_relation_intro
+    relation_predicate_theory_subset_relation_plane_theory
+  apply FirstOrder.Derives.imp_intro
+  let member : SetOpenTerm (SetSort.set :: free) :=
+    FreshVariable.newest
+      (σ := signature) (free := free) SetSort.set
+  let membership : SetOpenFormula (SetSort.set :: free) :=
+    member ∈ₘ candidate.weakenFree SetSort.set
+  let Ω : Context signature (SetSort.set :: free) :=
+    membership :: FreshVariable.extendContext SetSort.set Δ
+  have hSubset : Ω ⊢ₘ[relation_plane_theory]
+      candidate.weakenFree SetSort.set ⊆ₘ
+        relation.weakenFree SetSort.set :=
+    FirstOrder.Derives.assumption (by
+      simp [Ω, Δ, subsetFormula, FreshVariable.extendContext])
+  have hCandidateMember : Ω ⊢ₘ[relation_plane_theory]
+      member ∈ₘ candidate.weakenFree SetSort.set :=
+    FirstOrder.Derives.assumption List.mem_cons_self
+  have hRelationMember : Ω ⊢ₘ[relation_plane_theory]
+      member ∈ₘ relation.weakenFree SetSort.set :=
+    subset_membership subset_theory_subset_relation_plane_theory
+      (candidate.weakenFree SetSort.set)
+      (relation.weakenFree SetSort.set) member
+      hSubset hCandidateMember
+  have hRelation : Ω ⊢ₘ[relation_plane_theory]
+      is_relation_formula (relation.weakenFree SetSort.set) :=
+    FirstOrder.Derives.assumption (by
+      simp [Ω, Δ, relationFormula, FreshVariable.extendContext])
+  have hOrdered := FirstOrder.Derives.theory_weaken
+    relation_predicate_theory_subset_relation_plane_theory
+    (is_relation_member_is_ordered_pair
+      (Γ := Ω) (relation.weakenFree SetSort.set) member)
+  exact FirstOrder.Derives.imp_elim
+    (FirstOrder.Derives.imp_elim hOrdered hRelation)
+    hRelationMember
+
+/-- 左集合中的元素进入二元并。 -/
+theorem mem_binary_union_left
+    {free : SetContext} {Γ : Context signature free}
+    (left right element : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      (element ∈ₘ left) ⟶ₘ (element ∈ₘ (left ∪ₘ right)) := by
+  apply FirstOrder.Derives.imp_intro
+  let Δ : Context signature free := (element ∈ₘ left) :: Γ
+  have hSpec : Δ ⊢ₘ[relation_plane_theory]
+      binary_union_spec left right (left ∪ₘ right) :=
+    FirstOrder.Derives.theory_weaken
+      binary_union_operator_theory_subset_relation_plane_theory
+      (binary_union_term_spec_derives (Γ := Δ) left right)
+  apply FirstOrder.Derives.iff_elim_right
+    (binary_union_spec_membership_iff
+      left right (left ∪ₘ right) element hSpec)
+  exact FirstOrder.Derives.disj_intro_left
+    (FirstOrder.Derives.assumption (by simp [Δ]))
+
+/-- 右集合中的元素进入二元并。 -/
+theorem mem_binary_union_right
+    {free : SetContext} {Γ : Context signature free}
+    (left right element : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      (element ∈ₘ right) ⟶ₘ (element ∈ₘ (left ∪ₘ right)) := by
+  apply FirstOrder.Derives.imp_intro
+  let Δ : Context signature free := (element ∈ₘ right) :: Γ
+  have hSpec : Δ ⊢ₘ[relation_plane_theory]
+      binary_union_spec left right (left ∪ₘ right) :=
+    FirstOrder.Derives.theory_weaken
+      binary_union_operator_theory_subset_relation_plane_theory
+      (binary_union_term_spec_derives (Γ := Δ) left right)
+  apply FirstOrder.Derives.iff_elim_right
+    (binary_union_spec_membership_iff
+      left right (left ∪ₘ right) element hSpec)
+  exact FirstOrder.Derives.disj_intro_right
+    (FirstOrder.Derives.assumption (by simp [Δ]))
+
+/-- 若左集合包含于右集合，则二元并吸收到右集合。 -/
+theorem binary_union_term_eq_right_of_subset
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      (left ⊆ₘ right) ⟶ₘ ((left ∪ₘ right) ≐ₘ right) := by
+  apply FirstOrder.Derives.imp_intro
+  let Δ : Context signature free := (left ⊆ₘ right) :: Γ
+  have hUnionSpec : Δ ⊢ₘ[relation_plane_theory]
+      binary_union_spec left right (left ∪ₘ right) :=
+    FirstOrder.Derives.theory_weaken
+      binary_union_operator_theory_subset_relation_plane_theory
+      (binary_union_term_spec_derives (Γ := Δ) left right)
+  have hRightSpec : Δ ⊢ₘ[relation_plane_theory]
+      binary_union_spec left right right := by
+    unfold binary_union_spec membership_specification
+    apply FirstOrder.Derives.forall_intro
+    let element : SetOpenTerm (SetSort.set :: free) :=
+      FreshVariable.newest
+        (σ := signature) (free := free) SetSort.set
+    let Θ : Context signature (SetSort.set :: free) :=
+      FreshVariable.extendContext SetSort.set Δ
+    apply FirstOrder.Derives.iff_intro
+    · exact FirstOrder.Derives.disj_intro_right
+        (FirstOrder.Derives.assumption List.mem_cons_self)
+    · have hChoice := FirstOrder.Derives.assumption
         (T := relation_plane_theory)
-        (Γ := [{element, element}ₘ ⊆ₘ source])
-        (sort := SetSort.set) (eigen := parameter)
-        (left := {element, element}ₘ) (right := {element}ₘ)
-        (body := body)
-        (FirstOrder.Derives.context_weaken_cons hSymmetry) (by
-          simpa [body, Formula.substituteFree,
-            Term.substituteFree,
-            hSourceFixedRepeated, set_variable] using (show
-              [{element, element}ₘ ⊆ₘ source]
-                ⊢ₘ[relation_plane_theory]
-                  {element, element}ₘ ⊆ₘ source from
-              .assumption (by simp)))
-    simpa [body, Formula.substituteFree,
-      Term.substituteFree,
-      hSourceFixedSingleton, set_variable] using
-      hTransport
-  derive_prop
-/-! ## 规范有限集的成员事实 -/
-/-- 元素属于自身生成的单点集。 -/
-theorem mem_singleton_self (element : SetTerm) (hElement : Term.Admissible element SetSort.set) :
-    ⊢ₘ[relation_plane_theory]
-      element ∈ₘ {element}ₘ := by
-  have hSpec :
-      ⊢ₘ[relation_plane_theory]
-        singleton_spec element {element}ₘ :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        ordered_pair_operator_theory_subset_relation_plane_theory (singleton_operator_theory_subset_ordered_pair_operator_theory
-            hFormula)) (singleton_term_spec_derives element hElement)
-  have hAt :=
-    singleton_spec_membership_iff
-      element {element}ₘ element
-      hElement (singleton_term_admissible element hElement)
-      hElement hSpec
-  exact FirstOrder.Derives.iffElimLeft
-    hAt (FirstOrder.Derives.eq_refl_m
-      (sort := SetSort.set) element)
-/-- 左端点属于其生成的无序对。 -/
-theorem mem_unordered_pair_left (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[relation_plane_theory]
-      left ∈ₘ {left, right}ₘ := by
-  have hSpec :
-      ⊢ₘ[relation_plane_theory]
-        pair_spec left right {left, right}ₘ :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        ordered_pair_operator_theory_subset_relation_plane_theory (singleton_operator_theory_subset_ordered_pair_operator_theory (Or.inr hFormula)))
-      (unordered_pair_term_spec_derives
-        left right hLeft hRight)
-  have hAt :=
-    pair_spec_membership_iff
-      left right {left, right}ₘ left
-      hLeft hRight (unordered_pair_term_admissible
-        left right hLeft hRight)
-      hLeft hSpec
-  exact FirstOrder.Derives.iffElimLeft
-    hAt (FirstOrder.Derives.disjIntroLeft
-      (FirstOrder.Derives.eq_refl_m
-        (sort := SetSort.set) left))
-/-- 右端点属于其生成的无序对。 -/
-theorem mem_unordered_pair_right (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[relation_plane_theory]
-      right ∈ₘ {left, right}ₘ := by
-  have hSpec :
-      ⊢ₘ[relation_plane_theory]
-        pair_spec left right {left, right}ₘ :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        ordered_pair_operator_theory_subset_relation_plane_theory (singleton_operator_theory_subset_ordered_pair_operator_theory (Or.inr hFormula)))
-      (unordered_pair_term_spec_derives
-        left right hLeft hRight)
-  have hAt :=
-    pair_spec_membership_iff
-      left right {left, right}ₘ right
-      hLeft hRight (unordered_pair_term_admissible
-        left right hLeft hRight)
-      hRight hSpec
-  exact FirstOrder.Derives.iffElimLeft
-    hAt (FirstOrder.Derives.disjIntroRight
-      (FirstOrder.Derives.eq_refl_m
-        (sort := SetSort.set) right))
-/-- 左坐标单点集属于对应的 Kuratowski 有序对。 -/
-theorem singleton_mem_ordered_pair (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[relation_plane_theory]
-      {left}ₘ ∈ₘ ⟨left, right⟩ₘ := by
-  have hSpec :
-      ⊢ₘ[relation_plane_theory]
-        ordered_pair_spec
-          left right ⟨left, right⟩ₘ :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
+        (Γ := ((element ∈ₘ left.weakenFree SetSort.set) ∨ₘ
+          (element ∈ₘ right.weakenFree SetSort.set)) :: Θ)
+        List.mem_cons_self
+      apply FirstOrder.Derives.disj_elim hChoice
+      · have hSubset :
+            ((element ∈ₘ left.weakenFree SetSort.set) ::
+              ((element ∈ₘ left.weakenFree SetSort.set) ∨ₘ
+                (element ∈ₘ right.weakenFree SetSort.set)) :: Θ)
+              ⊢ₘ[relation_plane_theory]
+                left.weakenFree SetSort.set ⊆ₘ
+                  right.weakenFree SetSort.set :=
+          FirstOrder.Derives.assumption (by
+            simp [Θ, Δ, FreshVariable.extendContext])
+        exact subset_membership
+          subset_theory_subset_relation_plane_theory
+          (left.weakenFree SetSort.set)
+          (right.weakenFree SetSort.set) element hSubset
+          (FirstOrder.Derives.assumption List.mem_cons_self)
+      · exact FirstOrder.Derives.assumption List.mem_cons_self
+  let element : SetOpenTerm (SetSort.set :: free) :=
+    FreshVariable.newest
+      (σ := signature) (free := free) SetSort.set
+  let condition : SetOpenFormula (SetSort.set :: free) :=
+    binary_union_member_condition
+      (left.weakenFree SetSort.set)
+      (right.weakenFree SetSort.set) element
+  have hUnique : Δ ⊢ₘ[relation_plane_theory]
+      binary_union_spec left right (left ∪ₘ right) ⟶ₘ
+        (binary_union_spec left right right ⟶ₘ
+          ((left ∪ₘ right) ≐ₘ right)) := by
+    simpa [binary_union_spec, condition] using!
+      FirstOrder.Derives.theory_weaken
+        extensionality_theory_subset_relation_plane_theory
+        (membership_specification_unique
+          (Γ := Δ) (left ∪ₘ right) right condition)
+  exact FirstOrder.Derives.imp_elim
+    (FirstOrder.Derives.imp_elim hUnique hUnionSpec) hRightSpec
+
+/-! ## 配对规格与有限成员 -/
+
+/-- 无序对规格对两个参数对称。 -/
+theorem pair_spec_comm_iff
+    {free : SetContext} {Γ : Context signature free}
+    (left right pair : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      pair_spec left right pair ↔ₘ pair_spec right left pair := by
+  unfold pair_spec membership_specification
+  apply Metatheory.Derives.forall_iff_mono
+  let element : SetOpenTerm (SetSort.set :: free) :=
+    FreshVariable.newest
+      (σ := signature) (free := free) SetSort.set
+  let Δ : Context signature (SetSort.set :: free) :=
+    FreshVariable.extendContext SetSort.set Γ
+  let membership : SetOpenFormula (SetSort.set :: free) :=
+    element ∈ₘ pair.weakenFree SetSort.set
+  let leftEquality : SetOpenFormula (SetSort.set :: free) :=
+    element ≐ₘ left.weakenFree SetSort.set
+  let rightEquality : SetOpenFormula (SetSort.set :: free) :=
+    element ≐ₘ right.weakenFree SetSort.set
+  change Δ ⊢ₘ[relation_plane_theory]
+    (membership ↔ₘ (leftEquality ∨ₘ rightEquality)) ↔ₘ
+      (membership ↔ₘ (rightEquality ∨ₘ leftEquality))
+  have hDisjunction : Δ ⊢ₘ[relation_plane_theory]
+      (leftEquality ∨ₘ rightEquality) ↔ₘ
+        (rightEquality ∨ₘ leftEquality) := by
+    apply FirstOrder.Derives.iff_intro
+    · apply FirstOrder.Derives.disj_elim
+        (FirstOrder.Derives.assumption List.mem_cons_self)
+      · exact FirstOrder.Derives.disj_intro_right
+          (FirstOrder.Derives.assumption List.mem_cons_self)
+      · exact FirstOrder.Derives.disj_intro_left
+          (FirstOrder.Derives.assumption List.mem_cons_self)
+    · apply FirstOrder.Derives.disj_elim
+        (FirstOrder.Derives.assumption List.mem_cons_self)
+      · exact FirstOrder.Derives.disj_intro_right
+          (FirstOrder.Derives.assumption List.mem_cons_self)
+      · exact FirstOrder.Derives.disj_intro_left
+          (FirstOrder.Derives.assumption List.mem_cons_self)
+  exact Metatheory.Derives.iff_right_congr_m hDisjunction
+
+/-- 无序对函数项满足交换律。 -/
+theorem unordered_pair_term_comm
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      {left, right}ₘ ≐ₘ {right, left}ₘ := by
+  have hLeft : Γ ⊢ₘ[relation_plane_theory]
+      pair_spec left right {left, right}ₘ :=
+    FirstOrder.Derives.theory_weaken
+      pairing_operator_theory_subset_relation_plane_theory
+      (unordered_pair_term_spec_derives (Γ := Γ) left right)
+  have hRightRaw : Γ ⊢ₘ[relation_plane_theory]
+      pair_spec right left {right, left}ₘ :=
+    FirstOrder.Derives.theory_weaken
+      pairing_operator_theory_subset_relation_plane_theory
+      (unordered_pair_term_spec_derives (Γ := Γ) right left)
+  have hRight : Γ ⊢ₘ[relation_plane_theory]
+      pair_spec left right {right, left}ₘ :=
+    FirstOrder.Derives.iff_elim_right
+      (pair_spec_comm_iff left right {right, left}ₘ) hRightRaw
+  have hUnique := FirstOrder.Derives.theory_weaken
+    extensionality_theory_subset_relation_plane_theory
+    (pair_unique (Γ := Γ) left right
+      {left, right}ₘ {right, left}ₘ)
+  exact FirstOrder.Derives.imp_elim
+    (FirstOrder.Derives.imp_elim hUnique hLeft) hRight
+
+/-- 配对候选的两个生成元都在某集合中时，该候选包含于该集合。 -/
+theorem pair_spec_implies_subset_of_members
+    {free : SetContext} {Γ : Context signature free}
+    (left right pair source : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      pair_spec left right pair ⟶ₘ
+        ((left ∈ₘ source) ⟶ₘ
+          ((right ∈ₘ source) ⟶ₘ (pair ⊆ₘ source))) := by
+  apply FirstOrder.Derives.imp_intro
+  apply FirstOrder.Derives.imp_intro
+  apply FirstOrder.Derives.imp_intro
+  let Δ : Context signature free :=
+    (right ∈ₘ source) :: (left ∈ₘ source) ::
+      pair_spec left right pair :: Γ
+  apply subset_intro subset_theory_subset_relation_plane_theory
+  apply FirstOrder.Derives.imp_intro
+  let element : SetOpenTerm (SetSort.set :: free) :=
+    FreshVariable.newest
+      (σ := signature) (free := free) SetSort.set
+  let Θ : Context signature (SetSort.set :: free) :=
+    (element ∈ₘ pair.weakenFree SetSort.set) ::
+      FreshVariable.extendContext SetSort.set Δ
+  have hSpec : Θ ⊢ₘ[relation_plane_theory]
+      pair_spec (left.weakenFree SetSort.set)
+        (right.weakenFree SetSort.set)
+        (pair.weakenFree SetSort.set) :=
+    FirstOrder.Derives.assumption (by
+      simp [Θ, Δ, FreshVariable.extendContext])
+  have hElementPair : Θ ⊢ₘ[relation_plane_theory]
+      element ∈ₘ pair.weakenFree SetSort.set :=
+    FirstOrder.Derives.assumption (by simp [Θ])
+  have hChoice := FirstOrder.Derives.iff_elim_left
+    (pair_spec_membership_iff
+      (left.weakenFree SetSort.set)
+      (right.weakenFree SetSort.set)
+      (pair.weakenFree SetSort.set) element hSpec)
+    hElementPair
+  apply FirstOrder.Derives.disj_elim hChoice
+  · have hEquality :
+        ((element ≐ₘ left.weakenFree SetSort.set) :: Θ)
+          ⊢ₘ[relation_plane_theory]
+            element ≐ₘ left.weakenFree SetSort.set :=
+      FirstOrder.Derives.assumption List.mem_cons_self
+    have hLeftMember :
+        ((element ≐ₘ left.weakenFree SetSort.set) :: Θ)
+          ⊢ₘ[relation_plane_theory]
+            left.weakenFree SetSort.set ∈ₘ source.weakenFree SetSort.set :=
+      FirstOrder.Derives.assumption (by
+        simp [Θ, Δ, FreshVariable.extendContext])
+    exact FirstOrder.Derives.iff_elim_right
+      (membership_left_iff_of_equality
+        element (left.weakenFree SetSort.set)
+        (source.weakenFree SetSort.set) hEquality)
+      hLeftMember
+  · have hEquality :
+        ((element ≐ₘ right.weakenFree SetSort.set) :: Θ)
+          ⊢ₘ[relation_plane_theory]
+            element ≐ₘ right.weakenFree SetSort.set :=
+      FirstOrder.Derives.assumption List.mem_cons_self
+    have hRightMember :
+        ((element ≐ₘ right.weakenFree SetSort.set) :: Θ)
+          ⊢ₘ[relation_plane_theory]
+            right.weakenFree SetSort.set ∈ₘ source.weakenFree SetSort.set :=
+      FirstOrder.Derives.assumption (by
+        simp [Θ, Δ, FreshVariable.extendContext])
+    exact FirstOrder.Derives.iff_elim_right
+      (membership_left_iff_of_equality
+        element (right.weakenFree SetSort.set)
+        (source.weakenFree SetSort.set) hEquality)
+      hRightMember
+
+/-- 两个生成元都在某集合中时，它们的无序对包含于该集合。 -/
+theorem unordered_pair_subset_of_members
+    {free : SetContext} {Γ : Context signature free}
+    (left right source : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      (left ∈ₘ source) ⟶ₘ
+        ((right ∈ₘ source) ⟶ₘ ({left, right}ₘ ⊆ₘ source)) := by
+  apply FirstOrder.Derives.imp_intro
+  apply FirstOrder.Derives.imp_intro
+  let Δ : Context signature free :=
+    (right ∈ₘ source) :: (left ∈ₘ source) :: Γ
+  have hSpec : Δ ⊢ₘ[relation_plane_theory]
+      pair_spec left right {left, right}ₘ :=
+    FirstOrder.Derives.theory_weaken
+      pairing_operator_theory_subset_relation_plane_theory
+      (unordered_pair_term_spec_derives (Γ := Δ) left right)
+  exact FirstOrder.Derives.imp_elim
+    (FirstOrder.Derives.imp_elim
+      (FirstOrder.Derives.imp_elim
+        (pair_spec_implies_subset_of_members
+          (Γ := Δ) left right {left, right}ₘ source)
+        hSpec)
+      (FirstOrder.Derives.assumption (by simp)))
+    (FirstOrder.Derives.assumption (by simp))
+
+/-- 一个元素属于某集合时，其单点集包含于该集合。 -/
+theorem singleton_subset_of_mem
+    {free : SetContext} {Γ : Context signature free}
+    (element source : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      (element ∈ₘ source) ⟶ₘ ({element}ₘ ⊆ₘ source) := by
+  apply FirstOrder.Derives.imp_intro
+  let Δ : Context signature free := (element ∈ₘ source) :: Γ
+  apply subset_intro subset_theory_subset_relation_plane_theory
+  apply FirstOrder.Derives.imp_intro
+  let member : SetOpenTerm (SetSort.set :: free) :=
+    FreshVariable.newest
+      (σ := signature) (free := free) SetSort.set
+  let Θ : Context signature (SetSort.set :: free) :=
+    (member ∈ₘ {element.weakenFree SetSort.set}ₘ) ::
+      FreshVariable.extendContext SetSort.set Δ
+  have hSpec : Θ ⊢ₘ[relation_plane_theory]
+      singleton_spec (element.weakenFree SetSort.set)
+        {element.weakenFree SetSort.set}ₘ :=
+    FirstOrder.Derives.theory_weaken
+      singleton_operator_theory_subset_relation_plane_theory
+      (singleton_term_spec_derives
+        (Γ := Θ) (element.weakenFree SetSort.set))
+  have hMember : Θ ⊢ₘ[relation_plane_theory]
+      member ∈ₘ {element.weakenFree SetSort.set}ₘ :=
+    FirstOrder.Derives.assumption (by simp [Θ])
+  have hEquality := FirstOrder.Derives.iff_elim_left
+    (singleton_spec_membership_iff
+      (element.weakenFree SetSort.set)
+      {element.weakenFree SetSort.set}ₘ member hSpec)
+    hMember
+  have hElementSource : Θ ⊢ₘ[relation_plane_theory]
+      element.weakenFree SetSort.set ∈ₘ source.weakenFree SetSort.set :=
+    FirstOrder.Derives.assumption (by
+      simp [Θ, Δ, FreshVariable.extendContext])
+  exact FirstOrder.Derives.iff_elim_right
+    (membership_left_iff_of_equality member
+      (element.weakenFree SetSort.set)
+      (source.weakenFree SetSort.set) hEquality)
+    hElementSource
+
+/-- 元素属于其规范单点集。 -/
+theorem mem_singleton_self
+    {free : SetContext} {Γ : Context signature free}
+    (element : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory] element ∈ₘ {element}ₘ := by
+  have hSpec : Γ ⊢ₘ[relation_plane_theory]
+      singleton_spec element {element}ₘ :=
+    FirstOrder.Derives.theory_weaken
+      singleton_operator_theory_subset_relation_plane_theory
+      (singleton_term_spec_derives (Γ := Γ) element)
+  exact FirstOrder.Derives.iff_elim_right
+    (singleton_spec_membership_iff element {element}ₘ element hSpec)
+    (Metatheory.Derives.equality_refl
+      (T := relation_plane_theory) (Γ := Γ) element)
+
+/-- 左生成元属于其规范无序对。 -/
+theorem mem_unordered_pair_left
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory] left ∈ₘ {left, right}ₘ := by
+  have hSpec : Γ ⊢ₘ[relation_plane_theory]
+      pair_spec left right {left, right}ₘ :=
+    FirstOrder.Derives.theory_weaken
+      pairing_operator_theory_subset_relation_plane_theory
+      (unordered_pair_term_spec_derives (Γ := Γ) left right)
+  exact FirstOrder.Derives.iff_elim_right
+    (pair_spec_membership_iff left right {left, right}ₘ left hSpec)
+    (FirstOrder.Derives.disj_intro_left
+      (Metatheory.Derives.equality_refl
+        (T := relation_plane_theory) (Γ := Γ) left))
+
+/-- 右生成元属于其规范无序对。 -/
+theorem mem_unordered_pair_right
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory] right ∈ₘ {left, right}ₘ := by
+  have hSpec : Γ ⊢ₘ[relation_plane_theory]
+      pair_spec left right {left, right}ₘ :=
+    FirstOrder.Derives.theory_weaken
+      pairing_operator_theory_subset_relation_plane_theory
+      (unordered_pair_term_spec_derives (Γ := Γ) left right)
+  exact FirstOrder.Derives.iff_elim_right
+    (pair_spec_membership_iff left right {left, right}ₘ right hSpec)
+    (FirstOrder.Derives.disj_intro_right
+      (Metatheory.Derives.equality_refl
+        (T := relation_plane_theory) (Γ := Γ) right))
+
+/-- 左坐标单点集属于其 Kuratowski 有序对。 -/
+theorem singleton_mem_ordered_pair
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory] {left}ₘ ∈ₘ ⟨left, right⟩ₘ := by
+  have hSpec : Γ ⊢ₘ[relation_plane_theory]
+      ordered_pair_spec left right ⟨left, right⟩ₘ :=
+    FirstOrder.Derives.theory_weaken
+      ordered_pair_operator_theory_subset_relation_plane_theory
+      (ordered_pair_term_spec_derives (Γ := Γ) left right)
+  exact FirstOrder.Derives.iff_elim_right
+    (pair_spec_membership_iff {left}ₘ {left, right}ₘ
+      ⟨left, right⟩ₘ {left}ₘ hSpec)
+    (FirstOrder.Derives.disj_intro_left
+      (Metatheory.Derives.equality_refl
+        (T := relation_plane_theory) (Γ := Γ) {left}ₘ))
+
+/-- 坐标无序对属于其 Kuratowski 有序对。 -/
+theorem unordered_pair_mem_ordered_pair
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory] {left, right}ₘ ∈ₘ ⟨left, right⟩ₘ := by
+  have hSpec : Γ ⊢ₘ[relation_plane_theory]
+      ordered_pair_spec left right ⟨left, right⟩ₘ :=
+    FirstOrder.Derives.theory_weaken
+      ordered_pair_operator_theory_subset_relation_plane_theory
+      (ordered_pair_term_spec_derives (Γ := Γ) left right)
+  exact FirstOrder.Derives.iff_elim_right
+    (pair_spec_membership_iff {left}ₘ {left, right}ₘ
+      ⟨left, right⟩ₘ {left, right}ₘ hSpec)
+    (FirstOrder.Derives.disj_intro_right
+      (Metatheory.Derives.equality_refl
+        (T := relation_plane_theory) (Γ := Γ) {left, right}ₘ))
+
+/-! ## Kuratowski 有序对的并集 -/
+
+/-- Kuratowski 有序对的一元并恰好是其两个坐标的无序对。 -/
+theorem union_ordered_pair_term_eq_unordered_pair
+    {free : SetContext} {Γ : Context signature free}
+    (left right : SetOpenTerm free) :
+    Γ ⊢ₘ[relation_plane_theory]
+      (⋃ₘ ⟨left, right⟩ₘ) ≐ₘ {left, right}ₘ := by
+  let singleton : SetOpenTerm free := {left}ₘ
+  let pair : SetOpenTerm free := {left, right}ₘ
+  let ordered : SetOpenTerm free := ⟨left, right⟩ₘ
+  let kuratowski : SetOpenTerm free := {singleton, pair}ₘ
+  let binary : SetOpenTerm free := singleton ∪ₘ pair
+  have hOrderedSpec : Γ ⊢ₘ[relation_plane_theory]
+      pair_spec singleton pair ordered := by
+    simpa [singleton, pair, ordered, ordered_pair_spec] using
+      FirstOrder.Derives.theory_weaken
         ordered_pair_operator_theory_subset_relation_plane_theory
-          hFormula) (ordered_pair_term_spec_derives
-        left right hLeft hRight)
-  have hAt :=
-    pair_spec_membership_iff
-      {left}ₘ {left, right}ₘ
-      ⟨left, right⟩ₘ {left}ₘ (singleton_term_admissible left hLeft) (unordered_pair_term_admissible
-        left right hLeft hRight) (ordered_pair_term_admissible
-        left right hLeft hRight) (singleton_term_admissible left hLeft) (by
-        simpa [ordered_pair_spec] using hSpec)
-  exact FirstOrder.Derives.iffElimLeft
-    hAt (FirstOrder.Derives.disjIntroLeft
-      (FirstOrder.Derives.eq_refl_m
-        (sort := SetSort.set) {left}ₘ))
-/-- 坐标无序对属于对应的 Kuratowski 有序对。 -/
-theorem unordered_pair_mem_ordered_pair (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set) (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[relation_plane_theory]
-      {left, right}ₘ ∈ₘ
-        ⟨left, right⟩ₘ := by
-  have hSpec :
-      ⊢ₘ[relation_plane_theory]
-        ordered_pair_spec
-          left right ⟨left, right⟩ₘ :=
-    FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-        ordered_pair_operator_theory_subset_relation_plane_theory
-          hFormula) (ordered_pair_term_spec_derives
-        left right hLeft hRight)
-  have hAt :=
-    pair_spec_membership_iff
-      {left}ₘ {left, right}ₘ
-      ⟨left, right⟩ₘ {left, right}ₘ (singleton_term_admissible left hLeft) (unordered_pair_term_admissible
-        left right hLeft hRight) (ordered_pair_term_admissible
-        left right hLeft hRight) (unordered_pair_term_admissible
-        left right hLeft hRight) (by
-        simpa [ordered_pair_spec] using hSpec)
-  exact FirstOrder.Derives.iffElimLeft
-    hAt (FirstOrder.Derives.disjIntroRight
-      (FirstOrder.Derives.eq_refl_m
-        (sort := SetSort.set) {left, right}ₘ))
-/--
-规范 Kuratowski 有序对的一元并集恰好是其两个坐标的无序对。
-中间把有序对项识别为 `{{left}, {left, right}}`，再使用二元并吸收律。
--/
-theorem union_ordered_pair_term_eq_unordered_pair (left right : SetTerm) (hLeft : Term.Admissible left SetSort.set)
-    (hRight : Term.Admissible right SetSort.set) :
-    ⊢ₘ[relation_plane_theory] (⋃ₘ ⟨left, right⟩ₘ) ≐ₘ
-        {left, right}ₘ := by
-  let singleton := {left}ₘ
-  let pair := {left, right}ₘ
-  let ordered := ⟨left, right⟩ₘ
-  let kuratowski := {singleton, pair}ₘ
-  let binary := singleton ∪ₘ pair
-  have hSingleton :
-      Term.Admissible singleton SetSort.set :=
-    singleton_term_admissible left hLeft
-  have hPair :
-      Term.Admissible pair SetSort.set :=
-    unordered_pair_term_admissible
-      left right hLeft hRight
-  have hOrdered :
-      Term.Admissible ordered SetSort.set :=
-    ordered_pair_term_admissible
-      left right hLeft hRight
-  have hKuratowski :
-      Term.Admissible kuratowski SetSort.set :=
-    unordered_pair_term_admissible
-      singleton pair hSingleton hPair
-  have hBinary :
-      Term.Admissible binary SetSort.set :=
-    binary_union_term_admissible
-      singleton pair hSingleton hPair
-  have hUnionKuratowski :
-      Term.Admissible (⋃ₘ kuratowski) SetSort.set :=
-    union_term_admissible
-      kuratowski hKuratowski
-  have hOuterSpec :
-      ⊢ₘ[relation_plane_theory]
-        pair_spec singleton pair ordered := by
-    simpa [singleton, pair, ordered,
-      ordered_pair_spec] using (FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          ordered_pair_operator_theory_subset_relation_plane_theory
-            hFormula) (ordered_pair_term_spec_derives
-          left right hLeft hRight))
-  have hOrderedKuratowskiIff :
-      ⊢ₘ[relation_plane_theory] (ordered ≐ₘ kuratowski) ↔ₘ
-          pair_spec singleton pair ordered := by
-    simpa [kuratowski] using (FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          pairing_operator_theory_subset_relation_plane_theory
-            hFormula) (by
-          simpa [kuratowski] using
-            unordered_pair_eq_iff_spec
-              singleton pair ordered
-              hSingleton hPair hOrdered))
-  have hOrderedKuratowski :
-      ⊢ₘ[relation_plane_theory]
-        ordered ≐ₘ kuratowski :=
-    FirstOrder.Derives.iffElimLeft
-      hOrderedKuratowskiIff hOuterSpec
-  have hUnionCongruence :
-      ⊢ₘ[relation_plane_theory] (⋃ₘ ordered) ≐ₘ (⋃ₘ kuratowski) :=
-    union_term_congr_of_equality
-      ordered kuratowski
-      hOrdered hKuratowski
-      hOrderedKuratowski
-  have hBinaryDefinition :
-      ⊢ₘ[relation_plane_theory]
-        binary ≐ₘ (⋃ₘ kuratowski) := by
-    simpa [binary, kuratowski,
-      singleton, pair] using (FirstOrder.Derives.theory_weaken (fun _ hFormula =>
-          binary_union_operator_theory_subset_relation_plane_theory
-            hFormula) (binary_union_term_eq_union_pair_derives
-          singleton pair hSingleton hPair))
-  have hUnionKuratowskiBinary :
-      ⊢ₘ[relation_plane_theory] (⋃ₘ kuratowski) ≐ₘ binary :=
-    Metatheory.Derives.equality_symm
-      hBinaryDefinition
-  have hSingletonSubsetPair :
-      ⊢ₘ[relation_plane_theory]
-        singleton ⊆ₘ pair := by
-    exact FirstOrder.Derives.impElim (by
-        simpa [singleton, pair] using
-          singleton_subset_of_mem
-            left pair hLeft hPair) (by
-        simpa [pair] using
-          mem_unordered_pair_left
-            left right hLeft hRight)
-  have hAbsorption :
-      ⊢ₘ[relation_plane_theory]
-        binary ≐ₘ pair := by
-    exact FirstOrder.Derives.impElim (by
-        simpa [binary] using
-          binary_union_term_eq_right_of_subset
-            singleton pair
-            hSingleton hPair)
-      hSingletonSubsetPair
-  have hUnionOrderedBinary :
-      ⊢ₘ[relation_plane_theory] (⋃ₘ ordered) ≐ₘ binary :=
-    Metatheory.Derives.equality_trans
-      hUnionCongruence
-      hUnionKuratowskiBinary
-  simpa [ordered, pair] using
-    Metatheory.Derives.equality_trans
-      hUnionOrderedBinary hAbsorption
-/-! ## 笛卡尔积标准母集 -/
+        (ordered_pair_term_spec_derives (Γ := Γ) left right)
+  have hOrderedEquality : Γ ⊢ₘ[relation_plane_theory]
+      ordered ≐ₘ kuratowski := by
+    have hDefinition := FirstOrder.Derives.theory_weaken
+      pairing_operator_theory_subset_relation_plane_theory
+      (unordered_pair_eq_iff_spec
+        (Γ := Γ) singleton pair ordered)
+    simpa [kuratowski] using
+      FirstOrder.Derives.iff_elim_right hDefinition hOrderedSpec
+  have hUnionCongruence : Γ ⊢ₘ[relation_plane_theory]
+      (⋃ₘ ordered) ≐ₘ (⋃ₘ kuratowski) :=
+    union_term_congr_of_equality ordered kuratowski hOrderedEquality
+  have hUnionBinary : Γ ⊢ₘ[relation_plane_theory]
+      (⋃ₘ kuratowski) ≐ₘ binary := by
+    have hDefinition := FirstOrder.Derives.theory_weaken
+      binary_union_operator_theory_subset_relation_plane_theory
+      (binary_union_term_eq_union_pair_derives
+        (Γ := Γ) singleton pair)
+    simpa [kuratowski, binary] using
+      Metatheory.Derives.equality_symm hDefinition
+  have hLeftMember : Γ ⊢ₘ[relation_plane_theory]
+      left ∈ₘ pair := by
+    simpa [pair] using
+      (mem_unordered_pair_left (Γ := Γ) left right)
+  have hSingletonSubset : Γ ⊢ₘ[relation_plane_theory]
+      singleton ⊆ₘ pair :=
+    by
+      simpa [singleton] using FirstOrder.Derives.imp_elim
+        (singleton_subset_of_mem (Γ := Γ) left pair)
+        hLeftMember
+  have hAbsorption : Γ ⊢ₘ[relation_plane_theory]
+      binary ≐ₘ pair := by
+    simpa [binary] using FirstOrder.Derives.imp_elim
+      (binary_union_term_eq_right_of_subset
+        (Γ := Γ) singleton pair)
+      hSingletonSubset
+  have hToBinary := Metatheory.Derives.equality_trans
+    hUnionCongruence hUnionBinary
+  have hResult := Metatheory.Derives.equality_trans
+    hToBinary hAbsorption
+  simpa [ordered, pair] using hResult
+
 end BasicSetTheory
 end Nonlogical
 end FirstOrder

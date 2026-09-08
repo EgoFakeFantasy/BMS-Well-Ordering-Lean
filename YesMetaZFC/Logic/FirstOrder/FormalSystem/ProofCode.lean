@@ -849,8 +849,8 @@ theorem proof_sequence_code_trace_step (sequence : List (List Nat)) (index : Nat
 /-- 二维证明序列代码控制证明的行数。 -/
 theorem proof_sequence_length_le_code (sequence : List (List Nat)) :
     sequence.length ≤ proof_sequence_code_value sequence := by
-  simpa [proof_sequence_code_value,
-    proof_sequence_code_from] using
+  simpa only [proof_sequence_code_value, proof_sequence_code_from,
+    nat_sequence_code_value, List.length_map] using
     nat_sequence_length_le_code (sequence.map nat_sequence_code_value)
 /-- 证明中的每个行代码都严格小于整条二维证明代码。 -/
 theorem row_code_lt_proof_sequence_code_from

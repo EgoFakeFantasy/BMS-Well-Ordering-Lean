@@ -80,6 +80,8 @@ def cantorBernsteinClosure (𝒞 : OrderedPairConvention) : UnarySchema 4 where
     simp [Formula.isCantorBernsteinClosed,
       Formula.orderedPairMem, Formula.forallMem,
       Formula.existsMem, Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end UnarySchema
 namespace BinarySchema
 /-- 生成 Cantor--Bernstein 分片函数图成员的模式。 -/
@@ -89,6 +91,8 @@ def cantorBernsteinGraph (𝒞 : OrderedPairConvention) : BinarySchema 3 where
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end BinarySchema
 namespace Formula
 theorem satisfies_cantorBernsteinClosure_iff
@@ -103,7 +107,7 @@ theorem satisfies_cantorBernsteinClosure_iff
   have hSemantic (closed : ℳ.Domain) :
       satisfies ((env.push value).push closed) (isCantorBernsteinClosed 𝒞 (.bound 2) (.bound 3) (.bound 4) (.bound 5) (.bound 0)) ↔
         ℳ.IsCantorBernsteinClosed 𝕀 (env.bound 0) (env.bound 1) (env.bound 2) (env.bound 3) closed := by
-    simpa using (satisfies_isCantorBernsteinClosed_iff 𝕀 ((env.push value).push closed) (.bound 2) (.bound 3) (.bound 4) (.bound 5) (.bound 0))
+    simpa using! (satisfies_isCantorBernsteinClosed_iff 𝕀 ((env.push value).push closed) (.bound 2) (.bound 3) (.bound 4) (.bound 5) (.bound 0))
   constructor
   · intro h closed hClosed
     have hMember := h closed ((hSemantic closed).mpr hClosed)

@@ -1496,7 +1496,7 @@ theorem checkedUnsat_sound {valuation : Valuation}
     exact ⟨hChecked.1.1, hChecked.1.2⟩
   let state0 := UnsatCheckState.initial initialClauses
   have hDb0 : DatabaseSatisfies valuation state0.database := by
-    simpa [state0, UnsatCheckState.initial] using
+    simpa only [state0, UnsatCheckState.initial, UnsatCheckState.acceptedInitial] using
       initialClauseDatabase_satisfies (valuation := valuation) (initialClauses := initialClauses) hInitial
   have hStateOk0 : state0.ok = true := by
     exact runUnsatCheckList_initial_ok (records := proof.journal.learns.toList) (state := state0) hCheckedParts.1

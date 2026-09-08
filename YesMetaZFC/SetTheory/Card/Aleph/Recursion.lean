@@ -59,6 +59,8 @@ private def cardinalAboveMembership (𝒞 : Definitional.Project.OrderedPairConv
       Definitional.Project.Formula.extensionalEq,
       Definitional.Formula.FreeClosed,
       Definitional.Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 基数上界分离模式的模型语义。 -/
 private theorem satisfies_cardinalAboveMembership_iff
     {ℳ : Structure.{u}}
@@ -113,7 +115,8 @@ private def alephValueCardinalAt (𝒞 : Definitional.Project.OrderedPairConvent
           (Definitional.TermVector.singleton (.bound 2) :
             Definitional.TermVector 1 3)) (left := (.bound 1 : Definitional.Term 3)) (right := (.bound 0 : Definitional.Term 3))
         (by intro entry; simp [Definitional.TermVector.singleton]) (by simp) (by simp)
-    · repeat' constructor
+    · repeat' apply And.intro
+      all_goals first | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl | skip
       all_goals
         apply Definitional.Project.Formula.related_freeClosed_of_closed <;>
           simp [Definitional.TermVector.FreeClosed,

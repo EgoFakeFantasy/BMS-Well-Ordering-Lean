@@ -54,11 +54,11 @@ theorem satisfies_imageMembership_iff {ℳ : Structure.{u}}
   · rintro ⟨input, hInput, hBody⟩
     refine ⟨input, hInput, ?_⟩
     rw [satisfies_rename] at hBody
-    simpa only [reindex_binaryImageBody] using hBody
+    simpa only [reindex_binaryImageBody] using! hBody
   · rintro ⟨input, hInput, hBody⟩
     refine ⟨input, hInput, ?_⟩
     rw [satisfies_rename]
-    simpa only [reindex_binaryImageBody] using hBody
+    simpa only [reindex_binaryImageBody] using! hBody
 end Formula
 end Project
 end Definitional

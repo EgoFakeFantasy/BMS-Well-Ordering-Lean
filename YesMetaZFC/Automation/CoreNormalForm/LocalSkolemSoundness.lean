@@ -10,6 +10,8 @@ namespace YesMetaZFC.Automation.CoreSyntax.NormalForm
 universe x
 namespace Semantics
 namespace Model
+/-- 模型扩张保留载体；隐式类型比较可展开此定义。 -/
+@[implicit_reducible]
 def overrideFunction (M : Model) (symbol : FunctionSymbol) (interpretation : List M.Carrier → M.Carrier) : Model where
   Carrier := M.Carrier
   default := M.default
@@ -35,11 +37,12 @@ theorem overrideFunction_functionSort {M : Model} (symbol : FunctionSymbol) (int
   · subst target
     simpa [overrideFunction] using hInterpretation arguments
   · simpa [overrideFunction, hTarget] using hBase target arguments
+@[implicit_reducible]
 def overrideFunctionValue (M : Model) (symbol : FunctionSymbol) (value : M.Carrier) : Model :=
   M.overrideFunction symbol fun _ => value
 end Model
 namespace FoolContract
-def overrideFunction {M : Model} (contract : FoolContract M) (symbol : FunctionSymbol) (interpretation : List M.Carrier → M.Carrier) (hInterpretation : ∀ arguments, M.sortInterp symbol.outputSort (interpretation arguments)) : FoolContract (M.overrideFunction symbol interpretation) :=
+theorem overrideFunction {M : Model} (contract : FoolContract M) (symbol : FunctionSymbol) (interpretation : List M.Carrier → M.Carrier) (hInterpretation : ∀ arguments, M.sortInterp symbol.outputSort (interpretation arguments)) : FoolContract (M.overrideFunction symbol interpretation) :=
   {
     contract with
     function_sort :=
@@ -48,7 +51,7 @@ def overrideFunction {M : Model} (contract : FoolContract M) (symbol : FunctionS
   }
 end FoolContract
 namespace FoolLambdaContract
-def overrideFunction {M : Model} (contract : FoolLambdaContract M) (symbol : FunctionSymbol) (interpretation : List M.Carrier → M.Carrier) (hInterpretation : ∀ arguments, M.sortInterp symbol.outputSort (interpretation arguments)) : FoolLambdaContract (M.overrideFunction symbol interpretation) :=
+theorem overrideFunction {M : Model} (contract : FoolLambdaContract M) (symbol : FunctionSymbol) (interpretation : List M.Carrier → M.Carrier) (hInterpretation : ∀ arguments, M.sortInterp symbol.outputSort (interpretation arguments)) : FoolLambdaContract (M.overrideFunction symbol interpretation) :=
   {
     contract with
     function_sort :=
@@ -1198,7 +1201,7 @@ theorem skolemizeExists_satisfies {M : Model} (env : Env M) (body : Nnf) (symbol
   have hEval :
       Term.eval (Env.rebaseOverride env symbol witness) (Term.app symbol args) = witness := by
     simp [Term.eval, Env.rebaseOverride, Model.overrideFunctionValue, Model.overrideFunction]
-  simpa [hEval] using hBody'
+  simpa [hEval] using! hBody'
 theorem skolemizeExists_satisfiesWith {M : Model} (env : Env M) (body : Nnf) (symbol : FunctionSymbol) (args : List Term) (interpretation : List M.Carrier → M.Carrier) (witness : M.Carrier) (hBodyFresh :
     LocalSkolem.nnfMaxFunctionIdSucc body ≤ symbol.id) (hArgsFresh : LocalSkolem.termListMaxFunctionIdSucc args ≤ symbol.id) (hWitness : interpretation (args.map (Term.eval env)) = witness) (hBody : Nnf.Satisfies
     (env.push witness) body) : Nnf.Satisfies (Env.rebaseOverrideFunction env symbol interpretation) (LocalSkolem.instantiateNnf (Term.app symbol args) body) := by
@@ -1216,7 +1219,7 @@ theorem skolemizeExists_satisfiesWith {M : Model} (env : Env M) (body : Nnf) (sy
     simp only [Term.eval, Model.overrideFunction]
     simp only [ite_true]
     exact (congrArg interpretation hArgs).trans hWitness
-  simpa [hEval] using hBody'
+  simpa [hEval] using! hBody'
 theorem skolemizeExists_satisfiesWithChoice {M : Model} (base env : Env M) (sort : CoreSort) (body : Nnf) (symbol : FunctionSymbol) (universals : List LocalSkolem.UniversalIntro) (hWellFormed : ∀ universal ∈ universals,
     universal.term = Term.fvar universal.sort universal.varId) (hSupport : ∀ parameter, parameter ∈ DefinitionalCnf.nnfFreeVarParams body → parameter ∈ LocalSkolemChoice.parameters universals) (hBound :
     LocalSkolemChoice.SameBoundStack env base) (hBodyFresh : LocalSkolem.nnfMaxFunctionIdSucc body ≤ symbol.id) (hArgsFresh : LocalSkolem.termListMaxFunctionIdSucc (universals.map fun universal => universal.term) ≤

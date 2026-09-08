@@ -38,7 +38,7 @@ theorem exists_membershipWellOrderType_of_subsetOrdinal
     simpa [Definitional.Project.RelationSchema.membership,
       Definitional.Project.BinarySchema.denote,
       Definitional.Project.Formula.satisfies_mem_iff]
-      using hRelationPairs left right
+      using! hRelationPairs left right
   have hOrder :
       ℳ.IsSetCodedWellOrder 𝕀 relation carrier := by
     refine ⟨⟨hRelationOn.1, ?_⟩, ?_⟩

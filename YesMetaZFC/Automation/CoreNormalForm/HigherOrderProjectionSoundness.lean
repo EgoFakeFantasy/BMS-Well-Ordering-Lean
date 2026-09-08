@@ -65,6 +65,7 @@ theorem coreSort_simpleType (sort : CoreSort) : coreSort (simpleType sort) = sor
   | object | bool | prop | named => rfl
   | arrow domain codomain ihDomain ihCodomain => simp [simpleType, coreSort, ihDomain, ihCodomain]
 /-! ## 模型与环境翻译 -/
+@[implicit_reducible]
 def searchStructure (M : Semantics.Model) (contract : Semantics.FoolLambdaContract M) (functionSort : ∀ symbol arguments, M.sortInterp symbol.outputSort (M.functionInterp symbol arguments)) : Logic.HigherOrder.Structure SearchSignature where
   Domain := M.Carrier
   nonempty := ⟨M.default⟩
@@ -74,7 +75,7 @@ def searchStructure (M : Semantics.Model) (contract : Semantics.FoolLambdaContra
     M.functionInterp symbol.toCore arguments
   funcSort := by
     intro symbol arguments _hArguments
-    simpa [SearchSignature] using functionSort symbol.toCore arguments
+    simpa [SearchSignature] using! functionSort symbol.toCore arguments
   relInterp := fun symbol arguments =>
     match symbol with
     | .member =>
@@ -101,9 +102,9 @@ def searchStructure (M : Semantics.Model) (contract : Semantics.FoolLambdaContra
     M.lambdaValue (coreSort domain) (coreSort codomain) body
   lambdaSort := by
     intro domain codomain body hBody
-    simpa using
+    simpa using!
       contract.lambda_sort (coreSort domain) (coreSort codomain) body hBody
-def extensionalContract (M : Semantics.Model) (contract : Semantics.FoolLambdaContract M) (functionSort : ∀ symbol arguments, M.sortInterp symbol.outputSort (M.functionInterp symbol arguments)) : Logic.HigherOrder.ExtensionalContract (searchStructure M contract functionSort) where
+theorem extensionalContract (M : Semantics.Model) (contract : Semantics.FoolLambdaContract M) (functionSort : ∀ symbol arguments, M.sortInterp symbol.outputSort (M.functionInterp symbol arguments)) : Logic.HigherOrder.ExtensionalContract (searchStructure M contract functionSort) where
   lambdaCongr := by
     intro domain codomain left right hPointwise
     exact contract.lambda_congr (coreSort domain) (coreSort codomain)
@@ -151,7 +152,7 @@ mutual
         simp only [coreSort_simpleType]
         congr 1
         funext value
-        simpa [coreEnv, Logic.HigherOrder.Env.push, Semantics.Env.push] using
+        simpa [coreEnv, Logic.HigherOrder.Env.push, Semantics.Env.push] using!
           coreTerm_eval (env.push value) body hNative
     | .bool .., hNative
     | .notE .., hNative

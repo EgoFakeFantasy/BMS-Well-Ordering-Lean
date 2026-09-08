@@ -67,7 +67,7 @@ private theorem node_fields_of_nodesChecked
       (dag.localNodeGuardsOk (dag.nodeAt index hIndex) = true ∧
         dag.propInitialLinksOk (dag.nodeAt index hIndex) = true) := by
   have hAt := Array.all_eq_true.mp hNodes index hIndex
-  simpa [nodesChecked, nodeCheck, DAG.nodeAt] using hAt
+  simpa [nodesChecked, nodeCheck, DAG.nodeAt] using! hAt
 
 /-- 单次节点扫描恢复原高阶 DAG 契约消费的三个全局字段。 -/
 theorem dag_fields_of_nodesChecked
@@ -130,8 +130,7 @@ theorem contract_of_coreCheck
   rcases dag_fields_of_nodesChecked hNodes with
     ⟨hPayloads, hSnapshots, hGuards⟩
   have hRootSize : dag.root < dag.nodes.size := by
-    simpa [DAG.rootExists, DAG.graphView, DenseDAG.View.rootExists] using
-      hRootExists
+    exact of_decide_eq_true hRootExists
   have hRootData :
       (∃ conclusion,
           (dag.nodeAt dag.root hRootSize).conclusion? dag.problem =

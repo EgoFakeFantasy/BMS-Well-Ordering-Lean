@@ -41,6 +41,8 @@ def characteristicFunction (𝒞 : OrderedPairConvention) : BinarySchema 4 where
       Formula.orderedPairMem, Formula.forallMem,
       Formula.existsMem, Formula.extensionalEq,
       Formula.FreeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end BinarySchema
 namespace UnarySchema
 /-- 从函数图中分离取值为 `one` 的输入。 -/
@@ -48,6 +50,8 @@ def oneFiber (𝒞 : OrderedPairConvention) : UnarySchema 2 where
   body := Formula.orderedPairMem 𝒞 (.bound 0) (.bound 2) (.bound 1)
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end UnarySchema
 namespace Formula
 /-- 单点特征值关系的纸面解释。 -/
@@ -226,21 +230,21 @@ theorem equinumerous_powerSet_functionSpace
       · refine ⟨hInputSource, Or.inl ⟨?_, hOutputOne⟩⟩
         apply (hSubset input).mpr
         exact ⟨hInputSource, (Definitional.Project.Formula.satisfies_oneFiber_iff
-            𝕀 fiberEnv input).mpr <| by simpa [hOutputOne] using hPair⟩
+            𝕀 fiberEnv input).mpr <| by simpa [hOutputOne] using! hPair⟩
     · rintro ⟨hInputSource, hValue⟩
       rcases hValue with hInputSubset | hInputNotSubset
       · have hOnePair := (Definitional.Project.Formula.satisfies_oneFiber_iff
             𝕀 fiberEnv input).mp <| ((hSubset input).mp hInputSubset.1).2
-        simpa [hInputSubset.2] using hOnePair
+        simpa [hInputSubset.2] using! hOnePair
       · rcases hFunction.2.2 input hInputSource with
           ⟨selected, hSelectedTwo, hSelectedPair⟩
         rcases (hTwo selected).mp hSelectedTwo with
           hSelectedZero | hSelectedOne
-        · simpa [hInputNotSubset.2, hSelectedZero] using hSelectedPair
+        · simpa [hInputNotSubset.2, hSelectedZero] using! hSelectedPair
         · exact False.elim <| hInputNotSubset.1 <| (hSubset input).mpr
               ⟨hInputSource, (Definitional.Project.Formula.satisfies_oneFiber_iff
                   𝕀 fiberEnv input).mpr <| by
-                    simpa [hSelectedOne] using hSelectedPair⟩
+                    simpa [hSelectedOne] using! hSelectedPair⟩
 /-- 二元基数指数是相应幂集的基数。 -/
 theorem twoExponentiation_isCardinalOf_powerSet
     {ℳ : Structure.{u}} (hZF : ℳ.Models SetTheory.ZF)

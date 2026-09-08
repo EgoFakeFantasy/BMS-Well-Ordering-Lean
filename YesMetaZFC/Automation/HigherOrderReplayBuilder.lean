@@ -1,11 +1,17 @@
 import YesMetaZFC.Automation.KernelReplay
+import YesMetaZFC.Automation.SourcePreprocessing
+import YesMetaZFC.Automation.HOSearchMaterialization
+import YesMetaZFC.Automation.HODAGCertificate
+import YesMetaZFC.Automation.HOExtensionalWitnessRegistry
+import YesMetaZFC.Automation.HORefutationProvider
+import YesMetaZFC.Automation.CoreNormalForm.HigherOrderProjectionSoundness
 
 /-!
 # 高阶宿主 replay 表达式构造器
 
 把高阶 provider 的大段元层 quotation 从宿主重化文件移出。这里不依赖宿主私有
-结构，只消费闭合 source snapshot、checked preprocessing result 与 HO provider
-artifact；最终宿主构造器以 `Name` 注入，避免形成模块环。
+结构，只消费闭合 source snapshot、`FoolReplay` 与 HO provider artifact；最终宿主
+构造器以 `Name` 注入，避免形成模块环。
 -/
 namespace YesMetaZFC
 namespace Automation
@@ -17,16 +23,17 @@ def buildAttempt
     (finalAttemptConstructor : Name)
     (input sourceProblem hSource : Expr)
     (sourceProblemValue : SourcePreprocessing.Problem)
-    (result : SourcePreprocessing.CheckedResult sourceProblemValue)
+    (replay : SourcePreprocessing.FoolReplay sourceProblemValue)
     (artifact :
-      HORefutationProvider.CheckedReplayArtifact result.clauses) : MetaM Expr := do
-  let settingsExpr := toExpr ({} : SourcePreprocessing.Settings)
+      HORefutationProvider.CheckedReplayArtifact replay.payload.clauses) : MetaM Expr := do
+  let settingsExpr :=
+    toExpr (({} : SourcePreprocessing.FoolSettings).toSettings)
   let payloadExpr ←
     KernelReplay.preprocessingPayloadExpr
-      (toExpr result.checked.payload.source)
-      (toExpr result.checked.payload.normalized)
-      settingsExpr result.checked.payload.normalizationTrace
-      result.checked.payload.initialNnf
+      (toExpr replay.payload.source)
+      (toExpr replay.payload.normalized)
+      settingsExpr replay.payload.normalizationTrace
+      replay.payload.initialNnf
   let payloadCheck ←
     mkAppM
       ``CoreSyntax.NormalForm.CheckedPreprocessing.Payload.check
@@ -56,13 +63,24 @@ def buildAttempt
     mkAppM
       ``CoreSyntax.NormalForm.CheckedPreprocessing.Payload.clauses
       #[payloadExpr]
+  let replayCheck ←
+    mkAppM ``SourcePreprocessing.FoolReplay.check
+      #[sourceProblem, payloadExpr]
+  let nativeReplayCheck :=
+    toExpr (SourcePreprocessing.FoolReplay.check
+      sourceProblemValue replay.payload)
+  let hReplay ←
+    KernelReplay.erasableBoolTrueProof
+      `prove_auto_native_ho_replay
+      "higher-order preprocessing replay"
+      nativeReplayCheck replayCheck
   let nativeCheck ←
     mkAppM
       ``HOSearchMaterialization.CoreProjectionSoundness.Native.clauseSet
       #[payloadClauses]
   let coreProblem :=
     HOSearchMaterialization.CoreProjectionSoundness.coreProblem
-      result.clauses
+      replay.payload.clauses
   let coreProblemExpr := toExpr coreProblem
   let dagExpr :=
     HOSearchMaterialization.ReplayQuotation.dagExprWithProblem
@@ -91,90 +109,35 @@ def buildAttempt
   let supportedCheck ←
     mkAppM ``HODAGCertificate.DAG.avatarSoundnessSupported
       #[dagExpr]
-  let strictAudit :=
-    (← getOptions).getBool `prove_auto.replay.strictAudit false
-  let (replayChecks, dagContract) ←
-    if strictAudit then
-      let replayChecks ←
-        KernelReplay.erasableBoolTrueProofs
-          `prove_auto_native_ho_replay
-          #["higher-order preprocessing payload",
-            "higher-order preprocessing source",
-            "higher-order preprocessing free closure",
-            "higher-order native clause projection",
-            "higher-order selector registry",
-            "higher-order extensional witness registry",
-            "higher-order initial clause checks",
-            "higher-order AVATAR soundness capability"]
-          #[payloadCheck, sourceCheck, freeCheck, nativeCheck,
-            selectorRegistryCheck, witnessRegistryCheck,
-            initialChecks, supportedCheck]
-          #[payloadCheck, sourceCheck, freeCheck, nativeCheck,
-            selectorRegistryCheck, witnessRegistryCheck,
-            initialChecks, supportedCheck]
-      let dagContract ←
-        KernelReplay.higherOrderDagContractProof
-          dagExpr artifact.checked.checked.dag
-      pure (replayChecks, dagContract)
-    else
-      let aggregateCheck ←
-        mkAppM ``HigherOrderNativeReplay.check
-          #[sourceProblem, payloadExpr, dagExpr]
-      let hAggregate ←
-        KernelReplay.erasableBoolTrueProof
-          `prove_auto_native_ho_replay
-          "higher-order bundled replay" aggregateCheck aggregateCheck
-      let checked ←
-        mkAppM ``HigherOrderNativeReplay.Checked.ofCheck #[hAggregate]
-      let hPayload ←
-        mkAppM ``HigherOrderNativeReplay.Checked.h_payload #[checked]
-      let hSourceCheck ←
-        mkAppM ``HigherOrderNativeReplay.Checked.h_source #[checked]
-      let hFree ←
-        mkAppM ``HigherOrderNativeReplay.Checked.h_free #[checked]
-      let hNativeExpr ←
-        mkAppM ``HigherOrderNativeReplay.Checked.h_native #[checked]
-      let hDag ←
-        mkAppM ``HigherOrderNativeReplay.Checked.h_dag #[checked]
-      let hSelectorRegistry ←
-        mkAppM ``HigherOrderNativeReplay.Checked.h_selector #[checked]
-      let hWitnessRegistry ←
-        mkAppM ``HigherOrderNativeReplay.Checked.h_witness #[checked]
-      let hInitialChecks ←
-        mkAppM ``HigherOrderNativeReplay.Checked.h_initial #[checked]
-      let hSupported ←
-        mkAppM ``HigherOrderNativeReplay.Checked.h_supported #[checked]
-      let dagContract ←
-        mkAppM ``HODAGCertificate.DAG.LinearReplay.contract_of_coreCheck
-          #[hDag]
-      pure (#[hPayload, hSourceCheck, hFree, hNativeExpr,
-        hSelectorRegistry, hWitnessRegistry, hInitialChecks, hSupported],
-        dagContract)
-  let hPayload := replayChecks[0]!
-  let hSourceCheck := replayChecks[1]!
-  let hFree := replayChecks[2]!
+  let replayChecks ←
+    KernelReplay.erasableBoolTrueProofs
+      `prove_auto_native_ho_replay
+      #["higher-order preprocessing payload",
+        "higher-order preprocessing source",
+        "higher-order preprocessing free closure",
+        "higher-order native clause projection",
+        "higher-order selector registry",
+        "higher-order extensional witness registry",
+        "higher-order initial clause checks",
+        "higher-order AVATAR soundness capability"]
+      #[payloadCheck, sourceCheck, freeCheck, nativeCheck,
+        selectorRegistryCheck, witnessRegistryCheck,
+        initialChecks, supportedCheck]
+      #[payloadCheck, sourceCheck, freeCheck, nativeCheck,
+        selectorRegistryCheck, witnessRegistryCheck,
+        initialChecks, supportedCheck]
+  let dagContract ←
+    KernelReplay.higherOrderDagContractProof
+      dagExpr artifact.checked.checked.dag
   let hNativeRaw := replayChecks[3]!
   let hSelectorRegistry := replayChecks[4]!
   let hNativeWitnessRegistry := replayChecks[5]!
   let hInitialRaw := replayChecks[6]!
   let hSupported := replayChecks[7]!
-  let sourceEquality :=
-    mkApp2
-      (mkConst ``CoreSyntax.NormalForm.SyntaxEq.formulaEq_eq_true)
-      payloadSource refutationSource
-  let hResultSource ←
-    mkAppM ``Iff.mp #[sourceEquality, hSourceCheck]
-  let checkedExpr ←
-    mkAppM ``Certificate.Checked.mk #[payloadExpr, hPayload]
-  let resultExpr ←
-    mkAppM ``SourcePreprocessing.CheckedResult.mk
-      #[checkedExpr, hResultSource, hFree]
-  let clausesExpr ←
-    mkAppM ``SourcePreprocessing.CheckedResult.clauses #[resultExpr]
   let expectedNativeCheck ←
     mkAppM
       ``HOSearchMaterialization.CoreProjectionSoundness.Native.clauseSet
-      #[clausesExpr]
+      #[payloadClauses]
   let hNativeExpr ←
     KernelReplay.retargetBoolTrueProof
       "higher-order native clause projection"
@@ -182,7 +145,7 @@ def buildAttempt
   let expectedCoreProblemExpr ←
     mkAppM
       ``HOSearchMaterialization.CoreProjectionSoundness.coreProblem
-      #[clausesExpr]
+      #[payloadClauses]
   let hInitialChecks ←
     KernelReplay.retargetBoolTrueProof
       "higher-order initial clause checks" initialChecks hInitialRaw
@@ -227,8 +190,11 @@ def buildAttempt
     mkAppM ``HORefutationProvider.CheckedReplayArtifact.mk
       #[checkedAvatar, checkedWitnessRegistry, hProblemEq,
         hNativeExpr, hExpectedInitialChecks, hSupported]
+  let replayExpr ←
+    mkAppM ``SourcePreprocessing.FoolReplay.ofCheck
+      #[sourceProblem, payloadExpr, hReplay]
   mkAppM finalAttemptConstructor
-    #[input, sourceProblem, hSource, resultExpr, replayArtifact]
+    #[input, sourceProblem, hSource, replayExpr, replayArtifact]
 
 end HigherOrderReplayBuilder
 end Automation

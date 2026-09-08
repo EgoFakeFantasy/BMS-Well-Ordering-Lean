@@ -95,9 +95,9 @@ theorem pairArguments_freeClosed {depth : Nat}
     (pairArguments left right).FreeClosed := by
   intro entry
   refine Fin.cases ?_ (fun rest => ?_) entry
-  · simpa [pairArguments] using hLeft
+  · exact hLeft
   · refine Fin.cases ?_ (fun impossible => Fin.elim0 impossible) rest
-    simpa [pairArguments] using hRight
+    exact hRight
 
 @[simp] theorem pairArguments_freeClosed_iff {depth : Nat}
     (left right : Term depth) :

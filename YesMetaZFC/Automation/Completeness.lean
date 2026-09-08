@@ -1,23 +1,28 @@
 import YesMetaZFC.Automation.SearchMaterialization
 import YesMetaZFC.Logic.FirstOrder.Completeness
+
 /-!
 # 自动化后端的完备性接口
-本模块为 ATP 实际消费的 `SearchMaterialization.SearchSignature` 建立完整自然数编码，
-再把它提升为固定公平 Henkin 调度。后续同一模块负责把 checked 语义后端结果通过
-强完备性回收到 `Derives`。
-编码覆盖整个签名和原始 LN 公式，不依赖某次问题中临时出现的有限符号表。
+
+本模块直接为 ATP 使用的内在 Henkin 闭句建立自然数单射编码，并据此生成固定公平调度。
+旧实现对扁平搜索项、扁平公式、`Admissible` 与 free-closed 证明的重复编码已经删除；
+checked 后端本身持有闭句语义证书，最终只需经原签名强完备性回收到 `Derives`。
 -/
+
 namespace YesMetaZFC
 namespace Automation
 namespace SearchCompleteness
+
 open _root_.YesMetaZFC.Logic
 open _root_.YesMetaZFC.Logic.FirstOrder
+open _root_.YesMetaZFC.Logic.FirstOrder.HenkinSignature
 open _root_.YesMetaZFC.Logic.FirstOrder.Completeness.Henkin
+
 abbrev SearchSignature := SearchMaterialization.SearchSignature
-abbrev SearchTerm := Logic.FirstOrder.Term SearchSignature
-abbrev SearchFormula := Logic.FirstOrder.Formula SearchSignature
 private abbrev pair := NatPairing.pair
-/-! ## 实际搜索签名的符号编码 -/
+
+/-! ## 搜索签名符号编码 -/
+
 def core_sort_encode : CoreSyntax.CoreSort → Nat
   | .object => pair 0 0
   | .bool => pair 1 0
@@ -25,6 +30,7 @@ def core_sort_encode : CoreSyntax.CoreSort → Nat
   | .named id => pair 3 id
   | .arrow domain codomain =>
       pair 4 (pair (core_sort_encode domain) (core_sort_encode codomain))
+
 theorem core_sort_encode_injective :
     Function.Injective core_sort_encode := by
   intro left
@@ -64,9 +70,11 @@ theorem core_sort_encode_injective :
           rcases NatPairing.pair_eq_pair_iff.mp hPayload with
             ⟨hDomain, hCodomain⟩
           rw [ihDomain hDomain, ihCodomain hCodomain]
+
 def core_sort_coding : NatCoding CoreSyntax.CoreSort where
   encode := core_sort_encode
   injective := core_sort_encode_injective
+
 def symbol_kind_encode : CoreSyntax.Search.SymbolKind → Nat
   | .parameter => 0
   | .skolem => 1
@@ -75,18 +83,20 @@ def symbol_kind_encode : CoreSyntax.Search.SymbolKind → Nat
   | .builtin => 4
   | .extensionalWitness => 5
   | .tuple => 6
+
 theorem symbol_kind_encode_injective :
     Function.Injective symbol_kind_encode := by
   intro left right hCode
   cases left <;> cases right <;> simp [symbol_kind_encode] at hCode ⊢
-def symbol_kind_coding : NatCoding CoreSyntax.Search.SymbolKind where
-  encode := symbol_kind_encode
-  injective := symbol_kind_encode_injective
-def function_symbol_encode (symbol : CoreSyntax.Search.FunctionSymbol) : Nat :=
+
+def function_symbol_encode
+    (symbol : CoreSyntax.Search.FunctionSymbol) : Nat :=
   pair symbol.id <|
     pair symbol.arity <|
       pair (symbol_kind_encode symbol.kind) <|
-        pair ((NatCoding.list core_sort_coding).encode symbol.inputSorts) (core_sort_encode symbol.outputSort)
+        pair ((NatCoding.list core_sort_coding).encode symbol.inputSorts)
+          (core_sort_encode symbol.outputSort)
+
 theorem function_symbol_encode_injective :
     Function.Injective function_symbol_encode := by
   rintro ⟨id, arity, kind, inputSorts, outputSort⟩
@@ -95,33 +105,33 @@ theorem function_symbol_encode_injective :
   rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨hId, hCode⟩
   rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨hArity, hCode⟩
   rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨hKind, hCode⟩
-  rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨hInputs, hOutput⟩
-  have hKind' := symbol_kind_encode_injective hKind
-  have hInputs' := (NatCoding.list core_sort_coding).injective hInputs
-  have hOutput' := core_sort_encode_injective hOutput
+  rcases NatPairing.pair_eq_pair_iff.mp hCode with
+    ⟨hInputs, hOutput⟩
   cases hId
   cases hArity
-  cases hKind'
-  cases hInputs'
-  cases hOutput'
+  cases symbol_kind_encode_injective hKind
+  cases (NatCoding.list core_sort_coding).injective hInputs
+  cases core_sort_encode_injective hOutput
   rfl
-def function_symbol_coding : NatCoding CoreSyntax.Search.FunctionSymbol where
-  encode := function_symbol_encode
-  injective := function_symbol_encode_injective
+
 def predicate_role_encode : CoreSyntax.PredicateRole → Nat
   | .relation => 0
   | .equalityProxy => 1
   | .membership => 2
   | .definition => 3
   | .builtin => 4
+
 theorem predicate_role_encode_injective :
     Function.Injective predicate_role_encode := by
   intro left right hCode
   cases left <;> cases right <;> simp [predicate_role_encode] at hCode ⊢
+
 def predicate_symbol_encode (symbol : CoreSyntax.PredicateSymbol) : Nat :=
   pair symbol.id <|
     pair symbol.arity <|
-      pair (predicate_role_encode symbol.role) ((NatCoding.list core_sort_coding).encode symbol.inputSorts)
+      pair (predicate_role_encode symbol.role)
+        ((NatCoding.list core_sort_coding).encode symbol.inputSorts)
+
 theorem predicate_symbol_encode_injective :
     Function.Injective predicate_symbol_encode := by
   rintro ⟨id, arity, role, inputSorts⟩
@@ -130,21 +140,18 @@ theorem predicate_symbol_encode_injective :
   rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨hId, hCode⟩
   rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨hArity, hCode⟩
   rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨hRole, hInputs⟩
-  have hRole' := predicate_role_encode_injective hRole
-  have hInputs' := (NatCoding.list core_sort_coding).injective hInputs
   cases hId
   cases hArity
-  cases hRole'
-  cases hInputs'
+  cases predicate_role_encode_injective hRole
+  cases (NatCoding.list core_sort_coding).injective hInputs
   rfl
-def predicate_symbol_coding : NatCoding CoreSyntax.PredicateSymbol where
-  encode := predicate_symbol_encode
-  injective := predicate_symbol_encode_injective
+
 def relation_symbol_encode : SearchMaterialization.RelSymbol → Nat
   | .member => pair 0 0
   | .boolHolds => pair 1 0
   | .definition id arity => pair 2 (pair id arity)
   | .predicate symbol => pair 3 (predicate_symbol_encode symbol)
+
 theorem relation_symbol_encode_injective :
     Function.Injective relation_symbol_encode := by
   intro left right hCode
@@ -152,110 +159,208 @@ theorem relation_symbol_encode_injective :
     simp [relation_symbol_encode, NatPairing.pair_eq_pair_iff,
       predicate_symbol_encode_injective.eq_iff] at hCode ⊢
   all_goals exact hCode
-def relation_symbol_coding : NatCoding SearchMaterialization.RelSymbol where
-  encode := relation_symbol_encode
-  injective := relation_symbol_encode_injective
-/-! ## LN 项编码 -/
+
+/-! ## 内在 Henkin 项与公式编码 -/
+
+def henkin_function_encode : HenkinFunc SearchSignature → Nat
+  | .base function => pair 0 (function_symbol_encode function)
+  | .witness sort index =>
+      pair 1 (pair (core_sort_encode sort) index)
+
+theorem henkin_function_encode_injective :
+    Function.Injective henkin_function_encode := by
+  intro left right hCode
+  cases left <;> cases right
+  · simp [henkin_function_encode, NatPairing.pair_eq_pair_iff,
+      function_symbol_encode_injective.eq_iff] at hCode ⊢
+    exact hCode
+  · simp [henkin_function_encode, NatPairing.pair_eq_pair_iff] at hCode
+  · simp [henkin_function_encode, NatPairing.pair_eq_pair_iff] at hCode
+  · simp [henkin_function_encode, NatPairing.pair_eq_pair_iff,
+      core_sort_encode_injective.eq_iff] at hCode ⊢
+    exact hCode
+
+private theorem variable_index_injective {S : Type}
+    {context : List S} {sort : S} :
+    Function.Injective (@Variable.index S context sort) := by
+  intro left right hIndex
+  induction left with
+  | here =>
+      cases right with
+      | here => rfl
+      | there previous => cases hIndex
+  | there previous ih =>
+      cases right with
+      | here => cases hIndex
+      | there previous' =>
+          apply congrArg Variable.there
+          apply ih
+          simp [Variable.index] at hIndex
+          omega
+
 mutual
-  def term_size : SearchTerm → Nat
-    | .var _ => 1
-    | .app _ arguments => term_list_size arguments + 1
-  def term_list_size : List SearchTerm → Nat
-    | [] => 0
-    | term :: rest => term_size term + term_list_size rest + 1
+
+def term_encode
+    {bound free : SortContext (HSignature SearchSignature)}
+    {sort : SearchSignature.SortSymbol}
+    (term : Term (HSignature SearchSignature) bound free sort) : Nat :=
+  match term with
+  | .bvar entry =>
+      pair (core_sort_encode sort) (pair 0 entry.index)
+  | .fvar entry =>
+      pair (core_sort_encode sort) (pair 1 entry.index)
+  | .app function arguments =>
+      pair (core_sort_encode sort)
+        (pair 2
+          (pair (henkin_function_encode function)
+            (arguments_encode arguments)))
+
+def arguments_encode
+    {bound free : SortContext (HSignature SearchSignature)}
+    {sorts : List SearchSignature.SortSymbol}
+    (arguments : Arguments (HSignature SearchSignature) bound free sorts) : Nat :=
+  match arguments with
+  | .nil => 0
+  | .cons head tail =>
+      pair (term_encode head) (arguments_encode tail) + 1
+
 end
+
 mutual
-  def term_encode : SearchTerm → Nat
-    | .var (.bvar sort index) =>
-        pair 0 (pair (core_sort_encode sort) index)
-    | .var (.fvar sort id) =>
-        pair 1 (pair (core_sort_encode sort) id)
-    | .app function arguments =>
-        pair 2 (pair (function_symbol_encode function) (term_list_encode arguments))
-  def term_list_encode : List SearchTerm → Nat
-    | [] => 0
-    | term :: rest =>
-        pair (term_encode term) (term_list_encode rest) + 1
+
+private theorem term_encode_eq_core
+    {bound free : SortContext (HSignature SearchSignature)} :
+    {leftSort rightSort : SearchSignature.SortSymbol} →
+      (left : Term (HSignature SearchSignature) bound free leftSort) →
+      (right : Term (HSignature SearchSignature) bound free rightSort) →
+      term_encode left = term_encode right →
+      (⟨leftSort, left⟩ :
+        Σ sort, Term (HSignature SearchSignature) bound free sort) =
+      ⟨rightSort, right⟩
+  | _, _, .bvar leftEntry, .bvar rightEntry, hCode => by
+      simp only [term_encode] at hCode
+      rcases NatPairing.pair_eq_pair_iff.mp hCode with
+        ⟨hSort, hNode⟩
+      cases core_sort_encode_injective hSort
+      have hIndex := (NatPairing.pair_eq_pair_iff.mp hNode).2
+      cases variable_index_injective hIndex
+      rfl
+  | _, _, .bvar leftEntry, .fvar rightEntry, hCode => by
+      simp only [term_encode] at hCode
+      have hNode := (NatPairing.pair_eq_pair_iff.mp hCode).2
+      have hTag := (NatPairing.pair_eq_pair_iff.mp hNode).1
+      omega
+  | _, _, .bvar leftEntry, .app rightFunction rightArguments, hCode => by
+      simp only [term_encode] at hCode
+      have hNode := (NatPairing.pair_eq_pair_iff.mp hCode).2
+      have hTag := (NatPairing.pair_eq_pair_iff.mp hNode).1
+      omega
+  | _, _, .fvar leftEntry, .bvar rightEntry, hCode => by
+      simp only [term_encode] at hCode
+      have hNode := (NatPairing.pair_eq_pair_iff.mp hCode).2
+      have hTag := (NatPairing.pair_eq_pair_iff.mp hNode).1
+      omega
+  | _, _, .fvar leftEntry, .fvar rightEntry, hCode => by
+      simp only [term_encode] at hCode
+      rcases NatPairing.pair_eq_pair_iff.mp hCode with
+        ⟨hSort, hNode⟩
+      cases core_sort_encode_injective hSort
+      have hIndex := (NatPairing.pair_eq_pair_iff.mp hNode).2
+      cases variable_index_injective hIndex
+      rfl
+  | _, _, .fvar leftEntry, .app rightFunction rightArguments, hCode => by
+      simp only [term_encode] at hCode
+      have hNode := (NatPairing.pair_eq_pair_iff.mp hCode).2
+      have hTag := (NatPairing.pair_eq_pair_iff.mp hNode).1
+      omega
+  | _, _, .app leftFunction leftArguments, .bvar rightEntry, hCode => by
+      simp only [term_encode] at hCode
+      have hNode := (NatPairing.pair_eq_pair_iff.mp hCode).2
+      have hTag := (NatPairing.pair_eq_pair_iff.mp hNode).1
+      omega
+  | _, _, .app leftFunction leftArguments, .fvar rightEntry, hCode => by
+      simp only [term_encode] at hCode
+      have hNode := (NatPairing.pair_eq_pair_iff.mp hCode).2
+      have hTag := (NatPairing.pair_eq_pair_iff.mp hNode).1
+      omega
+  | _, _, .app leftFunction leftArguments,
+      .app rightFunction rightArguments, hCode => by
+      simp only [term_encode] at hCode
+      have hNode := (NatPairing.pair_eq_pair_iff.mp hCode).2
+      have hPayload := (NatPairing.pair_eq_pair_iff.mp hNode).2
+      rcases NatPairing.pair_eq_pair_iff.mp hPayload with
+        ⟨hFunction, hArguments⟩
+      cases henkin_function_encode_injective hFunction
+      cases arguments_encode_eq_core leftArguments
+        rightArguments hArguments
+      rfl
+
+private theorem arguments_encode_eq_core
+    {bound free : SortContext (HSignature SearchSignature)} :
+    {leftSorts rightSorts : List SearchSignature.SortSymbol} →
+      (left : Arguments (HSignature SearchSignature) bound free leftSorts) →
+      (right : Arguments (HSignature SearchSignature) bound free rightSorts) →
+      arguments_encode left = arguments_encode right →
+      (⟨leftSorts, left⟩ :
+        Σ sorts, Arguments (HSignature SearchSignature) bound free sorts) =
+      ⟨rightSorts, right⟩
+  | _, _, .nil, .nil, _ => rfl
+  | _, _, .nil, .cons rightHead rightTail, hCode => by
+      simp [arguments_encode] at hCode
+  | _, _, .cons leftHead leftTail, .nil, hCode => by
+      simp [arguments_encode] at hCode
+  | _, _, .cons leftHead leftTail,
+      .cons rightHead rightTail, hCode => by
+      simp only [arguments_encode] at hCode
+      have hPair := Nat.add_right_cancel hCode
+      rcases NatPairing.pair_eq_pair_iff.mp hPair with
+        ⟨hHead, hTail⟩
+      cases term_encode_eq_core leftHead rightHead hHead
+      cases arguments_encode_eq_core leftTail rightTail hTail
+      rfl
+
 end
-mutual
-  theorem term_encode_eq :
-      ∀ {left right : SearchTerm},
-        term_encode left = term_encode right → left = right
-    | .var (.bvar sort index), .var (.bvar sort' index'), hCode => by
-        rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨_, hPayload⟩
-        rcases NatPairing.pair_eq_pair_iff.mp hPayload with
-          ⟨hSort, hIndex⟩
-        rw [core_sort_encode_injective hSort, hIndex]
-    | .var (.bvar ..), .var (.fvar ..), hCode => by
-        have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
-        omega
-    | .var (.bvar ..), .app .., hCode => by
-        have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
-        omega
-    | .var (.fvar ..), .var (.bvar ..), hCode => by
-        have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
-        omega
-    | .var (.fvar sort id), .var (.fvar sort' id'), hCode => by
-        rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨_, hPayload⟩
-        rcases NatPairing.pair_eq_pair_iff.mp hPayload with
-          ⟨hSort, hId⟩
-        rw [core_sort_encode_injective hSort, hId]
-    | .var (.fvar ..), .app .., hCode => by
-        have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
-        omega
-    | .app .., .var (.bvar ..), hCode => by
-        have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
-        omega
-    | .app .., .var (.fvar ..), hCode => by
-        have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
-        omega
-    | .app function arguments, .app function' arguments', hCode => by
-        rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨_, hPayload⟩
-        rcases NatPairing.pair_eq_pair_iff.mp hPayload with
-          ⟨hFunction, hArguments⟩
-        rw [function_symbol_encode_injective hFunction,
-          term_list_encode_eq hArguments]
-  termination_by left right _ => term_size left + term_size right
-  decreasing_by
-    all_goals simp [term_size]
-    all_goals omega
-  theorem term_list_encode_eq :
-      ∀ {left right : List SearchTerm},
-        term_list_encode left = term_list_encode right → left = right
-    | [], [], _ => rfl
-    | [], _ :: _, hCode => by
-        simp [term_list_encode] at hCode
-    | _ :: _, [], hCode => by
-        simp [term_list_encode] at hCode
-    | head :: tail, head' :: tail', hCode => by
-        simp only [term_list_encode] at hCode
-        have hPair := Nat.add_right_cancel hCode
-        rcases NatPairing.pair_eq_pair_iff.mp hPair with
-          ⟨hHead, hTail⟩
-        rw [term_encode_eq hHead, term_list_encode_eq hTail]
-  termination_by left right _ => term_list_size left + term_list_size right
-  decreasing_by
-    all_goals simp [term_list_size]
-    all_goals omega
-end
-theorem term_encode_injective :
-    Function.Injective term_encode :=
-  fun _ _ => term_encode_eq
-theorem term_list_encode_injective :
-    Function.Injective term_list_encode :=
-  fun _ _ => term_list_encode_eq
-def term_coding : NatCoding SearchTerm where
-  encode := term_encode
-  injective := term_encode_injective
-def term_list_coding : NatCoding (List SearchTerm) where
-  encode := term_list_encode
-  injective := term_list_encode_injective
-/-! ## LN 公式编码与公平 schedule -/
-def formula_encode : SearchFormula → Nat
+
+theorem term_encode_eq
+    {bound free : SortContext (HSignature SearchSignature)}
+    {sort : SearchSignature.SortSymbol}
+    {left right : Term (HSignature SearchSignature) bound free sort}
+    (hCode : term_encode left = term_encode right) : left = right :=
+  by
+    cases term_encode_eq_core left right hCode
+    rfl
+
+theorem arguments_encode_eq
+    {bound free : SortContext (HSignature SearchSignature)}
+    {sorts : List SearchSignature.SortSymbol}
+    {left right : Arguments (HSignature SearchSignature) bound free sorts}
+    (hCode : arguments_encode left = arguments_encode right) : left = right :=
+  by
+    cases arguments_encode_eq_core left right hCode
+    rfl
+
+private theorem equality_formula_eq_of_codes
+    {bound free : SortContext (HSignature SearchSignature)}
+    {leftSort rightSort : SearchSignature.SortSymbol}
+    {left₁ left₂ :
+      Term (HSignature SearchSignature) bound free leftSort}
+    {right₁ right₂ :
+      Term (HSignature SearchSignature) bound free rightSort}
+    (hLeft : term_encode left₁ = term_encode right₁)
+    (hRight : term_encode left₂ = term_encode right₂) :
+    Formula.equal left₁ left₂ = Formula.equal right₁ right₂ := by
+  cases term_encode_eq_core left₁ right₁ hLeft
+  cases term_encode_eq_core left₂ right₂ hRight
+  rfl
+
+def formula_encode
+    {bound free : SortContext (HSignature SearchSignature)} :
+    Formula (HSignature SearchSignature) bound free → Nat
   | .falsum => pair 0 0
   | .truth => pair 1 0
   | .rel relation arguments =>
-      pair 2 (pair (relation_symbol_encode relation) (term_list_encode arguments))
+      pair 2
+        (pair (relation_symbol_encode relation) (arguments_encode arguments))
   | .equal left right =>
       pair 3 (pair (term_encode left) (term_encode right))
   | .neg body => pair 4 (formula_encode body)
@@ -271,8 +376,10 @@ def formula_encode : SearchFormula → Nat
       pair 9 (pair (core_sort_encode sort) (formula_encode body))
   | .existsE sort body =>
       pair 10 (pair (core_sort_encode sort) (formula_encode body))
-theorem formula_encode_injective :
-    Function.Injective formula_encode := by
+
+theorem formula_encode_injective
+    {bound free : SortContext (HSignature SearchSignature)} :
+    Function.Injective (@formula_encode bound free) := by
   intro left
   induction left with
   | falsum =>
@@ -296,8 +403,9 @@ theorem formula_encode_injective :
         rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨_, hPayload⟩
         rcases NatPairing.pair_eq_pair_iff.mp hPayload with
           ⟨hRelation, hArguments⟩
-        rw [relation_symbol_encode_injective hRelation,
-          term_list_encode_injective hArguments]
+        cases relation_symbol_encode_injective hRelation
+        cases arguments_encode_eq hArguments
+        rfl
       all_goals
         have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
         omega
@@ -308,7 +416,7 @@ theorem formula_encode_injective :
         rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨_, hPayload⟩
         rcases NatPairing.pair_eq_pair_iff.mp hPayload with
           ⟨hLeft, hRight⟩
-        rw [term_encode_injective hLeft, term_encode_injective hRight]
+        exact equality_formula_eq_of_codes hLeft hRight
       all_goals
         have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
         omega
@@ -317,7 +425,8 @@ theorem formula_encode_injective :
       cases right
       case neg body' =>
         have hBody := (NatPairing.pair_eq_pair_iff.mp hCode).2
-        rw [ih hBody]
+        cases ih hBody
+        rfl
       all_goals
         have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
         omega
@@ -328,7 +437,9 @@ theorem formula_encode_injective :
         rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨_, hPayload⟩
         rcases NatPairing.pair_eq_pair_iff.mp hPayload with
           ⟨hLeft, hRight⟩
-        rw [ihLeft hLeft, ihRight hRight]
+        cases ihLeft hLeft
+        cases ihRight hRight
+        rfl
       all_goals
         have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
         omega
@@ -339,7 +450,9 @@ theorem formula_encode_injective :
         rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨_, hPayload⟩
         rcases NatPairing.pair_eq_pair_iff.mp hPayload with
           ⟨hLeft, hRight⟩
-        rw [ihLeft hLeft, ihRight hRight]
+        cases ihLeft hLeft
+        cases ihRight hRight
+        rfl
       all_goals
         have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
         omega
@@ -350,7 +463,9 @@ theorem formula_encode_injective :
         rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨_, hPayload⟩
         rcases NatPairing.pair_eq_pair_iff.mp hPayload with
           ⟨hLeft, hRight⟩
-        rw [ihLeft hLeft, ihRight hRight]
+        cases ihLeft hLeft
+        cases ihRight hRight
+        rfl
       all_goals
         have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
         omega
@@ -361,7 +476,9 @@ theorem formula_encode_injective :
         rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨_, hPayload⟩
         rcases NatPairing.pair_eq_pair_iff.mp hPayload with
           ⟨hLeft, hRight⟩
-        rw [ihLeft hLeft, ihRight hRight]
+        cases ihLeft hLeft
+        cases ihRight hRight
+        rfl
       all_goals
         have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
         omega
@@ -372,7 +489,9 @@ theorem formula_encode_injective :
         rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨_, hPayload⟩
         rcases NatPairing.pair_eq_pair_iff.mp hPayload with
           ⟨hSort, hBody⟩
-        rw [core_sort_encode_injective hSort, ih hBody]
+        cases core_sort_encode_injective hSort
+        cases ih hBody
+        rfl
       all_goals
         have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
         omega
@@ -383,149 +502,39 @@ theorem formula_encode_injective :
         rcases NatPairing.pair_eq_pair_iff.mp hCode with ⟨_, hPayload⟩
         rcases NatPairing.pair_eq_pair_iff.mp hPayload with
           ⟨hSort, hBody⟩
-        rw [core_sort_encode_injective hSort, ih hBody]
+        cases core_sort_encode_injective hSort
+        cases ih hBody
+        rfl
       all_goals
         have hTag := (NatPairing.pair_eq_pair_iff.mp hCode).1
         omega
-def formula_coding : NatCoding SearchFormula where
+
+def formula_coding :
+    NatCoding (Sentence (HSignature SearchSignature)) where
   encode := formula_encode
   injective := formula_encode_injective
-/--
-ATP 实际签名上的固定公平 Henkin 调度。
-它覆盖整个 `SearchSignature` 的全部 admissible 公式，而非单次搜索问题的有限切片。
--/
+
+/-- ATP 搜索签名上的固定公平 Henkin 调度。 -/
 noncomputable def henkin_schedule :
     Completeness.Henkin.Schedule SearchSignature :=
   Completeness.Henkin.Schedule.of_coding formula_coding
-/-! ## ATP 闭合边界到证明层句子 -/
-mutual
-  theorem term_freeSupport_eq_nil_of_freeClosed :
-      ∀ {term : SearchTerm}, DAGCertificate.Term.FreeClosed term →
-        Logic.FirstOrder.Term.freeSupport term = []
-    | .var (.bvar ..), _ => rfl
-    | .var (.fvar ..), hClosed => by
-        simp [DAGCertificate.Term.FreeClosed] at hClosed
-    | .app _ arguments, hClosed => by
-        have hArguments :
-            ∀ term, term ∈ arguments →
-              DAGCertificate.Term.FreeClosed term := by
-          simpa [DAGCertificate.Term.FreeClosed] using hClosed
-        exact term_list_freeSupport_eq_nil_of_freeClosed hArguments
-  termination_by term => term_size term
-  decreasing_by
-    simp [term_size]
-  theorem term_list_freeSupport_eq_nil_of_freeClosed :
-      ∀ {terms : List SearchTerm}, (∀ term, term ∈ terms → DAGCertificate.Term.FreeClosed term) →
-          Logic.FirstOrder.Term.freeSupportList terms = []
-    | [], _ => rfl
-    | head :: tail, hClosed => by
-        simp only [Logic.FirstOrder.Term.freeSupportList]
-        rw [term_freeSupport_eq_nil_of_freeClosed (hClosed head (by simp))]
-        simp only [List.nil_append]
-        apply term_list_freeSupport_eq_nil_of_freeClosed
-        intro term hTerm
-        exact hClosed term (by simp [hTerm])
-  termination_by terms => term_list_size terms
-  decreasing_by
-    all_goals simp [term_list_size]
-    all_goals omega
-end
-theorem formula_freeSupport_eq_nil_of_freeClosed {formula : SearchFormula} (hClosed : DAGCertificate.Formula.FreeClosed formula) :
-    Logic.FirstOrder.Formula.freeSupport formula = [] := by
-  induction formula with
-  | falsum =>
-      rfl
-  | truth =>
-      rfl
-  | rel relation arguments =>
-      have hArguments :
-          ∀ term, term ∈ arguments →
-            DAGCertificate.Term.FreeClosed term := by
-        simpa [DAGCertificate.Formula.FreeClosed] using hClosed
-      exact term_list_freeSupport_eq_nil_of_freeClosed hArguments
-  | equal left right =>
-      have hTerms :
-          DAGCertificate.Term.FreeClosed left ∧
-            DAGCertificate.Term.FreeClosed right := by
-        simpa [DAGCertificate.Formula.FreeClosed] using hClosed
-      simp only [Logic.FirstOrder.Formula.freeSupport]
-      rw [term_freeSupport_eq_nil_of_freeClosed hTerms.1,
-        term_freeSupport_eq_nil_of_freeClosed hTerms.2]
-      rfl
-  | neg body ih =>
-      have hBody : DAGCertificate.Formula.FreeClosed body := by
-        simpa [DAGCertificate.Formula.FreeClosed] using hClosed
-      exact ih hBody
-  | conj left right ihLeft ihRight =>
-      have hBoth :
-          DAGCertificate.Formula.FreeClosed left ∧
-            DAGCertificate.Formula.FreeClosed right := by
-        simpa [DAGCertificate.Formula.FreeClosed] using hClosed
-      simp only [Logic.FirstOrder.Formula.freeSupport]
-      rw [ihLeft hBoth.1, ihRight hBoth.2]
-      rfl
-  | disj left right ihLeft ihRight =>
-      have hBoth :
-          DAGCertificate.Formula.FreeClosed left ∧
-            DAGCertificate.Formula.FreeClosed right := by
-        simpa [DAGCertificate.Formula.FreeClosed] using hClosed
-      simp only [Logic.FirstOrder.Formula.freeSupport]
-      rw [ihLeft hBoth.1, ihRight hBoth.2]
-      rfl
-  | imp left right ihLeft ihRight =>
-      have hBoth :
-          DAGCertificate.Formula.FreeClosed left ∧
-            DAGCertificate.Formula.FreeClosed right := by
-        simpa [DAGCertificate.Formula.FreeClosed] using hClosed
-      simp only [Logic.FirstOrder.Formula.freeSupport]
-      rw [ihLeft hBoth.1, ihRight hBoth.2]
-      rfl
-  | iff left right ihLeft ihRight =>
-      have hBoth :
-          DAGCertificate.Formula.FreeClosed left ∧
-            DAGCertificate.Formula.FreeClosed right := by
-        simpa [DAGCertificate.Formula.FreeClosed] using hClosed
-      simp only [Logic.FirstOrder.Formula.freeSupport]
-      rw [ihLeft hBoth.1, ihRight hBoth.2]
-      rfl
-  | forallE sort body ih =>
-      have hBody : DAGCertificate.Formula.FreeClosed body := by
-        simpa [DAGCertificate.Formula.FreeClosed] using hClosed
-      exact ih hBody
-  | existsE sort body ih =>
-      have hBody : DAGCertificate.Formula.FreeClosed body := by
-        simpa [DAGCertificate.Formula.FreeClosed] using hClosed
-      exact ih hBody
-theorem formula_sentence_of_admissible_of_freeClosed {formula : SearchFormula} (hAdmissible : Logic.FirstOrder.Formula.Admissible formula)
-    (hClosed : DAGCertificate.Formula.FreeClosed formula) :
-    Logic.FirstOrder.Formula.Sentence formula :=
-  ⟨hAdmissible, formula_freeSupport_eq_nil_of_freeClosed hClosed⟩
+
 end SearchCompleteness
+
 /-! ## checked ATP 语义证书回收到 Derives -/
+
 namespace LogicSoundness
 namespace SetLevel
 namespace BackendSuccess
-/--
-SearchSignature 上的 closed checked 后端成功对象通过强完备性直接生成 `Derives`。
-搜索与 DAG checker 仍只负责构造语义证书；从语义证书到推导的最后一步统一经过
-Henkin 强完备性，不向对象证明核加入新的 replay 规则。
--/
-theorem derives_of_freeClosed
-    {problem : DeepProblem SearchMaterialization.SearchSignature} (success : BackendSuccess problem) (hClosed : DAGCertificate.DeepProblem.FreeClosed problem) :
-    Logic.FirstOrder.Derives problem.theory [] problem.target := by
-  apply _root_.YesMetaZFC.Logic.FirstOrder.Completeness.Henkin.strong_completeness
-      SearchCompleteness.henkin_schedule
-  · intro formula hFormula
-    exact success.admissible.2 formula hFormula
-  · intro formula hFormula
-    exact SearchCompleteness.formula_sentence_of_admissible_of_freeClosed (success.admissible.2 formula hFormula) (hClosed.2 formula hFormula)
-  · exact success.admissible.1
-  · exact success.sound
-theorem derives_of_freeClosed_check
-    {problem : DeepProblem SearchMaterialization.SearchSignature} (success : BackendSuccess problem)
-    (hClosed : DAGCertificate.DeepProblem.freeClosed problem = true) :
+
+/-- checked 后端成功对象经强完备性直接生成标准 Hilbert 推导。 -/
+theorem derives
+    {problem : DeepProblem SearchMaterialization.SearchSignature}
+    (success : BackendSuccess problem) :
     Logic.FirstOrder.Derives problem.theory [] problem.target :=
-  derives_of_freeClosed success (DAGCertificate.DeepProblem.freeClosed_sound hClosed)
+  _root_.YesMetaZFC.Logic.FirstOrder.Completeness.strong_completeness
+    SearchCompleteness.henkin_schedule success.sound
+
 end BackendSuccess
 end SetLevel
 end LogicSoundness

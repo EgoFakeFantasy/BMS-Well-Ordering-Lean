@@ -52,6 +52,8 @@ def transportedFunctionValue (𝒞 : OrderedPairConvention) : BinarySchema 3 whe
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 把一个函数图整体输送到目标定义域和值域。 -/
 def functionTransportValue (𝒞 : OrderedPairConvention) : BinarySchema 4 where
   body := .conj (Formula.isFunctionFromTo 𝒞 (.bound 0) (.bound 4) (.bound 5)) <|
@@ -67,6 +69,8 @@ def functionTransportValue (𝒞 : OrderedPairConvention) : BinarySchema 4 where
       Formula.orderedPairMem, Formula.forallMem,
       Formula.existsMem, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 定义域单射扩张后的单点值关系。 -/
 def extendedFunctionValue (𝒞 : OrderedPairConvention) : BinarySchema 4 where
   body := .disj (.existsE <| .existsE <|
@@ -77,6 +81,8 @@ def extendedFunctionValue (𝒞 : OrderedPairConvention) : BinarySchema 4 where
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 把一个函数整体扩张到更大的定义域。 -/
 def functionExtensionValue (𝒞 : OrderedPairConvention) : BinarySchema 5 where
   body := .conj (Formula.isFunctionFromTo 𝒞 (.bound 0) (.bound 5) (.bound 6)) <|
@@ -93,6 +99,8 @@ def functionExtensionValue (𝒞 : OrderedPairConvention) : BinarySchema 5 where
       Formula.orderedPairMem, Formula.forallMem,
       Formula.existsMem, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end BinarySchema
 namespace Formula
 /-- 单点输送值关系的纸面解释。 -/
@@ -175,6 +183,8 @@ def functionFromTo (𝒞 : OrderedPairConvention) : UnarySchema 2 where
       Formula.orderedPairMem, Formula.forallMem,
       Formula.existsMem, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end UnarySchema
 namespace Formula
 /-- 函数图筛选模式的纸面解释。 -/
@@ -184,7 +194,7 @@ theorem satisfies_functionFromTo_iff
       ℳ.IsSetFunctionFromTo 𝕀 function (env.bound 0) (env.bound 1) := by
   simpa [UnarySchema.functionFromTo,
     Term.eval_bound_zero_push, Term.eval_bound_one_push,
-    Term.eval_bound_two_push] using
+    Term.eval_bound_two_push] using!
       satisfies_isFunctionFromTo_iff 𝕀 hExt (env.push function) (.bound 0) (.bound 1) (.bound 2)
 end Formula
 end Project
@@ -428,7 +438,7 @@ theorem exists_functionSpaceExtensionInjection
           rcases hValue with hImage | hDefaultValue
           · rcases hImage with ⟨_, _, _, _, hBasePair⟩
             exact hBaseMap.1.output_mem_of_pairMember hBasePair
-          · simpa [hDefaultValue.2] using hDefault) with
+          · simpa [hDefaultValue.2] using! hDefault) with
       ⟨output, hOutputFunction, hOutputPairs⟩
     refine ⟨output, (Definitional.Project.Formula.denote_functionExtensionValue_iff
         𝕀 hZF.1 env input output).mpr ?_⟩

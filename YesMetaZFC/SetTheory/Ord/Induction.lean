@@ -45,8 +45,9 @@ theorem induction {ℳ : SetTheory.Structure.{u}} {α : ℳ.Domain} (hα : Struc
     apply hαCounterexample
     apply hProgressive α hα
     intro predecessor hPredecessor
-    set_option prove_auto.context.maxFacts 0 in
-      prove_auto USE hNoBadPredecessor, hPredecessor
+    apply Classical.byContradiction
+    intro hProperty
+    exact hNoBadPredecessor ⟨predecessor, hPredecessor, hProperty⟩
   rcases hCounterexamples with ⟨counterexamples, hCounterexamples⟩
   have hCounterexamplesSubset : ℳ.MemberSubset counterexamples α := by
     intro value hValue

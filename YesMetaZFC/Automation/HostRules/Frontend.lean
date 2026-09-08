@@ -103,10 +103,8 @@ structure ReifiedRequest where
   input : Expr
   sourceProblemValue : SourcePreprocessing.Problem
   sourceProblem : Expr
-  problem : Expr
-  hSource : Expr
-  hProblem : Expr
-  admissible : Expr
+  searchProblem : Expr
+  compiled : Expr
 
 private structure SimplifiedFact where
   proposition : Expr
@@ -179,24 +177,11 @@ def reify (request : PreparedContextRequest) : MetaM ReifiedRequest := do
       #[request.goal, atoms, facts, premiseList, targetFormula,
         hPremises, hTarget]
   let sourceProblem ←
-    mkAppM ``CheckedInput.sourceProblemOfSyntax
-      #[premiseList, targetFormula]
-  let problem ←
-    mkAppM ``CheckedInput.deepProblemOfSyntax
-      #[premiseList, targetFormula]
-  let expectedSource ←
     mkAppM ``CheckedInput.sourceProblem #[input]
-  let expectedProblem ←
-    mkAppM ``CheckedInput.deepProblem #[input]
-  unless ← isDefEq sourceProblem expectedSource do
-    throwError "internal HR source snapshot lost syntax alignment"
-  unless ← isDefEq problem expectedProblem do
-    throwError "internal HR deep snapshot lost syntax alignment"
-  let hSource ← mkEqRefl sourceProblem
-  let hProblem ← mkEqRefl problem
-  let admissible ←
-    mkAppM ``CheckedInput.deepProblemOfSyntax_admissible
-      #[premiseList, targetFormula]
+  let searchProblem ←
+    mkAppM ``CheckedInput.searchProblem #[input]
+  let compiled ←
+    mkAppM ``CheckedInput.checkedProblem #[input]
   trace[YesMetaZFC.proveAuto.hostRules.frontend]
     "reified atoms={state.atoms.size}; premises={premises.length}; \
     resources={request.resourceSummary.render}"
@@ -208,10 +193,8 @@ def reify (request : PreparedContextRequest) : MetaM ReifiedRequest := do
     sourceProblemValue :=
       CheckedInput.sourceProblemOfSyntax premises target
     sourceProblem
-    problem
-    hSource
-    hProblem
-    admissible
+    searchProblem
+    compiled
   }
 
 private partial def goalHasLogicalStructure (goal : Expr) :

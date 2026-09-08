@@ -25,8 +25,8 @@ def setCoded (𝒞 : OrderedPairConvention) : BinarySchema 1 where
   body :=
     Formula.orderedPairMem 𝒞 (.bound 1) (.bound 0) (.bound 2)
   freeClosed := by
-    simp [Formula.orderedPairMem, Formula.FreeClosed,
-      Definitional.Term.newest]
+    simp only [Formula.orderedPairMem, Definitional.Formula.FreeClosed]
+    exact ⟨𝒞.code_freeClosed _ _ _ rfl rfl rfl, rfl, rfl⟩
 end RelationSchema
 namespace Formula
 /-- `left` 与 `right` 满足给定二元关系。 -/

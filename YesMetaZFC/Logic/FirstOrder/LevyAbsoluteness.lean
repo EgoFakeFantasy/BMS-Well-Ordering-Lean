@@ -1,687 +1,502 @@
 import YesMetaZFC.Logic.FirstOrder.LevyHierarchy
-import YesMetaZFC.Logic.Semantics
+import YesMetaZFC.Logic.FirstOrder.Derivation.Substitution.Semantics
+import YesMetaZFC.Logic.FirstOrder.FormulaComplexity
+
 /-!
-# 相对 Lévy 层级的结构间绝对性
-本模块给出一阶结构嵌入下的通用传递定理：
-* 相对 `Delta0` 公式双向绝对；
-* 相对 `Sigma1` 公式向上绝对；
-* 相对 `Pi1` 公式向下绝对。
-与纯句法的 `LevyHierarchy` 分层不同，这里显式记录函数、关系、sort 与有界关系
-初段的保持性。扩展集合论语言后续只需为自己的标准对象嵌入实现这一份合同，
-不需要针对证明码公式重新展开量词归纳。
+# 内在类型 Lévy 层级的绝对性
+
+结构嵌入按排序直接映射载体。`Delta0` 双向绝对、`Sigma1` 向上绝对和 `Pi1` 向下
+绝对的证明只处理真正的语义内容；排序、arity、bound 作用域和界项独立性已经由
+类型保证。
 -/
+
 namespace YesMetaZFC
 namespace Logic
 namespace FirstOrder
-universe u v w x y
 namespace Formula
-/--
-保持相对 Lévy 语义的结构嵌入。
-`bounded_preimage` 是传递性条件的抽象形式：目标结构中属于某个源对象像的有界
-元素，仍来自源结构。它正好是有界量词双向绝对所需、而普通一阶嵌入不提供的字段。
--/
-structure LevyEmbedding
-    {σ : Signature.{u, v, w}} (bound : LevyBound σ) (source : Structure.{u, v, w, x} σ) (target : Structure.{u, v, w, y} σ) where
-  map : source.Domain → target.Domain
-  map_injective : Function.Injective map
-  sort_iff :
-    ∀ sort value,
-      source.sortInterp sort value ↔
-        target.sortInterp sort (map value)
-  function_eq :
-    ∀ function arguments,
-      map (source.funcInterp function arguments) =
-        target.funcInterp function (arguments.map map)
-  relation_iff :
-    ∀ relation arguments,
-      source.relInterp relation arguments ↔
-        target.relInterp relation (arguments.map map)
-  bounded_preimage :
-    ∀ boundValue targetValue,
-      target.sortInterp bound.sort targetValue →
-      target.relInterp bound.relation
-        [targetValue, map boundValue] →
-      ∃ sourceValue,
-        source.sortInterp bound.sort sourceValue ∧
-          map sourceValue = targetValue
-namespace LevyEmbedding
-/-- 沿 Lévy 嵌入逐点提升变量环境。 -/
-def map_env
-    {σ : Signature.{u, v, w}}
-    {bound : LevyBound σ}
-    {source : Structure.{u, v, w, x} σ}
-    {target : Structure.{u, v, w, y} σ} (embedding : LevyEmbedding bound source target) (env : Env source) :
-    Env target where
-  boundVal sort index :=
-    embedding.map (env.boundVal sort index)
-  freeVal sort id :=
-    embedding.map (env.freeVal sort id)
-  boundSort sort index := (embedding.sort_iff sort (env.boundVal sort index)).mp (env.boundSort sort index)
-  freeSort sort id := (embedding.sort_iff sort (env.freeVal sort id)).mp (env.freeSort sort id)
-/-- 环境提升与压入一个源对象交换。 -/
-theorem map_env_pushBound
-    {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {bound : LevyBound σ}
-    {source : Structure.{u, v, w, x} σ}
-    {target : Structure.{u, v, w, y} σ} (embedding : LevyEmbedding bound source target) (env : Env source) (sort : σ.SortSymbol) (value : source.Domain)
-    (hValue : source.sortInterp sort value) :
-    embedding.map_env (env.pushBound sort value hValue) = (embedding.map_env env).pushBound
-        sort (embedding.map value) ((embedding.sort_iff sort value).mp hValue) := by
-  rw [Env.mk.injEq]
-  constructor
-  · funext targetSort index
-    by_cases hSort : targetSort = sort
-    · subst targetSort
-      cases index <;> simp [map_env, Env.pushBound]
-    · simp [map_env, Env.pushBound, hSort]
-  · rfl
-/-- 项解释与 Lévy 嵌入交换。 -/
-theorem term_eval_eq
-    {σ : Signature.{u, v, w}}
-    {bound : LevyBound σ}
-    {source : Structure.{u, v, w, x} σ}
-    {target : Structure.{u, v, w, y} σ} (embedding : LevyEmbedding bound source target) (env : Env source) :
-    ∀ term : Term σ,
-      embedding.map (Term.eval env term) =
-        Term.eval (embedding.map_env env) term := by
-  intro term
-  refine Term.rec (motive_1 := fun term =>
-      embedding.map (Term.eval env term) =
-        Term.eval (embedding.map_env env) term) (motive_2 := fun arguments =>
-      (arguments.map (Term.eval env)).map embedding.map =
-        arguments.map (Term.eval (embedding.map_env env)))
-    ?_ ?_ ?_ ?_ term
-  · intro freeOrBound
-    cases freeOrBound <;> simp [Term.eval, map_env]
-  · intro function arguments hArguments
-    simpa [Term.eval] using (embedding.function_eq function (arguments.map (Term.eval env))).trans (congrArg (target.funcInterp function) hArguments)
-  · rfl
-  · intro head tail hHead hTail
-    simp only [List.map_cons]
-    rw [hHead, hTail]
-/-- 参数列表解释与 Lévy 嵌入交换。 -/
-theorem term_list_eval_eq
-    {σ : Signature.{u, v, w}}
-    {bound : LevyBound σ}
-    {source : Structure.{u, v, w, x} σ}
-    {target : Structure.{u, v, w, y} σ} (embedding : LevyEmbedding bound source target) (env : Env source) :
-    ∀ arguments : List (Term σ), (arguments.map (Term.eval env)).map embedding.map =
-        arguments.map (Term.eval (embedding.map_env env)) := by
-  intro arguments
-  induction arguments with
-  | nil =>
-      rfl
-  | cons head tail ih =>
-      simp only [List.map_cons]
-      rw [embedding.term_eval_eq env head, ih]
-/-- 压栈环境中的同 sort 零号 bound 变量求值为刚压入的对象。 -/
-@[simp]
-theorem term_eval_pushBound_bvar_zero
-    {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {model : Structure.{u, v, w, x} σ} (env : Env model) (sort : σ.SortSymbol) (value : model.Domain) (hValue : model.sortInterp sort value) :
-    Term.eval (env.pushBound sort value hValue) (.var (.bvar sort 0) : Term σ) =
-      value := by
-  simp [Term.eval, Env.pushBound]
-mutual
-  /--
-  不使用新 binder 顶层变量的项，其解释不依赖压入的具体值。
-  -/
-  theorem _root_.YesMetaZFC.Logic.FirstOrder.Term.BoundFreeAt.eval_pushBound_eq
-      {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-      {model : Structure.{u, v, w, x} σ}
-      {sort : σ.SortSymbol} {term : Term σ} (hTerm : Term.BoundFreeAt sort 0 term) (env : Env model) (left right : model.Domain)
-      (hLeft : model.sortInterp sort left) (hRight : model.sortInterp sort right) :
-      Term.eval (env.pushBound sort left hLeft) term =
-        Term.eval (env.pushBound sort right hRight) term := by
-    cases hTerm with
-    | bvar variableSort index hDifferent =>
-        rcases hDifferent with hSort | hIndex
-        · simp [Term.eval, Env.pushBound, hSort]
-        · cases index with
-          | zero =>
-              exact (hIndex rfl).elim
-          | succ previous =>
-              simp [Term.eval, Env.pushBound]
-    | fvar =>
-        simp [Term.eval, Env.pushBound]
-    | app function hArguments =>
-        simpa only [Term.eval] using
-          congrArg (model.funcInterp function) (hArguments.eval_pushBound_eq
-              env left right hLeft hRight)
-  /-- `eval_pushBound_eq` 的参数列表版本。 -/
-  theorem _root_.YesMetaZFC.Logic.FirstOrder.Term.ArgsBoundFreeAt.eval_pushBound_eq
-      {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-      {model : Structure.{u, v, w, x} σ}
-      {sort : σ.SortSymbol} {arguments : List (Term σ)} (hArguments : Term.ArgsBoundFreeAt sort 0 arguments) (env : Env model) (left right : model.Domain)
-      (hLeft : model.sortInterp sort left) (hRight : model.sortInterp sort right) :
-      arguments.map (Term.eval (env.pushBound sort left hLeft)) =
-        arguments.map (Term.eval (env.pushBound sort right hRight)) := by
-    cases hArguments with
-    | nil =>
-        rfl
-    | cons hHead hTail =>
-        simp only [List.map_cons]
-        rw [hHead.eval_pushBound_eq
-          env left right hLeft hRight]
-        rw [hTail.eval_pushBound_eq
-          env left right hLeft hRight]
-end
-/-- 映入目标结构后，源环境中的有界集合项取得对应的目标值。 -/
-private theorem bounded_term_eval_eq
-    {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {bound : LevyBound σ}
-    {source : Structure.{u, v, w, x} σ}
-    {target : Structure.{u, v, w, y} σ} (embedding : LevyEmbedding bound source target) (env : Env source) (setTerm : Term σ)
-    (hSet : Term.BoundFreeAt bound.sort 0 setTerm) (sourceValue : source.Domain) (hSourceValue :
-      source.sortInterp bound.sort sourceValue) (targetValue : target.Domain) (hTargetValue :
-      target.sortInterp bound.sort targetValue) :
-    Term.eval ((embedding.map_env env).pushBound
-          bound.sort targetValue hTargetValue)
-        setTerm =
-      embedding.map (Term.eval (env.pushBound bound.sort sourceValue hSourceValue)
-          setTerm) := by
-  let mappedSourceProof :
-      target.sortInterp bound.sort (embedding.map sourceValue) := (embedding.sort_iff bound.sort sourceValue).mp
-      hSourceValue
-  calc
-    Term.eval ((embedding.map_env env).pushBound
-          bound.sort targetValue hTargetValue)
-        setTerm =
-      Term.eval ((embedding.map_env env).pushBound
-          bound.sort (embedding.map sourceValue)
-          mappedSourceProof)
-        setTerm :=
-      hSet.eval_pushBound_eq (embedding.map_env env)
-        targetValue (embedding.map sourceValue)
-        hTargetValue mappedSourceProof
-    _ =
-      Term.eval (embedding.map_env (env.pushBound
-            bound.sort sourceValue hSourceValue))
-        setTerm := by
-      rw [embedding.map_env_pushBound]
-    _ =
-      embedding.map (Term.eval (env.pushBound bound.sort sourceValue hSourceValue)
-          setTerm) := (embedding.term_eval_eq (env.pushBound bound.sort sourceValue hSourceValue)
-        setTerm).symm
 
-/--
-正位置成员 guard 从公式体的满足性中恢复见证的显式集合界。
--/
-theorem MembershipGuard.mem_of_satisfies
-    {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {bound : LevyBound σ}
-    {model : Structure.{u, v, w, x} σ}
-    {setTerm : Term σ} {formula : Formula σ}
-    (hGuard : MembershipGuard bound setTerm formula)
-    (env : Env model)
-    (hFormula : Formula.satisfies env formula) :
-    model.relInterp bound.relation
-      [Term.eval env (.var (.bvar bound.sort 0)),
-        Term.eval env setTerm] := by
+universe u v w x y
+
+namespace LevyBound
+
+/-- 一个模型中有界关系的语义。 -/
+def Holds {σ : Signature.{u, v, w}} (ℬ : LevyBound σ)
+    (M : Structure.{u, v, w, x} σ)
+    (element set : M.Carrier ℬ.sort) : Prop :=
+  M.relInterp ℬ.relation
+    (ℬ.domains.symm ▸ Values.cons element (Values.cons set .nil))
+
+private theorem eval_pair_cast
+    {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} (env : Env M bound free)
+    {sort : σ.SortSymbol} {domains : List σ.SortSymbol}
+    (hDomains : domains = [sort, sort])
+    (element set : Term σ bound free sort) :
+    Arguments.eval env
+        (hDomains.symm ▸ Arguments.cons element (Arguments.cons set .nil)) =
+      hDomains.symm ▸ Values.cons (element.eval env)
+        (Values.cons (set.eval env) .nil) := by
+  cases hDomains
+  rfl
+
+private theorem map_pair_cast
+    {σ : Signature.{u, v, w}}
+    {source : Structure.{u, v, w, x} σ}
+    {target : Structure.{u, v, w, y} σ}
+    (f : ∀ sort, source.Carrier sort → target.Carrier sort)
+    {sort : σ.SortSymbol} {domains : List σ.SortSymbol}
+    (hDomains : domains = [sort, sort])
+    (element set : source.Carrier sort) :
+    Values.map f
+        (hDomains.symm ▸ Values.cons element (Values.cons set .nil)) =
+      hDomains.symm ▸ Values.cons (f sort element)
+        (Values.cons (f sort set) .nil) := by
+  cases hDomains
+  rfl
+
+@[simp] theorem satisfies_membership
+    {σ : Signature.{u, v, w}} (ℬ : LevyBound σ)
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} (env : Env M bound free)
+    (element set : Term σ bound free ℬ.sort) :
+    Formula.satisfies env (ℬ.membership element set) ↔
+      ℬ.Holds M (element.eval env) (set.eval env) := by
+  simp only [membership, Formula.satisfies, Holds]
+  rw [eval_pair_cast env ℬ.domains element set]
+
+@[simp] theorem satisfies_boundedForall
+    {σ : Signature.{u, v, w}} (ℬ : LevyBound σ)
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} (env : Env M bound free)
+    (set : Term σ bound free ℬ.sort)
+    (body : Formula σ (ℬ.sort :: bound) free) :
+    Formula.satisfies env (ℬ.boundedForall set body) ↔
+      ∀ value : M.Carrier ℬ.sort,
+        ℬ.Holds M value (set.eval env) →
+          Formula.satisfies (env.pushBound value) body := by
+  simp [boundedForall, Formula.satisfies,
+    Term.eval_weakenBound, Term.eval]
+
+@[simp] theorem satisfies_boundedExists
+    {σ : Signature.{u, v, w}} (ℬ : LevyBound σ)
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} (env : Env M bound free)
+    (set : Term σ bound free ℬ.sort)
+    (body : Formula σ (ℬ.sort :: bound) free) :
+    Formula.satisfies env (ℬ.boundedExists set body) ↔
+      ∃ value : M.Carrier ℬ.sort,
+        ℬ.Holds M value (set.eval env) ∧
+          Formula.satisfies (env.pushBound value) body := by
+  simp [boundedExists, Formula.satisfies,
+    Term.eval_weakenBound, Term.eval]
+
+end LevyBound
+
+/-- 保持相对 Lévy 语义的多排序结构嵌入。 -/
+structure LevyEmbedding {σ : Signature.{u, v, w}}
+    (ℬ : LevyBound σ)
+    (source : Structure.{u, v, w, x} σ)
+    (target : Structure.{u, v, w, y} σ) where
+  map : ∀ sort, source.Carrier sort → target.Carrier sort
+  map_injective : ∀ sort, Function.Injective (map sort)
+  function_eq : ∀ function arguments,
+    map (σ.funcCodomain function) (source.funcInterp function arguments) =
+      target.funcInterp function (Values.map map arguments)
+  relation_iff : ∀ relation arguments,
+    source.relInterp relation arguments ↔
+      target.relInterp relation (Values.map map arguments)
+  bounded_preimage :
+    ∀ (set : source.Carrier ℬ.sort) (element : target.Carrier ℬ.sort),
+      ℬ.Holds target element (map ℬ.sort set) →
+        ∃ sourceElement : source.Carrier ℬ.sort,
+          map ℬ.sort sourceElement = element
+
+namespace LevyEmbedding
+
+/-- 沿嵌入逐点提升变量环境。 -/
+def mapEnv {σ : Signature.{u, v, w}} {ℬ : LevyBound σ}
+    {source : Structure.{u, v, w, x} σ}
+    {target : Structure.{u, v, w, y} σ}
+    (embedding : LevyEmbedding ℬ source target)
+    {bound free : SortContext σ} (env : Env source bound free) :
+    Env target bound free where
+  boundVal := fun entry => embedding.map _ (env.boundVal entry)
+  freeVal := fun entry => embedding.map _ (env.freeVal entry)
+
+/-- 环境提升与压入一个 bound 值交换。 -/
+theorem mapEnv_pushBound
+    {σ : Signature.{u, v, w}} {ℬ : LevyBound σ}
+    {source : Structure.{u, v, w, x} σ}
+    {target : Structure.{u, v, w, y} σ}
+    (embedding : LevyEmbedding ℬ source target)
+    {bound free : SortContext σ} (env : Env source bound free)
+    {sort : σ.SortSymbol} (value : source.Carrier sort) :
+    embedding.mapEnv (env.pushBound value) =
+      (embedding.mapEnv env).pushBound (embedding.map sort value) := by
+  cases env with
+  | mk boundVal freeVal =>
+      apply Env.ext
+      · intro current entry
+        cases entry <;> rfl
+      · intro current entry
+        rfl
+
+mutual
+
+/-- 项解释与结构嵌入交换。 -/
+theorem term_eval_eq
+    {σ : Signature.{u, v, w}} {ℬ : LevyBound σ}
+    {source : Structure.{u, v, w, x} σ}
+    {target : Structure.{u, v, w, y} σ}
+    (embedding : LevyEmbedding ℬ source target)
+    {bound free : SortContext σ} (env : Env source bound free) :
+    {sort : σ.SortSymbol} → (term : Term σ bound free sort) →
+      embedding.map sort (term.eval env) =
+        term.eval (embedding.mapEnv env)
+  | _, .bvar _ => rfl
+  | _, .fvar _ => rfl
+  | _, .app function arguments => by
+      rw [Term.eval, embedding.function_eq]
+      exact congrArg (target.funcInterp function)
+        (embedding.arguments_eval_eq env arguments)
+
+/-- 异质参数列解释与结构嵌入交换。 -/
+theorem arguments_eval_eq
+    {σ : Signature.{u, v, w}} {ℬ : LevyBound σ}
+    {source : Structure.{u, v, w, x} σ}
+    {target : Structure.{u, v, w, y} σ}
+    (embedding : LevyEmbedding ℬ source target)
+    {bound free : SortContext σ} (env : Env source bound free) :
+    {sorts : List σ.SortSymbol} →
+      (arguments : Arguments σ bound free sorts) →
+      Values.map embedding.map (arguments.eval env) =
+        arguments.eval (embedding.mapEnv env)
+  | _, .nil => rfl
+  | _, .cons term rest => by
+      change Values.cons (embedding.map _ (term.eval env))
+          (Values.map embedding.map (rest.eval env)) =
+        Values.cons (term.eval (embedding.mapEnv env))
+          (rest.eval (embedding.mapEnv env))
+      rw [embedding.term_eval_eq env term,
+        embedding.arguments_eval_eq env rest]
+
+end
+
+/-- 有界关系本身由关系保持合同双向保存。 -/
+theorem holds_iff
+    {σ : Signature.{u, v, w}} {ℬ : LevyBound σ}
+    {source : Structure.{u, v, w, x} σ}
+    {target : Structure.{u, v, w, y} σ}
+    (embedding : LevyEmbedding ℬ source target)
+    (element set : source.Carrier ℬ.sort) :
+    ℬ.Holds source element set ↔
+      ℬ.Holds target (embedding.map ℬ.sort element)
+        (embedding.map ℬ.sort set) := by
+  simpa only [LevyBound.Holds,
+    LevyBound.map_pair_cast embedding.map ℬ.domains element set] using
+    embedding.relation_iff ℬ.relation
+      (ℬ.domains.symm ▸ Values.cons element (Values.cons set .nil))
+
+end LevyEmbedding
+
+namespace MembershipGuard
+
+/-- 正位置成员 guard 从量词体真值中恢复显式集合界。 -/
+theorem holds_of_satisfies
+    {σ : Signature.{u, v, w}} {ℬ : LevyBound σ}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ}
+    {set : Term σ bound free ℬ.sort}
+    {body : Formula σ (ℬ.sort :: bound) free}
+    (hGuard : MembershipGuard ℬ set body)
+    (env : Env M (ℬ.sort :: bound) free)
+    (hBody : Formula.satisfies env body) :
+    ℬ.Holds M (Term.eval env (.bvar .here))
+      (Term.eval env (set.weakenBound ℬ.sort)) := by
   induction hGuard generalizing env with
   | membership =>
-      simpa only [Formula.satisfies, List.map_cons,
-        List.map_nil] using hFormula
+      exact (LevyBound.satisfies_membership ℬ env _ _).mp hBody
   | conj_left hLeft ih =>
-      exact ih env hFormula.1
+      exact ih env hBody.1
   | conj_right hRight ih =>
-      exact ih env hFormula.2
+      exact ih env hBody.2
+
+end MembershipGuard
 
 /-- 相对 `Delta0` 公式在 Lévy 嵌入两侧绝对。 -/
 theorem delta0_absolute
-    {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {bound : LevyBound σ}
+    {σ : Signature.{u, v, w}} {ℬ : LevyBound σ}
     {source : Structure.{u, v, w, x} σ}
-    {target : Structure.{u, v, w, y} σ} (embedding : LevyEmbedding bound source target)
-    {formula : Formula σ} (hFormula : IsDelta0 bound formula) :
-    ∀ env : Env source,
+    {target : Structure.{u, v, w, y} σ}
+    (embedding : LevyEmbedding ℬ source target)
+    {bound free : SortContext σ} {formula : Formula σ bound free}
+    (hFormula : IsDelta0 ℬ formula) :
+    ∀ env : Env source bound free,
       Formula.satisfies env formula ↔
-        Formula.satisfies (embedding.map_env env) formula := by
+        Formula.satisfies (embedding.mapEnv env) formula := by
   induction hFormula with
-  | falsum =>
-      intro env
-      rfl
-  | truth =>
-      intro env
-      rfl
+  | falsum => intro env; rfl
+  | truth => intro env; rfl
   | rel relation arguments =>
       intro env
       simp only [Formula.satisfies]
-      rw [← embedding.term_list_eval_eq env arguments]
-      exact embedding.relation_iff relation (arguments.map (Term.eval env))
+      rw [← embedding.arguments_eval_eq env arguments]
+      exact embedding.relation_iff relation (arguments.eval env)
   | equal left right =>
       intro env
       simp only [Formula.satisfies]
       constructor
-      · intro hEquality
+      · intro hEqual
         rw [← embedding.term_eval_eq env left,
           ← embedding.term_eval_eq env right]
-        exact congrArg embedding.map hEquality
-      · intro hEquality
-        apply embedding.map_injective
-        simpa only [embedding.term_eval_eq] using hEquality
+        exact congrArg (embedding.map _) hEqual
+      · intro hEqual
+        apply embedding.map_injective _
+        simpa [embedding.term_eval_eq env left,
+          embedding.term_eval_eq env right] using hEqual
   | neg hBody ih =>
       intro env
-      simpa only [Formula.satisfies] using not_congr (ih env)
+      exact not_congr (ih env)
   | conj hLeft hRight ihLeft ihRight =>
       intro env
-      simp only [Formula.satisfies, ihLeft env, ihRight env]
+      exact and_congr (ihLeft env) (ihRight env)
   | disj hLeft hRight ihLeft ihRight =>
       intro env
-      simp only [Formula.satisfies, ihLeft env, ihRight env]
+      exact or_congr (ihLeft env) (ihRight env)
   | imp hLeft hRight ihLeft ihRight =>
       intro env
-      simp only [Formula.satisfies, ihLeft env, ihRight env]
+      exact imp_congr (ihLeft env) (ihRight env)
   | iff hLeft hRight ihLeft ihRight =>
       intro env
-      simp only [Formula.satisfies, ihLeft env, ihRight env]
-  | bounded_forall setTerm body hSet hBody ih =>
+      exact iff_congr (ihLeft env) (ihRight env)
+  | bounded_forall set hBody ih =>
       intro env
-      simp only [Formula.satisfies, List.map_cons, List.map_nil,
-        term_eval_pushBound_bvar_zero]
+      rw [LevyBound.satisfies_boundedForall,
+        LevyBound.satisfies_boundedForall]
       constructor
-      · intro hSource targetValue hTargetSort hTargetMember
-        rcases source.sortNonempty bound.sort with
-          ⟨anchor, hAnchor⟩
-        let sourceBound :=
-          Term.eval (env.pushBound bound.sort anchor hAnchor)
-            setTerm
-        have hTargetBound :
-            Term.eval ((embedding.map_env env).pushBound
-                  bound.sort targetValue hTargetSort)
-                setTerm =
-              embedding.map sourceBound := by
-          simpa [sourceBound] using
-            bounded_term_eval_eq embedding env setTerm hSet
-              anchor hAnchor targetValue hTargetSort
-        have hTargetMember' :
-            target.relInterp bound.relation
-              [targetValue, embedding.map sourceBound] := by
-          simpa [hTargetBound] using hTargetMember
+      · intro hSource targetValue hTargetBound
+        have hSet :
+            Term.eval (embedding.mapEnv env) set =
+              embedding.map ℬ.sort (Term.eval env set) :=
+          (embedding.term_eval_eq env set).symm
+        rw [hSet] at hTargetBound
         rcases embedding.bounded_preimage
-            sourceBound targetValue hTargetSort hTargetMember' with
-          ⟨sourceValue, hSourceSort, hMap⟩
-        have hSourceBound :
-            Term.eval (env.pushBound
-                  bound.sort sourceValue hSourceSort)
-                setTerm =
-              sourceBound := by
-          simpa [sourceBound] using
-            hSet.eval_pushBound_eq env
-              sourceValue anchor hSourceSort hAnchor
-        have hSourceMember :
-            source.relInterp bound.relation
-              [sourceValue,
-                Term.eval (env.pushBound
-                    bound.sort sourceValue hSourceSort)
-                  setTerm] := by
-          rw [hSourceBound]
-          exact (embedding.relation_iff bound.relation
-              [sourceValue, sourceBound]).mpr (by simpa [hMap] using hTargetMember')
-        have hSourceBody :=
-          hSource sourceValue hSourceSort hSourceMember
-        have hTargetBody := (ih (env.pushBound
-              bound.sort sourceValue hSourceSort)).mp
-            hSourceBody
-        simpa [embedding.map_env_pushBound, hMap] using hTargetBody
-      · intro hTarget sourceValue hSourceSort hSourceMember
-        let hMappedSort := (embedding.sort_iff bound.sort sourceValue).mp
-            hSourceSort
-        have hTargetMember :
-            target.relInterp bound.relation
-              [embedding.map sourceValue,
-                Term.eval ((embedding.map_env env).pushBound
-                    bound.sort (embedding.map sourceValue)
-                    hMappedSort)
-                  setTerm] := by
-          have hSourceTarget := (embedding.relation_iff bound.relation
-              [sourceValue,
-                Term.eval (env.pushBound
-                    bound.sort sourceValue hSourceSort)
-                  setTerm]).mp hSourceMember
-          simpa [embedding.map_env_pushBound,
-            embedding.term_eval_eq] using hSourceTarget
-        have hTargetBody :=
-          hTarget (embedding.map sourceValue)
-            hMappedSort hTargetMember
-        have hSourceBody := (ih (env.pushBound
-              bound.sort sourceValue hSourceSort)).mpr (by
-              simpa [embedding.map_env_pushBound] using
-                hTargetBody)
-        exact hSourceBody
-  | bounded_exists setTerm body hSet hBody ih =>
+            (Term.eval env set) targetValue hTargetBound with
+          ⟨sourceValue, hValue⟩
+        subst targetValue
+        rw [← embedding.mapEnv_pushBound]
+        exact (ih (env.pushBound sourceValue)).mp
+          (hSource sourceValue
+            ((embedding.holds_iff sourceValue (Term.eval env set)).mpr
+              hTargetBound))
+      · intro hTarget sourceValue hSourceBound
+        have hMappedBound :=
+          (embedding.holds_iff sourceValue (Term.eval env set)).mp
+            hSourceBound
+        have hTargetBody := hTarget (embedding.map ℬ.sort sourceValue) (by
+          simpa only [embedding.term_eval_eq env set] using hMappedBound)
+        rw [← embedding.mapEnv_pushBound] at hTargetBody
+        exact (ih (env.pushBound sourceValue)).mpr hTargetBody
+  | bounded_exists set hBody ih =>
       intro env
-      simp only [Formula.satisfies, List.map_cons, List.map_nil,
-        term_eval_pushBound_bvar_zero]
+      rw [LevyBound.satisfies_boundedExists,
+        LevyBound.satisfies_boundedExists]
       constructor
-      · rintro ⟨sourceValue, hSourceSort,
-          hSourceMember, hSourceBody⟩
-        let hMappedSort := (embedding.sort_iff bound.sort sourceValue).mp
-            hSourceSort
-        refine
-          ⟨embedding.map sourceValue, hMappedSort, ?_, ?_⟩
-        · have hSourceTarget := (embedding.relation_iff bound.relation
-              [sourceValue,
-                Term.eval (env.pushBound
-                    bound.sort sourceValue hSourceSort)
-                  setTerm]).mp hSourceMember
-          simpa [embedding.map_env_pushBound,
-            embedding.term_eval_eq] using hSourceTarget
-        · have hTargetBody := (ih (env.pushBound
-                bound.sort sourceValue hSourceSort)).mp
-              hSourceBody
-          simpa [embedding.map_env_pushBound] using hTargetBody
-      · rintro ⟨targetValue, hTargetSort,
-          hTargetMember, hTargetBody⟩
-        rcases source.sortNonempty bound.sort with
-          ⟨anchor, hAnchor⟩
-        let sourceBound :=
-          Term.eval (env.pushBound bound.sort anchor hAnchor)
-            setTerm
-        have hTargetBound :
-            Term.eval ((embedding.map_env env).pushBound
-                  bound.sort targetValue hTargetSort)
-                setTerm =
-              embedding.map sourceBound := by
-          simpa [sourceBound] using
-            bounded_term_eval_eq embedding env setTerm hSet
-              anchor hAnchor targetValue hTargetSort
-        have hTargetMember' :
-            target.relInterp bound.relation
-              [targetValue, embedding.map sourceBound] := by
-          simpa [hTargetBound] using hTargetMember
+      · rintro ⟨sourceValue, hSourceBound, hSourceBody⟩
+        have hMappedBound :=
+          (embedding.holds_iff sourceValue (Term.eval env set)).mp
+            hSourceBound
+        refine ⟨embedding.map ℬ.sort sourceValue, ?_, ?_⟩
+        · simpa only [embedding.term_eval_eq env set] using hMappedBound
+        rw [← embedding.mapEnv_pushBound]
+        exact (ih (env.pushBound sourceValue)).mp hSourceBody
+      · rintro ⟨targetValue, hTargetBound, hTargetBody⟩
+        have hSet :
+            Term.eval (embedding.mapEnv env) set =
+              embedding.map ℬ.sort (Term.eval env set) :=
+          (embedding.term_eval_eq env set).symm
+        rw [hSet] at hTargetBound
         rcases embedding.bounded_preimage
-            sourceBound targetValue hTargetSort hTargetMember' with
-          ⟨sourceValue, hSourceSort, hMap⟩
-        have hSourceBound :
-            Term.eval (env.pushBound
-                  bound.sort sourceValue hSourceSort)
-                setTerm =
-              sourceBound := by
-          simpa [sourceBound] using
-            hSet.eval_pushBound_eq env
-              sourceValue anchor hSourceSort hAnchor
-        refine ⟨sourceValue, hSourceSort, ?_, ?_⟩
-        · rw [hSourceBound]
-          exact (embedding.relation_iff bound.relation
-              [sourceValue, sourceBound]).mpr (by simpa [hMap] using hTargetMember')
-        · apply (ih (env.pushBound
-                bound.sort sourceValue hSourceSort)).mpr
-          simpa [embedding.map_env_pushBound, hMap] using
-            hTargetBody
-  | guarded_exists setTerm body hSet hBody hGuard ih =>
+            (Term.eval env set) targetValue hTargetBound with
+          ⟨sourceValue, hValue⟩
+        subst targetValue
+        refine ⟨sourceValue,
+          (embedding.holds_iff sourceValue (Term.eval env set)).mpr
+            hTargetBound, ?_⟩
+        rw [← embedding.mapEnv_pushBound] at hTargetBody
+        exact (ih (env.pushBound sourceValue)).mpr hTargetBody
+  | guarded_exists set hBody hGuard ih =>
       intro env
       simp only [Formula.satisfies]
       constructor
-      · rintro ⟨sourceValue, hSourceSort, hSourceBody⟩
-        let hTargetSort :=
-          (embedding.sort_iff bound.sort sourceValue).mp
-            hSourceSort
-        refine
-          ⟨embedding.map sourceValue, hTargetSort, ?_⟩
-        have hTargetBody :=
-          (ih (env.pushBound
-              bound.sort sourceValue hSourceSort)).mp
-            hSourceBody
-        simpa [embedding.map_env_pushBound] using
-          hTargetBody
-      · rintro ⟨targetValue, hTargetSort, hTargetBody⟩
-        rcases source.sortNonempty bound.sort with
-          ⟨anchor, hAnchor⟩
-        let sourceBound :=
-          Term.eval
-            (env.pushBound bound.sort anchor hAnchor)
-            setTerm
-        have hTargetBound :
-            Term.eval
-                ((embedding.map_env env).pushBound
-                  bound.sort targetValue hTargetSort)
-                setTerm =
-              embedding.map sourceBound := by
-          simpa [sourceBound] using
-            bounded_term_eval_eq embedding env setTerm hSet
-              anchor hAnchor targetValue hTargetSort
-        have hTargetMember :
-            target.relInterp bound.relation
-              [targetValue, embedding.map sourceBound] := by
-          have hGuarded :=
-            MembershipGuard.mem_of_satisfies hGuard
-              ((embedding.map_env env).pushBound
-                bound.sort targetValue hTargetSort)
-              hTargetBody
-          simpa [hTargetBound,
-            term_eval_pushBound_bvar_zero] using hGuarded
+      · rintro ⟨sourceValue, hSourceBody⟩
+        refine ⟨embedding.map ℬ.sort sourceValue, ?_⟩
+        rw [← embedding.mapEnv_pushBound]
+        exact (ih (env.pushBound sourceValue)).mp hSourceBody
+      · rintro ⟨targetValue, hTargetBody⟩
+        have hTargetBound := hGuard.holds_of_satisfies
+          ((embedding.mapEnv env).pushBound targetValue) hTargetBody
+        rw [Term.eval_weakenBound] at hTargetBound
+        have hSet :
+            Term.eval (embedding.mapEnv env) set =
+              embedding.map ℬ.sort (Term.eval env set) :=
+          (embedding.term_eval_eq env set).symm
+        rw [hSet] at hTargetBound
         rcases embedding.bounded_preimage
-            sourceBound targetValue hTargetSort hTargetMember with
-          ⟨sourceValue, hSourceSort, hMap⟩
-        refine ⟨sourceValue, hSourceSort, ?_⟩
-        apply (ih (env.pushBound
-            bound.sort sourceValue hSourceSort)).mpr
-        simpa [embedding.map_env_pushBound, hMap] using
-          hTargetBody
-mutual
-  /-- 相对 `Sigma1` 公式沿 Lévy 嵌入向上绝对。 -/
-  theorem sigma1_upward_absolute
-      {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-      {bound : LevyBound σ}
-      {source : Structure.{u, v, w, x} σ}
-      {target : Structure.{u, v, w, y} σ} (embedding : LevyEmbedding bound source target)
-      {formula : Formula σ} (hFormula : IsSigma1 bound formula) :
-      ∀ env : Env source,
+            (Term.eval env set) targetValue hTargetBound with
+          ⟨sourceValue, hValue⟩
+        subst targetValue
+        refine ⟨sourceValue, ?_⟩
+        rw [← embedding.mapEnv_pushBound] at hTargetBody
+        exact (ih (env.pushBound sourceValue)).mpr hTargetBody
+
+/-- 一级 Lévy 公式的绝对性方向由极性统一决定。 -/
+theorem level1_absolute
+    {σ : Signature.{u, v, w}} {ℬ : LevyBound σ}
+    {source : Structure.{u, v, w, x} σ}
+    {target : Structure.{u, v, w, y} σ}
+    (embedding : LevyEmbedding ℬ source target)
+    {polarity : LevyPolarity}
+    {bound free : SortContext σ} {formula : Formula σ bound free}
+    (hFormula : IsLevel1 ℬ polarity formula) :
+    match polarity with
+    | .sigma => ∀ env : Env source bound free,
         Formula.satisfies env formula →
-          Formula.satisfies (embedding.map_env env) formula := by
-    cases hFormula with
-    | delta0 hDelta =>
-        intro env hSource
-        exact (delta0_absolute embedding hDelta env).mp hSource
-    | neg hBody =>
-        intro env hSource hTarget
-        exact hSource (pi1_downward_absolute embedding hBody env hTarget)
-    | conj hLeft hRight =>
-        intro env hSource
-        exact
-          ⟨sigma1_upward_absolute embedding hLeft env hSource.1,
-            sigma1_upward_absolute embedding hRight env hSource.2⟩
-    | disj hLeft hRight =>
-        intro env hSource
-        rcases hSource with hSource | hSource
-        · exact Or.inl (sigma1_upward_absolute embedding hLeft env hSource)
-        · exact Or.inr (sigma1_upward_absolute embedding hRight env hSource)
-    | imp hLeft hRight =>
-        intro env hSource hTargetLeft
-        exact
-          sigma1_upward_absolute embedding hRight env (hSource (pi1_downward_absolute embedding hLeft env
-                hTargetLeft))
-    | existsE sort hBody =>
-        intro env hSource
-        simp only [Formula.satisfies] at hSource ⊢
-        rcases hSource with ⟨sourceValue, hSourceSort, hSourceBody⟩
-        let hTargetSort := (embedding.sort_iff sort sourceValue).mp hSourceSort
-        refine ⟨embedding.map sourceValue, hTargetSort, ?_⟩
-        simpa [embedding.map_env_pushBound] using
-          sigma1_upward_absolute embedding hBody (env.pushBound sort sourceValue hSourceSort)
-            hSourceBody
-    | bounded_forall setTerm body hSet hBody =>
-        intro env
-        simp only [Formula.satisfies, List.map_cons, List.map_nil,
-          term_eval_pushBound_bvar_zero]
-        intro hSource targetValue hTargetSort hTargetMember
-        rcases source.sortNonempty bound.sort with
-          ⟨anchor, hAnchor⟩
-        let sourceBound :=
-          Term.eval (env.pushBound bound.sort anchor hAnchor)
-            setTerm
-        have hTargetBound :
-            Term.eval ((embedding.map_env env).pushBound
-                  bound.sort targetValue hTargetSort)
-                setTerm =
-              embedding.map sourceBound := by
-          simpa [sourceBound] using
-            bounded_term_eval_eq embedding env setTerm hSet
-              anchor hAnchor targetValue hTargetSort
-        have hTargetMember' :
-            target.relInterp bound.relation
-              [targetValue, embedding.map sourceBound] := by
-          simpa [hTargetBound] using hTargetMember
-        rcases embedding.bounded_preimage
-            sourceBound targetValue hTargetSort hTargetMember' with
-          ⟨sourceValue, hSourceSort, hMap⟩
-        have hSourceBound :
-            Term.eval (env.pushBound
-                  bound.sort sourceValue hSourceSort)
-                setTerm =
-              sourceBound := by
-          simpa [sourceBound] using
-            hSet.eval_pushBound_eq env
-              sourceValue anchor hSourceSort hAnchor
-        have hSourceMember :
-            source.relInterp bound.relation
-              [sourceValue,
-                Term.eval (env.pushBound
-                    bound.sort sourceValue hSourceSort)
-                  setTerm] := by
-          rw [hSourceBound]
-          exact (embedding.relation_iff bound.relation
-              [sourceValue, sourceBound]).mpr (by simpa [hMap] using hTargetMember')
-        have hSourceBody :=
-          hSource sourceValue hSourceSort hSourceMember
-        have hTargetBody :=
-          sigma1_upward_absolute embedding hBody (env.pushBound
-              bound.sort sourceValue hSourceSort)
-            hSourceBody
-        simpa [embedding.map_env_pushBound, hMap] using hTargetBody
-    | bounded_exists setTerm body hSet hBody =>
-        intro env
-        simp only [Formula.satisfies, List.map_cons, List.map_nil,
-          term_eval_pushBound_bvar_zero]
-        intro hSource
-        rcases hSource with
-          ⟨sourceValue, hSourceSort, hSourceMember, hSourceBody⟩
-        let hTargetSort := (embedding.sort_iff bound.sort sourceValue).mp
-            hSourceSort
-        refine
-          ⟨embedding.map sourceValue, hTargetSort, ?_, ?_⟩
-        · have hSourceTarget := (embedding.relation_iff bound.relation
-              [sourceValue,
-                Term.eval (env.pushBound
-                    bound.sort sourceValue hSourceSort)
-                  setTerm]).mp hSourceMember
-          simpa [embedding.map_env_pushBound,
-            embedding.term_eval_eq] using hSourceTarget
-        · have hTargetBody :=
-            sigma1_upward_absolute embedding hBody (env.pushBound
-                bound.sort sourceValue hSourceSort)
-              hSourceBody
-          simpa [embedding.map_env_pushBound] using hTargetBody
-  /-- 相对 `Pi1` 公式沿 Lévy 嵌入向下绝对。 -/
-  theorem pi1_downward_absolute
-      {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-      {bound : LevyBound σ}
-      {source : Structure.{u, v, w, x} σ}
-      {target : Structure.{u, v, w, y} σ} (embedding : LevyEmbedding bound source target)
-      {formula : Formula σ} (hFormula : IsPi1 bound formula) :
-      ∀ env : Env source,
-        Formula.satisfies (embedding.map_env env) formula →
+          Formula.satisfies (embedding.mapEnv env) formula
+    | .pi => ∀ env : Env source bound free,
+        Formula.satisfies (embedding.mapEnv env) formula →
           Formula.satisfies env formula := by
-    cases hFormula with
-    | delta0 hDelta =>
-        intro env hTarget
-        exact (delta0_absolute embedding hDelta env).mpr hTarget
-    | neg hBody =>
-        intro env hTarget hSource
-        exact hTarget (sigma1_upward_absolute embedding hBody env hSource)
-    | conj hLeft hRight =>
-        intro env hTarget
-        exact
-          ⟨pi1_downward_absolute embedding hLeft env hTarget.1,
-            pi1_downward_absolute embedding hRight env hTarget.2⟩
-    | disj hLeft hRight =>
-        intro env hTarget
-        rcases hTarget with hTarget | hTarget
-        · exact Or.inl (pi1_downward_absolute embedding hLeft env hTarget)
-        · exact Or.inr (pi1_downward_absolute embedding hRight env hTarget)
-    | imp hLeft hRight =>
-        intro env hTarget hSourceLeft
-        exact
-          pi1_downward_absolute embedding hRight env (hTarget (sigma1_upward_absolute embedding hLeft env
-                hSourceLeft))
-    | forallE sort hBody =>
-        intro env hTarget sourceValue hSourceSort
-        simp only [Formula.satisfies] at hTarget ⊢
-        let hTargetSort := (embedding.sort_iff sort sourceValue).mp hSourceSort
-        apply pi1_downward_absolute embedding hBody (env.pushBound sort sourceValue hSourceSort)
-        simpa [embedding.map_env_pushBound] using
-          hTarget (embedding.map sourceValue) hTargetSort
-    | bounded_forall setTerm body hSet hBody =>
-        intro env
-        simp only [Formula.satisfies, List.map_cons, List.map_nil,
-          term_eval_pushBound_bvar_zero]
-        intro hTarget sourceValue hSourceSort hSourceMember
-        let hTargetSort := (embedding.sort_iff bound.sort sourceValue).mp
-            hSourceSort
-        have hTargetMember :
-            target.relInterp bound.relation
-              [embedding.map sourceValue,
-                Term.eval ((embedding.map_env env).pushBound
-                    bound.sort (embedding.map sourceValue)
-                    hTargetSort)
-                  setTerm] := by
-          have hSourceTarget := (embedding.relation_iff bound.relation
-              [sourceValue,
-                Term.eval (env.pushBound
-                    bound.sort sourceValue hSourceSort)
-                  setTerm]).mp hSourceMember
-          simpa [embedding.map_env_pushBound,
-            embedding.term_eval_eq] using hSourceTarget
-        have hTargetBody :=
-          hTarget (embedding.map sourceValue)
-            hTargetSort hTargetMember
-        apply pi1_downward_absolute embedding hBody (env.pushBound bound.sort sourceValue hSourceSort)
-        simpa [embedding.map_env_pushBound] using hTargetBody
-    | bounded_exists setTerm body hSet hBody =>
-        intro env
-        simp only [Formula.satisfies, List.map_cons, List.map_nil,
-          term_eval_pushBound_bvar_zero]
-        intro hTarget
-        rcases hTarget with
-          ⟨targetValue, hTargetSort, hTargetMember, hTargetBody⟩
-        rcases source.sortNonempty bound.sort with
-          ⟨anchor, hAnchor⟩
-        let sourceBound :=
-          Term.eval (env.pushBound bound.sort anchor hAnchor)
-            setTerm
-        have hTargetBound :
-            Term.eval ((embedding.map_env env).pushBound
-                  bound.sort targetValue hTargetSort)
-                setTerm =
-              embedding.map sourceBound := by
-          simpa [sourceBound] using
-            bounded_term_eval_eq embedding env setTerm hSet
-              anchor hAnchor targetValue hTargetSort
-        have hTargetMember' :
-            target.relInterp bound.relation
-              [targetValue, embedding.map sourceBound] := by
-          simpa [hTargetBound] using hTargetMember
+  induction hFormula with
+  | @delta0 polarity bound free formula hDelta =>
+      cases polarity
+      · intro env
+        exact (delta0_absolute embedding hDelta env).mp
+      · intro env
+        exact (delta0_absolute embedding hDelta env).mpr
+  | @neg polarity bound free body hBody ih =>
+      cases polarity
+      · intro env hTarget hSource
+        exact hTarget (ih env hSource)
+      · intro env hSource hTarget
+        exact hSource (ih env hTarget)
+  | @conj polarity bound free left right hLeft hRight ihLeft ihRight =>
+      cases polarity
+      · intro env hSource
+        exact ⟨ihLeft env hSource.1, ihRight env hSource.2⟩
+      · intro env hTarget
+        exact ⟨ihLeft env hTarget.1, ihRight env hTarget.2⟩
+  | @disj polarity bound free left right hLeft hRight ihLeft ihRight =>
+      cases polarity
+      · intro env hSource
+        rcases hSource with hSourceLeft | hSourceRight
+        · exact Or.inl (ihLeft env hSourceLeft)
+        · exact Or.inr (ihRight env hSourceRight)
+      · intro env hTarget
+        rcases hTarget with hTargetLeft | hTargetRight
+        · exact Or.inl (ihLeft env hTargetLeft)
+        · exact Or.inr (ihRight env hTargetRight)
+  | @imp polarity bound free left right hLeft hRight ihLeft ihRight =>
+      cases polarity
+      · intro env hSource hTargetLeft
+        exact ihRight env (hSource (ihLeft env hTargetLeft))
+      · intro env hTarget hSourceLeft
+        exact ihRight env (hTarget (ihLeft env hSourceLeft))
+  | @existsE bound free sort body hBody ih =>
+      intro env hSource
+      rcases hSource with ⟨sourceValue, hSourceBody⟩
+      refine ⟨embedding.map sort sourceValue, ?_⟩
+      rw [← embedding.mapEnv_pushBound]
+      exact ih (env.pushBound sourceValue) hSourceBody
+  | @forallE bound free sort body hBody ih =>
+      intro env hTarget sourceValue
+      have hTargetBody := hTarget (embedding.map sort sourceValue)
+      rw [← embedding.mapEnv_pushBound] at hTargetBody
+      exact ih (env.pushBound sourceValue) hTargetBody
+  | @bounded_forall polarity bound free set body hBody ih =>
+      cases polarity
+      · intro env
+        rw [LevyBound.satisfies_boundedForall,
+          LevyBound.satisfies_boundedForall]
+        intro hSource targetValue hTargetBound
+        have hSet : Term.eval (embedding.mapEnv env) set =
+            embedding.map ℬ.sort (Term.eval env set) :=
+          (embedding.term_eval_eq env set).symm
+        rw [hSet] at hTargetBound
         rcases embedding.bounded_preimage
-            sourceBound targetValue hTargetSort hTargetMember' with
-          ⟨sourceValue, hSourceSort, hMap⟩
-        have hSourceBound :
-            Term.eval (env.pushBound
-                  bound.sort sourceValue hSourceSort)
-                setTerm =
-              sourceBound := by
-          simpa [sourceBound] using
-            hSet.eval_pushBound_eq env
-              sourceValue anchor hSourceSort hAnchor
-        refine ⟨sourceValue, hSourceSort, ?_, ?_⟩
-        · rw [hSourceBound]
-          exact (embedding.relation_iff bound.relation
-              [sourceValue, sourceBound]).mpr (by simpa [hMap] using hTargetMember')
-        · apply pi1_downward_absolute embedding hBody (env.pushBound bound.sort sourceValue hSourceSort)
-          simpa [embedding.map_env_pushBound, hMap] using
-            hTargetBody
-end
-end LevyEmbedding
+            (Term.eval env set) targetValue hTargetBound with
+          ⟨sourceValue, hValue⟩
+        subst targetValue
+        rw [← embedding.mapEnv_pushBound]
+        exact ih (env.pushBound sourceValue)
+          (hSource sourceValue
+            ((embedding.holds_iff sourceValue (Term.eval env set)).mpr
+              hTargetBound))
+      · intro env
+        rw [LevyBound.satisfies_boundedForall,
+          LevyBound.satisfies_boundedForall]
+        intro hTarget sourceValue hSourceBound
+        have hMappedBound :=
+          (embedding.holds_iff sourceValue (Term.eval env set)).mp
+            hSourceBound
+        have hTargetBody := hTarget (embedding.map ℬ.sort sourceValue) (by
+          simpa only [embedding.term_eval_eq env set] using hMappedBound)
+        rw [← embedding.mapEnv_pushBound] at hTargetBody
+        exact ih (env.pushBound sourceValue) hTargetBody
+  | @bounded_exists polarity bound free set body hBody ih =>
+      cases polarity
+      · intro env
+        rw [LevyBound.satisfies_boundedExists,
+          LevyBound.satisfies_boundedExists]
+        rintro ⟨sourceValue, hSourceBound, hSourceBody⟩
+        have hMappedBound :=
+          (embedding.holds_iff sourceValue (Term.eval env set)).mp
+            hSourceBound
+        refine ⟨embedding.map ℬ.sort sourceValue, ?_, ?_⟩
+        · simpa only [embedding.term_eval_eq env set] using hMappedBound
+        rw [← embedding.mapEnv_pushBound]
+        exact ih (env.pushBound sourceValue) hSourceBody
+      · intro env
+        rw [LevyBound.satisfies_boundedExists,
+          LevyBound.satisfies_boundedExists]
+        rintro ⟨targetValue, hTargetBound, hTargetBody⟩
+        have hSet : Term.eval (embedding.mapEnv env) set =
+            embedding.map ℬ.sort (Term.eval env set) :=
+          (embedding.term_eval_eq env set).symm
+        rw [hSet] at hTargetBound
+        rcases embedding.bounded_preimage
+            (Term.eval env set) targetValue hTargetBound with
+          ⟨sourceValue, hValue⟩
+        subst targetValue
+        refine ⟨sourceValue,
+          (embedding.holds_iff sourceValue (Term.eval env set)).mpr
+            hTargetBound, ?_⟩
+        rw [← embedding.mapEnv_pushBound] at hTargetBody
+        exact ih (env.pushBound sourceValue) hTargetBody
+
+/-- 相对 `Sigma1` 公式沿 Lévy 嵌入向上绝对。 -/
+theorem sigma1_upward_absolute
+    {σ : Signature.{u, v, w}} {ℬ : LevyBound σ}
+    {source : Structure.{u, v, w, x} σ}
+    {target : Structure.{u, v, w, y} σ}
+    (embedding : LevyEmbedding ℬ source target)
+    {bound free : SortContext σ} {formula : Formula σ bound free}
+    (hFormula : IsSigma1 ℬ formula) (env : Env source bound free) :
+    Formula.satisfies env formula →
+      Formula.satisfies (embedding.mapEnv env) formula :=
+  level1_absolute embedding hFormula env
+
+/-- 相对 `Pi1` 公式沿 Lévy 嵌入向下绝对。 -/
+theorem pi1_downward_absolute
+    {σ : Signature.{u, v, w}} {ℬ : LevyBound σ}
+    {source : Structure.{u, v, w, x} σ}
+    {target : Structure.{u, v, w, y} σ}
+    (embedding : LevyEmbedding ℬ source target)
+    {bound free : SortContext σ} {formula : Formula σ bound free}
+    (hFormula : IsPi1 ℬ formula) (env : Env source bound free) :
+    Formula.satisfies (embedding.mapEnv env) formula →
+      Formula.satisfies env formula :=
+  level1_absolute embedding hFormula env
+
 end Formula
 end FirstOrder
 end Logic

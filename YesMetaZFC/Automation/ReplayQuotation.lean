@@ -12,8 +12,6 @@ namespace ReplayQuotation
 open Lean
 private def signatureExpr : Expr :=
   mkConst ``SearchSignature
-private def firstOrderConst (declaration : Name) : Expr :=
-  mkConst declaration [.zero, .zero, .zero]
 private def unaryZeroConst (declaration : Name) : Expr :=
   mkConst declaration [.zero]
 private def binaryZeroConst (declaration : Name) : Expr :=
@@ -21,29 +19,29 @@ private def binaryZeroConst (declaration : Name) : Expr :=
 private def appliedType (declaration : Name) : Expr :=
   mkApp (mkConst declaration) signatureExpr
 private def termTypeExpr : Expr :=
-  mkApp (firstOrderConst ``Logic.FirstOrder.Term) signatureExpr
+  appliedType ``DAGCertificate.Term
 private def formulaTypeExpr : Expr :=
-  mkApp (firstOrderConst ``Logic.FirstOrder.Formula) signatureExpr
+  appliedType ``DAGCertificate.Formula
 private def literalTypeExpr : Expr :=
   appliedType ``DAGCertificate.Literal
 private def clauseTypeExpr : Expr :=
   appliedType ``DAGCertificate.Clause
 private def parentClauseTypeExpr : Expr :=
   appliedType ``DAGCertificate.ParentClause
-private def varExpr : Logic.FirstOrder.Var SearchSignature → Expr
+private def varExpr : DAGCertificate.Variable SearchSignature → Expr
   | .bvar sort index =>
-      mkAppN (firstOrderConst ``Logic.FirstOrder.Var.bvar)
+      mkAppN (mkConst ``DAGCertificate.Variable.bvar)
         #[signatureExpr, toExpr (show SearchSort from sort), toExpr index]
   | .fvar sort index =>
-      mkAppN (firstOrderConst ``Logic.FirstOrder.Var.fvar)
+      mkAppN (mkConst ``DAGCertificate.Variable.fvar)
         #[signatureExpr, toExpr (show SearchSort from sort), toExpr index]
 mutual
   private def termExpr : Term → Expr
     | .var value =>
-        mkAppN (firstOrderConst ``Logic.FirstOrder.Term.var)
+        mkAppN (mkConst ``DAGCertificate.Term.var)
           #[signatureExpr, varExpr value]
     | .app function arguments =>
-        mkAppN (firstOrderConst ``Logic.FirstOrder.Term.app)
+        mkAppN (mkConst ``DAGCertificate.Term.app)
           #[signatureExpr, toExpr (show SearchFunc from function), termListExpr arguments]
   private def termListExpr : List Term → Expr
     | [] =>
@@ -57,35 +55,35 @@ instance : ToExpr Term where
   toExpr := termExpr
 private partial def formulaExpr : Formula → Expr
   | .falsum =>
-      mkApp (firstOrderConst ``Logic.FirstOrder.Formula.falsum) signatureExpr
+      mkApp (mkConst ``DAGCertificate.Formula.falsum) signatureExpr
   | .truth =>
-      mkApp (firstOrderConst ``Logic.FirstOrder.Formula.truth) signatureExpr
+      mkApp (mkConst ``DAGCertificate.Formula.truth) signatureExpr
   | .rel relation arguments =>
-      mkAppN (firstOrderConst ``Logic.FirstOrder.Formula.rel)
+      mkAppN (mkConst ``DAGCertificate.Formula.rel)
         #[signatureExpr, toExpr (show RelSymbol from relation), toExpr arguments]
   | .equal left right =>
-      mkAppN (firstOrderConst ``Logic.FirstOrder.Formula.equal)
+      mkAppN (mkConst ``DAGCertificate.Formula.equal)
         #[signatureExpr, toExpr left, toExpr right]
   | .neg body =>
-      mkAppN (firstOrderConst ``Logic.FirstOrder.Formula.neg)
+      mkAppN (mkConst ``DAGCertificate.Formula.neg)
         #[signatureExpr, formulaExpr body]
   | .conj left right =>
-      mkAppN (firstOrderConst ``Logic.FirstOrder.Formula.conj)
+      mkAppN (mkConst ``DAGCertificate.Formula.conj)
         #[signatureExpr, formulaExpr left, formulaExpr right]
   | .disj left right =>
-      mkAppN (firstOrderConst ``Logic.FirstOrder.Formula.disj)
+      mkAppN (mkConst ``DAGCertificate.Formula.disj)
         #[signatureExpr, formulaExpr left, formulaExpr right]
   | .imp left right =>
-      mkAppN (firstOrderConst ``Logic.FirstOrder.Formula.imp)
+      mkAppN (mkConst ``DAGCertificate.Formula.imp)
         #[signatureExpr, formulaExpr left, formulaExpr right]
   | .iff left right =>
-      mkAppN (firstOrderConst ``Logic.FirstOrder.Formula.iff)
+      mkAppN (mkConst ``DAGCertificate.Formula.iff)
         #[signatureExpr, formulaExpr left, formulaExpr right]
   | .forallE sort body =>
-      mkAppN (firstOrderConst ``Logic.FirstOrder.Formula.forallE)
+      mkAppN (mkConst ``DAGCertificate.Formula.forallE)
         #[signatureExpr, toExpr (show SearchSort from sort), formulaExpr body]
   | .existsE sort body =>
-      mkAppN (firstOrderConst ``Logic.FirstOrder.Formula.existsE)
+      mkAppN (mkConst ``DAGCertificate.Formula.existsE)
         #[signatureExpr, toExpr (show SearchSort from sort), formulaExpr body]
 instance : ToExpr Formula where
   toTypeExpr := formulaTypeExpr

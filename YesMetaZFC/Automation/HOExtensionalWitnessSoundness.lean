@@ -15,6 +15,8 @@ open Logic.HigherOrder
 universe u v w x
 noncomputable local instance classicalPropDecidable (proposition : Prop) : Decidable proposition :=
   Classical.propDecidable proposition
+-- 各字段（或其签名别名）保留独立宇宙；结构类型的 max 不是冗余参数。
+set_option linter.checkUnivs false in
 abbrev Signature := HODAGCertificate.Signature
 abbrev SimpleType (σ : Signature) := HODAGCertificate.SimpleType σ
 abbrev Term (σ : Signature) := HODAGCertificate.Term σ
@@ -149,6 +151,7 @@ theorem witnessValue_distinguishes
 end WitnessInterpretation
 section Model
 variable {σ : Signature.{u, v, w}}
+@[implicit_reducible]
 noncomputable def Structure.overrideExtensionalWitnesses (M : Structure σ) (contract : ExtensionalContract M) : Structure σ where
   Domain := M.Domain
   nonempty := M.nonempty
@@ -197,7 +200,7 @@ theorem Structure.overrideExtensionalWitnesses_funcInterp_nonWitness
     (Structure.overrideExtensionalWitnesses M contract).funcInterp symbol arguments =
       M.funcInterp symbol arguments := by
   simp [Structure.overrideExtensionalWitnesses, hWitness]
-def extensionalContractPreserved
+theorem extensionalContractPreserved
     {M : Structure σ} (contract : ExtensionalContract M) :
     ExtensionalContract (Structure.overrideExtensionalWitnesses M contract) where
   lambdaCongr := by
@@ -208,7 +211,7 @@ def extensionalContractPreserved
     simpa [Structure.overrideExtensionalWitnesses] using contract.eta
   functionExtensionality := by
     simpa [Structure.overrideExtensionalWitnesses] using contract.functionExtensionality
-def extensionalWitnessContract
+theorem extensionalWitnessContract
     {M : Structure σ} (contract : ExtensionalContract M) :
     ExtensionalWitnessContract (Structure.overrideExtensionalWitnesses M contract) where
   distinguishes := by
@@ -237,11 +240,11 @@ theorem Env.unbase_rebase {M : Structure σ} (contract : ExtensionalContract M) 
   rfl
 theorem Env.wellSorted_rebase {M : Structure σ} (contract : ExtensionalContract M)
     {env : Env σ M} (hEnv : env.WellSorted []) : (Env.rebase contract env).WellSorted [] := by
-  simpa [Env.rebase, Structure.overrideExtensionalWitnesses] using hEnv
+  simpa [Env.rebase, Structure.overrideExtensionalWitnesses] using! hEnv
 theorem Env.wellSorted_unbase
     {M : Structure σ} (contract : ExtensionalContract M)
     {env : Env σ (Structure.overrideExtensionalWitnesses M contract)} (hEnv : env.WellSorted []) : (Env.unbase contract env).WellSorted [] := by
-  simpa [Env.unbase, Structure.overrideExtensionalWitnesses] using hEnv
+  simpa [Env.unbase, Structure.overrideExtensionalWitnesses] using! hEnv
 end Environment
 section SourcePreservation
 variable {σ : Signature.{u, v, w}}
@@ -275,7 +278,7 @@ mutual
         simp only [Term.eval]
         congr 1
         funext value
-        simpa [Env.rebase, Env.push] using
+        simpa [Env.rebase, Env.push] using!
           Term.eval_rebase_of_witnessFree contract (env.push value) body hFree
   theorem Term.evalList_rebase_of_witnessFree
       {M : Structure σ} (contract : ExtensionalContract M) (env : Env σ M) :
@@ -288,7 +291,6 @@ mutual
         simp only [List.map_cons]
         rw [Term.eval_rebase_of_witnessFree contract env term hFree.1,
           Term.evalList_rebase_of_witnessFree contract env rest hFree.2]
-        rfl
 end
 theorem Atom.satisfies_rebase_of_witnessFree
     {M : Structure σ} (contract : ExtensionalContract M) (env : Env σ M) (atom : Atom σ) (hFree : Syntax.atomWitnessFree atom = true) :
@@ -307,7 +309,6 @@ theorem Atom.satisfies_rebase_of_witnessFree
           Term.eval env left = Term.eval env right
       rw [Term.eval_rebase_of_witnessFree contract env left hParts.1,
         Term.eval_rebase_of_witnessFree contract env right hParts.2]
-      rfl
 theorem Literal.satisfies_rebase_of_witnessFree
     {M : Structure σ} (contract : ExtensionalContract M) (env : Env σ M) (literal : Literal σ) (hFree : Syntax.literalWitnessFree literal = true) :
     literal.Satisfies (Env.rebase contract env) ↔ literal.Satisfies env := by

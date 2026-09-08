@@ -30,12 +30,12 @@ theorem separation_sat_iff_d {ℳ : Structure.{u}}
     refine ⟨subset, fun value => ?_⟩
     have hValue := hSubset value
     rw [Definitional.Project.Formula.satisfies_rename] at hValue
-    simpa only [Env.reindex_push_unaryUnderTwo] using hValue
+    simpa only [Env.reindex_push_unaryUnderTwo] using! hValue
   · intro h source
     rcases h source with ⟨subset, hSubset⟩
     refine ⟨subset, fun value => ?_⟩
     rw [Definitional.Project.Formula.satisfies_rename]
-    simpa only [Env.reindex_push_unaryUnderTwo] using hSubset value
+    simpa only [Env.reindex_push_unaryUnderTwo] using! hSubset value
 end Axioms.Schema
 namespace ZF
 /-- ZF 分离任意公式模式在给定参数环境下定义的子类。 -/
@@ -90,7 +90,7 @@ theorem difference_exists_d {ℳ : Structure.{u}} (hKP : ℳ.Models SetTheory.KP
     ⟨difference, hDifference⟩
   refine ⟨difference, fun value => ?_⟩
   simpa [differenceSchema, Definitional.Project.Formula.satisfies,
-    Definitional.Semantics.satisfies, Definitional.Term.eval, Env.push, env] using
+    Definitional.Semantics.satisfies, Definitional.Term.eval, Env.push, env] using!
       hDifference value
 /-- 固定右参数后，从给定集合中分离出同时属于右参数的元素。 -/
 def intersectionSchema : Definitional.Project.Delta0UnarySchema 1 where
@@ -111,7 +111,7 @@ theorem intersection_exists_d {ℳ : Structure.{u}} (hKP : ℳ.Models SetTheory.
     ⟨intersection, hIntersection⟩
   refine ⟨intersection, fun value => ?_⟩
   simpa [intersectionSchema, Definitional.Project.Formula.satisfies,
-    Definitional.Semantics.satisfies, Definitional.Term.eval, Env.push, env] using
+    Definitional.Semantics.satisfies, Definitional.Term.eval, Env.push, env] using!
       hIntersection value
 end KP
 end SetTheory

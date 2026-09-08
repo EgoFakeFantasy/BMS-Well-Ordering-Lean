@@ -1,189 +1,264 @@
-import YesMetaZFC.Logic.FirstOrder.Derivation.Classical
+import YesMetaZFC.Logic.FirstOrder.Derivation.Structural
+
 /-!
-# 一阶推导中的经典命题定理
-本模块把常见 Hilbert 公理模式改写为自然演绎核上的派生定理。它们不进入
-`Derives` 构造子，也不保留公式级别或证明序列长度护栏；后续元数学证明可以直接
-把这些定理作为稳定的命题逻辑接口使用。
+# Hilbert 核上的命题规则
+
+本模块把标准连接词模式组合成局部上下文接口。所有公式已经内在良构，规则不携带
+admissible、check certificate 或 sort 判定前提。
 -/
+
 namespace YesMetaZFC
 namespace Logic
 namespace FirstOrder
 namespace Derives
-namespace Propositional
+
 universe u v w
+
+/-- 局部假设。 -/
+theorem assumption {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {formula : OpenFormula σ free}
+    (hMem : formula ∈ Γ) :
+    Derives T Γ formula :=
+  assumption_of_mem hMem
+
+/-- 蕴含引入。 -/
+theorem imp_intro {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free}
+    {antecedent consequent : OpenFormula σ free}
+    (hBody : Derives T (antecedent :: Γ) consequent) :
+    Derives T Γ (.imp antecedent consequent) :=
+  deduction hBody
+
+/-- 蕴含消去。 -/
+theorem imp_elim {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free}
+    {antecedent consequent : OpenFormula σ free}
+    (hImplication : Derives T Γ (.imp antecedent consequent))
+    (hAntecedent : Derives T Γ antecedent) :
+    Derives T Γ consequent :=
+  modus_ponens hAntecedent hImplication
+
+/-- 蕴含的传递组合。 -/
+theorem imp_trans {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free}
+    {first middle last : OpenFormula σ free}
+    (hFirst : Derives T Γ (.imp first middle))
+    (hSecond : Derives T Γ (.imp middle last)) :
+    Derives T Γ (.imp first last) := by
+  apply imp_intro
+  exact imp_elim hSecond.context_weaken_cons
+    (imp_elim hFirst.context_weaken_cons
+      (assumption List.mem_cons_self))
+
+/-- 真公式引入。 -/
+theorem truth_intro {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} :
+    Derives T Γ (.truth : OpenFormula σ free) :=
+  logical_axiom .truth_intro
+
+/-- 从假推出任意结论。 -/
+theorem falsum_elim {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {conclusion : OpenFormula σ free}
+    (hFalsum : Derives T Γ .falsum) :
+    Derives T Γ conclusion :=
+  imp_elim (logical_axiom (.falsum_elimination conclusion)) hFalsum
+
+/-- 否定引入。 -/
+theorem neg_intro {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {formula : OpenFormula σ free}
+    (hRefute : Derives T (formula :: Γ) .falsum) :
+    Derives T Γ (.neg formula) :=
+  imp_elim (logical_axiom (.negation_intro formula))
+    (imp_intro hRefute)
+
+/-- 否定消去得到假。 -/
+theorem neg_elim {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {formula : OpenFormula σ free}
+    (hFormula : Derives T Γ formula)
+    (hNegation : Derives T Γ (.neg formula)) :
+    Derives T Γ .falsum := by
+  have hStep : Derives T Γ (.imp (.neg formula) .falsum) :=
+    imp_elim
+      (logical_axiom (.negation_elimination formula))
+      hFormula
+  exact imp_elim hStep hNegation
+
+/-- 公式与其否定推出任意结论。 -/
+theorem contradiction_elim {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free}
+    {formula conclusion : OpenFormula σ free}
+    (hFormula : Derives T Γ formula)
+    (hNegation : Derives T Γ (.neg formula)) :
+    Derives T Γ conclusion :=
+  falsum_elim (neg_elim hFormula hNegation)
+
+/-- 合取引入。 -/
+theorem conj_intro {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {left right : OpenFormula σ free}
+    (hLeft : Derives T Γ left) (hRight : Derives T Γ right) :
+    Derives T Γ (.conj left right) := by
+  have hStep : Derives T Γ (.imp right (.conj left right)) :=
+    imp_elim
+      (logical_axiom (.conjunction_intro left right))
+      hLeft
+  exact imp_elim hStep hRight
+
+/-- 合取消去左分量。 -/
+theorem conj_elim_left {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {left right : OpenFormula σ free}
+    (hConjunction : Derives T Γ (.conj left right)) :
+    Derives T Γ left :=
+  imp_elim
+    (logical_axiom (.conjunction_elim_left left right))
+    hConjunction
+
+/-- 合取消去右分量。 -/
+theorem conj_elim_right {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {left right : OpenFormula σ free}
+    (hConjunction : Derives T Γ (.conj left right)) :
+    Derives T Γ right :=
+  imp_elim
+    (logical_axiom (.conjunction_elim_right left right))
+    hConjunction
+
+/-- 析取左引入。 -/
+theorem disj_intro_left {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {left right : OpenFormula σ free}
+    (hLeft : Derives T Γ left) :
+    Derives T Γ (.disj left right) :=
+  imp_elim
+    (logical_axiom (.disjunction_intro_left left right))
+    hLeft
+
+/-- 析取右引入。 -/
+theorem disj_intro_right {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {left right : OpenFormula σ free}
+    (hRight : Derives T Γ right) :
+    Derives T Γ (.disj left right) :=
+  imp_elim
+    (logical_axiom (.disjunction_intro_right left right))
+    hRight
+
+/-- 析取消去。 -/
+theorem disj_elim {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free}
+    {left right conclusion : OpenFormula σ free}
+    (hDisjunction : Derives T Γ (.disj left right))
+    (hLeft : Derives T (left :: Γ) conclusion)
+    (hRight : Derives T (right :: Γ) conclusion) :
+    Derives T Γ conclusion := by
+  have hStepLeft : Derives T Γ
+      (.imp (.imp right conclusion)
+        (.imp (.disj left right) conclusion)) :=
+    imp_elim
+      (logical_axiom
+        (.disjunction_elimination left right conclusion))
+      (imp_intro hLeft)
+  have hStepRight : Derives T Γ
+      (.imp (.disj left right) conclusion) :=
+    imp_elim hStepLeft (imp_intro hRight)
+  exact imp_elim hStepRight hDisjunction
+
+/-- 双条件引入。 -/
+theorem iff_intro {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {left right : OpenFormula σ free}
+    (hForward : Derives T (left :: Γ) right)
+    (hBackward : Derives T (right :: Γ) left) :
+    Derives T Γ (.iff left right) := by
+  have hStep : Derives T Γ
+      (.imp (.imp right left) (.iff left right)) :=
+    imp_elim
+      (logical_axiom (.biconditional_intro left right))
+      (imp_intro hForward)
+  exact imp_elim hStep (imp_intro hBackward)
+
+/-- 双条件向右消去。 -/
+theorem iff_elim_left {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {left right : OpenFormula σ free}
+    (hIff : Derives T Γ (.iff left right))
+    (hLeft : Derives T Γ left) :
+    Derives T Γ right :=
+  imp_elim
+    (imp_elim
+      (logical_axiom (.biconditional_elim_left left right))
+      hIff)
+    hLeft
+
+/-- 双条件向左消去。 -/
+theorem iff_elim_right {σ : Signature.{u, v, w}}
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} {left right : OpenFormula σ free}
+    (hIff : Derives T Γ (.iff left right))
+    (hRight : Derives T Γ right) :
+    Derives T Γ left :=
+  imp_elim
+    (imp_elim
+      (logical_axiom (.biconditional_elim_right left right))
+      hIff)
+    hRight
+
+namespace Propositional
+
 /-- 蕴含对共同前件的分配。 -/
 theorem imp_distribution {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {φ ψ χ : Formula σ} (hφ : Formula.Admissible φ) (hψ : Formula.Admissible ψ) (hχ : Formula.Admissible χ) :
-    Derives T Γ (Formula.imp (Formula.imp φ (Formula.imp ψ χ)) (Formula.imp (Formula.imp φ ψ) (Formula.imp φ χ))) := by
-  have hψχ : Formula.Admissible (Formula.imp ψ χ) :=
-    Formula.Admissible.imp hψ hχ
-  have hφψχ : Formula.Admissible (Formula.imp φ (Formula.imp ψ χ)) :=
-    Formula.Admissible.imp hφ hψχ
-  have hφψ : Formula.Admissible (Formula.imp φ ψ) :=
-    Formula.Admissible.imp hφ hψ
-  nd_apply Derives.impIntro
-  nd_apply Derives.impIntro
-  nd_apply Derives.impIntro
-  have hMain :
-      Derives T (φ :: Formula.imp φ ψ ::
-          Formula.imp φ (Formula.imp ψ χ) :: Γ) (Formula.imp φ (Formula.imp ψ χ)) :=
-    .assumption (by simp)
-  have hMinor :
-      Derives T (φ :: Formula.imp φ ψ ::
-          Formula.imp φ (Formula.imp ψ χ) :: Γ) (Formula.imp φ ψ) :=
-    .assumption (by simp)
-  have hPhi :
-      Derives T (φ :: Formula.imp φ ψ ::
-          Formula.imp φ (Formula.imp ψ χ) :: Γ)
-        φ :=
-    .assumption (by simp)
-  have hPsiImpChi :
-      Derives T (φ :: Formula.imp φ ψ ::
-          Formula.imp φ (Formula.imp ψ χ) :: Γ) (Formula.imp ψ χ) :=
-    .impElim hMain hPhi
-  have hPsi :
-      Derives T (φ :: Formula.imp φ ψ ::
-          Formula.imp φ (Formula.imp ψ χ) :: Γ)
-        ψ :=
-    .impElim hMinor hPhi
-  exact .impElim hPsiImpChi hPsi
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free}
+    (antecedent middle consequent : OpenFormula σ free) :
+    Derives T Γ
+      (.imp (.imp antecedent (.imp middle consequent))
+        (.imp (.imp antecedent middle) (.imp antecedent consequent))) :=
+  logical_axiom
+    (.implication_distribution antecedent middle consequent)
+
 /-- 蕴含的自反性。 -/
 theorem imp_refl {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {φ : Formula σ} (hφ : Formula.Admissible φ) :
-    Derives T Γ (Formula.imp φ φ) :=
-  .impIntro (.assumption (by simp))
-/-- 已知前件时可以忽略额外假设。 -/
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} (formula : OpenFormula σ free) :
+    Derives T Γ (.imp formula formula) :=
+  of_provable (Provable.self_implication formula)
+
+/-- 已知前件时可忽略额外假设。 -/
 theorem imp_const {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {φ ψ : Formula σ} (hφ : Formula.Admissible φ) (hψ : Formula.Admissible ψ) :
-    Derives T Γ (Formula.imp φ (Formula.imp ψ φ)) :=
-  .impIntro (.impIntro (.assumption (by simp)))
-/-- 从公式及其否定推出任意结论。 -/
-theorem imp_neg_elim {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {φ ψ : Formula σ} (hφ : Formula.Admissible φ) (hψ : Formula.Admissible ψ) :
-    Derives T Γ (Formula.imp φ (Formula.imp (Formula.neg φ) ψ)) := by
-  nd_apply Derives.impIntro
-  nd_apply Derives.impIntro
-  nd_apply Derives.falsumElim
-  have hFormula :
-      Derives T (Formula.neg φ :: φ :: Γ) φ :=
-    .assumption (by simp)
-  have hNeg :
-      Derives T (Formula.neg φ :: φ :: Γ) (Formula.neg φ) :=
-    .assumption (by simp)
-  exact .negElim hFormula hNeg
-/-- 经典归约律：若 `¬φ` 足以推出 `φ`，则推出 `φ`。 -/
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free}
+    (formula extra : OpenFormula σ free) :
+    Derives T Γ (.imp formula (.imp extra formula)) :=
+  logical_axiom (.weakening formula extra)
+
+/-- 经典归约模式。 -/
 theorem classical_reduction {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {φ : Formula σ} (hφ : Formula.Admissible φ) :
-    Derives T Γ (Formula.imp (Formula.imp (Formula.neg φ) φ) φ) := by
-  have hNegφ : Formula.Admissible (Formula.neg φ) :=
-    Formula.Admissible.neg hφ
-  have hRuleAdmissible :
-      Formula.Admissible (Formula.imp (Formula.neg φ) φ) :=
-    Formula.Admissible.imp hNegφ hφ
-  nd_apply Derives.impIntro
-  nd_apply Derives.byContradiction
-  have hRule :
-      Derives T (Formula.neg φ :: Formula.imp (Formula.neg φ) φ :: Γ) (Formula.imp (Formula.neg φ) φ) :=
-    .assumption (by simp)
-  have hNeg :
-      Derives T (Formula.neg φ :: Formula.imp (Formula.neg φ) φ :: Γ) (Formula.neg φ) :=
-    .assumption (by simp)
-  have hFormula :
-      Derives T (Formula.neg φ :: Formula.imp (Formula.neg φ) φ :: Γ)
-        φ :=
-    .impElim hRule hNeg
-  exact .negElim hFormula hNeg
-/-- 矛盾消去的交换前件形式。 -/
-theorem neg_imp_elim {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {φ ψ : Formula σ} (hφ : Formula.Admissible φ) (hψ : Formula.Admissible ψ) :
-    Derives T Γ (Formula.imp (Formula.neg φ) (Formula.imp φ ψ)) := by
-  nd_apply Derives.impIntro
-  nd_apply Derives.impIntro
-  nd_apply Derives.falsumElim
-  have hFormula :
-      Derives T (φ :: Formula.neg φ :: Γ) φ :=
-    .assumption (by simp)
-  have hNeg :
-      Derives T (φ :: Formula.neg φ :: Γ) (Formula.neg φ) :=
-    .assumption (by simp)
-  exact .negElim hFormula hNeg
-/-- 经典二分公理模式。 -/
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free} (formula : OpenFormula σ free) :
+    Derives T Γ (.imp (.imp (.neg formula) formula) formula) :=
+  logical_axiom (.classical formula)
+
+/-- 经典二分模式。 -/
 theorem case_analysis {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {φ ψ : Formula σ} (hφ : Formula.Admissible φ) (hψ : Formula.Admissible ψ) :
-    Derives T Γ (Formula.imp (Formula.imp φ ψ) (Formula.imp (Formula.imp (Formula.neg φ) ψ)
-          ψ)) := by
-  have hPositiveAdmissible :
-      Formula.Admissible (Formula.imp φ ψ) :=
-    Formula.Admissible.imp hφ hψ
-  have hNegativeAdmissible :
-      Formula.Admissible (Formula.imp (Formula.neg φ) ψ) :=
-    Formula.Admissible.imp (Formula.Admissible.neg hφ) hψ
-  nd_apply Derives.imp_intro
-  nd_apply Derives.imp_intro
-  nd_apply Derives.by_contradiction
-  have hPositive :
-      Derives T (Formula.neg ψ ::
-          Formula.imp (Formula.neg φ) ψ ::
-          Formula.imp φ ψ :: Γ) (Formula.imp φ ψ) :=
-    Derives.assumption (by simp)
-  have hNegative :
-      Derives T (Formula.neg ψ ::
-          Formula.imp (Formula.neg φ) ψ ::
-          Formula.imp φ ψ :: Γ) (Formula.imp (Formula.neg φ) ψ) :=
-    Derives.assumption (by simp)
-  have hNotConclusion :
-      Derives T (Formula.neg ψ ::
-          Formula.imp (Formula.neg φ) ψ ::
-          Formula.imp φ ψ :: Γ) (Formula.neg ψ) :=
-    Derives.assumption (by simp)
-  have hNotFormula :
-      Derives T (Formula.neg ψ ::
-          Formula.imp (Formula.neg φ) ψ ::
-          Formula.imp φ ψ :: Γ) (Formula.neg φ) := by
-    nd_apply Derives.neg_intro
-    have hFormulaProof :
-        Derives T (φ ::
-            Formula.neg ψ ::
-            Formula.imp (Formula.neg φ) ψ ::
-            Formula.imp φ ψ :: Γ)
-          φ :=
-      Derives.assumption (by simp)
-    exact Derives.neg_elim (hPositive.context_weaken_cons.imp_elim hFormulaProof)
-      hNotConclusion.context_weaken_cons
-  exact Derives.neg_elim (hNegative.imp_elim hNotFormula)
-    hNotConclusion
-/-- `φ` 与 `¬ψ` 共同否定蕴含 `φ → ψ`。 -/
-theorem imp_not_imp {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {T : Theory σ} {Γ : Context σ}
-    {φ ψ : Formula σ} (hφ : Formula.Admissible φ) (hψ : Formula.Admissible ψ) :
-    Derives T Γ (Formula.imp φ (Formula.imp (Formula.neg ψ) (Formula.neg (Formula.imp φ ψ)))) := by
-  have hImp : Formula.Admissible (Formula.imp φ ψ) :=
-    Formula.Admissible.imp hφ hψ
-  nd_apply Derives.impIntro
-  nd_apply Derives.impIntro
-  nd_apply Derives.negIntro
-  have hImp :
-      Derives T (Formula.imp φ ψ :: Formula.neg ψ :: φ :: Γ) (Formula.imp φ ψ) :=
-    .assumption (by simp)
-  have hPhi :
-      Derives T (Formula.imp φ ψ :: Formula.neg ψ :: φ :: Γ)
-        φ :=
-    .assumption (by simp)
-  have hNegPsi :
-      Derives T (Formula.imp φ ψ :: Formula.neg ψ :: φ :: Γ) (Formula.neg ψ) :=
-    .assumption (by simp)
-  have hPsi :
-      Derives T (Formula.imp φ ψ :: Formula.neg ψ :: φ :: Γ)
-        ψ :=
-    .impElim hImp hPhi
-  exact .negElim hPsi hNegPsi
+    {T : Theory σ} {free : SortContext σ}
+    {Γ : Context σ free}
+    (formula conclusion : OpenFormula σ free) :
+    Derives T Γ
+      (.imp (.imp formula conclusion)
+        (.imp (.imp (.neg formula) conclusion) conclusion)) :=
+  logical_axiom (.case_analysis formula conclusion)
+
 end Propositional
 end Derives
 end FirstOrder

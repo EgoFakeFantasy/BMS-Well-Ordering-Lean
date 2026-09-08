@@ -24,6 +24,8 @@ def arrow? {Base : Type u} :
   | .arrow domain codomain => some (domain, codomain)
   | .base _ => none
 end SimpleType
+-- 各字段（或其签名别名）保留独立宇宙；结构类型的 max 不是冗余参数。
+set_option linter.checkUnivs false in
 /-- 简单类型高阶签名。符号本身仍由外部稳定编号或对象类型提供。 -/
 structure Signature where
   BaseSort : Type u

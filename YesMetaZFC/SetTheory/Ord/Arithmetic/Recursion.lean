@@ -593,7 +593,7 @@ theorem ordinalAdditionStep_isClassFunctionOnTransfiniteSequences
           ⟨output, hOutput, fun other hOther =>
             Structure.SuccessorOf.eq hZF.1 hOther hOutput⟩
   simpa [Structure.IsZeroSuccessorLimitStep,
-    Structure.IsOrdinalAdditionStep] using hStep
+    Structure.IsOrdinalAdditionStep] using! hStep
 /--
 加法递归算子的 schema 解释在所有超限序列上全定义且单值。
 -/
@@ -777,7 +777,7 @@ theorem ordinalExponentiationStep_isClassFunctionOnTransfiniteSequences
         ordinalMultiplication_existsUnique
           hZF 𝕀 previous hBase
   simpa [Structure.IsZeroSuccessorLimitStep,
-    Structure.IsOrdinalExponentiationStep] using hStep
+    Structure.IsOrdinalExponentiationStep] using! hStep
 /--
 幂递归算子的 schema 解释在所有超限序列上全定义且单值。
 -/

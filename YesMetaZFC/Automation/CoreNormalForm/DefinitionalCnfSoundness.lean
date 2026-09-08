@@ -38,6 +38,8 @@ def lookupDefinition? : List DefinitionalCnf.Definition → PredicateSymbol → 
         some definition
       else
         lookupDefinition? definitions target
+/-- 定义扩张保留载体，允许隐式参数的类型比较展开该模型。 -/
+@[implicit_reducible]
 def overrideDefinitions (M : Model) (base : Env M) (definitions : Array DefinitionalCnf.Definition) : Model where
   Carrier := M.Carrier
   default := M.default
@@ -61,11 +63,11 @@ def overrideDefinitions (M : Model) (base : Env M) (definitions : Array Definiti
   boolHolds := M.boolHolds
 end Model
 namespace FoolContract
-def overrideDefinitions {M : Model} (contract : FoolContract M) (base : Env M) (definitions : Array DefinitionalCnf.Definition) : FoolContract (Model.overrideDefinitions M base definitions) :=
+theorem overrideDefinitions {M : Model} (contract : FoolContract M) (base : Env M) (definitions : Array DefinitionalCnf.Definition) : FoolContract (Model.overrideDefinitions M base definitions) :=
   { contract with }
 end FoolContract
 namespace FoolLambdaContract
-def overrideDefinitions {M : Model} (contract : FoolLambdaContract M) (base : Env M) (definitions : Array DefinitionalCnf.Definition) : FoolLambdaContract (Model.overrideDefinitions M base definitions) :=
+theorem overrideDefinitions {M : Model} (contract : FoolLambdaContract M) (base : Env M) (definitions : Array DefinitionalCnf.Definition) : FoolLambdaContract (Model.overrideDefinitions M base definitions) :=
   { contract with }
 end FoolLambdaContract
 namespace Env
@@ -229,7 +231,6 @@ theorem Formula.satisfies_override_of_predicate_lt {M : Model} (base : Env M) (d
       simp only [Formula.Satisfies, Formula.eval]
       rw [Term.eval_override_of_predicate_lt base definitions cutoff env extendedEnv hBound hFree hFresh left hMax'.1, Term.eval_override_of_predicate_lt
           base definitions cutoff env extendedEnv hBound hFree hFresh right hMax'.2]
-      rfl
   | boolTerm term =>
       simp only [DefinitionalCnf.Formula.maxPredicateIdSucc] at hMax
       simp only [Formula.Satisfies, Formula.eval]
@@ -327,7 +328,6 @@ theorem satisfies_override_of_predicate_lt {M : Model} (base : Env M) (definitio
       simp only [Atom.Satisfies]
       rw [Term.eval_override_of_predicate_lt base definitions cutoff env extendedEnv hBound hFree hFresh left hMax'.1, Term.eval_override_of_predicate_lt
           base definitions cutoff env extendedEnv hBound hFree hFresh right hMax'.2]
-      rfl
   | boolTerm term =>
       simp only [DefinitionalCnf.atomMaxPredicateIdSucc] at hMax
       simp only [Atom.Satisfies]
@@ -423,7 +423,7 @@ theorem boundValueFromArgs_contextValues_append {M : Model} (base : Env M) (star
       | zero => rfl
       | succ offset =>
           simp only [contextValues, List.length_cons]
-          simpa [Nat.succ_lt_succ_iff, Nat.succ_add] using
+          simpa [Nat.succ_lt_succ_iff, Nat.succ_add] using!
             ih (start + 1) fallback offset
 theorem boundValueFromArgs_contextValues {M : Model} (base : Env M) (contextSorts : List CoreSort) (index : Nat) : boundValueFromArgs base contextSorts (contextValues base 0 contextSorts) index = base.boundVal index := by
   simpa [boundValueFromArgs] using
@@ -771,11 +771,11 @@ theorem BuildState.buildCore_includes (state : DefinitionalCnf.BuildState) (cont
                 (BuildState.definitionsIncluded_trans hRightIncluded (BuildState.freshDefinition_includes rightState contextSorts (Nnf.disj left right)))
 theorem BuildState.buildCore_preserves {cutoff : Nat} {state : DefinitionalCnf.BuildState} (contextSorts : List CoreSort) (source : Nnf) (hState : BuildState.FreshFrom cutoff state) : BuildState.FreshFrom cutoff ((DefinitionalCnf.buildCore contextSorts source).run state).2 := by
   induction source generalizing state contextSorts with
-  | trueE => simpa [DefinitionalCnf.buildCore] using hState
-  | falseE => simpa [DefinitionalCnf.buildCore] using hState
-  | lit literal => simpa [DefinitionalCnf.buildCore] using hState
-  | forallE sort body ih => simpa [DefinitionalCnf.buildCore] using hState
-  | existsE sort body ih => simpa [DefinitionalCnf.buildCore] using hState
+  | trueE => simpa [DefinitionalCnf.buildCore] using! hState
+  | falseE => simpa [DefinitionalCnf.buildCore] using! hState
+  | lit literal => simpa [DefinitionalCnf.buildCore] using! hState
+  | forallE sort body ih => simpa [DefinitionalCnf.buildCore] using! hState
+  | existsE sort body ih => simpa [DefinitionalCnf.buildCore] using! hState
   | conj left right leftIH rightIH =>
       cases hLeftRun : (DefinitionalCnf.buildCore contextSorts left).run state with
       | mk leftResult leftState =>
@@ -1013,12 +1013,12 @@ theorem buildCore_sound {M : Model} (base env : Env M) (definitions : Array Defi
       constructor
       · change ClauseSet.Satisfies (Env.rebaseOverrideDefinitions base definitions env) #[]
         simp [ClauseSet.Satisfies]
-      · simp [DefinitionalCnf.buildCore, Semantics.Ref.Satisfies, Nnf.Satisfies]
+      · simp [DefinitionalCnf.buildCore, Semantics.Ref.Satisfies, Nnf.Satisfies, StateT.run, StateT.pure, pure]
   | falseE =>
       constructor
       · change ClauseSet.Satisfies (Env.rebaseOverrideDefinitions base definitions env) #[]
         simp [ClauseSet.Satisfies]
-      · simp [DefinitionalCnf.buildCore, Semantics.Ref.Satisfies, Nnf.Satisfies]
+      · simp [DefinitionalCnf.buildCore, Semantics.Ref.Satisfies, Nnf.Satisfies, StateT.run, StateT.pure, pure]
   | lit literal =>
       let extendedEnv : Env (Model.overrideDefinitions M base definitions) :=
         Env.rebaseOverrideDefinitions base definitions env
@@ -1029,7 +1029,7 @@ theorem buildCore_sound {M : Model} (base env : Env M) (definitions : Array Defi
       constructor
       · change ClauseSet.Satisfies (Env.rebaseOverrideDefinitions base definitions env) #[]
         simp [ClauseSet.Satisfies]
-      · simpa [DefinitionalCnf.buildCore, Semantics.Ref.Satisfies, Nnf.Satisfies, extendedEnv] using hLiteral
+      · simpa [DefinitionalCnf.buildCore, Semantics.Ref.Satisfies, Nnf.Satisfies, extendedEnv] using! hLiteral
   | forallE sort body ih =>
       change (body.quantifierCount + 1 == 0) = true at hQuantifierFree
       rw [Nat.beq_eq_true_eq] at hQuantifierFree
@@ -1137,7 +1137,7 @@ theorem buildCore_sound {M : Model} (base env : Env M) (definitions : Array Defi
                     Nnf.Satisfies env (Nnf.conj left right) := by
                 simpa [definition, Definition.BuildState.nextDefinition] using
                   Definition.literal_satisfies_iff_override_at
-                    base env definitions definition hDefinitionMem hUnique rfl (by simpa [Nnf.toFormula] using hCheck)
+                    base env definitions definition hDefinitionMem hUnique rfl (by simpa [Nnf.toFormula] using! hCheck)
               have hDefinitionRefs :
                   Literal.Satisfies (Env.rebaseOverrideDefinitions base definitions env) (definition.literal true) ↔
                     Semantics.Ref.Satisfies (Env.rebaseOverrideDefinitions base definitions env)
@@ -1255,7 +1255,7 @@ theorem buildCore_sound {M : Model} (base env : Env M) (definitions : Array Defi
                     Nnf.Satisfies env (Nnf.disj left right) := by
                 simpa [definition, Definition.BuildState.nextDefinition] using
                   Definition.literal_satisfies_iff_override_at
-                    base env definitions definition hDefinitionMem hUnique rfl (by simpa [Nnf.toFormula] using hCheck)
+                    base env definitions definition hDefinitionMem hUnique rfl (by simpa [Nnf.toFormula] using! hCheck)
               have hDefinitionRefs :
                   Literal.Satisfies (Env.rebaseOverrideDefinitions base definitions env) (definition.literal true) ↔
                     Semantics.Ref.Satisfies (Env.rebaseOverrideDefinitions base definitions env)
@@ -1533,7 +1533,7 @@ theorem uniformSoundExtension_of_check {payload : DefinitionalCnfPayload} (hChec
   rw [hRoot, hClauses, hDefinitions]
   simpa [expected, DefinitionalCnfPayload.build] using
     (Semantics.DefinitionalCnf.buildCoreResult_uniformSoundExtension base payload.contextSorts payload.source hQuantifierFree hSourceCheck
-        (by simpa [expected] using hExpectedDefinitionsChecked))
+        (by simpa [expected] using! hExpectedDefinitionsChecked))
 end DefinitionalCnfPayload
 namespace ClauseSet
 theorem eq_eq_true {left right : _root_.YesMetaZFC.Automation.CoreSyntax.NormalForm.ClauseSet} : _root_.YesMetaZFC.Automation.CoreSyntax.NormalForm.ClauseSet.eq left right = true ↔ left = right :=

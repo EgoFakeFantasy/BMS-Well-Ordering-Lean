@@ -1,11 +1,11 @@
 import YesMetaZFC.Automation.HostRules.Frontend
-import YesMetaZFC.Automation.KernelReplay
+import YesMetaZFC.Automation.KernelReplay.Source
+import YesMetaZFC.Automation.HostRules.Semantics
 /-!
 # HR 后端
 
 HR 后端只消费前端给出的宿主命题骨架快照。搜索固定经过一次一阶预处理和唯一
-AVATAR 主线；成功结果物化为公共 DAG Arena 证书，再通过 `HostProp.CheckedInput`
-的语义桥回放到原 Lean 目标。
+AVATAR 主线；当前 guarded 回放直接由内在 typed DAG 语义出口恢复宿主目标。
 -/
 namespace YesMetaZFC
 namespace Automation
@@ -17,83 +17,107 @@ open ProveAutoRequest
 
 initialize registerTraceClass `YesMetaZFC.proveAuto.hostRules.backend
 
-/-- 从已检查的 AVATAR 回放材料恢复原宿主命题。 -/
-def soundFromReplay {goal : Prop} (input : HostProp.CheckedInput goal)
-    (sourceProblem : SourcePreprocessing.Problem)
-    (problem : SourcePreprocessing.DeepProblem)
-    (hSource : sourceProblem = input.sourceProblem)
-    (hProblem : problem = input.deepProblem)
+/-- 当前 replay 输入的 canonical 初始字句与 preprocessing clause set 对齐。 -/
+theorem artifact_initialProblem_eq {goal : Prop}
+    (input : HostProp.CheckedInput goal)
+    (payload : SourcePreprocessing.Payload)
+    (search : SourcePreprocessing.SearchInput)
+    (artifact : SearchMaterialization.CheckedArtifact
+      (SourcePreprocessing.FirstOrderReplay.searchInput
+        payload input.searchProblem search "host rules saturation").clauseProblem) :
+    artifact.checked.dag.problem.initialClauses =
+      SearchMaterialization.coreClauseSet payload.clauses := by
+  have hInitial := congrArg
+    (fun problem : SearchMaterialization.ClauseProblem =>
+      problem.initialClauses) artifact.problem_eq
+  simpa [SourcePreprocessing.FirstOrderReplay.searchInput,
+    SourcePreprocessing.FirstOrderReplay.clauseProblemOf,
+    SearchMaterialization.ReplayCoreProjection.clauseSet_eq_coreClauseSet]
+    using hInitial
+
+theorem soundOfGuardedReplay {goal : Prop}
+    (input : HostProp.CheckedInput goal)
     (payload : SourcePreprocessing.Payload)
     (search : SourcePreprocessing.SearchInput)
     (hReplay :
-      SourcePreprocessing.FirstOrderReplay.check sourceProblem payload = true)
-    (data :
-      SearchReplayMaterial.SearchCertificateProvider.PreparedReplaySearchData
-        (SourcePreprocessing.FirstOrderReplay.searchInput
-          payload problem search "host rules saturation")) :
+      SourcePreprocessing.FirstOrderReplay.check input.sourceProblem payload = true)
+    (artifact : SearchMaterialization.CheckedArtifact
+      (SourcePreprocessing.FirstOrderReplay.searchInput
+        payload input.searchProblem search "host rules saturation").clauseProblem)
+    (compiledDAG : DAGCertificate.Compile.CheckedDAGClauses
+      artifact.checked.dag)
+    (hSupported : artifact.checked.dag.guardedSoundnessSupported = true) :
     goal := by
-  let bridge :
-      SourcePreprocessing.FirstOrderProblemBridge
-        sourceProblem problem := by
-    rw [hSource, hProblem]
-    exact input.firstOrderBridge
   let replay :=
     SourcePreprocessing.FirstOrderReplay.ofCheck
-      sourceProblem payload hReplay
-  let attempt :
-      LogicSoundness.SetLevel.BackendAttempt problem :=
-    .success (data.backendSuccessAt (replay.refutationBridge bridge))
-  have hAttemptClosed : attempt.closed = true := rfl
-  have hSearch :
-      LogicSoundness.SetLevel.SemanticallyEntails
-        problem.theory problem.target :=
-    GoalAttempt.backendSoundOfClosed
-      problem attempt hAttemptClosed
-  have hInputSearch :
-      LogicSoundness.SetLevel.SemanticallyEntails
-        input.deepProblem.theory input.deepProblem.target := by
-    rw [← hProblem]
-    exact hSearch
-  exact input.soundOfSearch hInputSearch
+      input.sourceProblem payload hReplay
+  exact input.soundOfIntrinsic <|
+    HostRules.Semantics.guarded_semanticallyEntailsAt input replay artifact
+      compiledDAG (artifact_initialProblem_eq input payload search artifact)
+      rfl hSupported
+
+theorem soundOfAvatarReplay {goal : Prop}
+    (input : HostProp.CheckedInput goal)
+    (payload : SourcePreprocessing.Payload)
+    (search : SourcePreprocessing.SearchInput)
+    (hReplay :
+      SourcePreprocessing.FirstOrderReplay.check input.sourceProblem payload = true)
+    (artifact : SearchMaterialization.CheckedArtifact
+      (SourcePreprocessing.FirstOrderReplay.searchInput
+        payload input.searchProblem search "host rules saturation").clauseProblem)
+    (registry : DAGCertificate.AvatarSelectorComponent.Registry
+      SearchMaterialization.SearchSignature)
+    (hRegistry : DAGCertificate.DAG.avatarRegistryCheckWith
+      artifact.checked.dag registry = true)
+    (compiledDAG : DAGCertificate.Compile.CheckedDAGClauses
+      artifact.checked.dag)
+    (hSupported : artifact.checked.dag.avatarSoundnessSupported = true) :
+    goal := by
+  let replay :=
+    SourcePreprocessing.FirstOrderReplay.ofCheck
+      input.sourceProblem payload hReplay
+  exact input.soundOfIntrinsic <|
+    HostRules.Semantics.avatar_semanticallyEntailsAt input replay artifact
+      compiledDAG registry hRegistry
+      (artifact_initialProblem_eq input payload search artifact)
+      rfl hSupported
 
 /-- HR 后端面向调度器的统一 proof-carrying 结果。 -/
 def goalAttemptFromReplay {goal : Prop}
     (input : HostProp.CheckedInput goal)
-    (sourceProblem : SourcePreprocessing.Problem)
-    (problem : SourcePreprocessing.DeepProblem)
-    (hSource : sourceProblem = input.sourceProblem)
-    (hProblem : problem = input.deepProblem)
     (payload : SourcePreprocessing.Payload)
     (search : SourcePreprocessing.SearchInput)
     (hReplay :
-      SourcePreprocessing.FirstOrderReplay.check sourceProblem payload = true)
+      SourcePreprocessing.FirstOrderReplay.check input.sourceProblem payload = true)
     (data :
       SearchReplayMaterial.SearchCertificateProvider.PreparedReplaySearchData
         (SourcePreprocessing.FirstOrderReplay.searchInput
-          payload problem search "host rules saturation")) :
-    GoalAttempt goal :=
-  GoalAttempt.success
-    (soundFromReplay input sourceProblem problem hSource hProblem
-      payload search hReplay data)
-    "DAG Arena reflection: closed"
+          payload input.searchProblem search "host rules saturation")) :
+    GoalAttempt goal := by
+  cases data with
+  | avatar artifact hSupported registry hRegistry compiledDAG _ =>
+      exact GoalAttempt.success
+        (soundOfAvatarReplay input payload search hReplay artifact registry
+          hRegistry compiledDAG hSupported)
+        "typed AVATAR DAG replay: closed"
+  | guarded artifact hSupported compiledDAG _ =>
+      exact GoalAttempt.success
+        (soundOfGuardedReplay input payload search hReplay artifact compiledDAG
+          hSupported)
+        "typed guarded DAG replay: closed"
 
 @[reducible] def defaultGoalAttemptFromReplay {goal : Prop}
     (input : HostProp.CheckedInput goal)
-    (sourceProblem : SourcePreprocessing.Problem)
-    (problem : SourcePreprocessing.DeepProblem)
-    (hSource : sourceProblem = input.sourceProblem)
-    (hProblem : problem = input.deepProblem)
     (payload : SourcePreprocessing.Payload)
     (search : SourcePreprocessing.SearchInput)
     (hReplay :
-      SourcePreprocessing.FirstOrderReplay.check sourceProblem payload = true)
+      SourcePreprocessing.FirstOrderReplay.check input.sourceProblem payload = true)
     (data :
       SearchReplayMaterial.SearchCertificateProvider.PreparedReplaySearchData
         (SourcePreprocessing.FirstOrderReplay.searchInput
-          payload problem search "host rules saturation")) :
+          payload input.searchProblem search "host rules saturation")) :
     GoalAttempt goal :=
-  goalAttemptFromReplay input sourceProblem problem hSource hProblem
-    payload search hReplay data
+  goalAttemptFromReplay input payload search hReplay data
 
 private def validateAttempt (attempt : Expr) : MetaM Expr := do
   let attempt ← instantiateMVars attempt
@@ -128,12 +152,11 @@ private def buildAttempt (request : PreparedContextRequest)
             let replay ←
               KernelReplay.firstOrderReplayExprs
                 reified.sourceProblemValue reified.sourceProblem
-                reified.problem reified.admissible settingsExpr
+                reified.searchProblem reified.compiled settingsExpr
                 firstOrder.result.checked.payload artifact label
             mkAppM ``defaultGoalAttemptFromReplay
-              #[reified.input, reified.sourceProblem, reified.problem,
-                reified.hSource, reified.hProblem, replay.payload,
-                replay.search, replay.checked, replay.data]
+              #[reified.input, replay.payload, replay.search,
+                replay.checked, replay.data]
   trace[YesMetaZFC.proveAuto.hostRules.backend]
     "built HR attempt; facts={request.facts.size}"
   validateAttempt attempt

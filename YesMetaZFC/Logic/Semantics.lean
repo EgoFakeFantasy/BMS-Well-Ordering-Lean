@@ -1,98 +1,222 @@
 import YesMetaZFC.Logic.Syntax
+
 /-!
-# Tarski 语义
-当前语义采用单域模型加 sort 谓词。这样能保留多 sorted 语法，同时避免 dependent
-carrier 在 replay 定理里制造大量 cast。
+# 内在排序的一阶 Tarski 语义
+
+模型的载体直接由对象语言排序索引，环境也直接解释类型化变量。因此：
+
+* 项求值的结果排序由返回类型保证；
+* 函数与关系只接受签名指定的异质参数列；
+* 量词只遍历对应排序的宿主类型；
+* 不再需要 `sortInterp`、参数排序证明或项求值良构定理。
+
+这与内在语法核保持同一原则：不能由核心类型构造出的非法对象，不进入后续证明
+义务。
 -/
+
 namespace YesMetaZFC
 namespace Logic
 namespace FirstOrder
-universe u v w x
-/-- 参数值逐项满足对应 sort。 -/
-def ArgsSatisfy {S : Type u} {α : Type x} (sortInterp : S → α → Prop) : List α → List S → Prop
-  | [], [] => True
-  | value :: values, sort :: sorts =>
-      sortInterp sort value ∧ ArgsSatisfy sortInterp values sorts
-  | _, _ => False
-/-- 单域多 sorted Tarski 结构。 -/
+
+universe u v w x y
+
+/-- 由排序列表索引的异质语义值列。 -/
+inductive Values {S : Type u} (Carrier : S → Type x) :
+    List S → Type (max u x) where
+  | nil : Values Carrier []
+  | cons {sort : S} {sorts : List S} :
+      Carrier sort → Values Carrier sorts → Values Carrier (sort :: sorts)
+
+namespace Values
+
+/-- 对异质值列逐排序应用一个载体映射。 -/
+def map {S : Type u} {Source : S → Type x} {Target : S → Type y}
+    (f : ∀ sort, Source sort → Target sort) :
+    {sorts : List S} → Values Source sorts → Values Target sorts
+  | _, .nil => .nil
+  | _, .cons value rest => .cons (f _ value) (map f rest)
+
+@[simp] theorem map_nil {S : Type u}
+    {Source : S → Type x} {Target : S → Type y}
+    (f : ∀ sort, Source sort → Target sort) :
+    map f (.nil : Values Source []) = .nil :=
+  rfl
+
+@[simp] theorem map_cons {S : Type u}
+    {Source : S → Type x} {Target : S → Type y}
+    (f : ∀ sort, Source sort → Target sort)
+    {sort : S} {sorts : List S} (value : Source sort)
+    (rest : Values Source sorts) :
+    map f (.cons value rest) = .cons (f sort value) (map f rest) :=
+  rfl
+
+end Values
+
+/-- 多排序 Tarski 结构；每个排序直接解释为一个宿主类型。 -/
 structure Structure (σ : Signature.{u, v, w}) where
-  Domain : Type x
-  nonempty : Nonempty Domain
-  sortInterp : σ.SortSymbol → Domain → Prop
-  sortNonempty : ∀ sort, ∃ value, sortInterp sort value
-  funcInterp : σ.FuncSymbol → List Domain → Domain
-  funcSort :
-    ∀ (f : σ.FuncSymbol) (args : List Domain),
-      ArgsSatisfy sortInterp args (σ.funcDomain f) →
-        sortInterp (σ.funcCodomain f) (funcInterp f args)
-  relInterp : σ.RelSymbol → List Domain → Prop
-namespace Structure
-/-- 空 arity 的常量解释。 -/
-def constInterp {σ : Signature.{u, v, w}} (M : Structure.{u, v, w, x} σ) (f : σ.FuncSymbol) (h : σ.funcDomain f = []) : M.Domain :=
-  by
-    have _ := h
-    exact M.funcInterp f []
-end Structure
-/-- 变量赋值。bound 变量和 free 变量都按 sort 编号。 -/
-structure Env {σ : Signature.{u, v, w}} (M : Structure.{u, v, w, x} σ) where
-  boundVal : σ.SortSymbol → Nat → M.Domain
-  freeVal : σ.SortSymbol → FreeVarId → M.Domain
-  boundSort : ∀ sort idx, M.sortInterp sort (boundVal sort idx)
-  freeSort : ∀ sort id, M.sortInterp sort (freeVal sort id)
+  Carrier : σ.SortSymbol → Type (max u x)
+  nonempty : ∀ sort, Nonempty (Carrier sort)
+  funcInterp : (function : σ.FuncSymbol) →
+    Values Carrier (σ.funcDomain function) → Carrier (σ.funcCodomain function)
+  relInterp : (relation : σ.RelSymbol) →
+    Values Carrier (σ.relDomain relation) → Prop
+
+/-- 对一个排序上下文中的全部变量赋值。 -/
+abbrev Assignment {σ : Signature.{u, v, w}}
+    (M : Structure.{u, v, w, x} σ) (context : SortContext σ) :=
+  {sort : σ.SortSymbol} → Variable context sort → M.Carrier sort
+
+namespace Assignment
+
+/-- 空上下文的唯一赋值。 -/
+def empty {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ} : Assignment M [] :=
+  fun entry => nomatch entry
+
+/-- 在上下文头部加入一个值。 -/
+def push {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {context : SortContext σ} {sort : σ.SortSymbol}
+    (value : M.Carrier sort) (assignment : Assignment M context) :
+    Assignment M (sort :: context) :=
+  fun entry =>
+    match entry with
+    | .here => value
+    | .there previous => assignment previous
+
+@[simp] theorem push_here {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {context : SortContext σ} {sort : σ.SortSymbol}
+    (value : M.Carrier sort) (assignment : Assignment M context) :
+    push value assignment (.here : Variable (sort :: context) sort) = value :=
+  rfl
+
+@[simp] theorem push_there {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {context : SortContext σ} {introduced sort : σ.SortSymbol}
+    (value : M.Carrier introduced) (assignment : Assignment M context)
+    (entry : Variable context sort) :
+    push value assignment (.there entry) = assignment entry :=
+  rfl
+
+end Assignment
+
+/-- 分别解释 bound 与 free 上下文的类型化环境。 -/
+structure Env {σ : Signature.{u, v, w}}
+    (M : Structure.{u, v, w, x} σ)
+    (bound free : SortContext σ) where
+  boundVal : Assignment M bound
+  freeVal : Assignment M free
+
 namespace Env
-/-- 在同 sort 的 bound stack 顶部压入一个值。 -/
-def pushBound {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} (env : Env M) (sort : σ.SortSymbol) (value : M.Domain) (hValue : M.sortInterp sort value) : Env M where
-  boundVal := fun target idx =>
-    if target = sort then
-      match idx with
-      | 0 => value
-      | Nat.succ prev => env.boundVal target prev
-    else
-      env.boundVal target idx
+
+/-- 环境由 bound/free 两个赋值分量逐点外延确定。 -/
+@[ext (iff := false)] theorem ext {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {left right : Env M bound free}
+    (hBound : ∀ {sort} (entry : Variable bound sort),
+      left.boundVal entry = right.boundVal entry)
+    (hFree : ∀ {sort} (entry : Variable free sort),
+      left.freeVal entry = right.freeVal entry) : left = right := by
+  rw [Env.mk.injEq]
+  constructor
+  · funext sort entry
+    exact hBound entry
+  · funext sort entry
+    exact hFree entry
+
+/-- 空 bound/free 上下文的唯一环境。 -/
+def empty {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ} : Env M [] [] where
+  boundVal := Assignment.empty
+  freeVal := Assignment.empty
+
+/-- 在 bound 上下文头部压入一个值。 -/
+def pushBound {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier sort) :
+    Env M (sort :: bound) free where
+  boundVal := Assignment.push value env.boundVal
   freeVal := env.freeVal
-  boundSort := by
-    intro target idx
-    by_cases h : target = sort
-    · subst h
-      cases idx with
-      | zero =>
-          simpa using hValue
-      | succ prev =>
-          simpa using env.boundSort target prev
-    · simpa [h] using env.boundSort target idx
-  freeSort := env.freeSort
+
+@[simp] theorem pushBound_bound_here {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier sort) :
+    (env.pushBound value).boundVal
+      (.here : Variable (sort :: bound) sort) = value :=
+  rfl
+
+@[simp] theorem pushBound_bound_there {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {introduced sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier introduced)
+    (entry : Variable bound sort) :
+    (env.pushBound value).boundVal (.there entry) = env.boundVal entry :=
+  rfl
+
+@[simp] theorem pushBound_free {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} {introduced sort : σ.SortSymbol}
+    (env : Env M bound free) (value : M.Carrier introduced)
+    (entry : Variable free sort) :
+    (env.pushBound value).freeVal entry = env.freeVal entry :=
+  rfl
+
 end Env
-namespace Term
-/-- 项解释。sort 正确性由 `eval_sort_of_wellSorted` 连接到签名 arity。 -/
-def eval {σ : Signature.{u, v, w}} {M : Structure.{u, v, w, x} σ} (env : Env M) : Term σ → M.Domain
-  | var (.bvar sort idx) => env.boundVal sort idx
-  | var (.fvar sort id) => env.freeVal sort id
-  | app f args => M.funcInterp f (args.map (eval env))
-end Term
+
+mutual
+
+/-- 内在排序项的解释；返回类型就是该项的语义排序。 -/
+def Term.eval {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} (env : Env M bound free) :
+    {sort : σ.SortSymbol} → Term σ bound free sort → M.Carrier sort
+  | _, .bvar entry => env.boundVal entry
+  | _, .fvar entry => env.freeVal entry
+  | _, .app function arguments =>
+      M.funcInterp function (Arguments.eval env arguments)
+
+/-- 异质参数列的逐项解释。 -/
+def Arguments.eval {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} (env : Env M bound free) :
+    {sorts : List σ.SortSymbol} →
+      Arguments σ bound free sorts → Values M.Carrier sorts
+  | _, .nil => .nil
+  | _, .cons term rest =>
+      .cons (Term.eval env term) (Arguments.eval env rest)
+
+end
+
 namespace Formula
-/-- 公式满足关系。量词只遍历对应 sort 谓词下的对象。 -/
-def satisfies {σ : Signature.{u, v, w}} [DecidableEq σ.SortSymbol]
-    {M : Structure.{u, v, w, x} σ} (env : Env M) :
-    Formula σ → Prop
-  | falsum => False
-  | truth => True
-  | rel r args => M.relInterp r (args.map (Term.eval env))
-  | equal left right => Term.eval env left = Term.eval env right
-  | neg φ => ¬ satisfies env φ
-  | conj φ ψ => satisfies env φ ∧ satisfies env ψ
-  | disj φ ψ => satisfies env φ ∨ satisfies env ψ
-  | imp φ ψ => satisfies env φ → satisfies env ψ
-  | iff φ ψ => satisfies env φ ↔ satisfies env ψ
-  | forallE sort body =>
-      ∀ value, ∀ hValue : M.sortInterp sort value,
-        satisfies (env.pushBound sort value hValue) body
-  | existsE sort body =>
-      ∃ value, ∃ hValue : M.sortInterp sort value,
-        satisfies (env.pushBound sort value hValue) body
+
+/-- 内在排序公式的满足关系。 -/
+def satisfies {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} (env : Env M bound free) :
+    Formula σ bound free → Prop
+  | .falsum => False
+  | .truth => True
+  | .rel relation arguments =>
+      M.relInterp relation (Arguments.eval env arguments)
+  | .equal left right => Term.eval env left = Term.eval env right
+  | .neg body => ¬ satisfies env body
+  | .conj left right => satisfies env left ∧ satisfies env right
+  | .disj left right => satisfies env left ∨ satisfies env right
+  | .imp left right => satisfies env left → satisfies env right
+  | .iff left right => satisfies env left ↔ satisfies env right
+  | .forallE _ body =>
+      ∀ value, satisfies (env.pushBound value) body
+  | .existsE _ body =>
+      ∃ value, satisfies (env.pushBound value) body
+
 /-- 有限合取的满足关系等价于逐个满足列表中的公式。 -/
 theorem satisfies_conjunctionList_iff {σ : Signature.{u, v, w}}
-    [DecidableEq σ.SortSymbol] {M : Structure.{u, v, w, x} σ} (env : Env M) (formulas : List (Formula σ)) :
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} (env : Env M bound free)
+    (formulas : List (Formula σ bound free)) :
     satisfies env (conjunctionList formulas) ↔
       ∀ formula ∈ formulas, satisfies env formula := by
   induction formulas with
@@ -104,33 +228,25 @@ theorem satisfies_conjunctionList_iff {σ : Signature.{u, v, w}}
           simp [conjunctionList]
       | cons next tail =>
           simp [conjunctionList, satisfies, ih]
+
+/-- 有限析取的满足关系等价于至少满足列表中的一个公式。 -/
+theorem satisfies_disjunctionList_iff {σ : Signature.{u, v, w}}
+    {M : Structure.{u, v, w, x} σ}
+    {bound free : SortContext σ} (env : Env M bound free)
+    (formulas : List (Formula σ bound free)) :
+    satisfies env (disjunctionList formulas) ↔
+      ∃ formula ∈ formulas, satisfies env formula := by
+  induction formulas with
+  | nil =>
+      simp [disjunctionList, satisfies]
+  | cons formula rest ih =>
+      cases rest with
+      | nil =>
+          simp [disjunctionList]
+      | cons next tail =>
+          simp [disjunctionList, satisfies, ih]
+
 end Formula
-/- well-sorted 项解释和参数列表 sort 满足性一起归纳。 -/
-mutual
-  /-- well-sorted 项的解释落在对应 sort 里。 -/
-  theorem Term.eval_sort_of_wellSorted {σ : Signature.{u, v, w}}
-      {M : Structure.{u, v, w, x} σ} {env : Env M}
-      {term : Term σ} {sort : σ.SortSymbol} (hTerm : TermWellSorted term sort) :
-      M.sortInterp sort (Term.eval env term) := by
-    cases hTerm with
-    | bvar sort idx =>
-        simpa [Term.eval] using env.boundSort sort idx
-    | fvar sort id =>
-        simpa [Term.eval] using env.freeSort sort id
-    | app f hArgs =>
-        simpa [Term.eval] using
-          M.funcSort f _ (args_satisfy_of_wellSorted (env := env) hArgs)
-  theorem args_satisfy_of_wellSorted {σ : Signature.{u, v, w}}
-      {M : Structure.{u, v, w, x} σ} {env : Env M}
-      {args : List (Term σ)} {sorts : List σ.SortSymbol} (hArgs : ArgsWellSorted args sorts) :
-      ArgsSatisfy M.sortInterp (args.map (Term.eval env)) sorts := by
-    cases hArgs with
-    | nil =>
-        simp [ArgsSatisfy]
-    | cons hTerm hRest =>
-        simp [ArgsSatisfy, Term.eval_sort_of_wellSorted hTerm,
-          args_satisfy_of_wellSorted hRest]
-end
 end FirstOrder
 end Logic
 end YesMetaZFC

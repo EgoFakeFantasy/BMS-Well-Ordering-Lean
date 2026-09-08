@@ -256,7 +256,13 @@ def recursiveSequenceInExistence (𝒞 : OrderedPairConvention)
       Formula.isRestriction, Formula.orderedPairMem,
       Formula.forallMem, Formula.existsMem, Formula.subset,
       Formula.extensionalEq, Formula.FreeClosed,
-      Term.newest]
+      Term.newest, Term.bound, Term.weaken, Definitional.Term.newest]
+    all_goals
+      repeat' apply And.intro
+      all_goals
+        first
+        | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
+        | apply Formula.related_freeClosed_of_closed <;> simp
 /--
 “给定序数长度上的任意两个固定目标集值递归序列相等”的归纳模式。
 -/
@@ -280,7 +286,13 @@ def recursiveSequenceInUniqueness (𝒞 : OrderedPairConvention)
       Formula.isRestriction, Formula.orderedPairMem,
       Formula.forallMem, Formula.existsMem, Formula.subset,
       Formula.extensionalEq, Formula.FreeClosed,
-      Term.newest]
+      Term.newest, Term.bound, Term.weaken, Definitional.Term.newest]
+    all_goals
+      repeat' apply And.intro
+      all_goals
+        first
+        | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
+        | apply Formula.related_freeClosed_of_closed <;> simp
 /-- 把序数映到编码其固定目标集内递归值的有序对。 -/
 def recursionGraphPairIn (𝒞 : OrderedPairConvention)
     {parameterCount : Nat} (operator : BinarySchema parameterCount) :
@@ -302,7 +314,13 @@ def recursionGraphPairIn (𝒞 : OrderedPairConvention)
       Formula.isRestriction, Formula.orderedPairMem,
       Formula.forallMem, Formula.existsMem, Formula.subset,
       Formula.extensionalEq, Formula.FreeClosed,
-      Term.newest]
+      Term.newest, Term.bound, Term.weaken, Definitional.Term.newest]
+    all_goals
+      repeat' apply And.intro
+      all_goals
+        first
+        | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
+        | apply Formula.related_freeClosed_of_closed <;> simp
 /-- “在给定序数长度上存在递归序列”的一元归纳模式。 -/
 def recursiveSequenceExistence (𝒞 : OrderedPairConvention)
     {parameterCount : Nat} (operator : BinarySchema parameterCount) :
@@ -322,7 +340,13 @@ def recursiveSequenceExistence (𝒞 : OrderedPairConvention)
       Formula.orderedPairMem, Formula.forallMem,
       Formula.existsMem, Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed,
-      Term.newest]
+      Term.newest, Term.bound, Term.weaken, Definitional.Term.newest]
+    all_goals
+      repeat' apply And.intro
+      all_goals
+        first
+        | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
+        | apply Formula.related_freeClosed_of_closed <;> simp
 /-- “给定序数长度上的任意两个递归序列相等”的一元归纳模式。 -/
 def recursiveSequenceUniqueness (𝒞 : OrderedPairConvention)
     {parameterCount : Nat} (operator : BinarySchema parameterCount) :
@@ -343,7 +367,13 @@ def recursiveSequenceUniqueness (𝒞 : OrderedPairConvention)
       Formula.orderedPairMem, Formula.forallMem,
       Formula.existsMem, Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed,
-      Term.newest]
+      Term.newest, Term.bound, Term.weaken, Definitional.Term.newest]
+    all_goals
+      repeat' apply And.intro
+      all_goals
+        first
+        | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
+        | apply Formula.related_freeClosed_of_closed <;> simp
 /--
 把序数 `α` 映到编码 `(α, value)` 的有序对，其中 `value` 是递归值。
 该模式用于函数式替换直接构造超限递归图。
@@ -367,7 +397,13 @@ def recursionGraphPair (𝒞 : OrderedPairConvention)
       Formula.orderedPairMem, Formula.forallMem,
       Formula.existsMem, Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed,
-      Term.newest]
+      Term.newest, Term.bound, Term.weaken, Definitional.Term.newest]
+    all_goals
+      repeat' apply And.intro
+      all_goals
+        first
+        | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
+        | apply Formula.related_freeClosed_of_closed <;> simp
 /--
 由递归算子 `operator` 定义的超限递归类图。
 主变量仍遵守 `BinarySchema` 约定：index `1` 是序数输入，index `0` 是输出。
@@ -389,7 +425,13 @@ def transfiniteRecursion (𝒞 : OrderedPairConvention)
       Formula.orderedPairMem, Formula.forallMem,
       Formula.existsMem, Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed,
-      Term.newest]
+      Term.newest, Term.bound, Term.weaken, Definitional.Term.newest]
+    all_goals
+      repeat' apply And.intro
+      all_goals
+        first
+        | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
+        | apply Formula.related_freeClosed_of_closed <;> simp
 end BinarySchema
 end Project
 end Definitional

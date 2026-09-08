@@ -74,9 +74,10 @@ def hartogsWellOrderCodeMembership (𝒞 : OrderedPairConvention) : UnarySchema 
       Formula.forallMem,
       Formula.subset, Formula.extensionalEq,
       Formula.FreeClosed, Term.newest]
-    repeat' constructor
+    repeat' apply And.intro
     all_goals
       first
+      | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
       | exact Formula.related_freeClosed_of_closed (relation := _) (parameters := _) (left := _) (right := _) (by intro entry; simp [TermVector.singleton])
           (by simp) (by simp)
       | simp [Formula.existsMem, Formula.FreeClosed, Term.newest]
@@ -103,7 +104,8 @@ def hartogsSuccessorValue (𝒞 : OrderedPairConvention) : BinarySchema 1 where
       Formula.subset, Formula.isSuccessor,
       Formula.extensionalEq, Formula.FreeClosed,
       Term.newest]
-    repeat' constructor
+    repeat' apply And.intro
+    all_goals first | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl | skip
     all_goals
       exact Formula.related_freeClosed_of_closed (relation := _) (parameters := _) (left := _) (right := _) (by intro entry; simp [TermVector.singleton])
         (by simp) (by simp)

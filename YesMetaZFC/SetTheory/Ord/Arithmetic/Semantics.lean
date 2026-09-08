@@ -249,7 +249,7 @@ theorem satisfies_isOrdinalAddition_iff
     satisfies env (isOrdinalAddition 𝒞 sum left right) ↔
       ℳ.IsOrdinalAddition 𝕀 (sum.eval env) (left.eval env) (right.eval env) := by
   rw [isOrdinalAddition, satisfies_related_iff]
-  simpa [TermVector.evalEnv, TermVector.singleton] using
+  simpa [TermVector.evalEnv, TermVector.singleton] using!
     BinarySchema.denote_ordinalAddition_iff 𝕀 hExt ((TermVector.singleton left).evalEnv env) (right.eval env) (sum.eval env)
 end Formula
 namespace BinarySchema
@@ -302,7 +302,7 @@ theorem satisfies_isOrdinalMultiplication_iff
     satisfies env (isOrdinalMultiplication 𝒞 product left right) ↔
       ℳ.IsOrdinalMultiplication 𝕀 (product.eval env) (left.eval env) (right.eval env) := by
   rw [isOrdinalMultiplication, satisfies_related_iff]
-  simpa [TermVector.evalEnv, TermVector.singleton] using
+  simpa [TermVector.evalEnv, TermVector.singleton] using!
     BinarySchema.denote_ordinalMultiplication_iff
       𝕀 hExt ((TermVector.singleton left).evalEnv env) (right.eval env) (product.eval env)
 end Formula
@@ -356,7 +356,7 @@ theorem satisfies_isOrdinalExponentiation_iff
     satisfies env (isOrdinalExponentiation 𝒞 power base exponent) ↔
       ℳ.IsOrdinalExponentiation 𝕀 (power.eval env) (base.eval env) (exponent.eval env) := by
   rw [isOrdinalExponentiation, satisfies_related_iff]
-  simpa [TermVector.evalEnv, TermVector.singleton] using
+  simpa [TermVector.evalEnv, TermVector.singleton] using!
     BinarySchema.denote_ordinalExponentiation_iff
       𝕀 hExt ((TermVector.singleton base).evalEnv env) (exponent.eval env) (power.eval env)
 /-- 序数商余公式与纸面商余关系一致。 -/

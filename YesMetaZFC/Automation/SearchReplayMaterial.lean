@@ -1,5 +1,6 @@
 import YesMetaZFC.Automation.SearchMaterialization
 import YesMetaZFC.Automation.DAGCertificate.ReplayArena
+import YesMetaZFC.Automation.DAGCertificate.CompileDAG
 
 /-!
 # 搜索证书的紧耦合回放材料
@@ -104,22 +105,6 @@ structure Input where
   label : String := "search-DAG"
   deriving Repr, Lean.ToExpr
 
-structure RefutationBridgeAt
-    (problem : DeepProblem) (clauseProblem : ClauseProblem) : Prop where
-  validOfCountermodel :
-    ∀ {M : LogicSoundness.SetLevel.StructureAt.{x} SearchSignature}
-      (env : LogicSoundness.SetLevel.EnvAt.{x} M),
-      Logic.FirstOrder.Theory.Models problem.theory env →
-        ¬ Logic.FirstOrder.Formula.satisfies env problem.target →
-          ∃ (target :
-              LogicSoundness.SetLevel.StructureAt.{x} SearchSignature),
-            ∃ (targetEnv : LogicSoundness.SetLevel.EnvAt.{x} target),
-              clauseProblem.Valid targetEnv
-
-abbrev RefutationBridge
-    (problem : DeepProblem) (clauseProblem : ClauseProblem) :=
-  RefutationBridgeAt.{0} problem clauseProblem
-
 private def formulaListEq : List Formula → List Formula → Bool
   | [], [] => true
   | left :: leftRest, right :: rightRest =>
@@ -212,7 +197,7 @@ structure PreprocessedSearchInput where
 
 namespace PreprocessedSearchInput
 
-def structuralSound (input : PreprocessedSearchInput) :
+theorem structuralSound (input : PreprocessedSearchInput) :
     CoreSyntax.NormalForm.CheckedPreprocessing.Sound
       input.preprocessing.payload :=
   CoreSyntax.NormalForm.CheckedPreprocessing.sound input.preprocessing
@@ -246,60 +231,74 @@ inductive PreparedReplaySearchData (input : ReplaySearchInput) where
       (registryChecked :
         DAGCertificate.DAG.avatarRegistryCheckWith
           artifact.checked.dag registry = true)
-      (admissible :
-        LogicSoundness.SetLevel.DeepProblem.Admissible input.problem)
+      (compiledDAG :
+        DAGCertificate.Compile.CheckedDAGClauses artifact.checked.dag)
+      (compiled :
+        DAGCertificate.Compile.CheckedProblem input.problem)
   | guarded
       (artifact : CheckedArtifact input.clauseProblem)
       (guardedSupported :
         artifact.checked.dag.guardedSoundnessSupported = true)
-      (admissible :
-        LogicSoundness.SetLevel.DeepProblem.Admissible input.problem)
+      (compiledDAG :
+        DAGCertificate.Compile.CheckedDAGClauses artifact.checked.dag)
+      (compiled :
+        DAGCertificate.Compile.CheckedProblem input.problem)
 
 def prepareReplaySearchData
     (input : ReplaySearchInput)
     (unsupported : Certificate.Diagnostic := input.unsupportedDiagnostic) :
     Result (PreparedReplaySearchData input) := do
-  if hAdmissible : input.problem.check_admissible = true then
-    let admissible :=
-      LogicSoundness.SetLevel.DeepProblem.check_admissible_sound hAdmissible
-    let materialized ← input.materializeSearch? unsupported
-    let dag := materialized.data.dag
-    let arena := materialized.data.arena
-    if hCheck :
-        DAGCertificate.DAG.ReplayArena.checkFor
-          dag.avatarSoundnessSupported dag arena = true then
-      let artifact : CheckedArtifact input.clauseProblem := {
-        checked := DAGCertificate.CheckedDAG.ofContract dag <|
-          DAGCertificate.DAG.ReplayArena.contract_of_checkFor hCheck
-        problem_eq := materialized.problem_eq
-      }
-      if hAvatarSupported :
-          artifact.checked.dag.avatarSoundnessSupported = true then
-        let registry :=
-          DAGCertificate.AvatarSelectorComponent.Registry.build
-            artifact.checked.dag.avatarSelectorRegistry
-        if hRegistry :
-            DAGCertificate.DAG.avatarRegistryCheckWith
-              artifact.checked.dag registry = true then
-          pure <|
-            .avatar artifact hAvatarSupported registry hRegistry admissible
-        else
+  let compiled ← requireSome .dagCheck
+    "formula problem cannot be compiled to intrinsic closed syntax"
+    (DAGCertificate.Compile.CheckedProblem.compile? input.problem)
+  let materialized ← input.materializeSearch? unsupported
+  let dag := materialized.data.dag
+  let arena := materialized.data.arena
+  if hCheck :
+      DAGCertificate.DAG.ReplayArena.checkFor
+        dag.avatarSoundnessSupported dag arena = true then
+    let artifact : CheckedArtifact input.clauseProblem := {
+      checked := DAGCertificate.CheckedDAG.ofContract dag <|
+        DAGCertificate.DAG.ReplayArena.contract_of_checkFor hCheck
+      problem_eq := materialized.problem_eq
+    }
+    if hAvatarSupported :
+        artifact.checked.dag.avatarSoundnessSupported = true then
+      let registry :=
+        DAGCertificate.AvatarSelectorComponent.Registry.build
+          artifact.checked.dag.avatarSelectorRegistry
+      if hRegistry :
+          DAGCertificate.DAG.avatarRegistryCheckWith
+            artifact.checked.dag registry = true then
+      match DAGCertificate.Compile.CheckedDAGClauses.compile?
+          artifact.checked.dag with
+      | none =>
           throw <| diagnostic .dagCheck
-            ("materialized AVATAR DAG passed the contiguous Arena checker " ++
-              "but failed the global selector registry checker")
-      else if hGuardedSupported :
-          artifact.checked.dag.guardedSoundnessSupported = true then
-        pure <| .guarded artifact hGuardedSupported admissible
+            "materialized DAG passed structural checks but failed intrinsic clause compilation"
+      | some compiledDAG =>
+          pure <|
+            .avatar artifact hAvatarSupported registry hRegistry compiledDAG
+              compiled
       else
         throw <| diagnostic .dagCheck
-          ("materialized preprocessed DAG passed the contiguous Arena checker " ++
-            "but contains payloads outside both proved soundness fragments")
+          ("materialized AVATAR DAG passed the contiguous Arena checker " ++
+            "but failed the global selector registry checker")
+    else if hGuardedSupported :
+        artifact.checked.dag.guardedSoundnessSupported = true then
+      match DAGCertificate.Compile.CheckedDAGClauses.compile?
+          artifact.checked.dag with
+      | none =>
+          throw <| diagnostic .dagCheck
+            "materialized DAG passed guarded checks but failed intrinsic clause compilation"
+      | some compiledDAG =>
+          pure <| .guarded artifact hGuardedSupported compiledDAG compiled
     else
       throw <| diagnostic .dagCheck
-        s!"materialized DAG/Arena failed checker: {dag.summary}"
+        ("materialized preprocessed DAG passed the contiguous Arena checker " ++
+          "but contains payloads outside both replay fragments")
   else
     throw <| diagnostic .dagCheck
-      "formula problem is not well-formed or scope-closed; replay is rejected"
+      s!"materialized DAG/Arena failed checker: {dag.summary}"
 
 abbrev PreparedPreprocessedData (input : PreprocessedSearchInput) :=
   PreparedReplaySearchData input.toReplaySearchInput
@@ -310,92 +309,12 @@ def preparePreprocessedData
   prepareReplaySearchData
     input.toReplaySearchInput input.unsupportedDiagnostic
 
-/--
-预处理后的 universe-polymorphic proof-carrying provider 输入。
-纯搜索数据与反模型 bridge 分开存放，避免局部证明参数进入计算状态。
--/
-structure PreprocessedInputAt where
-  search : PreprocessedSearchInput
-  bridge :
-    RefutationBridgeAt.{x} search.problem search.clauseProblem
-
-private theorem artifactValidOfBridgeAt
-    (input : ReplaySearchInput)
-    (artifact : CheckedArtifact input.clauseProblem)
-    (bridge :
-      RefutationBridgeAt.{x} input.problem input.clauseProblem) :
-    ∀ {M : LogicSoundness.SetLevel.StructureAt.{x} SearchSignature}
-      (env : LogicSoundness.SetLevel.EnvAt.{x} M),
-      Logic.FirstOrder.Theory.Models input.problem.theory env →
-        ¬ Logic.FirstOrder.Formula.satisfies env input.problem.target →
-          ∃ (target :
-              LogicSoundness.SetLevel.StructureAt.{x} SearchSignature),
-            ∃ (targetEnv : LogicSoundness.SetLevel.EnvAt.{x} target),
-              artifact.checked.dag.problem.Valid targetEnv := by
-  intro M env hModels hTarget
-  rcases bridge.validOfCountermodel env hModels hTarget with
-    ⟨target, targetEnv, hClauseValid⟩
-  refine ⟨target, targetEnv, ?_⟩
-  rw [artifact.problem_eq]
-  exact hClauseValid
-
-def PreparedReplaySearchData.backendSuccessAt
-    {input : ReplaySearchInput}
-    (data : PreparedReplaySearchData input)
-    (bridge :
-      RefutationBridgeAt.{x} input.problem input.clauseProblem) :
-    LogicSoundness.SetLevel.BackendSuccessAt.{x} input.problem :=
-  match data with
-  | .avatar artifact hAvatarSupported registry hRegistry hAdmissible =>
-      let avatarCert : DAGCertificate.CheckedAvatarDAG := {
-        checked := artifact.checked
-        registry := registry
-        registryChecked := hRegistry
-      }
-      DAGCertificate.CheckedAvatarDAG.backendSuccess_of_avatarSoundnessSupported_of_valid
-        avatarCert input.problem hAdmissible hAvatarSupported
-        (artifactValidOfBridgeAt input artifact bridge)
-  | .guarded artifact hGuardedSupported hAdmissible =>
-      {
-        admissible := hAdmissible
-        backend := .dagReflection
-        phase := .dagCheck
-        cert := {
-          entails :=
-            DAGCertificate.CheckedDAG.semanticallyEntails_of_guardedSoundnessSupported_of_valid
-              artifact.checked input.problem hGuardedSupported
-              (artifactValidOfBridgeAt input artifact bridge)
-        }
-        audit? := some artifact.checked.toComposite
-        note :=
-          "DAG guarded soundness-supported fragment via checked preprocessing"
-      }
-
-def runReplayMatchedAt
-    (input : ReplaySearchInput)
-    (bridge :
-      RefutationBridgeAt.{x} input.problem input.clauseProblem) :
-    LogicSoundness.SetLevel.BackendAttemptAt.{x} input.problem :=
-  Scheduler.attemptAt (prepareReplaySearchData input) fun data =>
-    data.backendSuccessAt bridge
-
 def runReplayClosed (input : ReplaySearchInput) : Bool :=
   Scheduler.closed (prepareReplaySearchData input)
 
 def runReplaySummary (input : ReplaySearchInput) : String :=
   Scheduler.summary
     (prepareReplaySearchData input) "DAG Arena reflection: closed"
-
-theorem runReplayMatchedAt_closed
-    (input : ReplaySearchInput)
-    (bridge :
-      RefutationBridgeAt.{x} input.problem input.clauseProblem) :
-    LogicSoundness.SetLevel.BackendAttemptAt.closed
-        (runReplayMatchedAt input bridge) =
-      runReplayClosed input := by
-  exact Scheduler.attempt_closed_l
-    (prepareReplaySearchData input) fun data =>
-      data.backendSuccessAt bridge
 
 def runPreprocessedClosedAt
     (input : PreprocessedSearchInput) : Bool :=
@@ -405,32 +324,6 @@ def runPreprocessedSummary
     (input : PreprocessedSearchInput) : String :=
   Scheduler.summary
     (preparePreprocessedData input) "DAG Arena reflection: closed"
-
-def runPreprocessedMatchedAt
-    (input : PreprocessedInputAt.{x}) :
-    LogicSoundness.SetLevel.BackendAttemptAt.{x} input.search.problem :=
-  Scheduler.attemptAt (preparePreprocessedData input.search) fun data =>
-    data.backendSuccessAt input.bridge
-
-theorem runPreprocessedMatchedAt_closed
-    (input : PreprocessedInputAt.{x}) :
-    LogicSoundness.SetLevel.BackendAttemptAt.closed
-        (runPreprocessedMatchedAt input) =
-      runPreprocessedClosedAt input.search := by
-  exact Scheduler.attempt_closed_l
-    (preparePreprocessedData input.search) fun data =>
-      data.backendSuccessAt input.bridge
-
-def runPreprocessedAt
-    (input : PreprocessedInputAt.{x}) (problem : DeepProblem) :
-    LogicSoundness.SetLevel.BackendAttemptAt.{x} problem :=
-  if hProblem : deepProblemEq problem input.search.problem = true then
-    have hEq : problem = input.search.problem :=
-      deepProblemEq_sound hProblem
-    hEq.symm ▸ runPreprocessedMatchedAt input
-  else
-    .failure <| diagnostic .clausification
-      "preprocessed source problem does not match the provider deep problem"
 
 end SearchCertificateProvider
 

@@ -23,6 +23,8 @@ def disjointUnionValue (𝒞 : OrderedPairConvention) : BinarySchema 4 where
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 分别映射两个坐标的笛卡尔积值关系。 -/
 def cartesianProductValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
   body := .existsE <| .existsE <| .existsE <| .existsE <|
@@ -32,6 +34,8 @@ def cartesianProductValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /--
 把序数笛卡尔积中的 `(left, right)` 映到序数乘法的第 `right` 块中偏移 `left`
 的位置。
@@ -44,11 +48,12 @@ def ordinalMultiplicationValue (𝒞 : OrderedPairConvention) : BinarySchema 1 w
     simp [Formula.isOrdinalMultiplication,
       Formula.isOrdinalAddition, Formula.related,
       Formula.FreeClosed]
-    constructor
-    · apply Formula.related_freeClosed_of_closed <;>
-        simp [TermVector.FreeClosed, TermVector.singleton]
-    · apply Formula.related_freeClosed_of_closed <;>
-        simp [TermVector.FreeClosed, TermVector.singleton]
+    repeat' apply And.intro
+    all_goals
+      first
+      | exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
+      | apply Formula.related_freeClosed_of_closed <;>
+          simp [TermVector.FreeClosed, TermVector.singleton]
 /--
 把后继中新加入的点送到零，把自然数整体后移一位，其余元素保持不变。
 -/
@@ -69,6 +74,8 @@ def swappedCartesianProductValue (𝒞 : OrderedPairConvention) : BinarySchema 2
   freeClosed := by
     simp [Formula.orderedPairMem, Formula.FreeClosed,
       Term.newest]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 把 `((a, b), c)` 重括号为 `(a, (b, c))`。 -/
 def associateCartesianProductValue (𝒞 : OrderedPairConvention) : BinarySchema 0 where
   body := .existsE <| .existsE <| .existsE <| .existsE <| .existsE <|
@@ -77,6 +84,8 @@ def associateCartesianProductValue (𝒞 : OrderedPairConvention) : BinarySchema
     .conj (𝒞.code (.bound 0) (.bound 3) (.bound 2)) (𝒞.code (.bound 5) (.bound 4) (.bound 0))
   freeClosed := by
     simp [Formula.FreeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 /-- 把左结合的二元标签编码重括号为右结合编码。 -/
 def associateTaggedUnionValue (𝒞 : OrderedPairConvention) : BinarySchema 2 where
   body := .disj (.existsE <| .existsE <|
@@ -90,6 +99,8 @@ def associateTaggedUnionValue (𝒞 : OrderedPairConvention) : BinarySchema 2 wh
         .conj (𝒞.code (.bound 0) (.bound 5) (.bound 1)) (𝒞.code (.bound 2) (.bound 5) (.bound 0)))
   freeClosed := by
     simp [Formula.FreeClosed]
+    repeat' apply And.intro
+    all_goals exact 𝒞.code_freeClosed _ _ _ rfl rfl rfl
 end BinarySchema
 namespace Formula
 /-- 不交并分片值关系的纸面解释。 -/

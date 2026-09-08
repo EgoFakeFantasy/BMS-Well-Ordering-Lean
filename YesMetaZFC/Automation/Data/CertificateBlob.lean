@@ -41,9 +41,9 @@ theorem fuel_succ_lt {blob : Blob} {offset : Nat}
 theorem canRead_le_size {blob : Blob} {offset width : Nat}
     (hRead : canRead blob offset width = true) :
     offset + width <= blob.size := by
-  have hFields :
-      offset <= blob.size ∧ width <= blob.size - offset := by
-    simpa [canRead, fuel] using hRead
+  have hFields := Bool.and_eq_true_iff.mp hRead
+  have hOffset : offset <= blob.size := of_decide_eq_true hFields.1
+  have hWidth : width <= blob.size - offset := of_decide_eq_true hFields.2
   omega
 
 /-

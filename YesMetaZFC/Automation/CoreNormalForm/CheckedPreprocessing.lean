@@ -133,7 +133,7 @@ theorem sound_of_check {payload : Payload} (h : Payload.check payload = true) : 
     phasesChecked := hPhase
     linksChecked := hLink
   }
-def sound (checked : Checked) : Sound checked.payload :=
+theorem sound (checked : Checked) : Sound checked.payload :=
   sound_of_check checked.checked
 theorem satisfies_source_iff_normalized (checked : Checked) {M : Semantics.Model} (contract : Semantics.FoolLambdaContract M) (env : Semantics.Env M) (hFree : Semantics.Env.RespectsFree env) : Semantics.Formula.Satisfies env checked.payload.source ↔ Semantics.Formula.Satisfies env checked.payload.normalized := by
   have hSound := sound checked
@@ -263,6 +263,7 @@ structure ModelExtension (checked : Checked) (M : Semantics.Model) (base : Seman
       checked.payload.definitionalCnf.definitions
       localSkolem.extension.target (localSkolem.extension.rebase base)
 namespace ModelExtension
+@[implicit_reducible]
 def target {checked : Checked} {M : Semantics.Model} {base : Semantics.Env M} (extension : ModelExtension checked M base) : Semantics.Model :=
   Semantics.Model.overrideDefinitions
     extension.localSkolem.extension.target (extension.localSkolem.extension.rebase base)
@@ -295,10 +296,10 @@ theorem functionSort_of {checked : Checked} {M : Semantics.Model} {base : Semant
   exact
     extension.localSkolem.extension.functionSort hFunctionSort
       symbol arguments
-def foolContract {checked : Checked} {M : Semantics.Model} {base : Semantics.Env M} (extension : ModelExtension checked M base) (source : Semantics.FoolContract M) : Semantics.FoolContract extension.target :=
+theorem foolContract {checked : Checked} {M : Semantics.Model} {base : Semantics.Env M} (extension : ModelExtension checked M base) (source : Semantics.FoolContract M) : Semantics.FoolContract extension.target :=
   Semantics.FoolContract.overrideDefinitions (extension.localSkolem.extension.foolContract source) (extension.localSkolem.extension.rebase base)
     checked.payload.definitionalCnf.definitions
-def contract {checked : Checked} {M : Semantics.Model} {base : Semantics.Env M} (extension : ModelExtension checked M base) (source : Semantics.FoolLambdaContract M) : Semantics.FoolLambdaContract extension.target :=
+theorem contract {checked : Checked} {M : Semantics.Model} {base : Semantics.Env M} (extension : ModelExtension checked M base) (source : Semantics.FoolLambdaContract M) : Semantics.FoolLambdaContract extension.target :=
   Semantics.FoolLambdaContract.overrideDefinitions (extension.localSkolem.extension.contract source) (extension.localSkolem.extension.rebase base)
     checked.payload.definitionalCnf.definitions
 theorem respectsFree {checked : Checked} {M : Semantics.Model} {base env : Semantics.Env M} (extension : ModelExtension checked M base) (hFree : Semantics.Env.RespectsFree env) : Semantics.Env.RespectsFree (extension.rebase env) := by

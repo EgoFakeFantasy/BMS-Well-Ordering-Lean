@@ -1,4 +1,4 @@
-import YesMetaZFC.Automation.AvatarRegistrySoundness
+import YesMetaZFC.Automation.DAGCertificate.AvatarRegistry
 
 /-!
 # DAG 的线性阶段回放
@@ -74,7 +74,7 @@ theorem nodesCheckedRange_singleton_eq_true
   have hEq : current = index := by
     omega
   subst current
-  simpa [DAG.nodeAt] using hNode
+  simpa [DAG.nodeAt] using! hNode
 
 /--
 按少量连续区间携带节点语义真值。
@@ -153,7 +153,7 @@ theorem node_fields_of_nodesChecked
       dag.nodeParentSnapshotsChecked (dag.nodeAt index hIndex) = true) ∧
       dag.nodeGuardsChecked (dag.nodeAt index hIndex) = true := by
   have hAt := Array.all_eq_true.mp hNodes index hIndex
-  simpa [nodesChecked, nodeCheck, DAG.nodeAt] using hAt
+  simpa [nodesChecked, nodeCheck, DAG.nodeAt] using! hAt
 
 /-- 一次节点扫描导出原 DAG 公共接口的三个逐节点阶段。 -/
 theorem dag_fields_of_nodesChecked
@@ -194,8 +194,7 @@ theorem contract_of_coreCheck
   rcases dag_fields_of_nodesChecked hNodes with
     ⟨hPayloads, hParentSnapshots, hGuards⟩
   have hRootSize : dag.root < dag.nodes.size := by
-    simpa [DAG.rootExists, DAG.graphView, DenseDAG.View.rootExists] using
-      hRootExists
+    exact of_decide_eq_true hRootExists
   have hRootFields :
       (dag.nodeAt dag.root hRootSize).globallyClosed = true ∧
         (dag.nodeAt dag.root hRootSize).payload.rootClosureEligible = true := by
@@ -319,7 +318,7 @@ theorem nodesChecked_eq_true_of_arenaNodesChecked
       have hFields :
           nodeCheck dag (dag.nodeAt index hIndex) = true ∧
             avatarNodeCheck (dag.nodeAt index hIndex) = true := by
-        simpa [arenaNodesChecked, arenaNodeCheckAvatar, DAG.nodeAt] using hAt
+        simpa [arenaNodesChecked, arenaNodeCheckAvatar, DAG.nodeAt] using! hAt
       exact hFields.1
 
 theorem avatarNodesChecked_eq_true_of_arenaNodesChecked
@@ -333,7 +332,7 @@ theorem avatarNodesChecked_eq_true_of_arenaNodesChecked
   have hFields :
       nodeCheck dag (dag.nodeAt index hIndex) = true ∧
         avatarNodeCheck (dag.nodeAt index hIndex) = true := by
-    simpa [arenaNodesChecked, arenaNodeCheckAvatar, DAG.nodeAt] using hAt
+    simpa [arenaNodesChecked, arenaNodeCheckAvatar, DAG.nodeAt] using! hAt
   exact hFields.2
 
 /-- 顺序节点块恢复 AVATAR 能力与局部 registry 的联合检查。 -/

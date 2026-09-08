@@ -1,6 +1,8 @@
 import YesMetaZFC.Automation.HostProp
 import YesMetaZFC.Automation.HigherOrderReplayBuilder
 import YesMetaZFC.Automation.KernelReplay
+import YesMetaZFC.Automation.Request
+import YesMetaZFC.Automation.HostFirstOrder.ReplaySemantics
 import YesMetaZFC.Logic.HigherOrder
 /-!
 # 单基础域宿主简单高阶重化
@@ -597,6 +599,7 @@ theorem decodeArguments_toCore (interpretation : Interpretation α) :
           value :: values
       rw [SimpleValue.ofCore_toCore]
       rw [decodeArguments_toCore interpretation sorts values hSorts.2]
+@[implicit_reducible]
 noncomputable def coreModel (interpretation : Interpretation α) : Semantics.Model.{u} := {
   Carrier := Value α
   default := ⟨.object, interpretation.default⟩
@@ -643,7 +646,7 @@ theorem coreEnv_respectsFree (interpretation : Interpretation α) (bound : Nat �
     Semantics.Env.RespectsFree (interpretation.coreEnv bound) := by
   intro sort id
   rfl
-noncomputable def coreContract (interpretation : Interpretation α) :
+theorem coreContract (interpretation : Interpretation α) :
     Semantics.FoolLambdaContract interpretation.coreModel where
   function_sort := by
     intro symbol arguments
@@ -893,7 +896,6 @@ theorem termListCore (interpretation : Interpretation α) (bound : Nat → Simpl
               simp only [List.map_cons]
               rw [termCore interpretation bound context hBound head headSort hHead]
               rw [termListCore interpretation bound context hBound tail tailSorts hTail]
-              rfl
 theorem termListEvalSorts (interpretation : Interpretation α) (bound : Nat → SimpleValue α) (context : List SimpleType) :
     ∀ (terms : List Term) (sorts : List SimpleType),
       Term.inferSortListWith context terms = some sorts → (terms.map (Term.eval interpretation bound)).map SimpleValue.sort = sorts
@@ -1161,7 +1163,7 @@ theorem sourceSatisfiedOfNotGoal {goal : Prop} (input : CheckedInput.{u} goal) (
       input.sourceProblem.refutationSource := by
   unfold sourceProblem sourceProblemOfSyntax
   unfold SourcePreprocessing.Problem.refutationSource
-  apply HostProp.CheckedInput.coreSatisfiesConjunctionList
+  apply HostFirstOrder.ReplaySemantics.coreConjunction_true
   intro formula hFormula
   simp only [List.mem_append, List.mem_singleton] at hFormula
   rcases hFormula with hPremise | hTarget
@@ -1181,45 +1183,55 @@ theorem sourceSatisfiedOfNotGoal {goal : Prop} (input : CheckedInput.{u} goal) (
           hTargetCore
     simpa [CoreSyntax.NormalForm.Semantics.Formula.Satisfies,
       CoreSyntax.NormalForm.Semantics.Formula.eval] using hCoreTarget
-theorem soundOfReplayArtifact {goal : Prop} (input : CheckedInput.{u} goal) (result : SourcePreprocessing.CheckedResult input.sourceProblem)
-    (artifact : HORefutationProvider.CheckedReplayArtifact result.clauses) :
+theorem soundOfReplayArtifact {goal : Prop} (input : CheckedInput.{u} goal)
+    (result : SourcePreprocessing.FoolReplay input.sourceProblem)
+    (artifact : HORefutationProvider.CheckedReplayArtifact result.payload.clauses) :
     goal := by
   apply Classical.byContradiction
   intro hGoal
   let base := input.interpretation.coreEnv input.bound
-  rcases result.modelExtension input.interpretation.coreModel base with
+  rcases CoreSyntax.NormalForm.CheckedPreprocessing.modelExtension
+      result.checkedPayload
+      (CoreSyntax.NormalForm.Semantics.FreeSupport.nnfFreeClosed_sound
+        result.antiPrenexFreeClosed)
+      input.interpretation.coreModel base with
     ⟨extension⟩
   have hSource :
       CoreSyntax.NormalForm.Semantics.Formula.Satisfies
-        base result.checked.payload.source :=
-    result.sourceSatisfied_of_refutation (input.sourceSatisfiedOfNotGoal hGoal)
+        base result.payload.source := by
+    rw [result.sourceIsRefutation]
+    exact input.sourceSatisfiedOfNotGoal hGoal
   exact artifact.refutesCoreModel
-    extension.target (extension.contract input.interpretation.coreContract) (extension.functionSort input.interpretation.coreContract) (extension.rebase base)
+    extension.target (extension.contract input.interpretation.coreContract)
+      (extension.functionSort input.interpretation.coreContract) (extension.rebase base)
     (by
       intro targetEnv hFree hBound
-      simpa [SourcePreprocessing.CheckedResult.clauses] using
-        extension.clausesSatisfiedTarget
-          input.interpretation.coreContract (input.interpretation.coreEnv_respectsFree input.bound) hSource
+      simpa using!
+        extension.clausesSatisfiedTarget_fool
+          result.normalizationFoolChecked
+          input.interpretation.coreContract.toFoolContract
+          (input.interpretation.coreEnv_respectsFree input.bound) hSource
           targetEnv hFree hBound)
-theorem soundOfArtifact {goal : Prop} (input : CheckedInput.{u} goal) (result : SourcePreprocessing.CheckedResult input.sourceProblem)
-    (artifact : HORefutationProvider.CheckedArtifact result.clauses) :
+theorem soundOfArtifact {goal : Prop} (input : CheckedInput.{u} goal)
+    (result : SourcePreprocessing.FoolReplay input.sourceProblem)
+    (artifact : HORefutationProvider.CheckedArtifact result.payload.clauses) :
     goal :=
   input.soundOfReplayArtifact result artifact.replay
 theorem soundOfReplayArtifactFromProblem {goal : Prop} (input : CheckedInput.{u} goal) (sourceProblem : SourcePreprocessing.Problem)
-    (hSource : sourceProblem = input.sourceProblem) (result : SourcePreprocessing.CheckedResult sourceProblem)
-    (artifact : HORefutationProvider.CheckedReplayArtifact result.clauses) :
+    (hSource : sourceProblem = input.sourceProblem) (result : SourcePreprocessing.FoolReplay sourceProblem)
+    (artifact : HORefutationProvider.CheckedReplayArtifact result.payload.clauses) :
     goal := by
   subst sourceProblem
   exact input.soundOfReplayArtifact result artifact
 theorem soundOfArtifactFromProblem {goal : Prop} (input : CheckedInput.{u} goal) (sourceProblem : SourcePreprocessing.Problem)
-    (hSource : sourceProblem = input.sourceProblem) (result : SourcePreprocessing.CheckedResult sourceProblem)
-    (artifact : HORefutationProvider.CheckedArtifact result.clauses) :
+    (hSource : sourceProblem = input.sourceProblem) (result : SourcePreprocessing.FoolReplay sourceProblem)
+    (artifact : HORefutationProvider.CheckedArtifact result.payload.clauses) :
     goal := by
   subst sourceProblem
   exact input.soundOfArtifact result artifact
 def goalAttemptFromReplay {goal : Prop} (input : CheckedInput.{u} goal) (sourceProblem : SourcePreprocessing.Problem)
-    (hSource : sourceProblem = input.sourceProblem) (result : SourcePreprocessing.CheckedResult sourceProblem)
-    (artifact : HORefutationProvider.CheckedReplayArtifact result.clauses) (label : String := "native host higher-order") :
+    (hSource : sourceProblem = input.sourceProblem) (result : SourcePreprocessing.FoolReplay sourceProblem)
+    (artifact : HORefutationProvider.CheckedReplayArtifact result.payload.clauses) (label : String := "native host higher-order") :
     ProveAutoRequest.GoalAttempt goal := {
   closed := true
   summary := label
@@ -1230,65 +1242,67 @@ def goalAttemptFromReplay {goal : Prop} (input : CheckedInput.{u} goal) (sourceP
 }
 @[reducible] def defaultGoalAttemptFromReplay
     {goal : Prop} (input : CheckedInput.{u} goal) (sourceProblem : SourcePreprocessing.Problem) (hSource : sourceProblem = input.sourceProblem)
-    (result : SourcePreprocessing.CheckedResult sourceProblem) (artifact : HORefutationProvider.CheckedReplayArtifact result.clauses) :
+    (result : SourcePreprocessing.FoolReplay sourceProblem) (artifact : HORefutationProvider.CheckedReplayArtifact result.payload.clauses) :
     ProveAutoRequest.GoalAttempt goal :=
   input.goalAttemptFromReplay sourceProblem hSource result artifact
-def runClosed (sourceProblem : SourcePreprocessing.Problem) (settings : SourcePreprocessing.Settings := {})
+def runClosed (sourceProblem : SourcePreprocessing.Problem) (settings : SourcePreprocessing.FoolSettings := {})
     (config : SourcePreprocessing.HOAvatarConfig := {}) : Bool :=
-  match SourcePreprocessing.runChecked sourceProblem settings with
+  match SourcePreprocessing.runFool sourceProblem settings with
   | .error _ => false
   | .ok result =>
+      let replay := result.toReplay
       if hNative :
           HOSearchMaterialization.CoreProjectionSoundness.Native.clauseSet
-            result.clauses = true then
-        match HORefutationProvider.run result.clauses hNative config with
+            replay.payload.clauses = true then
+        match HORefutationProvider.run replay.payload.clauses hNative config with
         | .error _ => false
         | .ok _ => true
       else
         false
-def runSummary (sourceProblem : SourcePreprocessing.Problem) (settings : SourcePreprocessing.Settings := {}) (config : SourcePreprocessing.HOAvatarConfig := {})
+def runSummary (sourceProblem : SourcePreprocessing.Problem) (settings : SourcePreprocessing.FoolSettings := {}) (config : SourcePreprocessing.HOAvatarConfig := {})
     (label : String := "native host higher-order") : String :=
-  match SourcePreprocessing.runChecked sourceProblem settings with
+  match SourcePreprocessing.runFool sourceProblem settings with
   | .error diagnostic => diagnostic.label
   | .ok result =>
+      let replay := result.toReplay
       if hNative :
           HOSearchMaterialization.CoreProjectionSoundness.Native.clauseSet
-            result.clauses = true then
-        match HORefutationProvider.run result.clauses hNative config with
+            replay.payload.clauses = true then
+        match HORefutationProvider.run replay.payload.clauses hNative config with
         | .error diagnostic => diagnostic.label
         | .ok _ => label
       else
         "native host higher-order preprocessing left the checked apply/lam fragment"
 theorem soundOfRunClosed {goal : Prop} (input : CheckedInput.{u} goal) (sourceProblem : SourcePreprocessing.Problem)
-    (hSource : sourceProblem = input.sourceProblem) (settings : SourcePreprocessing.Settings := {}) (config : SourcePreprocessing.HOAvatarConfig := {})
+    (hSource : sourceProblem = input.sourceProblem) (settings : SourcePreprocessing.FoolSettings := {}) (config : SourcePreprocessing.HOAvatarConfig := {})
     (hClosed : runClosed sourceProblem settings config = true) :
     goal := by
   unfold runClosed at hClosed
-  cases hResult : SourcePreprocessing.runChecked sourceProblem settings with
+  cases hResult : SourcePreprocessing.runFool sourceProblem settings with
   | error diagnostic =>
       simp [hResult] at hClosed
   | ok result =>
-      by_cases hNative :
-          HOSearchMaterialization.CoreProjectionSoundness.Native.clauseSet
-            result.clauses = true
-      · simp only [hResult, hNative, ↓reduceDIte] at hClosed
+      rw [hResult] at hClosed
+      dsimp at hClosed
+      split at hClosed
+      · rename_i hNative
         cases hArtifact :
-            HORefutationProvider.run result.clauses hNative config with
+            HORefutationProvider.run result.toReplay.payload.clauses hNative config with
         | error diagnostic =>
             simp [hArtifact] at hClosed
         | ok artifact =>
             exact input.soundOfArtifactFromProblem
-              sourceProblem hSource result artifact
-      · simp [hResult, hNative] at hClosed
+              sourceProblem hSource result.toReplay artifact
+      · simp at hClosed
 def goalAttemptFromProblem {goal : Prop} (input : CheckedInput.{u} goal) (sourceProblem : SourcePreprocessing.Problem)
-    (hSource : sourceProblem = input.sourceProblem) (settings : SourcePreprocessing.Settings := {}) (config : SourcePreprocessing.HOAvatarConfig := {})
+    (hSource : sourceProblem = input.sourceProblem) (settings : SourcePreprocessing.FoolSettings := {}) (config : SourcePreprocessing.HOAvatarConfig := {})
     (label : String := "native host higher-order") :
     ProveAutoRequest.GoalAttempt goal := {
   closed := runClosed sourceProblem settings config
   summary := runSummary sourceProblem settings config label
   sound := input.soundOfRunClosed sourceProblem hSource settings config
 }
-def goalAttempt {goal : Prop} (input : CheckedInput.{u} goal) (settings : SourcePreprocessing.Settings := {})
+def goalAttempt {goal : Prop} (input : CheckedInput.{u} goal) (settings : SourcePreprocessing.FoolSettings := {})
     (config : SourcePreprocessing.HOAvatarConfig := {}) (label : String := "native host higher-order") :
     ProveAutoRequest.GoalAttempt goal :=
   input.goalAttemptFromProblem input.sourceProblem rfl settings config label
@@ -1853,21 +1867,22 @@ private def buildAttempt (request : ProveAutoRequest.PreparedContextRequest)
     throwError "internal HostHigherOrder source snapshot lost syntax alignment"
   let hSource ← mkEqRefl sourceProblem
   let attempt ←
-    match SourcePreprocessing.runChecked reified.sourceProblem with
+    match SourcePreprocessing.runFool reified.sourceProblem with
     | Except.error error =>
         pure <| KernelReplay.failureAttemptExpr request.goal error.label
     | Except.ok result =>
+        let replay := result.toReplay
         if hNative :
             HOSearchMaterialization.CoreProjectionSoundness.Native.clauseSet
-              result.clauses = true then
-          match HORefutationProvider.run result.clauses hNative with
+              replay.payload.clauses = true then
+          match HORefutationProvider.run replay.payload.clauses hNative with
           | Except.error error =>
               pure <| KernelReplay.failureAttemptExpr request.goal error.label
           | Except.ok artifact =>
               HigherOrderReplayBuilder.buildAttempt
                 ``CheckedInput.defaultGoalAttemptFromReplay
                 input sourceProblem hSource reified.sourceProblem
-                result artifact.replay
+                replay artifact.replay
         else
           pure <| KernelReplay.failureAttemptExpr request.goal
             "native host higher-order preprocessing left the checked apply/lam fragment"
