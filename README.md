@@ -1,4 +1,22 @@
-# YesMetaZFC
+# BMS 良序性证明 Lean 形式化
+
+本仓库在 `YesMetaZFC` 的纯集合论与一阶语法基础上，形式化 BM4 序数记号系统的
+严格良序性。规范最终定理为：
+
+```lean
+theorem bm4_strictWellOrder_l :
+    StrictWellOrder GeneratedArray GeneratedStrictDescent
+```
+
+该结论不接收稳定公式、反射实例或其他外部证明参数。Stage 0–4 的数学边界、
+文件导航、构建方式和公理审计见 [BMS 形式化说明](BMS_FORMALIZATION.md)。
+
+本实现基于 `lanxinge/YesMetaZFC@b36e243`，并固定使用
+`05-02-07/lean-constructible-universe@7f5a7d0` 作为可构造宇宙依赖。
+
+---
+
+# YesMetaZFC 上游基线
 
 一个轻量 Lean 4 项目。当前已完成支撑符号消去、完整原公理模型验证及纯 Rosser 独立性：
 `PureRosser.independent` 仅假定裸 ZFC 一致，推出当前纯句子与其否定均不可推导。
