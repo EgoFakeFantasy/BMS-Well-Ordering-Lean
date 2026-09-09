@@ -97,7 +97,9 @@ lake build
 机器可复核证据位于
 `ConstructibleBridge/BMSConstructibleBridge/AxiomAudit.lean`。其中的
 `#guard_msgs` 不只是打印结果，还会在两条最终定理的公理集合发生变化时使检查失败。
-CI 另使用 `lean-action` 的 allowlist 公理审计覆盖整个桥接命名空间。
+CI 另使用 `lean-action` 的 allowlist 公理审计，检查入口模块
+`BMSConstructibleBridge` 导入的桥接模块中定义的声明及其传递公理依赖。
+审计根按模块名选择，不是声明命名空间 `YesMetaZFC.BMS.ConstructibleBridge`。
 
 ## 来源
 

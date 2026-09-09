@@ -29,7 +29,8 @@ jobs:
           test: false
           lint: false
           axiom-audit: true
-          axiom-audit-root: YesMetaZFC.BMS.ConstructibleBridge
+          # 审计入口是模块根（lean_lib），不是声明所在的 namespace。
+          axiom-audit-root: BMSConstructibleBridge
       - name: Check final BMS theorem axioms
         working-directory: ConstructibleBridge
         run: lake env lean BMSConstructibleBridge/AxiomAudit.lean
