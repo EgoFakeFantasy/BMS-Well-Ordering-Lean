@@ -6,9 +6,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  root-build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
       - uses: leanprover/lean-action@v1
+        env:
+          LEAN_NUM_THREADS: "1"
+
+  constructible-bridge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        env:
+          LEAN_NUM_THREADS: "1"
+        with:
+          lake-package-directory: ConstructibleBridge
+          build: true
+          test: false
+          lint: false
+          axiom-audit: true
+          axiom-audit-root: YesMetaZFC.BMS.ConstructibleBridge
+      - name: Check final BMS theorem axioms
+        working-directory: ConstructibleBridge
+        run: lake env lean BMSConstructibleBridge/AxiomAudit.lean

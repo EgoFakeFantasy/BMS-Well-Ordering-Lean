@@ -41,7 +41,12 @@ theorem bm4_no_infinite_descent_l :
 
 ## 构建
 
-根工程使用 Lean 4.33.1：
+仓库有两个有意分离的 Lake 工程：根工程仅依赖 Lean/Std，固定使用 Lean 4.33.1；
+可构造模型桥接依赖锁定提交的 Mathlib 与 `lean-constructible-universe`，固定使用
+Lean 4.33.0-rc1。桥接工具链与其锁定依赖中的 `lean-toolchain` 一致，不应使用
+根工程工具链强行编译桥接工程。
+
+根工程：
 
 ```bash
 lake build
@@ -51,9 +56,23 @@ lake build
 
 ```bash
 cd ConstructibleBridge
-lake update
 lake build
 ```
+
+正常复核不需要执行 `lake update`；提交的 `lake-manifest.json` 已固定依赖版本。
+
+仓库级一键检查会**串行**构建两个工程，并运行最终定理公理审计：
+
+```bash
+bash scripts/check-all.sh
+```
+
+在 Windows 上建议将仓库检出到较短路径（例如 `C:\src\bms`）；桥接依赖的嵌套模块名
+很长，过深的工作目录可能使 Lean 无法创建 `.olean.server` 中间文件。
+
+不要并行运行两个共享同一 `.lake/build` 的 `lake build` 进程，否则可能相互覆盖
+中间 `.olean` 文件。GitHub Actions 分别在隔离 runner 中检查根工程和桥接工程，
+桥接 job 明确读取 `ConstructibleBridge/lean-toolchain`。
 
 大型证明项可能占用较多内存。在 16 GB 内存机器上建议限制为单线程：
 
@@ -62,7 +81,8 @@ $env:LEAN_NUM_THREADS = "1"
 lake build
 ```
 
-验收时根工程全量 796 个任务通过，桥接工程全量 1525 个任务通过。
+验收时根工程与桥接工程均通过串行构建；本次短路径冷缓存记录分别为 798 和
+1531 jobs。Lake 显示的 job 数会随缓存与构建 facet 状态变化，不是源码覆盖率指标。
 
 ## 证明卫生
 
@@ -73,6 +93,11 @@ lake build
   `propext`、`Classical.choice`、`Quot.sound`。
 
 `Classical.choice` 只用于 Lean 元层选择有限复杂度证书，不作为新的集合论假设。
+
+机器可复核证据位于
+`ConstructibleBridge/BMSConstructibleBridge/AxiomAudit.lean`。其中的
+`#guard_msgs` 不只是打印结果，还会在两条最终定理的公理集合发生变化时使检查失败。
+CI 另使用 `lean-action` 的 allowlist 公理审计覆盖整个桥接命名空间。
 
 ## 来源
 
