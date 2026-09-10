@@ -47,22 +47,12 @@ theorem satisfiesIn_textbookBoundedLevyExistentialRuleFormula_iff_l
         w 0, w 1, w 2, w 3, w 4, w 5, w 6]
     have hAssignment : ∀ position, assignment position ∈ LStageZF θ := by
       intro position
-      fin_cases position
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact LStageZF_mono (le_of_lt hω)
-          (textbookBoundedLevyTraceGraphZF_mem_LStageOmega_l trace)
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact hWitnesses 0
-      · exact hWitnesses 1
-      · exact hWitnesses 2
-      · exact hWitnesses 3
-      · exact hWitnesses 4
-      · exact hWitnesses 5
-      · exact hWitnesses 6
+      fin_cases position <;>
+        first
+          | exact omega_toZFSet_mem_stage_l hω
+          | exact LStageZF_mono (le_of_lt hω) (textbookBoundedLevyTraceGraphZF_mem_LStageOmega_l trace)
+          | exact natCode_mem_stage_l hω _
+          | exact hWitnesses _
     simp only [textbookBoundedLevyExistentialRuleBody_l, Model.SatisfiesIn,
       Model.satisfiesIn_rename,
       TextbookNatFormula.satisfiesIn_textbookECodeFormulaAt] at hBody
@@ -158,15 +148,10 @@ theorem satisfiesIn_textbookBoundedLevyExistentialRuleFormula_iff_l
         natCode 0, natCode 4]
     have hWitnesses : ∀ position, witnesses position ∈ LStageZF θ := by
       intro position
-      fin_cases position
-      · exact LStageZF_mono (le_of_lt hω)
-          (textbookBoundedLevyRecordZF_mem_LStageOmega_l child)
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
+      fin_cases position <;>
+        first
+          | exact LStageZF_mono (le_of_lt hω) (textbookBoundedLevyRecordZF_mem_LStageOmega_l child)
+          | exact natCode_mem_stage_l hω _
     let assignment : Tuple ZFSet.{u} 14 :=
       ![base 0, base 1, base 2, base 3, base 4, base 5, base 6,
         witnesses 0, witnesses 1, witnesses 2, witnesses 3,

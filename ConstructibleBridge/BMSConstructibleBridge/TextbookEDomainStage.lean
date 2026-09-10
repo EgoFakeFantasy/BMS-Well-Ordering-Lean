@@ -42,9 +42,7 @@ theorem satisfiesIn_textbookEDomainFormula_stage_iff_l
     have hAssignment : ∀ position : Fin 2,
         ![key, omega] position ∈ LStageZF θ := by
       intro position
-      fin_cases position
-      · exact hkey
-      · exact homegaStage
+      fin_cases position <;> assumption
     have hdelta :=
       (Constructible.Model.satisfiesIn_delta0_iff
         (LStageZF_isTransitive θ)
@@ -110,10 +108,7 @@ theorem satisfiesIn_textbookERelationFormula_stage_iff_l
     have hAssignment : ∀ position : Fin 3,
         ![left, right, omega] position ∈ LStageZF θ := by
       intro position
-      fin_cases position
-      · exact hleft
-      · exact hright
-      · exact homegaStage
+      fin_cases position <;> assumption
     have hdelta :=
       (Constructible.Model.satisfiesIn_delta0_iff
         (LStageZF_isTransitive θ)

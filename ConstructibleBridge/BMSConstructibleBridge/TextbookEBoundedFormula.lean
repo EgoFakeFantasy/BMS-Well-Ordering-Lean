@@ -365,9 +365,7 @@ theorem satisfiesIn_textbookEBoundedLocalDomainFormula_stage_iff_l
   have hParameters : ∀ position : Fin 2,
       ![a, bound] position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hbound
+    fin_cases position <;> assumption
   have hClass : ∀ z, z ∈ LStageZF θ →
       (Constructible.Model.SatisfiesIn (LStageZF θ : Set ZFSet.{u})
           TextbookEBoundedFormula_l.domainFormula (snoc ![a, bound] z) ↔
@@ -452,9 +450,7 @@ theorem satisfiesIn_textbookEBoundedLocalSolutionFormula_l
   have hParameters : ∀ position : Fin 2,
       ![a, boundSet] position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hboundStage
+    fin_cases position <;> assumption
   have hClass : ∀ z, z ∈ LStageZF θ →
       (Constructible.Model.SatisfiesIn (LStageZF θ : Set ZFSet.{u})
           TextbookEBoundedFormula_l.domainFormula
@@ -641,9 +637,7 @@ theorem exists_textbookEBoundedLocalSolution_of_satisfiesIn_stage_l
   have hParameters : ∀ position : Fin 2,
       ![a, boundSet] position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hboundStage
+    fin_cases position <;> assumption
   have hClass : ∀ z, z ∈ LStageZF θ →
       (Constructible.Model.SatisfiesIn (LStageZF θ : Set ZFSet.{u})
           TextbookEBoundedFormula_l.domainFormula
@@ -720,9 +714,7 @@ theorem satisfiesIn_textbookEBoundedRecursionValueFormula_natCode_iff_l
   have hParameters : ∀ position : Fin 2,
       ![a, boundSet] position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hboundStage
+    fin_cases position <;> assumption
   rw [TextbookEBoundedFormula_l.recursionValueFormula]
   have hSemantic := Constructible.Model.satisfiesIn_recursionValueFormula_iff
     (LStageZF_isTransitive θ)
@@ -864,15 +856,11 @@ theorem satisfiesIn_textbookEBoundedValueFormula_natCode_iff_l
           (Ordinal.omega0.toZFSet : ZFSet.{u}),
           natCode (arity + code), bound, key] position ∈ LStageZF θ := by
       intro position
-      fin_cases position
-      · exact ha
-      · exact natCode_mem_LStageZF_of_isSuccLimit hθ arity
-      · exact natCode_mem_LStageZF_of_isSuccLimit hθ code
-      · exact houtput
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact natCode_mem_LStageZF_of_isSuccLimit hθ (arity + code)
-      · exact hboundStage
-      · exact hkeyStage
+      fin_cases position <;>
+        first
+          | exact natCode_mem_LStageZF_of_isSuccLimit hθ _
+          | exact omega_toZFSet_mem_stage_l hω
+          | assumption
     have hboundRaw :=
       (satisfiesIn_successorAt_stage_iff_l
         (6 : Fin 8) (5 : Fin 8)
@@ -954,15 +942,10 @@ theorem satisfiesIn_textbookEBoundedValueFormula_natCode_iff_l
           ![a, natCode arity, natCode code, output,
             omega, sum, bound, key] position ∈ LStageZF θ := by
         intro position
-        fin_cases position
-        · exact ha
-        · exact natCode_mem_LStageZF_of_isSuccLimit hθ arity
-        · exact natCode_mem_LStageZF_of_isSuccLimit hθ code
-        · exact houtput
-        · exact homegaStage
-        · exact hsumStage
-        · exact hboundStage
-        · exact hkeyStage
+        fin_cases position <;>
+          first
+            | exact natCode_mem_LStageZF_of_isSuccLimit hθ _
+            | assumption
       apply (satisfiesIn_successorAt_stage_iff_l
         (6 : Fin 8) (5 : Fin 8)
         ![a, natCode arity, natCode code, output,
@@ -974,15 +957,10 @@ theorem satisfiesIn_textbookEBoundedValueFormula_natCode_iff_l
           ![a, natCode arity, natCode code, output,
             omega, sum, bound, key] position ∈ LStageZF θ := by
         intro position
-        fin_cases position
-        · exact ha
-        · exact natCode_mem_LStageZF_of_isSuccLimit hθ arity
-        · exact natCode_mem_LStageZF_of_isSuccLimit hθ code
-        · exact houtput
-        · exact homegaStage
-        · exact hsumStage
-        · exact hboundStage
-        · exact hkeyStage
+        fin_cases position <;>
+          first
+            | exact natCode_mem_LStageZF_of_isSuccLimit hθ _
+            | assumption
       apply (satisfiesIn_kuratowskiPairEqAt_stage_iff_l
         (7 : Fin 8) (2 : Fin 8) (1 : Fin 8)
         ![a, natCode arity, natCode code, output,

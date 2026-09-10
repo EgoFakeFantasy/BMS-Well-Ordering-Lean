@@ -1,4 +1,5 @@
 import BMSConstructibleBridge.TextbookDelta0TraceValidityFormula
+import BMSConstructibleBridge.IndexedSequenceStageSemantics
 import BMSConstructibleBridge.TextbookDelta0LocalRuleAbsolute
 import BMSConstructibleBridge.TextbookNaturalArithmeticStage
 
@@ -14,119 +15,6 @@ universe u
 namespace YesMetaZFC.BMS.ConstructibleBridge
 
 open Constructible FiniteSequenceZF
-
-private theorem satisfiesIn_functionGraphValueAt_iff_l
-    {M : ZFSet.{u}} (hM : M.IsTransitive) {n : Nat}
-    (graph value index : Fin n) (assignment : Tuple ZFSet.{u} n)
-    (hAssignment : ∀ position, assignment position ∈ M) :
-    Model.SatisfiesIn (M : Set ZFSet.{u})
-        (IndexedSequenceZF.functionGraphValueAt graph value index)
-        assignment ↔
-      ZFSet.pair (assignment value) (assignment index) ∈ assignment graph := by
-  rw [IndexedSequenceZF.functionGraphValueAt,
-    Model.satisfiesIn_delta0_iff hM _ assignment hAssignment]
-  simpa only [IndexedSequenceZF.functionGraphValueAt] using
-    (IndexedSequenceZF.satisfies_functionGraphValueAt
-      graph value index assignment)
-
-private theorem satisfiesIn_all_trace_iff
-    (M : Set ZFSet.{u}) {n : Nat} (formula : FOFormula (n + 1))
-    (assignment : Tuple ZFSet.{u} n) :
-    Model.SatisfiesIn M (FOFormula.all formula) assignment ↔
-      ∀ value : ZFSet.{u}, value ∈ M →
-        Model.SatisfiesIn M formula (snoc assignment value) := by
-  classical
-  simp [FOFormula.all, Model.SatisfiesIn]
-
-private theorem satisfiesIn_imp_trace_iff
-    (M : Set ZFSet.{u}) {n : Nat} (left right : FOFormula n)
-    (assignment : Tuple ZFSet.{u} n) :
-    Model.SatisfiesIn M (FOFormula.imp left right) assignment ↔
-      (Model.SatisfiesIn M left assignment →
-        Model.SatisfiesIn M right assignment) := by
-  classical
-  simp only [FOFormula.imp, FOFormula.disj, Model.SatisfiesIn]
-  tauto
-
-private theorem satisfiesIn_uniqueValueAtBody_iff_l
-    {M : ZFSet.{u}} (hM : M.IsTransitive)
-    (omega sequence length graph index value : ZFSet.{u})
-    (hOmega : omega ∈ M) (hSequence : sequence ∈ M)
-    (hLength : length ∈ M) (hGraph : graph ∈ M)
-    (hIndex : index ∈ M) (hValue : value ∈ M) :
-    Model.SatisfiesIn (M : Set ZFSet.{u})
-        IndexedSequenceZF.uniqueValueAtBody
-        ![omega, sequence, length, graph, index, value] ↔
-      ZFSet.pair value index ∈ graph ∧
-        ∀ other : ZFSet.{u}, other ∈ M →
-          ZFSet.pair other index ∈ graph → other = value := by
-  rw [IndexedSequenceZF.uniqueValueAtBody]
-  simp only [Model.SatisfiesIn, satisfiesIn_all_trace_iff,
-    satisfiesIn_imp_trace_iff, Model.snoc_eq_finSnoc]
-  rw [satisfiesIn_functionGraphValueAt_iff_l hM
-    (3 : Fin 6) (5 : Fin 6) (4 : Fin 6) _ (by
-      intro position
-      fin_cases position <;> assumption)]
-  apply and_congr Iff.rfl
-  apply forall_congr'
-  intro other
-  apply imp_congr_right
-  intro hOther
-  rw [show IndexedSequenceZF.formulaImp
-      (IndexedSequenceZF.functionGraphValueAt
-        (3 : Fin 7) (6 : Fin 7) (4 : Fin 7))
-      (.eq (6 : Fin 7) (5 : Fin 7)) =
-      FOFormula.imp
-        (IndexedSequenceZF.functionGraphValueAt
-          (3 : Fin 7) (6 : Fin 7) (4 : Fin 7))
-        (.eq (6 : Fin 7) (5 : Fin 7)) by rfl,
-    satisfiesIn_imp_trace_iff,
-    satisfiesIn_functionGraphValueAt_iff_l hM
-    (3 : Fin 7) (6 : Fin 7) (4 : Fin 7) _ (by
-      intro position
-      fin_cases position <;> assumption)]
-  rfl
-
-private theorem satisfiesIn_totalFunctionalBody_iff_l
-    {M : ZFSet.{u}} (hM : M.IsTransitive)
-    (omega sequence length graph index : ZFSet.{u})
-    (hOmega : omega ∈ M) (hSequence : sequence ∈ M)
-    (hLength : length ∈ M) (hGraph : graph ∈ M)
-    (hIndex : index ∈ M) :
-    Model.SatisfiesIn (M : Set ZFSet.{u})
-        IndexedSequenceZF.totalFunctionalBody
-        ![omega, sequence, length, graph, index] ↔
-      (index ∈ length →
-        ∃ value : ZFSet.{u}, value ∈ M ∧
-          ZFSet.pair value index ∈ graph ∧
-          ∀ other : ZFSet.{u}, other ∈ M →
-            ZFSet.pair other index ∈ graph → other = value) := by
-  rw [IndexedSequenceZF.totalFunctionalBody]
-  rw [show IndexedSequenceZF.formulaImp
-      (.mem (4 : Fin 5) (2 : Fin 5))
-      (.ex IndexedSequenceZF.uniqueValueAtBody) =
-      FOFormula.imp (.mem (4 : Fin 5) (2 : Fin 5))
-        (.ex IndexedSequenceZF.uniqueValueAtBody) by rfl,
-    satisfiesIn_imp_trace_iff]
-  apply imp_congr_right
-  intro _hIndexLength
-  change (∃ value : ZFSet.{u}, value ∈ M ∧
-    Model.SatisfiesIn (M : Set ZFSet.{u})
-      IndexedSequenceZF.uniqueValueAtBody
-      ![omega, sequence, length, graph, index, value]) ↔ _
-  apply exists_congr
-  intro value
-  constructor
-  · rintro ⟨hValue, hUnique⟩
-    exact ⟨hValue,
-      (satisfiesIn_uniqueValueAtBody_iff_l hM
-        omega sequence length graph index value hOmega hSequence hLength
-          hGraph hIndex hValue).mp hUnique⟩
-  · rintro ⟨hValue, hUnique⟩
-    exact ⟨hValue,
-      (satisfiesIn_uniqueValueAtBody_iff_l hM
-        omega sequence length graph index value hOmega hSequence hLength
-          hGraph hIndex hValue).mpr hUnique⟩
 
 private theorem satisfiesIn_textbookDelta0TraceRowFormula_iff_l
     (M : Set ZFSet.{u})
@@ -171,17 +59,13 @@ theorem satisfiesIn_textbookDelta0TraceRowWitnessFormula_iff_l
         w 0, w 1, w 2]
     have hAssignment : ∀ position, assignment position ∈ LStageZF θ := by
       intro position
-      fin_cases position
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact LStageZF_mono (le_of_lt hω)
-          (textbookDelta0TraceZF_mem_LStageOmega_l trace)
-      · exact natCode_mem_stage_l hω _
-      · exact LStageZF_mono (le_of_lt hω)
-          (textbookDelta0TraceGraphZF_mem_LStageOmega_l trace)
-      · exact natCode_mem_stage_l hω _
-      · exact hWitnesses 0
-      · exact hWitnesses 1
-      · exact hWitnesses 2
+      fin_cases position <;>
+        first
+          | exact omega_toZFSet_mem_stage_l hω
+          | exact LStageZF_mono (le_of_lt hω) (textbookDelta0TraceZF_mem_LStageOmega_l trace)
+          | exact natCode_mem_stage_l hω _
+          | exact LStageZF_mono (le_of_lt hω) (textbookDelta0TraceGraphZF_mem_LStageOmega_l trace)
+          | exact hWitnesses _
     have hValue : w 0 = textbookDelta0RecordZF_l (trace.get index) :=
       (textbookDelta0TraceGraph_value_iff_l trace index (w 0)).mp (by
         apply (satisfiesIn_functionGraphValueAt_iff_l
@@ -230,17 +114,13 @@ theorem satisfiesIn_textbookDelta0TraceRowWitnessFormula_iff_l
         w 0, w 1, w 2]
     have hAssignment : ∀ position, assignment position ∈ LStageZF θ := by
       intro position
-      fin_cases position
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact LStageZF_mono (le_of_lt hω)
-          (textbookDelta0TraceZF_mem_LStageOmega_l trace)
-      · exact natCode_mem_stage_l hω _
-      · exact LStageZF_mono (le_of_lt hω)
-          (textbookDelta0TraceGraphZF_mem_LStageOmega_l trace)
-      · exact natCode_mem_stage_l hω _
-      · exact hWitnesses 0
-      · exact hWitnesses 1
-      · exact hWitnesses 2
+      fin_cases position <;>
+        first
+          | exact omega_toZFSet_mem_stage_l hω
+          | exact LStageZF_mono (le_of_lt hω) (textbookDelta0TraceZF_mem_LStageOmega_l trace)
+          | exact natCode_mem_stage_l hω _
+          | exact LStageZF_mono (le_of_lt hω) (textbookDelta0TraceGraphZF_mem_LStageOmega_l trace)
+          | exact hWitnesses 0
     refine ⟨w, hWitnesses, ?_, ?_, ?_⟩
     · apply (satisfiesIn_functionGraphValueAt_iff_l
         (LStageZF_isTransitive θ) (3 : Fin 8) (5 : Fin 8)
@@ -471,15 +351,10 @@ theorem satisfiesIn_textbookDelta0TraceRowWitnessFormula_to_decoded_l
       w 0, w 1, w 2]
   have hAssignment : ∀ position, assignment position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact hOmega
-    · exact hSequence
-    · exact hLength
-    · exact hGraph
-    · exact hIndex
-    · exact hWitnesses 0
-    · exact hWitnesses 1
-    · exact hWitnesses 2
+    fin_cases position <;>
+      first
+        | exact hWitnesses _
+        | assumption
   have hGraphMem : ZFSet.pair (w 0) index ∈ graph := by
     apply (satisfiesIn_functionGraphValueAt_iff_l
       (LStageZF_isTransitive θ) (3 : Fin 8) (5 : Fin 8)

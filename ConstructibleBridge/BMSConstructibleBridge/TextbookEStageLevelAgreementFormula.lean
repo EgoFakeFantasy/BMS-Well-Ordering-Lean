@@ -283,12 +283,7 @@ theorem satisfiesIn_textbookEStageLevelAgreementFormula_iff_l
         ![A, B, omegaValue, sigmaValue, levelValue] position ∈
           LStageZF top := by
       intro position
-      fin_cases position
-      · exact hA
-      · exact hB
-      · exact hOmegaStage
-      · exact hSigmaStage
-      · exact hLevelStage
+      fin_cases position <;> assumption
     have hCoreParts := hCore
     simp only [textbookEStageLevelAgreementCore_l,
       Constructible.Model.SatisfiesIn] at hCoreParts

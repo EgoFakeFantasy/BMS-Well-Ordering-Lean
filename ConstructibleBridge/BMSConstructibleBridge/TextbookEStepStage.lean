@@ -215,18 +215,11 @@ theorem satisfiesIn_stepBranchTwo_stage_standard_iff_l
           natCode i, natCode j, natCode 2, lookupKey] position ∈
             LStageZF θ := by
       intro position
-      fin_cases position
-      · exact ha
-      · exact hkey
-      · exact hhistory
-      · exact houtput
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact natCode_mem_stage_l hω m
-      · exact natCode_mem_stage_l hω n
-      · exact natCode_mem_stage_l hω i
-      · exact natCode_mem_stage_l hω j
-      · exact natCode_mem_stage_l hω 2
-      · exact hlookupKeyStage
+      fin_cases position <;>
+        first
+          | exact omega_toZFSet_mem_stage_l hω
+          | exact natCode_mem_stage_l hω _
+          | assumption
     have hlookupKey : lookupKey = ZFSet.pair (natCode i) (natCode n) :=
       (satisfiesIn_kuratowskiPairEqAt_stage_iff_l
         (Fin.last 10) (7 : Fin 11) (6 : Fin 11) _ hpairAssignment).mp hpair
@@ -276,18 +269,11 @@ theorem satisfiesIn_stepBranchTwo_stage_standard_iff_l
       apply (satisfiesIn_kuratowskiPairEqAt_stage_iff_l
         (Fin.last 10) (7 : Fin 11) (6 : Fin 11) _ (by
           intro position
-          fin_cases position
-          · exact ha
-          · exact hkey
-          · exact hhistory
-          · exact houtput
-          · exact omega_toZFSet_mem_stage_l hω
-          · exact natCode_mem_stage_l hω m
-          · exact natCode_mem_stage_l hω n
-          · exact natCode_mem_stage_l hω i
-          · exact natCode_mem_stage_l hω j
-          · exact natCode_mem_stage_l hω 2
-          · exact hlookupKeyStage)).mpr
+          fin_cases position <;>
+            first
+              | exact omega_toZFSet_mem_stage_l hω
+              | exact natCode_mem_stage_l hω _
+              | assumption)).mpr
       rfl
     · rw [hfields, hkeyAssignment, hremovedAssignment,
         satisfiesIn_formula3At_stage_iff_l]
@@ -398,18 +384,11 @@ theorem satisfiesIn_stepBranchThree_stage_standard_iff_l
           natCode i, natCode j, natCode 3, leftKey] position ∈
             LStageZF θ := by
       intro position
-      fin_cases position
-      · exact ha
-      · exact hkey
-      · exact hhistory
-      · exact houtput
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact natCode_mem_stage_l hω m
-      · exact natCode_mem_stage_l hω n
-      · exact natCode_mem_stage_l hω i
-      · exact natCode_mem_stage_l hω j
-      · exact natCode_mem_stage_l hω 3
-      · exact hleftKeyStage
+      fin_cases position <;>
+        first
+          | exact omega_toZFSet_mem_stage_l hω
+          | exact natCode_mem_stage_l hω _
+          | assumption
     have hleftKey : leftKey = ZFSet.pair (natCode i) (natCode n) :=
       (satisfiesIn_kuratowskiPairEqAt_stage_iff_l
         (Fin.last 10) (7 : Fin 11) (6 : Fin 11) _ hleftAssignment).mp
@@ -430,20 +409,11 @@ theorem satisfiesIn_stepBranchThree_stage_standard_iff_l
             (ZFSet.pair (natCode i) (natCode n)), rightKey] position ∈
               LStageZF θ := by
       intro position
-      fin_cases position
-      · exact ha
-      · exact hkey
-      · exact hhistory
-      · exact houtput
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact natCode_mem_stage_l hω m
-      · exact natCode_mem_stage_l hω n
-      · exact natCode_mem_stage_l hω i
-      · exact natCode_mem_stage_l hω j
-      · exact natCode_mem_stage_l hω 3
-      · exact hleftKeyStage
-      · exact hleftValueStage
-      · exact hrightKeyStage
+      fin_cases position <;>
+        first
+          | exact omega_toZFSet_mem_stage_l hω
+          | exact natCode_mem_stage_l hω _
+          | assumption
     have hrightKey : rightKey = ZFSet.pair (natCode j) (natCode n) :=
       (satisfiesIn_kuratowskiPairEqAt_stage_iff_l
         (Fin.last 12) (8 : Fin 13) (6 : Fin 13) _ hrightAssignment).mp
@@ -495,18 +465,11 @@ theorem satisfiesIn_stepBranchThree_stage_standard_iff_l
       apply (satisfiesIn_kuratowskiPairEqAt_stage_iff_l
         (Fin.last 10) (7 : Fin 11) (6 : Fin 11) _ (by
           intro position
-          fin_cases position
-          · exact ha
-          · exact hkey
-          · exact hhistory
-          · exact houtput
-          · exact omega_toZFSet_mem_stage_l hω
-          · exact natCode_mem_stage_l hω m
-          · exact natCode_mem_stage_l hω n
-          · exact natCode_mem_stage_l hω i
-          · exact natCode_mem_stage_l hω j
-          · exact natCode_mem_stage_l hω 3
-          · exact hleftKeyStage)).mpr
+          fin_cases position <;>
+            first
+              | exact omega_toZFSet_mem_stage_l hω
+              | exact natCode_mem_stage_l hω _
+              | assumption)).mpr
       rfl
     · rw [hfields, hleftKeyAssignment, hleftValueAssignment,
         satisfiesIn_formula3At_stage_iff_l]
@@ -517,20 +480,11 @@ theorem satisfiesIn_stepBranchThree_stage_standard_iff_l
       apply (satisfiesIn_kuratowskiPairEqAt_stage_iff_l
         (Fin.last 12) (8 : Fin 13) (6 : Fin 13) _ (by
           intro position
-          fin_cases position
-          · exact ha
-          · exact hkey
-          · exact hhistory
-          · exact houtput
-          · exact omega_toZFSet_mem_stage_l hω
-          · exact natCode_mem_stage_l hω m
-          · exact natCode_mem_stage_l hω n
-          · exact natCode_mem_stage_l hω i
-          · exact natCode_mem_stage_l hω j
-          · exact natCode_mem_stage_l hω 3
-          · exact hleftKeyStage
-          · exact hleftValueStage
-          · exact hrightKeyStage)).mpr
+          fin_cases position <;>
+            first
+              | exact omega_toZFSet_mem_stage_l hω
+              | exact natCode_mem_stage_l hω _
+              | assumption)).mpr
       rfl
     · rw [hfields, hleftKeyAssignment, hleftValueAssignment,
         hrightKeyAssignment, hrightValueAssignment,
@@ -624,18 +578,11 @@ theorem satisfiesIn_stepBranchFour_stage_standard_iff_l
           natCode i, natCode j, natCode 4, succN] position ∈
             LStageZF θ := by
       intro position
-      fin_cases position
-      · exact ha
-      · exact hkey
-      · exact hhistory
-      · exact houtput
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact natCode_mem_stage_l hω m
-      · exact natCode_mem_stage_l hω n
-      · exact natCode_mem_stage_l hω i
-      · exact natCode_mem_stage_l hω j
-      · exact natCode_mem_stage_l hω 4
-      · exact hsuccStage
+      fin_cases position <;>
+        first
+          | exact omega_toZFSet_mem_stage_l hω
+          | exact natCode_mem_stage_l hω _
+          | assumption
     have hsuccN : succN = (natCode (n + 1) : ZFSet.{u}) := by
       have h := (satisfiesIn_successorAt_stage_iff_l
         (Fin.last 10) (6 : Fin 11) _ hsuccArgs).mp hsucc
@@ -647,19 +594,11 @@ theorem satisfiesIn_stepBranchFour_stage_standard_iff_l
           natCode i, natCode j, natCode 4, natCode (n + 1), lookupKey]
             position ∈ LStageZF θ := by
       intro position
-      fin_cases position
-      · exact ha
-      · exact hkey
-      · exact hhistory
-      · exact houtput
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact natCode_mem_stage_l hω m
-      · exact natCode_mem_stage_l hω n
-      · exact natCode_mem_stage_l hω i
-      · exact natCode_mem_stage_l hω j
-      · exact natCode_mem_stage_l hω 4
-      · exact hsuccStage
-      · exact hlookupKeyStage
+      fin_cases position <;>
+        first
+          | exact omega_toZFSet_mem_stage_l hω
+          | exact natCode_mem_stage_l hω _
+          | assumption
     have hlookupKey : lookupKey =
         ZFSet.pair (natCode i) (natCode (n + 1)) :=
       (satisfiesIn_kuratowskiPairEqAt_stage_iff_l
@@ -702,36 +641,21 @@ theorem satisfiesIn_stepBranchFour_stage_standard_iff_l
       apply (satisfiesIn_successorAt_stage_iff_l
         (Fin.last 10) (6 : Fin 11) _ (by
           intro position
-          fin_cases position
-          · exact ha
-          · exact hkey
-          · exact hhistory
-          · exact houtput
-          · exact omega_toZFSet_mem_stage_l hω
-          · exact natCode_mem_stage_l hω m
-          · exact natCode_mem_stage_l hω n
-          · exact natCode_mem_stage_l hω i
-          · exact natCode_mem_stage_l hω j
-          · exact natCode_mem_stage_l hω 4
-          · exact hsuccStage)).mpr
+          fin_cases position <;>
+            first
+              | exact omega_toZFSet_mem_stage_l hω
+              | exact natCode_mem_stage_l hω _
+              | assumption)).mpr
       simp [succN, natCode_succ_eq_insert]
     · rw [hfields, hsuccAssignment, hkeyAssignment]
       apply (satisfiesIn_kuratowskiPairEqAt_stage_iff_l
         (Fin.last 11) (7 : Fin 12) (10 : Fin 12) _ (by
           intro position
-          fin_cases position
-          · exact ha
-          · exact hkey
-          · exact hhistory
-          · exact houtput
-          · exact omega_toZFSet_mem_stage_l hω
-          · exact natCode_mem_stage_l hω m
-          · exact natCode_mem_stage_l hω n
-          · exact natCode_mem_stage_l hω i
-          · exact natCode_mem_stage_l hω j
-          · exact natCode_mem_stage_l hω 4
-          · exact hsuccStage
-          · exact hlookupKeyStage)).mpr
+          fin_cases position <;>
+            first
+              | exact omega_toZFSet_mem_stage_l hω
+              | exact natCode_mem_stage_l hω _
+              | assumption)).mpr
       rfl
     · rw [hfields, hsuccAssignment, hkeyAssignment,
         hrelationAssignment, satisfiesIn_formula3At_stage_iff_l]
@@ -801,14 +725,11 @@ theorem satisfiesIn_stepFallback_stage_standard_iff_l
       (Ordinal.omega0.toZFSet : ZFSet.{u}), natCode m, natCode n]
   have hAssignment : ∀ position, assignment position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hkey
-    · exact hhistory
-    · exact houtput
-    · exact omega_toZFSet_mem_stage_l hω
-    · exact natCode_mem_stage_l hω m
-    · exact natCode_mem_stage_l hω n
+    fin_cases position <;>
+      first
+        | exact omega_toZFSet_mem_stage_l hω
+        | exact natCode_mem_stage_l hω _
+        | assumption
   change Constructible.Model.SatisfiesIn (LStageZF θ : Set ZFSet.{u})
       Constructible.TextbookEFormula.stepFallback assignment ↔ _
   rw [Constructible.TextbookEFormula.stepFallback]
@@ -874,14 +795,11 @@ theorem satisfiesIn_textbookEStepBody_stage_standard_iff_l
       (Ordinal.omega0.toZFSet : ZFSet.{u}), natCode m, natCode n]
   have hAssignment : ∀ position, assignment position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hkey
-    · exact hhistory
-    · exact houtput
-    · exact omega_toZFSet_mem_stage_l hω
-    · exact natCode_mem_stage_l hω m
-    · exact natCode_mem_stage_l hω n
+    fin_cases position <;>
+      first
+        | exact omega_toZFSet_mem_stage_l hω
+        | exact natCode_mem_stage_l hω _
+        | assumption
   change
     (Constructible.Model.SatisfiesIn (LStageZF θ : Set ZFSet.{u})
         (Constructible.Model.standardOmegaAt (4 : Fin 7)) assignment ∧
@@ -933,14 +851,7 @@ theorem satisfiesIn_textbookEStepFormula_stage_iff_l
         ![a, key, history, output, omega, mSet, nSet] position ∈
           LStageZF θ := by
       intro position
-      fin_cases position
-      · exact ha
-      · exact hkey
-      · exact hhistory
-      · exact houtput
-      · exact homegaStage
-      · exact hmSetStage
-      · exact hnSetStage
+      fin_cases position <;> assumption
     have homega : omega = (Ordinal.omega0.toZFSet : ZFSet.{u}) :=
       (satisfiesIn_standardOmegaAt_stage_iff_l hθ hω (4 : Fin 7)
         ![a, key, history, output, omega, mSet, nSet] hAssignment).mp

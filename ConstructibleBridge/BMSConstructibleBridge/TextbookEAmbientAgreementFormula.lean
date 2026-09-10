@@ -108,16 +108,12 @@ theorem satisfiesIn_textbookEAmbientAgreementFormulaFor_natCode_iff_l
           natCode positiveArity, natCode code, relation, tupleSpace,
           tuple] position ∈ LStageZF top := by
       intro position
-      fin_cases position
-      · exact hA
-      · exact omega_toZFSet_mem_stage_l hOmega
-      · exact natCode_mem_stage_l hOmega 1
-      · exact natCode_mem_stage_l hOmega level
-      · exact natCode_mem_stage_l hOmega positiveArity
-      · exact natCode_mem_stage_l hOmega code
-      · exact hWitnesses 0
-      · exact hWitnesses 1
-      · exact hTupleStage
+      fin_cases position <;>
+        first
+          | exact omega_toZFSet_mem_stage_l hOmega
+          | exact natCode_mem_stage_l hOmega _
+          | exact hWitnesses _
+          | assumption
     have hRelationValue :=
       (satisfiesIn_textbookEBoundedValueFormulaAt_natCode_iff_l
         hTop hOmega (0 : Fin 9) (4 : Fin 9) (5 : Fin 9) (6 : Fin 9)
@@ -205,16 +201,11 @@ theorem satisfiesIn_textbookEAmbientAgreementFormulaFor_natCode_iff_l
             natCode positiveArity, natCode code, relation, tupleSpace,
             tuple] position ∈ LStageZF top := by
         intro position
-        fin_cases position
-        · exact hA
-        · exact omega_toZFSet_mem_stage_l hOmega
-        · exact natCode_mem_stage_l hOmega 1
-        · exact natCode_mem_stage_l hOmega level
-        · exact natCode_mem_stage_l hOmega positiveArity
-        · exact natCode_mem_stage_l hOmega code
-        · exact hRelationStage
-        · exact hSpaceStage
-        · exact hTupleStage
+        fin_cases position <;>
+          first
+            | exact omega_toZFSet_mem_stage_l hOmega
+            | exact natCode_mem_stage_l hOmega _
+            | assumption
       refine ⟨?_, ?_, ?_⟩
       · exact (satisfiesIn_textbookEBoundedValueFormulaAt_natCode_iff_l
           hTop hOmega (0 : Fin 9) (4 : Fin 9) (5 : Fin 9) (6 : Fin 9)

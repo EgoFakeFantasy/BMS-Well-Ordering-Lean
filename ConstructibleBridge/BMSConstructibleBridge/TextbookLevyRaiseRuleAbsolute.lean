@@ -1,4 +1,6 @@
 import BMSConstructibleBridge.TextbookLevyRaiseRule
+import BMSConstructibleBridge.TextbookBoundedLevyRaiseRuleAbsolute
+import BMSConstructibleBridge.TextbookLevyRuleTransport
 import BMSConstructibleBridge.TextbookLevyEarlierRecordAbsolute
 import BMSConstructibleBridge.TextbookNaturalArithmeticStage
 
@@ -48,99 +50,12 @@ theorem satisfiesIn_textbookLevyRaiseRuleFormula_iff_l
       ∃ child, (∃ prior : Fin trace.length,
         prior.1 < index.1 ∧ trace.get prior = child) ∧
         entry = child.raise entry.isSigma := by
-  let base : Tuple ZFSet.{u} 7 :=
-    ![Ordinal.omega0.toZFSet, textbookLevyTraceGraphZF_l trace,
-      natCode index.1, natCode (textbookLevyPolarityCode_l entry.isSigma),
-      natCode entry.level, natCode entry.arity, natCode entry.code]
-  rw [textbookLevyRaiseRuleFormula_l, satisfiesIn_externalExistentialClosure_l]
-  change (∃ witnesses : Tuple ZFSet.{u} 5,
-    (∀ position, witnesses position ∈ LStageZF θ) ∧
-    Model.SatisfiesIn (LStageZF θ : Set ZFSet.{u})
-      textbookLevyRaiseRuleBody_l (Fin.append base witnesses)) ↔ _
-  constructor
-  · rintro ⟨witnesses, hWitnesses, hBody⟩
-    have hBase : ∀ position, base position ∈ LStageZF θ := by
-      intro position
-      fin_cases position
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact LStageZF_mono (le_of_lt hω)
-          (textbookLevyTraceGraphZF_mem_LStageOmega_l trace)
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-    have hAppend : ∀ position,
-        Fin.append base witnesses position ∈ LStageZF θ := by
-      intro position
-      refine Fin.addCases (m := 7) (n := 5) (fun earlier => ?_)
-        (fun later => ?_) position
-      · simpa using hBase earlier
-      · simpa using hWitnesses later
-    have hBodyAmbient :=
-      (textbookLevyRaiseRuleBody_absolute_l
-        (LStageZF_isTransitive θ) _ hAppend).mp hBody
-    apply (satisfies_textbookLevyRaiseRuleFormula_iff_l
-      trace index entry).mp
-    rw [textbookLevyRaiseRuleFormula_l,
-      satisfies_externalExistentialClosure_l]
-    exact ⟨witnesses, hBodyAmbient⟩
-  · rintro ⟨child, hPrior, hEntry⟩
-    have hLevel : entry.level = child.level + 1 := by
-      simpa [TextbookLevyJudgment.raise] using
-        congrArg TextbookLevyJudgment.level hEntry
-    have hArity : entry.arity = child.arity := by
-      simpa [TextbookLevyJudgment.raise] using
-        congrArg TextbookLevyJudgment.arity hEntry
-    have hCode : entry.code = child.code := by
-      simpa [TextbookLevyJudgment.raise] using
-        congrArg TextbookLevyJudgment.code hEntry
-    let witnesses : Tuple ZFSet.{u} 5 :=
-      ![textbookLevyRecordZF_l child,
-        natCode (textbookLevyPolarityCode_l child.isSigma),
-        natCode child.level, natCode child.arity, natCode child.code]
-    have hWitnesses : ∀ position,
-        witnesses position ∈ LStageZF θ := by
-      intro position
-      fin_cases position
-      · exact LStageZF_mono (le_of_lt hω)
-          (textbookLevyRecordZF_mem_LStageOmega_l child)
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-    refine ⟨witnesses, hWitnesses, ?_⟩
-    apply (textbookLevyRaiseRuleBody_absolute_l
-      (LStageZF_isTransitive θ) _ ?_).mpr
-    · simp only [textbookLevyRaiseRuleAssignment_l]
-      simp only [textbookLevyRaiseRuleBody_l, FOFormula.Satisfies,
-        FOFormula.satisfies_rename, Delta0Formula.satisfies_toFO,
-        Delta0Formula.satisfies_successorAt]
-      have hEarlier := (satisfies_textbookLevyEarlierRecordFormula_iff_l
-        trace index (textbookLevyRecordZF_l child)
-        (natCode (textbookLevyPolarityCode_l child.isSigma))
-        (natCode child.level) (natCode child.arity) (natCode child.code)).mpr
-          ⟨child, hPrior, rfl, rfl, rfl, rfl, rfl⟩
-      refine ⟨?_, ?_, ?_, ?_⟩
-      · convert hEarlier using 1 <;> ext position <;> fin_cases position <;> rfl
-      · simpa [base, witnesses, hLevel] using
-          ((@satisfies_successorAt_natCode.{u}) child.level)
-      · simp [base, witnesses, hArity]
-      · simp [base, witnesses, hCode]
-    · intro position
-      refine Fin.addCases (m := 7) (n := 5) ?_
-        (fun later => ?_) position
-      intro earlier
-      fin_cases earlier
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact LStageZF_mono (le_of_lt hω)
-          (textbookLevyTraceGraphZF_mem_LStageOmega_l trace)
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · simpa using hWitnesses later
+  have h := textbookBoundedLevyRaiseRuleFormula_stage_absolute_l.{u, u}
+    hω (trace.map textbookLevyJudgmentEquiv_l)
+    ⟨index.1, by simp only [List.length_map]; exact index.2⟩
+    (textbookLevyJudgmentEquiv_l entry)
+  simp only [textbookLevyTraceGraphZF_equiv_l] at h
+  exact h.trans (satisfies_textbookLevyRaiseRuleFormula_iff_l trace index entry)
 
 /-- 提升规则在规范参数上对后继极限层绝对。 -/
 theorem textbookLevyRaiseRuleFormula_stage_absolute_l

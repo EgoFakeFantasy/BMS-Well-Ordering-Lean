@@ -1,4 +1,6 @@
 import BMSConstructibleBridge.TextbookLevyExistentialRule
+import BMSConstructibleBridge.TextbookBoundedLevyConjunctionRule
+import BMSConstructibleBridge.TextbookLevyRuleTransport
 
 /-!
 # 合取分类规则的成员语言公式
@@ -78,120 +80,19 @@ theorem satisfies_textbookLevyConjunctionRuleFormula_iff_l
         prior.1 < index.1 ∧ trace.get prior = right) ∧
         left.isSigma = right.isSigma ∧ left.level = right.level ∧
         left.arity = right.arity ∧ entry = left.conjoin right := by
-  rw [textbookLevyConjunctionRuleFormula_l, satisfies_externalExistentialClosure_l]
-  let base : Tuple ZFSet.{u} 7 :=
-    ![(Ordinal.omega0.toZFSet : ZFSet.{u}), textbookLevyTraceGraphZF_l trace,
-      natCode index.1, natCode (textbookLevyPolarityCode_l entry.isSigma),
-      natCode entry.level, natCode entry.arity, natCode entry.code]
-  change (∃ w : Tuple ZFSet.{u} 11,
-    FOFormula.Satisfies Delta0Formula.ZFMem textbookLevyConjunctionRuleBody_l
-      (Fin.append base w)) ↔ _
-  simp only [textbookLevyConjunctionRuleAssignment_l]
-  constructor
-  · rintro ⟨w, hBody⟩
-    simp only [textbookLevyConjunctionRuleBody_l, FOFormula.Satisfies,
-      FOFormula.satisfies_rename, Delta0Formula.satisfies_natLiteralDeltaAt_toFO,
-      TextbookNatFormula.satisfies_textbookECodeFormulaAt] at hBody
-    obtain ⟨hLeftRaw, hRightRaw, hChildrenPolarity, hChildrenLevel,
-      hChildrenArity, hEntryPolarity, hEntryLevel, hEntryArity, hTag, hECode⟩ := hBody
-    have hLeft : FOFormula.Satisfies Delta0Formula.ZFMem
-        textbookLevyEarlierRecordFormula_l
-        ![base 0, base 1, base 2, w 0, w 1, w 2, w 3, w 4] := by
-      simpa only [textbookLevyConjunctionLeftAssignment_l] using hLeftRaw
-    have hRight : FOFormula.Satisfies Delta0Formula.ZFMem
-        textbookLevyEarlierRecordFormula_l
-        ![base 0, base 1, base 2, w 5, w 6, w 7, w 8, w 9] := by
-      simpa only [textbookLevyConjunctionRightAssignment_l] using hRightRaw
-    obtain ⟨left, hLeftPrior, _, hLeftPolarity, hLeftLevel,
-      hLeftArity, hLeftCode⟩ :=
-      (satisfies_textbookLevyEarlierRecordFormula_iff_l trace index
-        (w 0) (w 1) (w 2) (w 3) (w 4)).mp (by simpa [base] using hLeft)
-    obtain ⟨right, hRightPrior, _, hRightPolarity, hRightLevel,
-      hRightArity, hRightCode⟩ :=
-      (satisfies_textbookLevyEarlierRecordFormula_iff_l trace index
-        (w 5) (w 6) (w 7) (w 8) (w 9)).mp (by simpa [base] using hRight)
-    have hPolarity : left.isSigma = right.isSigma := by
-      apply textbookLevyPolarityCode_injective_l
-      apply (@natCode_injective.{u})
-      simpa [hLeftPolarity, hRightPolarity] using hChildrenPolarity
-    have hLevel : left.level = right.level := by
-      apply (@natCode_injective.{u})
-      simpa [hLeftLevel, hRightLevel] using hChildrenLevel
-    have hArity : left.arity = right.arity := by
-      apply (@natCode_injective.{u})
-      simpa [hLeftArity, hRightArity] using hChildrenArity
-    have hEntryPolarity' : entry.isSigma = left.isSigma := by
-      apply textbookLevyPolarityCode_injective_l
-      apply (@natCode_injective.{u})
-      simpa [base, hLeftPolarity] using hEntryPolarity
-    have hEntryLevel' : entry.level = left.level := by
-      apply (@natCode_injective.{u})
-      simpa [base, hLeftLevel] using hEntryLevel
-    have hEntryArity' : entry.arity = left.arity := by
-      apply (@natCode_injective.{u})
-      simpa [base, hLeftArity] using hEntryArity
-    change w 10 = natCode 3 at hTag
-    rw [hLeftCode, hRightCode, hTag] at hECode
-    have hEntryCode : entry.code = textbookECode left.code right.code 3 := by
-      apply (@natCode_injective.{u})
-      apply (TextbookNatFormula.satisfies_textbookECodeFormula_natCode_iff
-        left.code right.code 3 (natCode entry.code)).mp
-      simpa [base] using hECode
-    refine ⟨left, hLeftPrior, right, hRightPrior,
-      hPolarity, hLevel, hArity, ?_⟩
-    cases entry
-    cases left
-    cases right
-    simp_all [TextbookLevyJudgment.conjoin]
-  · rintro ⟨left, hLeftPrior, right, hRightPrior,
-      hPolarity, hLevel, hArity, hEntry⟩
-    have hEntryPolarity : entry.isSigma = left.isSigma := by
-      simpa [TextbookLevyJudgment.conjoin] using
-        congrArg TextbookLevyJudgment.isSigma hEntry
-    have hEntryLevel : entry.level = left.level := by
-      simpa [TextbookLevyJudgment.conjoin] using
-        congrArg TextbookLevyJudgment.level hEntry
-    have hEntryArity : entry.arity = left.arity := by
-      simpa [TextbookLevyJudgment.conjoin] using
-        congrArg TextbookLevyJudgment.arity hEntry
-    have hEntryCode : entry.code = textbookECode left.code right.code 3 := by
-      simpa [TextbookLevyJudgment.conjoin] using
-        congrArg TextbookLevyJudgment.code hEntry
-    let w : Tuple ZFSet.{u} 11 :=
-      ![textbookLevyRecordZF_l left,
-        natCode (textbookLevyPolarityCode_l left.isSigma),
-        natCode left.level, natCode left.arity, natCode left.code,
-        textbookLevyRecordZF_l right,
-        natCode (textbookLevyPolarityCode_l right.isSigma),
-        natCode right.level, natCode right.arity, natCode right.code,
-        natCode 3]
-    refine ⟨w, ?_⟩
-    simp only [textbookLevyConjunctionRuleBody_l, FOFormula.Satisfies,
-      FOFormula.satisfies_rename, Delta0Formula.satisfies_natLiteralDeltaAt_toFO,
-      TextbookNatFormula.satisfies_textbookECodeFormulaAt]
-    have hLeft := (satisfies_textbookLevyEarlierRecordFormula_iff_l trace index
-      (textbookLevyRecordZF_l left)
-      (natCode (textbookLevyPolarityCode_l left.isSigma))
-      (natCode left.level) (natCode left.arity) (natCode left.code)).mpr
-        ⟨left, hLeftPrior, rfl, rfl, rfl, rfl, rfl⟩
-    have hRight := (satisfies_textbookLevyEarlierRecordFormula_iff_l trace index
-      (textbookLevyRecordZF_l right)
-      (natCode (textbookLevyPolarityCode_l right.isSigma))
-      (natCode right.level) (natCode right.arity) (natCode right.code)).mpr
-        ⟨right, hRightPrior, rfl, rfl, rfl, rfl, rfl⟩
-    refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-    · convert hLeft using 1 <;> ext i <;> fin_cases i <;> rfl
-    · convert hRight using 1 <;> ext i <;> fin_cases i <;> rfl
-    · simp [w, hPolarity]
-    · simp [w, hLevel]
-    · simp [w, hArity]
-    · simp [base, w, hEntryPolarity]
-    · simp [base, w, hEntryLevel]
-    · simp [base, w, hEntryArity]
-    · simp [w]
-    · simpa [base, w, hEntryCode] using
-        (TextbookNatFormula.satisfies_textbookECodeFormula_natCode_iff
-          left.code right.code 3
-          (natCode (textbookECode left.code right.code 3))).mpr rfl
+  have h := satisfies_textbookBoundedLevyConjunctionRuleFormula_iff_l.{u}
+    (trace.map textbookLevyJudgmentEquiv_l)
+    ⟨index.1, by simp only [List.length_map]; exact index.2⟩
+    (textbookLevyJudgmentEquiv_l entry)
+  have hFormula : textbookBoundedLevyConjunctionRuleFormula_l =
+      textbookLevyConjunctionRuleFormula_l := rfl
+  simp only [exists_textbookPriorRecord_iff_l] at h ⊢
+  simp only [Fin.exists_iff, List.get_eq_getElem,
+    List.length_map, List.getElem_map, textbookLevyTraceGraphZF_equiv_l,
+    TextbookLevyJudgment.equiv_conjoin_l, Equiv.apply_eq_iff_eq, hFormula,
+    TextbookLevyJudgment.equiv_isSigma_l, TextbookLevyJudgment.equiv_level_l,
+    TextbookLevyJudgment.equiv_arity_l, TextbookLevyJudgment.equiv_code_l,
+    textbookBoundedLevyPolarityCode_l, textbookLevyPolarityCode_l] at h ⊢
+  exact h
 
 end YesMetaZFC.BMS.ConstructibleBridge

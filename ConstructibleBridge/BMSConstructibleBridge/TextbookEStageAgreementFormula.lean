@@ -141,15 +141,10 @@ theorem satisfiesIn_textbookEStageAgreementFormula_natCode_iff_l
           leftRelation, rightRelation, tupleSpace, tuple] position ∈
           LStageZF θ := by
       intro position
-      fin_cases position
-      · exact hA
-      · exact hB
-      · exact natCode_mem_LStageZF_of_isSuccLimit hθ positiveArity
-      · exact natCode_mem_LStageZF_of_isSuccLimit hθ code
-      · exact hleftStage
-      · exact hrightStage
-      · exact hspaceStage
-      · exact htupleStage
+      fin_cases position <;>
+        first
+          | exact natCode_mem_LStageZF_of_isSuccLimit hθ _
+          | assumption
     have hLeftValue :=
       (satisfiesIn_textbookEBoundedValueFormulaAt_natCode_iff_l
         hθ hω (0 : Fin 8) (2 : Fin 8) (3 : Fin 8) (4 : Fin 8)
@@ -214,15 +209,10 @@ theorem satisfiesIn_textbookEStageAgreementFormula_natCode_iff_l
           leftRelation, rightRelation, tupleSpace, tuple] position ∈
           LStageZF θ := by
       intro position
-      fin_cases position
-      · exact hA
-      · exact hB
-      · exact natCode_mem_LStageZF_of_isSuccLimit hθ positiveArity
-      · exact natCode_mem_LStageZF_of_isSuccLimit hθ code
-      · exact hleftStage
-      · exact hrightStage
-      · exact hspaceStage
-      · exact htupleStage
+      fin_cases position <;>
+        first
+          | exact natCode_mem_LStageZF_of_isSuccLimit hθ _
+          | assumption
     refine ⟨?_, ?_, ?_, ?_⟩
     · exact (satisfiesIn_textbookEBoundedValueFormulaAt_natCode_iff_l
         hθ hω (0 : Fin 8) (2 : Fin 8) (3 : Fin 8) (4 : Fin 8)

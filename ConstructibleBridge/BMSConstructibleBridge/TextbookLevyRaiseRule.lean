@@ -1,4 +1,6 @@
 import BMSConstructibleBridge.TextbookLevyNegationRule
+import BMSConstructibleBridge.TextbookBoundedLevyRaiseRule
+import BMSConstructibleBridge.TextbookLevyRuleTransport
 import ConstructibleUniverse.SetTheory.ZFC.Constructible.FiniteOrdinalSuccessorFormula
 
 /-!
@@ -46,91 +48,19 @@ theorem satisfies_textbookLevyRaiseRuleFormula_iff_l
       ∃ child, (∃ prior : Fin trace.length,
         prior.1 < index.1 ∧ trace.get prior = child) ∧
         entry = child.raise entry.isSigma := by
-  rw [textbookLevyRaiseRuleFormula_l, satisfies_externalExistentialClosure_l]
-  let base : Tuple ZFSet.{u} 7 :=
-    ![(Ordinal.omega0.toZFSet : ZFSet.{u}), textbookLevyTraceGraphZF_l trace,
-      natCode index.1, natCode (textbookLevyPolarityCode_l entry.isSigma),
-      natCode entry.level, natCode entry.arity, natCode entry.code]
-  change (∃ witnesses : Tuple ZFSet.{u} 5,
-    FOFormula.Satisfies Delta0Formula.ZFMem textbookLevyRaiseRuleBody_l
-      (Fin.append base witnesses)) ↔ _
-  simp only [textbookLevyRaiseRuleAssignment_l]
-  constructor
-  · rintro ⟨w, hBody⟩
-    simp only [textbookLevyRaiseRuleBody_l, FOFormula.Satisfies,
-      FOFormula.satisfies_rename, Delta0Formula.satisfies_toFO,
-      Delta0Formula.satisfies_successorAt] at hBody
-    have hEarlier : FOFormula.Satisfies Delta0Formula.ZFMem
-        textbookLevyEarlierRecordFormula_l
-        ![Ordinal.omega0.toZFSet, textbookLevyTraceGraphZF_l trace,
-          natCode index.1, w 0, w 1, w 2, w 3, w 4] := by
-      have hAssignment :
-          (fun i : Fin 8 =>
-            ![base 0, base 1, base 2, base 3, base 4, base 5, base 6,
-              w 0, w 1, w 2, w 3, w 4] (![0, 1, 2, 7, 8, 9, 10, 11] i)) =
-            ![Ordinal.omega0.toZFSet, textbookLevyTraceGraphZF_l trace,
-              natCode index.1, w 0, w 1, w 2, w 3, w 4] := by
-        funext i
-        fin_cases i <;> rfl
-      simpa only [hAssignment] using hBody.1
-    obtain ⟨child, hPrior, _, _, hLevel, hArity, hCode⟩ :=
-      (satisfies_textbookLevyEarlierRecordFormula_iff_l
-        trace index (w 0) (w 1) (w 2) (w 3) (w 4)).mp hEarlier
-    have hSuccessor : (natCode entry.level : ZFSet.{u}) =
-        insert (natCode child.level) (natCode child.level) := by
-      simpa [base, hLevel] using hBody.2.1
-    have hLevelEq : entry.level = child.level + 1 := by
-      apply (@natCode_injective.{u})
-      rw [hSuccessor, ← natCode_succ_eq_insert]
-    have hArityEq : entry.arity = child.arity := by
-      apply (@natCode_injective.{u})
-      simpa [base, hArity] using hBody.2.2.1
-    have hCodeEq : entry.code = child.code := by
-      apply (@natCode_injective.{u})
-      simpa [base, hCode] using hBody.2.2.2
-    refine ⟨child, hPrior, ?_⟩
-    cases entry
-    cases child
-    simp_all [TextbookLevyJudgment.raise]
-  · rintro ⟨child, hPrior, hEntry⟩
-    have hLevel : entry.level = child.level + 1 := by
-      simpa [TextbookLevyJudgment.raise] using
-        congrArg TextbookLevyJudgment.level hEntry
-    have hArity : entry.arity = child.arity := by
-      simpa [TextbookLevyJudgment.raise] using
-        congrArg TextbookLevyJudgment.arity hEntry
-    have hCode : entry.code = child.code := by
-      simpa [TextbookLevyJudgment.raise] using
-        congrArg TextbookLevyJudgment.code hEntry
-    let witnesses : Tuple ZFSet.{u} 5 :=
-      ![textbookLevyRecordZF_l child,
-        natCode (textbookLevyPolarityCode_l child.isSigma),
-        natCode child.level, natCode child.arity, natCode child.code]
-    refine ⟨witnesses, ?_⟩
-    simp only [textbookLevyRaiseRuleBody_l, FOFormula.Satisfies,
-      FOFormula.satisfies_rename, Delta0Formula.satisfies_toFO,
-      Delta0Formula.satisfies_successorAt]
-    have hEarlier := (satisfies_textbookLevyEarlierRecordFormula_iff_l
-      trace index (textbookLevyRecordZF_l child)
-      (natCode (textbookLevyPolarityCode_l child.isSigma))
-      (natCode child.level) (natCode child.arity) (natCode child.code)).mpr
-        ⟨child, hPrior, rfl, rfl, rfl, rfl, rfl⟩
-    refine ⟨?_, ?_, ?_, ?_⟩
-    · have hAssignment :
-          (fun i : Fin 8 =>
-            ![base 0, base 1, base 2, base 3, base 4, base 5, base 6,
-              witnesses 0, witnesses 1, witnesses 2, witnesses 3, witnesses 4]
-              (![0, 1, 2, 7, 8, 9, 10, 11] i)) =
-            ![Ordinal.omega0.toZFSet, textbookLevyTraceGraphZF_l trace,
-              natCode index.1, textbookLevyRecordZF_l child,
-              natCode (textbookLevyPolarityCode_l child.isSigma),
-              natCode child.level, natCode child.arity, natCode child.code] := by
-          funext i
-          fin_cases i <;> rfl
-      simpa only [hAssignment] using hEarlier
-    · simpa [base, witnesses, hLevel] using
-        ((@satisfies_successorAt_natCode.{u}) child.level)
-    · simp [base, witnesses, hArity]
-    · simp [base, witnesses, hCode]
+  have h := satisfies_textbookBoundedLevyRaiseRuleFormula_iff_l.{u}
+    (trace.map textbookLevyJudgmentEquiv_l)
+    ⟨index.1, by simp only [List.length_map]; exact index.2⟩
+    (textbookLevyJudgmentEquiv_l entry)
+  have hFormula : textbookBoundedLevyRaiseRuleFormula_l =
+      textbookLevyRaiseRuleFormula_l := rfl
+  simp only [exists_textbookPriorRecord_iff_l] at h ⊢
+  simp only [Fin.exists_iff, List.get_eq_getElem,
+    List.length_map, List.getElem_map, textbookLevyTraceGraphZF_equiv_l,
+    TextbookLevyJudgment.equiv_raise_l, Equiv.apply_eq_iff_eq, hFormula,
+    TextbookLevyJudgment.equiv_isSigma_l, TextbookLevyJudgment.equiv_level_l,
+    TextbookLevyJudgment.equiv_arity_l, TextbookLevyJudgment.equiv_code_l,
+    textbookBoundedLevyPolarityCode_l, textbookLevyPolarityCode_l] at h ⊢
+  exact h
 
 end YesMetaZFC.BMS.ConstructibleBridge

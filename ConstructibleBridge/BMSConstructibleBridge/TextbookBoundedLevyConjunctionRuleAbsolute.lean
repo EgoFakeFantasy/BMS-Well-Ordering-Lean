@@ -50,26 +50,12 @@ theorem satisfiesIn_textbookBoundedLevyConjunctionRuleFormula_iff_l
         w 0, w 1, w 2, w 3, w 4, w 5, w 6, w 7, w 8, w 9, w 10]
     have hAssignment : ∀ position, assignment position ∈ LStageZF θ := by
       intro position
-      fin_cases position
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact LStageZF_mono (le_of_lt hω)
-          (textbookBoundedLevyTraceGraphZF_mem_LStageOmega_l trace)
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact natCode_mem_stage_l hω _
-      · exact hWitnesses 0
-      · exact hWitnesses 1
-      · exact hWitnesses 2
-      · exact hWitnesses 3
-      · exact hWitnesses 4
-      · exact hWitnesses 5
-      · exact hWitnesses 6
-      · exact hWitnesses 7
-      · exact hWitnesses 8
-      · exact hWitnesses 9
-      · exact hWitnesses 10
+      fin_cases position <;>
+        first
+          | exact omega_toZFSet_mem_stage_l hω
+          | exact LStageZF_mono (le_of_lt hω) (textbookBoundedLevyTraceGraphZF_mem_LStageOmega_l trace)
+          | exact natCode_mem_stage_l hω _
+          | exact hWitnesses _
     simp only [textbookBoundedLevyConjunctionRuleBody_l, Model.SatisfiesIn,
       Model.satisfiesIn_rename,
       TextbookNatFormula.satisfiesIn_textbookECodeFormulaAt] at hBody

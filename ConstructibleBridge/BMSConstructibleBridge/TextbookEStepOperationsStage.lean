@@ -305,10 +305,7 @@ theorem satisfiesIn_uniqueGraphLookupFormula_stage_iff_l
   have hAssignment : ∀ position : Fin 3,
       ![graph, key, output] position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact hgraph
-    · exact hkey
-    · exact houtput
+    fin_cases position <;> assumption
   rw [satisfiesIn_uniqueGraphValueAt_stage_iff_l
       (0 : Fin 3) (1 : Fin 3) (2 : Fin 3) _ hAssignment,
     satisfiesIn_hasUniqueGraphValueAt_stage_iff_l
@@ -422,10 +419,7 @@ theorem satisfiesIn_functionSpaceGraph_stage_natCode_iff_l
   have hbase : ∀ position : Fin 3,
       ![natCode n, codomain, space] position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact hcode
-    · exact hcodomain
-    · exact hspace
+    fin_cases position <;> assumption
   have hFunction (graph : ZFSet.{u}) (hgraph : graph ∈ LStageZF θ) :=
     satisfiesIn_isFunctionAt_stage_iff_l
       (Fin.last 3) (0 : Fin 3).castSucc (1 : Fin 3).castSucc
@@ -481,10 +475,7 @@ theorem satisfiesIn_finiteFunctionSpaceGraph_stage_natCode_iff_l
   have hAssignment : ∀ position : Fin 3,
       ![natCode n, codomain, space] position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact hcode
-    · exact hcodomain
-    · exact hspace
+    fin_cases position <;> assumption
   constructor
   · rintro ⟨_hfinite, hfunctionSpace⟩
     exact (satisfiesIn_functionSpaceGraph_stage_natCode_iff_l
@@ -535,12 +526,7 @@ theorem satisfiesIn_existsProjOutputMemberCondition_stage_natCode_iff_l
   have hAssignment : ∀ position : Fin 5,
       ![a, natCode n, relation, output, graph] position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hcode
-    · exact hrelation
-    · exact houtput
-    · exact hgraph
+    fin_cases position <;> assumption
   constructor
   · rintro ⟨_hfinite, hmember⟩
     apply Constructible.mem_textbookExistsProjCodeZF_iff.mpr
@@ -578,11 +564,7 @@ theorem satisfiesIn_existsProjOutputFormula_stage_natCode_iff_l
   have hbase : ∀ position : Fin 4,
       ![a, natCode n, relation, output] position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hcode
-    · exact hrelation
-    · exact houtput
+    fin_cases position <;> assumption
   have hcondition (graph : ZFSet.{u}) (hgraph : graph ∈ LStageZF θ) :
       Constructible.Model.SatisfiesIn (LStageZF θ : Set ZFSet.{u})
           Constructible.TextbookDefFormula.existsProjOutputMemberCondition
@@ -693,13 +675,7 @@ theorem satisfiesIn_dInOutputMemberCondition_stage_natCode_iff_l
       ![a, natCode n, natCode i, natCode j, output, graph] position ∈
         LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hn
-    · exact hi
-    · exact hj
-    · exact houtput
-    · exact hgraph
+    fin_cases position <;> assumption
   constructor
   · rintro ⟨_hfinite, hmember⟩
     have hcode : graph ∈ Constructible.textbookDInCodeZF a
@@ -743,13 +719,7 @@ theorem satisfiesIn_dEqOutputMemberCondition_stage_natCode_iff_l
       ![a, natCode n, natCode i, natCode j, output, graph] position ∈
         LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hn
-    · exact hi
-    · exact hj
-    · exact houtput
-    · exact hgraph
+    fin_cases position <;> assumption
   constructor
   · rintro ⟨_hfinite, hmember⟩
     have hcode : graph ∈ Constructible.textbookDEqCodeZF a
@@ -916,17 +886,11 @@ theorem satisfiesIn_codeGuardBody_stage_natCode_iff_l
       natCode i, natCode j, natCode literal]
   have hAssignment : ∀ position, assignment position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hkey
-    · exact hhistory
-    · exact houtput
-    · exact omega_toZFSet_mem_stage_l hω
-    · exact natCode_mem_stage_l hω m
-    · exact natCode_mem_stage_l hω n
-    · exact natCode_mem_stage_l hω i
-    · exact natCode_mem_stage_l hω j
-    · exact natCode_mem_stage_l hω literal
+    fin_cases position <;>
+      first
+        | exact omega_toZFSet_mem_stage_l hω
+        | exact natCode_mem_stage_l hω _
+        | assumption
   have htag :
       Constructible.Model.SatisfiesIn (LStageZF θ : Set ZFSet.{u})
           (Delta0Formula.natLiteralDeltaAt literal (9 : Fin 10)).toFO
@@ -995,17 +959,11 @@ theorem satisfiesIn_codeGuard_stage_standard_iff_l
           (Ordinal.omega0.toZFSet : ZFSet.{u}), natCode m, natCode n,
           natCode i, natCode j, tagSet] position ∈ LStageZF θ := by
       intro position
-      fin_cases position
-      · exact ha
-      · exact hkey
-      · exact hhistory
-      · exact houtput
-      · exact omega_toZFSet_mem_stage_l hω
-      · exact natCode_mem_stage_l hω m
-      · exact natCode_mem_stage_l hω n
-      · exact hiStage
-      · exact hjStage
-      · exact htagStage
+      fin_cases position <;>
+        first
+          | exact omega_toZFSet_mem_stage_l hω
+          | exact natCode_mem_stage_l hω _
+          | assumption
     have htag : tagSet = (natCode literal : ZFSet.{u}) :=
       (satisfiesIn_natLiteralDeltaAt_stage_iff_l literal (9 : Fin 10)
         ![a, key, history, output,
@@ -1050,17 +1008,11 @@ theorem exists_natCode_fields_of_satisfiesIn_codeGuardBody_stage_l
         (Ordinal.omega0.toZFSet : ZFSet.{u}), natCode m, natCode n,
         iSet, jSet, tagSet] position ∈ LStageZF θ := by
     intro position
-    fin_cases position
-    · exact ha
-    · exact hkey
-    · exact hhistory
-    · exact houtput
-    · exact omega_toZFSet_mem_stage_l hω
-    · exact natCode_mem_stage_l hω m
-    · exact natCode_mem_stage_l hω n
-    · exact hiSet
-    · exact hjSet
-    · exact htagSet
+    fin_cases position <;>
+      first
+        | exact omega_toZFSet_mem_stage_l hω
+        | exact natCode_mem_stage_l hω _
+        | assumption
   have htag : tagSet = (natCode literal : ZFSet.{u}) :=
     (satisfiesIn_natLiteralDeltaAt_stage_iff_l literal (9 : Fin 10)
       ![a, key, history, output,

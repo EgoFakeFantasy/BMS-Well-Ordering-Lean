@@ -453,12 +453,7 @@ theorem satisfiesIn_textbookEZFFormula_stage_iff_localSolution_l
     have hAssignment : ∀ position : Fin 5,
         snoc ![a, nCode, mCode, output] key position ∈ LStageZF θ := by
       intro position
-      fin_cases position
-      · exact ha
-      · exact hnCode
-      · exact hmCode
-      · exact houtput
-      · exact hkeyStage
+      fin_cases position <;> assumption
     have hpair : key = ZFSet.pair mCode nCode :=
       (satisfiesIn_kuratowskiPairEqAt_stage_iff_l
         (Fin.last 4) (2 : Fin 5) (1 : Fin 5)

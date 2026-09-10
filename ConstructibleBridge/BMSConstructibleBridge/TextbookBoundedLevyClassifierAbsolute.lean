@@ -1,4 +1,5 @@
 import BMSConstructibleBridge.TextbookBoundedLevyClassifierFormula
+import BMSConstructibleBridge.IndexedSequenceStageSemantics
 import BMSConstructibleBridge.TextbookBoundedLevyTraceValidityAbsolute
 
 /-!
@@ -13,18 +14,6 @@ universe u
 namespace YesMetaZFC.BMS.ConstructibleBridge
 
 open Constructible FiniteSequenceZF
-
-theorem satisfiesIn_valueAtFormula_iff_l
-    {M : ZFSet.{u}} (hM : M.IsTransitive)
-    (assignment : Tuple ZFSet.{u} 3)
-    (hAssignment : ∀ position, assignment position ∈ M) :
-    Model.SatisfiesIn (M : Set ZFSet.{u})
-        IndexedSequenceZF.valueAtFormula assignment ↔
-      FOFormula.Satisfies Delta0Formula.ZFMem
-        IndexedSequenceZF.valueAtFormula assignment := by
-  rw [IndexedSequenceZF.valueAtFormula]
-  exact Model.satisfiesIn_delta0_iff hM
-    IndexedSequenceZF.valueAtDelta0 assignment hAssignment
 
 /-- 规范痕迹码的层内目标行公式精确表示该记录出现于列表。 -/
 theorem satisfiesIn_textbookBoundedLevyTraceTargetFormula_iff_l
