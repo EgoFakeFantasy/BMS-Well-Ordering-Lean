@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# BMS-Well-Ordering-Lean 修改：扩展上游检查，串行验证桥接工程与最终定理公理。
 # 串行检查根工程、扫描工具、BMS 桥接工程及最终定理公理依赖。需要 Bash 4 或以上。
 set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."

@@ -1,0 +1,35 @@
+BMS-Well-Ordering-Lean
+Copyright 2026 EgoFakeFantasy and the BMS-Well-Ordering-Lean contributors.
+
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+
+Project: https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean
+
+This project includes the YesMetaZFC logic and set-theory foundation.
+The upstream attribution notice is retained below:
+
+YesMetaZFC
+Copyright 2026 lanxinge and the YesMetaZFC contributors.
+
+Licensed under the Apache License, Version 2.0.
+See LICENSE for the full license text.
+
+Project: https://github.com/lanxinge/YesMetaZFC
+
+Additional provenance and modification information:
+
+The YesMetaZFC source baseline used by this project is
+b36e2434459fa71bd6d5ff91f0882058a9746399. Upstream LICENSE and NOTICE were
+published in e96f71ce8ded154d930edec85136172281c5aa57 and are retained here.
+This licensing update does not upgrade the pinned source baseline.
+
+BMS-specific additions are located in YesMetaZFC/BMS/, YesMetaZFC/BMS.lean,
+ConstructibleBridge/, and BMS_FORMALIZATION.md. The project also changes
+README.md, .github/workflows/lean_action_ci.yml, .gitignore, and
+scripts/check-all.sh relative to the upstream baseline.
+
+Third-party dependencies obtained separately by Lake, including Mathlib
+and lean-constructible-universe, retain their respective licenses,
+copyright notices, and attribution notices. This project does not
+relicense those dependencies.

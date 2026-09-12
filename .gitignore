@@ -1,3 +1,4 @@
+# BMS-Well-Ordering-Lean 修改：扩展上游规则，忽略桥接构建产物与本地工作文件。
 /.lake
 /ConstructibleBridge/.lake
 /tmp

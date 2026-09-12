@@ -1,3 +1,4 @@
+# BMS-Well-Ordering-Lean 修改：在上游 CI 基础上增加桥接构建与公理审计。
 name: Lean CI
 
 on:

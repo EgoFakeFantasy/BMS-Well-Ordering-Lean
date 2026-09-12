@@ -1,5 +1,7 @@
 # BMS 良序性证明的 Lean 形式化
 
+<!-- 本文件由 BMS-Well-Ordering-Lean 项目重写，替代 YesMetaZFC 上游项目介绍。 -->
+
 本仓库使用 Lean 4 形式化 BMS（Bashicu Matrix System）第四个正式版本 **BM4 的生成记号严格良序性**。
 项目包含数组与展开规则、稳定表示、可构造层级中的公式与反射，以及最终良序定理的完整装配。
 
@@ -121,3 +123,12 @@ propext, Classical.choice, Quot.sound
 
 本仓库保留上游 Git 历史和基础模块。BMS 相关工作集中在 `YesMetaZFC/BMS/` 与
 `ConstructibleBridge/`；上游的 Rosser、不完备性等成果不作为本项目新增的 BMS 成果。
+
+## 许可证
+
+本项目的原创代码与随附文档采用 [Apache License 2.0](LICENSE)（`Apache-2.0`），
+版权归相应作者所有，署名与来源说明见 [NOTICE](NOTICE)。
+
+继承的 YesMetaZFC 基础代码保留上游 Apache-2.0 许可与署名。
+通过 Lake 获取的 Mathlib、lean-constructible-universe 等第三方依赖仍遵循各自的许可证；
+本项目的许可声明不替换第三方的许可证或权利声明。
