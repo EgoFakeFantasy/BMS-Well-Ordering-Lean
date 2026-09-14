@@ -114,6 +114,13 @@ theorem supportHeight_eq_relativeSupport (column : List Nat) :
   rw [supportHeightAux_eq_relative column 0 0 (Nat.le_refl 0)]
   by_cases hZero : relativeSupport column = 0 <;> simp [hZero]
 
+/-- 支撑高度的列表递推规格，供算术递归证书使用。 -/
+theorem supportHeight_cons_l (v : Nat) (s : List Nat) :
+    supportHeight (v :: s) =
+      if supportHeight s = 0 then (if v = 0 then 0 else 1) else supportHeight s + 1 := by
+  simp only [supportHeight_eq_relativeSupport]
+  cases h : relativeSupport s <;> simp [relativeSupport, h]
+
 theorem supportHeight_le_length (column : List Nat) :
     supportHeight column ≤ column.length := by
   rw [supportHeight_eq_relativeSupport]

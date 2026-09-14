@@ -8,6 +8,13 @@
 本项目复用 YesMetaZFC 的逻辑与集合论基础，并在其上实现 BMS 的组合证明和可构造模型桥接；
 上游来源与贡献边界见文末。
 
+## 可复用工具子库
+
+新增 `BMSTools`：集合构造、内部递归、有限赋值与记录编码、有符号真值证书。
+可独立选择导入分组，旧证明路径和声明不变。使用方式与精确边界见
+[工具子库说明](docs/BMS_TOOLS.md)。
+这是从弱背景研究中提取的通用工具，不是已经完成的弱背景 BMS 良序证明。
+
 ## 主要结论
 
 最终入口位于 [FinalAssembly.lean](ConstructibleBridge/BMSConstructibleBridge/FinalAssembly.lean)，

@@ -11,3 +11,6 @@ require «lean-constructible-universe» from git
 
 @[default_target]
 lean_lib BMSConstructibleBridge
+
+@[default_target]
+lean_lib BMSTools

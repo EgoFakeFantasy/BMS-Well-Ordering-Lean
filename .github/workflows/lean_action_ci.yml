@@ -32,6 +32,18 @@ jobs:
           axiom-audit: true
           # 审计入口是模块根（lean_lib），不是声明所在的 namespace。
           axiom-audit-root: BMSConstructibleBridge
-      - name: Check final BMS theorem axioms
+      - name: Check reusable BMS tools dependencies
+        working-directory: ConstructibleBridge
+        run: lake env lean BMSTools/Audit.lean
+      - name: Check original final BMS theorem axioms
         working-directory: ConstructibleBridge
         run: lake env lean BMSConstructibleBridge/AxiomAudit.lean
+      - name: Check finite boundary proof dependencies
+        working-directory: ConstructibleBridge
+        run: lake env lean BMSConstructibleBridge/FiniteBoundaryAudit.lean
+      - name: Check second-order presentation dependencies
+        working-directory: ConstructibleBridge
+        run: lake env lean BMSConstructibleBridge/SecondOrderAudit.lean
+      - name: Check third-order background dependencies
+        working-directory: ConstructibleBridge
+        run: lake env lean BMSConstructibleBridge/ThirdOrderAudit.lean

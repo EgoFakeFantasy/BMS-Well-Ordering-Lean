@@ -12,6 +12,10 @@ import YesMetaZFC.BMS.FiniteLevyHierarchy
 import YesMetaZFC.BMS.FiniteElementarity
 import YesMetaZFC.BMS.OrdinalReflectionSyntax
 import YesMetaZFC.BMS.WellFoundedness
+import YesMetaZFC.BMS.LocalDescent
+import YesMetaZFC.BMS.FinitePatternDescent
+import YesMetaZFC.BMS.SeedExpansion
+import YesMetaZFC.BMS.HeightDescent
 import YesMetaZFC.BMS.SeedRepresentation
 import YesMetaZFC.BMS.BM4WellOrder
 import YesMetaZFC.BMS.ExpansionRepresentation

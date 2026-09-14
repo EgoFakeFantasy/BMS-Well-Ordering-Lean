@@ -1,0 +1,659 @@
+{
+  "captured": "2026-09-13",
+  "baseCommit": "57da9d318df393b1ededbc93cd3abc745c8c8675",
+  "scope": "Current local contents of pre-existing committed BM4 and constructible-bridge modules; preserves earlier uncommitted changes, excludes new research modules and aggregate import roots.",
+  "files": [
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/AxiomAudit.lean",
+      "sha256": "1bbaad5c6d1ac77c0c10ad1121d2c4a343e39a88f2da7d6ed0c680c0c720d910"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/BoundedExternalStageElementarity.lean",
+      "sha256": "dd55d75fbdde4a1f09c11f4da673d3834b2e47d1dbb5ed43d3b2ccad6821cf58"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/ConstructibleStabilityFormulaData.lean",
+      "sha256": "b8043af9ce6b88ba9fbacd5721b902fd43617d7c30e110a8e2631965ddde6064"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/ECodeElementarity.lean",
+      "sha256": "4dfeb7b9e7c9dcf573a9f893379a7838b455c556aaa9f9b1018902ee2e9cc8dc"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/ExternalBoundedFormulaRank.lean",
+      "sha256": "c6c0b24d986fc402cb8c085f4d78b846e143142b5494a70667fafba9eb2169bf"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/ExternalBoundedLevyHierarchy.lean",
+      "sha256": "837924528f514b0286358002b32a2c0d977e1713835d99265d343dd94c4c4d3d"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/ExternalDelta0Translation.lean",
+      "sha256": "8b2ba82e0239658cde606ff8dc7bfb6ed0391ef35d252670a65d64586d830dae"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/ExternalExistentialClosure.lean",
+      "sha256": "adfb60d12cd2e584e37172405c531a9fe808f796c0433cdc815f93497e92f36b"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/ExternalFullReflection.lean",
+      "sha256": "c6cb75e9bda197051b5fc0f0c762a7b57650ebb60d13ccd213e5a30b9aa0083c"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/ExternalLevyHierarchy.lean",
+      "sha256": "22154d233ce1ef7ea99a90171d77cc647de38c362240ebcd7fc35e2077aa22d8"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/ExternalStageElementarity.lean",
+      "sha256": "2bee922d82cdce49036df101d9b9a8e98bfab3dae40d7c5f2acb9363a53b8404"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/FinalAssembly.lean",
+      "sha256": "9884fdb76afab85a45d36aee01951c33623abf86d814e9646d0149db64e72e01"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/FiniteReflectionFormula.lean",
+      "sha256": "9012361fb0d6974a884ec8504b4f01f5464de93e6a5db5a97030857d68eea985"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/FormulaTranslation.lean",
+      "sha256": "278c7a19eccab19d677da8427d956f041a50c737a0bb3c14f10357a71dcaed49"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/IndexedSequenceStageSemantics.lean",
+      "sha256": "1521ae4c8a8acfcd06ceb12cf04ccebf25ecdf27afea5e3858dfc094c3ecd6d9"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/InternalStageFormula.lean",
+      "sha256": "3df7ba9e246f774ae518fd2bd18b17a36452d00bba16c00df26f6470d174959f"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/LocalStageFormula.lean",
+      "sha256": "c8b705639817ff69f42319ac2acd4290d4c5f35d18816c9043c6e128d8fde381"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/NativeStableBoundary.lean",
+      "sha256": "57221100130798f9b9755bac29b09ca8981612fa9ae003d69bffd40235155ca6"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/NativeStageReflection.lean",
+      "sha256": "cfcdf7a79b203591b96ad6ac2094a9bcd0fee30d9c88ebd4af2ae5050186cc29"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/RelativizedLocalStageFormula.lean",
+      "sha256": "6a34a43517d2785b40f33a0efda1c3ace516ca2aa00bb36f97fb4400a947a257"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/SeedConstruction.lean",
+      "sha256": "995aa04b052a0e68b470e862f7e2ce3832e2dddbc755201d0e28f6f8bd6c46b3"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StabilitySemantics.lean",
+      "sha256": "6f12cc077186317a9d873acc945111b709a7dcd51abb8bd6a0b2f242ef45289b"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StableBoundary.lean",
+      "sha256": "b612e57e74ac4efd23dafae23b34e04ac9db9fbec7d89e98e389d3123e1610c5"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StageElementarity.lean",
+      "sha256": "5a87b22e17b2ce6035980ab9312bed9c4aa34b7e3907b8e216ac66586b45e635"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StageElementarityReflection.lean",
+      "sha256": "508760bcc335afba26f9bd8367b2cdefb0d8b4c8cea7895489cda24316290eb5"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StageOrdinalDelta.lean",
+      "sha256": "4136993b0a6964dccee954f43572a6622c115329d3686c4eed6ded14ed3128f9"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StageRelativization.lean",
+      "sha256": "075100b9fb5f2b81a2d50e42dfba4c5a514b607e81962b5f98225ef1cb46f902"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StageStabilityComplexity.lean",
+      "sha256": "56593420fc19ff1e2d3ff0f9f504d60f3d0b4655d8b96a2566ca1a9634ca681a"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StageStableBetweenFormula.lean",
+      "sha256": "796b8606eb7d1b7447447f27746c5340d8f6d9d1047d0aaca196ffcfa411cff4"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StageStableBetweenSyntax.lean",
+      "sha256": "d2258156df3ca27964dfec05c5649b789fbc8e381d4765e30d0876b231f92112"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StageStableToUniverseFormula.lean",
+      "sha256": "16f608bdc925c2b330080ac1e36cccbaa2cad6483193401dcaba843054883ee9"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StageStableToUniverseSyntax.lean",
+      "sha256": "b18a03a506cc662cf75dbb5240680f9d08f65bb19313ca3bcee68114aa6bda66"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StageStructure.lean",
+      "sha256": "5b1a636007e725c6eabcbb5cd6d44b4497aec3bc6e82e037d14c0f98a7638613"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/StageSuccLimitFormula.lean",
+      "sha256": "c5bc9a13b5426df5e1e2ae308bd8d4bb95c40005f0e15a396007b8b6ef6730af"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientDelta0TruthFormula.lean",
+      "sha256": "e2fd6b1e4354672655b9bad8d3e04fc7c0e89830b22a5e6c086872a1a26f1c15"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthCertificate.lean",
+      "sha256": "73b4c4409bc57edd7de433a4f906eca1cb8164e502c31a5ab6968efe2c837a97"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthClassifierAbsolute.lean",
+      "sha256": "8be38cc238cc1f2a8921ea2b7cb6ef36303e2e032c1d7f37356a9b1587e7decb"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthClassifierFormula.lean",
+      "sha256": "f482ee9207f8a4179673abf3bda4d2c1493a98a13fb14a27f941847f4a686de6"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthConjunctionRuleAbsolute.lean",
+      "sha256": "6b3d7609e44e6fc07db3d6c741cbae658eace70699baacae12027aaf7cef6e2a"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthConjunctionRuleFormula.lean",
+      "sha256": "49639c38fbd47cdaac726968df69c9cf7a3a8db446bd4ea55c79a7042f89d428"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthDeltaRuleFormula.lean",
+      "sha256": "b3093bc31cedda7a58ce446155d8c11ef6e1709eb43c81ce155ed1ef40b646aa"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthEarlierRecord.lean",
+      "sha256": "a2def9e07f34cd07e8a23a6547a542da70e200a76bfed5e66fc16deb3644540b"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthExistentialRuleFormula.lean",
+      "sha256": "cf52ee005718338020bb8844083bf6a6facfbaca6de5a7a8ef216b6406d10c2f"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthIndexedTrace.lean",
+      "sha256": "255c8c4e27096e95269a788eb4c869f706e35b6757e0cc24b86b39c6cb98aa8c"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthLocalRuleAbsolute.lean",
+      "sha256": "30e3bc96268b7a93a77d86faf80923d5d3052134631b6e14038bfc976fbf55ee"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthLowerRuleAbsolute.lean",
+      "sha256": "c295faf4959b96edcfaec28481bf123cc62b8d4d9e895fd358cfb9ccfe871bcc"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthNegationRuleFormula.lean",
+      "sha256": "d1439daf5ec97a6479e0cd3d64ef08bd50ed6d6fc4f913e6bfc69c49c2c6d3f3"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthRecord.lean",
+      "sha256": "ce8446d65fe072c0448b4afe6283e622bf83ecc74a5172fb51fdd549c1d85625"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthTrace.lean",
+      "sha256": "38993bcb7a947d98ef20d3fcc4c9a76750648ff61781d58c827a25f079bc2b7c"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookAmbientTruthTraceValidityAbsolute.lean",
+      "sha256": "bb564a3cd1be5bfbc85e60553c4f613dfd637fa4c164132cf2a5af3079589715"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyAtomicRule.lean",
+      "sha256": "ad6543753dd2cd200abc30f96dfaaf8e637be779f83816815bceb9483aab6b68"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyAtomicRuleAbsolute.lean",
+      "sha256": "d1cf52a3bec02a0627354d75e519fcd59e53161bfd0b285dd0f5d4cefaeaea4c"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyClassifierAbsolute.lean",
+      "sha256": "3aacd78d1f32919ac117e01a89800e8269a798e61cb91a2549ec5311abe7ca93"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyClassifierBounded.lean",
+      "sha256": "d6beb38da02a1d0d817c7c2dd4c0988be031fbc56c28dbc4d9cd1602930d6a40"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyClassifierFormula.lean",
+      "sha256": "8f4058e6e183ed0691e7c58d6b4d55a3ac0904ab848ba7f8ec940a0bcd8aa042"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyCode.lean",
+      "sha256": "adb7a0752a734f788cf15f1ea3dfbeff3e6019716fd1609af6bef13af20f8c7e"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyConjunctionRule.lean",
+      "sha256": "40f9832017b37299b7cd0796386ffcda3989306bc83d09468130f0f53c489ae2"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyConjunctionRuleAbsolute.lean",
+      "sha256": "26d4218850df14695abdddc5fda5328f99a270d768a8991538bfdee1ecb02723"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyEarlierRecord.lean",
+      "sha256": "fc9b8aa24b239c5c124fe008289b59fb91d572964790fe5d4286050e9cb12f4f"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyEarlierRecordAbsolute.lean",
+      "sha256": "53c89d0f0daadd463cb073a1b744fa53eb08620fae5e1154c7bfa2f134ff17a8"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyExistentialRule.lean",
+      "sha256": "1e650139ea5650b643441d61bcbe0db84fe49560571cb20444c6285cb7f2c310"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyExistentialRuleAbsolute.lean",
+      "sha256": "e9b6bf5d928cab5b5d9e8c2baa066eee0d03394a1c12576d6c02ed899993b7fa"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyIndexedTrace.lean",
+      "sha256": "9f04a318f1743545d9ac1e00a1a002ceb0eece101900dc665e536e63e13c1606"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyLocalRuleAbsolute.lean",
+      "sha256": "b9f53c5916aee9d532572b2fcec1ec2426713d7090ae572804273b21921d772d"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyLocalRuleFormula.lean",
+      "sha256": "5c2c4e5ef343edacc2bc8c3790ec761f5b2d13b939b5888a446bd4599b837ab3"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyNegationRule.lean",
+      "sha256": "d635ad235d158c1116497c1b221ceaf002cc46b4ae57c7254e8533b7ddd417ea"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyNegationRuleAbsolute.lean",
+      "sha256": "63fc7752626ccc3a1018e3ab7765ca3a0d610ae1e010139f74ed9d27465a77d8"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyRaiseRule.lean",
+      "sha256": "6cb43ef4bea426534779429e6f5a6633a62fa4644fa9ae1a48fa00a800eff420"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyRaiseRuleAbsolute.lean",
+      "sha256": "5e8d2c570c701760291a00cb3c2752b7394a6235c194c35617e025e7a902ec00"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyRecordAbsolute.lean",
+      "sha256": "81113ab99904de5ed79c33f53f8f3f01a51356be7726044f2c614a46959e3a9b"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyRecordZF.lean",
+      "sha256": "3c8a3ec3effbcc65500059b8eb67fa2d229b7c7c38786548c2a8c997597131e1"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyTrace.lean",
+      "sha256": "08042d68352aceabad4c55ab585309868a0c373024137e8bd06a404f5ba93415"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyTraceBounds.lean",
+      "sha256": "ef0c08159aab14894ea7047caabeae79307eacff973d3d450010ef77574558b5"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyTraceGraph.lean",
+      "sha256": "2161b2728087e478b898596c31221316301496bb4c6ada6af56126ebff3a8ed0"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyTraceValidityAbsolute.lean",
+      "sha256": "1b713894a53cca311ebb9a74aa454a5eb4d1a67fe55f346e25a52a52525ee03a"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookBoundedLevyTraceValidityFormula.lean",
+      "sha256": "0e32e418d3845d699d922b98a6e50ff843c8885c994c8fe2f28ab9b781e47473"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0AtomicRule.lean",
+      "sha256": "923aa4f83949a624968626ebf2407334ab56a73b6895f9fd41b84e60d6fff149"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0AtomicRuleAbsolute.lean",
+      "sha256": "f38f8fb38578894fcf5c5bb51b881a0c31832f2b2bbf40955d763a15f0738c85"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0BoundedExistsRule.lean",
+      "sha256": "bbfa984dfc47593e8779ae125ce7a8d18a1058c77b3946877ec8b3f675d9165c"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0BoundedExistsRuleAbsolute.lean",
+      "sha256": "c6aa60d41a9f5b649920a415377d8a79fd26139515b02aace2c34db51c8846f5"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0ClassifierAbsolute.lean",
+      "sha256": "67611c4698fdccd9c82ae3d628c5d48e43217a0e213a2f1d5e28966aec65e042"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0ClassifierFormula.lean",
+      "sha256": "0e03440d97613d6b1ed0d8cb1cef9fad2733bb9d75dc81cd54eae33a2478571b"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0ConjunctionRule.lean",
+      "sha256": "80364b0828b3523d1ad663fdb9d00f5164d6640ce82f355535363f41857aaa5f"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0ConjunctionRuleAbsolute.lean",
+      "sha256": "e9278f2a87f48e934d4a3a09c55140dd1b1bd8f7d13f870381676de62f16e118"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0EarlierRecord.lean",
+      "sha256": "e342918399f7583d47985e35b6a8f3d54e63e83e8226e737ec1255c78afc0a23"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0EarlierRecordAbsolute.lean",
+      "sha256": "ba877f8d42a3a4d0df6365937f6feec6a8afc51a5d18d591328a57e167db326b"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0IndexedTrace.lean",
+      "sha256": "a1469ee6dc9bc534aaf8224e15a478f9ffe0dc206ddcb2b38684e9b61bada6a4"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0LocalRuleAbsolute.lean",
+      "sha256": "f670fa5e7a4651fb4262a6e890904d31c01058e8cd65e8fa521ade7210bbe9c4"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0LocalRuleFormula.lean",
+      "sha256": "8eb888c64b3dd29f322b50414dfb7d7a05581d5dd50fcb4bf15cd6ff2d5655f9"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0NegationRule.lean",
+      "sha256": "4958f58974598f42595d14e0a738da94a258f5d2be327fa6880e03eb1033b7fa"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0NegationRuleAbsolute.lean",
+      "sha256": "02028f9343b33c48a4bfc9bae3681840013ba185f92c2f32f423e5fbd89ac9b6"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0RecordZF.lean",
+      "sha256": "55ef744065ee3a3517bc2ba62979c9b981e11fcbc4363f3164ae60d642f059ae"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0Trace.lean",
+      "sha256": "ae5b9f2f474e0e1f5d3b965d742f663d60dd14080898cf08db704e4a0a402f9b"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0TraceBounds.lean",
+      "sha256": "5cc8f99ee00735ed91d2b0a1387fd6c796630afa75f6b058c393bd2361c062fe"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0TraceGraph.lean",
+      "sha256": "68097e8e5cdb5ece92664565619be30fa54a5e68f3f4d049d8ebba348d9a248e"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0TraceValidityAbsolute.lean",
+      "sha256": "291759373e10513184fe880b4f9cf291a7f817f4b01e4d05a64079664e1ece75"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookDelta0TraceValidityFormula.lean",
+      "sha256": "6fe9fa1bc3b3bfa342029ab4946342abb59b3882b345959fe9533dcb0867fd5b"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEAgreementFormula.lean",
+      "sha256": "4f397d849b30423b1e9a2075b1f4c912c0458151444440f3bfd834939e193524"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEAmbientAgreementFormula.lean",
+      "sha256": "9087b52c8632f7a96bc134c717932c9cd136e189dcdca59be29490314ee2f345"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEAmbientElementarity.lean",
+      "sha256": "cac98371f2fea626b3ae60c803d04de49810d5a1bab58ce0d9abfd89c587c509"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEBoundedDomain.lean",
+      "sha256": "3a208f63e4f5c4a148a9827c72f60ea963eba0e6a8dd3a6c227848f189937f1b"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEBoundedFormula.lean",
+      "sha256": "2e3126744f1e6c19c85980306b9bde607810955c27eeec6c2a82554c15e58026"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEDomainStage.lean",
+      "sha256": "34c6e4f614d4a16bf0ace60cd0d71a527060e30f87e47ef686a52670f1df600f"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookELocalSolutionStage.lean",
+      "sha256": "a84ca367793f8d14f115b749702eba0ae816414ff279c62b26a0baa2264f97a7"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEStageAgreementFormula.lean",
+      "sha256": "95dc98750d3bafe955bbb0e4c52aa00ebd02d7e7a3d49436c6864e388a7359fe"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEStageBounds.lean",
+      "sha256": "96c64aeccd13822f781166ebcd58f780858ee341907031ed654d9adea081e887"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEStageElementarity.lean",
+      "sha256": "c138f5152b352186db751c7114ead6e6a021ef19011f52e4993871bf674f680b"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEStageLevelAgreementFormula.lean",
+      "sha256": "397d51b1c5d64a76f85d99afc412d93e8c6abaad31d2473a762d498d5e9cf4ef"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEStepOperationsStage.lean",
+      "sha256": "7b41e5933ec39a11e545846c677f5d9dcb2ce97959d151e9fba31429b402261b"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookEStepStage.lean",
+      "sha256": "cd6dbf86c71bdfca7d611979c45aec72090dad940a18d1ee5ee30f2ef5ede8e7"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookFormulaCode.lean",
+      "sha256": "a1a240d6d22190c13d6b8a3a86d1af8c73b062289cf957009c5346d4240f1e79"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyAtomicRule.lean",
+      "sha256": "b1094156a98e389fc1c0457487fc1069ac7a9dbd65d1c8d5ecca46037cabf587"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyAtomicRuleAbsolute.lean",
+      "sha256": "3574f39103bc38d5024983f05f9133df06360e2883bc9b2e643c3de4204359bf"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyClassifierAbsolute.lean",
+      "sha256": "d6b6e4be8bdacb6ed633ed25265b4618115f4f105ba9e688b098f4bca93eb460"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyClassifierBounded.lean",
+      "sha256": "4f8915e302ed6cc2c1a17118566ad6d608b47deb76cf012e8c4673f7a84a47f6"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyClassifierComplexity.lean",
+      "sha256": "4e54e98d21b4ef025954bac250a8ffec59b6dc714aa2fe0febad6a4e71fa2142"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyClassifierFormula.lean",
+      "sha256": "4100e1c726954fcd6ebdfe89a7166d0e774ce3435f9d5b69a0936611f547249c"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyCode.lean",
+      "sha256": "14e37c05dedcfddf0751b9e571b3c04bf3dfdaf50f97583043128ec61c4b212a"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyConjunctionRule.lean",
+      "sha256": "4d3a090e2788c16ca0399fa9733631b706bfbca4fb6047d80d27ba14a8110f31"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyConjunctionRuleAbsolute.lean",
+      "sha256": "a1e727b723b0fbee3f416eca7e22bc42a81cc69e5bb541c47b74731936cae3c3"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyEarlierRecord.lean",
+      "sha256": "5b7502a63dd953c78ea2661a983d6f9011d55c78dacb8a7a2e09a03930153923"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyEarlierRecordAbsolute.lean",
+      "sha256": "f6f66548bfa7535e7136e22294bce88081e3f489b9e98828c0ebef85b4cf03c0"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyExistentialRule.lean",
+      "sha256": "79380ab55cc5f8935d8c2765af867b3e04de915d7cd3c00fb129d63dd4988325"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyExistentialRuleAbsolute.lean",
+      "sha256": "2a7297045f8e9c159768ec02bebebbad901022a15cd3fae3b1271e5cb75224a5"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyIndexedTrace.lean",
+      "sha256": "827a48112fddfeb48d20ad22fb4ea1bc66ac64a0187a69694778e8fb02d0ee15"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyLocalRuleAbsolute.lean",
+      "sha256": "594d83afc629cd90169cc9ce879ba798a567bce3221ad95c6a7dec54b83e645a"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyLocalRuleFormula.lean",
+      "sha256": "cb6c4d61a99845cd0769dca8c90b5bc44a50b9651b361ebe5ad005cd0ee062b0"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyNegationRule.lean",
+      "sha256": "3f28c85ff0691239f9874398f96cecbfba3cfa6f6092b974fb130d5788102284"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyNegationRuleAbsolute.lean",
+      "sha256": "1bdc8878dd3ec974af7872eafcd8f3a642d6e991eb8ba1bbd2e8de18a7bbd3f6"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyRaiseRule.lean",
+      "sha256": "2babc82d87d6a7cc7605d5a106bf12a38da2e78ce102a5e5da50de1d1adb8d05"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyRaiseRuleAbsolute.lean",
+      "sha256": "bbc57fde5721c3750f972e711f9c19b649b3a371379ce881a747d285caae7e33"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyRecordAbsolute.lean",
+      "sha256": "edddb68b9a34b63fac3c556a02f26ce888a84186d8f5ff433f63b923510929f3"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyRecordZF.lean",
+      "sha256": "ba5d8ff60551f2c68d623be9e45386c0678860309e00ab5a71ac7377776afccb"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyRuleTransport.lean",
+      "sha256": "ae60a36b6b317e8ecc2342b266e4df65975e8fd80e28631d2d1a93c92116b9c1"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyTrace.lean",
+      "sha256": "589005884807400f39faf58f4c25a54c4aa80c18c278bbb78a4d032b48dd1b69"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyTraceBounds.lean",
+      "sha256": "248c88506efcc8994307bd549b60d5f8679b5dd6b66dd3273285cff1e9ee15ae"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyTraceGraph.lean",
+      "sha256": "49c16b7a7f99e966f9f81dc56dc2aab3ffd4f8127aa109cb6cbe01cc2b3347de"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyTraceTests.lean",
+      "sha256": "f6e1da393d764995e81b826572379b2769ed60bfcc7890430450a8d4ba2a1360"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyTraceValidityAbsolute.lean",
+      "sha256": "c821730355d938d7efc0ede2de6c574cc62fc962e2bd357f9190b2868976f473"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookLevyTraceValidityFormula.lean",
+      "sha256": "507dc6ae9bea82df657758f88b72d371b1de1fd6d076f9f628f901bb23b4b904"
+    },
+    {
+      "path": "ConstructibleBridge/BMSConstructibleBridge/TextbookNaturalArithmeticStage.lean",
+      "sha256": "46baf81e0e65904a20fc1023c470302f63a69d0e1b75c29358d1ae7ba013cfde"
+    },
+    {
+      "path": "YesMetaZFC/BMS/Ancestor.lean",
+      "sha256": "a17a1c64094594c635358b1d7485f048fe0722d35a76f12ed7765da1afa7189e"
+    },
+    {
+      "path": "YesMetaZFC/BMS/Array.lean",
+      "sha256": "22089646061b7dadfe73e0e1d2914ce971266e99d9a739cd35f3aa16c19cabe6"
+    },
+    {
+      "path": "YesMetaZFC/BMS/BM4WellOrder.lean",
+      "sha256": "2c652100e055649a019f7bc84136f625ee4a10434bba349b99cbbe58502bf190"
+    },
+    {
+      "path": "YesMetaZFC/BMS/Decomposition.lean",
+      "sha256": "2d1e1dd7152eca4e89db916e770e4fd337c81af65cc57ad0fcf819142f892fd4"
+    },
+    {
+      "path": "YesMetaZFC/BMS/Expansion.lean",
+      "sha256": "407ddedcba505d957b66e25ab01ecffae42c92f6ec3648ea33a081080c97d89d"
+    },
+    {
+      "path": "YesMetaZFC/BMS/ExpansionAssembly.lean",
+      "sha256": "b47efb4f4f1bbf4f8e7ca167e71e45fa8658169df0a9bceac203bb53026c4bc2"
+    },
+    {
+      "path": "YesMetaZFC/BMS/ExpansionOrder.lean",
+      "sha256": "868a4e012ae154182188b9157c88879b19ff96c8e0f54c2dca5858fee277d51f"
+    },
+    {
+      "path": "YesMetaZFC/BMS/ExpansionReflectionInput.lean",
+      "sha256": "daa9b6db24b9b74172ebe521592555e4ce796e0c998f13389fcfee3cf4f2749b"
+    },
+    {
+      "path": "YesMetaZFC/BMS/ExpansionRepresentation.lean",
+      "sha256": "9679aea1551fe41f0929fe1cf14624ef48cfdf9e93ced23c0e1eaf104fa39ff0"
+    },
+    {
+      "path": "YesMetaZFC/BMS/FiniteElementarity.lean",
+      "sha256": "4ffce217fa51a5eb9f602fc056ac0717e478683c996d0d94cf473763ae7c7874"
+    },
+    {
+      "path": "YesMetaZFC/BMS/FiniteLevyHierarchy.lean",
+      "sha256": "42a5d93d156637814351dff65cc2c500e2620de3c37db7ba22f94ff9d90d4151"
+    },
+    {
+      "path": "YesMetaZFC/BMS/FiniteReflection.lean",
+      "sha256": "6b12fb0d0f41219948d6566fe28ebfdcf7ca9822e74666af0efb5e85ee7a2099"
+    },
+    {
+      "path": "YesMetaZFC/BMS/Generation.lean",
+      "sha256": "4a9d14f8611a4fe2a73615851fce3d9b911ec2604ac4693927a5f167e64f9575"
+    },
+    {
+      "path": "YesMetaZFC/BMS/Lemma25.lean",
+      "sha256": "12e5f2963502cb9b3c4bb4b9bb49a117a7996b7dfc99fb46f860d3d0e4bf4db4"
+    },
+    {
+      "path": "YesMetaZFC/BMS/OrdinalReflectionSyntax.lean",
+      "sha256": "ebd5ca15157ef3bf0b2f919a7bba9e2b1d72483bd2db75226caaac2c48c86c70"
+    },
+    {
+      "path": "YesMetaZFC/BMS/Parent.lean",
+      "sha256": "21e99ddac5f5467e6242245be48e945f2517557b75a6c3671c1f9e10fd8013fc"
+    },
+    {
+      "path": "YesMetaZFC/BMS/Reference.lean",
+      "sha256": "671fa0773c3c8ad97ef2a33433e4d2881541a9bfd8a7491d843bc6128adabd56"
+    },
+    {
+      "path": "YesMetaZFC/BMS/ReflectionWellOrderingModel.lean",
+      "sha256": "7cb0859a7550e0840a8037ddc37d2f6a328904b8756921e95002d1959353cae6"
+    },
+    {
+      "path": "YesMetaZFC/BMS/SeedRepresentation.lean",
+      "sha256": "6e81a4c2fbc3e328967410e88b6dd649779805f6164fafdc822b379f9824d6d2"
+    },
+    {
+      "path": "YesMetaZFC/BMS/Stability.lean",
+      "sha256": "4a7a75355158e1b877b779902274091f8f2002772f9465857d8f15cb34ae78da"
+    },
+    {
+      "path": "YesMetaZFC/BMS/Stage0Tests.lean",
+      "sha256": "1b811685b733b85afd5cc6f2d34e190b2d1a8ce5b43e52aefe4980bb35248872"
+    },
+    {
+      "path": "YesMetaZFC/BMS/WellFoundedness.lean",
+      "sha256": "b75f71889c7fbba929c9adeb8a0f168e8c5fab3080381e83ef8efd9a54060a05"
+    }
+  ]
+}
