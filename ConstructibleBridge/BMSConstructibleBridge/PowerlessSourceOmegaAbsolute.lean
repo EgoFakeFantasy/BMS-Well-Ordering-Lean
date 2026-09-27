@@ -61,3 +61,4 @@ theorem stage_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
   exact source_l hℳ (PowerlessStageStructure.transitive_l hℳ hω ht hT hA) hω hωA η a
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceOmegaAbsolute
+

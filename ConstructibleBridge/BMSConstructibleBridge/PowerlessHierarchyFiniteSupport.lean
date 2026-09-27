@@ -62,3 +62,4 @@ theorem satisfies_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} ℒ} (hℳ : Theory
     (support_m.derivation.semantically_entails ℳ hℳ) η
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyFiniteSupport
+

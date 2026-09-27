@@ -1,7 +1,135 @@
 import BMSConstructibleBridge.ThirdOrderCantor
+import BMSConstructibleBridge.PowerlessFiniteStablePair
+import BMSConstructibleBridge.PowerlessAmbientStability
+import BMSConstructibleBridge.PowerlessAmbientReflection
+import BMSConstructibleBridge.PowerlessDiagramFamily
+import BMSConstructibleBridge.PowerlessCodedDiagram
+import BMSConstructibleBridge.PowerlessRelabelMatrix
+import BMSConstructibleBridge.PowerlessFiniteDiagramSource
+import BMSConstructibleBridge.PowerlessReflectionLevel
+import BMSConstructibleBridge.PowerlessRelabelReflection
+import BMSConstructibleBridge.PowerlessRelabelPreservation
+import BMSConstructibleBridge.PowerlessRelabelParameters
+import BMSConstructibleBridge.PowerlessRelabelLevels
+import BMSConstructibleBridge.PowerlessRelabelTemplate
+import BMSConstructibleBridge.PowerlessGoodBoundary
+import BMSConstructibleBridge.PowerlessGoodLabels
+import BMSConstructibleBridge.PowerlessGoodChain
+import BMSConstructibleBridge.PowerlessConcatenation
+import BMSConstructibleBridge.PowerlessRelabelAppend
+import BMSConstructibleBridge.PowerlessRelabelCoordinates
+import BMSConstructibleBridge.PowerlessFunctionIterationUnique
+import BMSConstructibleBridge.PowerlessMultiplication
+import BMSConstructibleBridge.PowerlessArithmetic
+import BMSConstructibleBridge.PowerlessArithmeticTerms
+import BMSConstructibleBridge.PowerlessArithmeticTranslation
+import BMSConstructibleBridge.PowerlessArithmeticComprehension
+import BMSConstructibleBridge.PowerlessArithmeticRelation
+import BMSConstructibleBridge.PowerlessArithmeticOrder
+import BMSConstructibleBridge.PowerlessArithmeticPrograms
+import BMSConstructibleBridge.PowerlessArithmeticNumeral
+import BMSConstructibleBridge.PowerlessBMSAncestor
+import BMSConstructibleBridge.PowerlessBMSRepresentation
+import BMSConstructibleBridge.PowerlessNumeralFormula
+import BMSConstructibleBridge.PowerlessBMSRepresentationSyntax
+import BMSConstructibleBridge.PowerlessBMSRepresentationRows
+import BMSConstructibleBridge.PowerlessBMSRepresentationFormula
+import BMSConstructibleBridge.PowerlessBMSCopyAncestor
+import BMSConstructibleBridge.PowerlessBMSRepresentationReflection
+import BMSConstructibleBridge.PowerlessBMSPrefixRepresentation
+import BMSConstructibleBridge.PowerlessBMSExpansionInitialLabels
+import BMSConstructibleBridge.PowerlessShiftedRestriction
+import BMSConstructibleBridge.PowerlessBMSRelabelCrossing
+import BMSConstructibleBridge.PowerlessBMSLabelBlock
+import BMSConstructibleBridge.PowerlessBMSPrefixReflection
+import BMSConstructibleBridge.PowerlessNumeralOrder
+import BMSConstructibleBridge.PowerlessBMSParentStability
+import BMSConstructibleBridge.PowerlessBMSInitialSplit
+import BMSConstructibleBridge.PowerlessBMSPrefixRestoration
+import BMSConstructibleBridge.PowerlessBMSCopyStep
+import BMSConstructibleBridge.PowerlessBMSCopyState
+import BMSConstructibleBridge.PowerlessBMSExpansionDescent
+import BMSConstructibleBridge.PowerlessBMSStrictDescent
+import BMSConstructibleBridge.PowerlessBMSChainMinimum
+import BMSConstructibleBridge.PowerlessBMSWellOrder
+import BMSConstructibleBridge.SecondOrderPureTransfer
+import BMSConstructibleBridge.PowerlessBMSMatrixTransfer
+import BMSConstructibleBridge.SecondOrderProgramIterationClosedSet
+import BMSConstructibleBridge.SecondOrderProgramListOccurrence
+import BMSConstructibleBridge.SecondOrderProgramAncestorClosure
+import BMSConstructibleBridge.SecondOrderProgramAncestorRecursion
+import BMSConstructibleBridge.SecondOrderProgramAncestorComparable
+import BMSConstructibleBridge.SecondOrderProgramUniformAncestorStructure
+import BMSConstructibleBridge.SecondOrderProgramUniformParentMaximality
+import BMSConstructibleBridge.SecondOrderProgramUniformParentCandidate
+import BMSConstructibleBridge.SecondOrderProgramUniformAncestorRows
+import BMSConstructibleBridge.SecondOrderProgramAncestorInterval
+import BMSConstructibleBridge.SecondOrderProgramUniformAncestorRecord
+import BMSConstructibleBridge.SecondOrderProgramUniformAncestorBetween
+import BMSConstructibleBridge.SecondOrderProgramUniformParentComparison
+import BMSConstructibleBridge.SecondOrderProgramAscendingAncestor
+import BMSConstructibleBridge.SecondOrderProgramCopyEntryOrder
+import BMSConstructibleBridge.SecondOrderProgramCopyAncestorEntryOrder
+import BMSConstructibleBridge.SecondOrderProgramRectangularEntry
+import BMSConstructibleBridge.SecondOrderProgramTrimPositiveEntry
+import BMSConstructibleBridge.SecondOrderProgramCopyAncestorForward
+import BMSConstructibleBridge.SecondOrderProgramCopyAncestorReverse
+import BMSConstructibleBridge.SecondOrderProgramCopyAncestorRows
+import BMSConstructibleBridge.SecondOrderProgramOffsetParentZero
+import BMSConstructibleBridge.SecondOrderProgramOffsetParentAncestor
+import BMSConstructibleBridge.SecondOrderProgramBadBlockAncestor
+import BMSConstructibleBridge.SecondOrderProgramCopyBadBlockAncestorRows
+import BMSConstructibleBridge.SecondOrderProgramAppendRightAncestor
+import BMSConstructibleBridge.SecondOrderProgramSuccessCopyAncestor
+import BMSConstructibleBridge.SecondOrderProgramExpansionCopyAncestor
+import BMSConstructibleBridge.SecondOrderProgramExpansionInsideCopies
+import BMSConstructibleBridge.SecondOrderProgramBlockCoordinates
+import BMSConstructibleBridge.SecondOrderProgramExpansionBoundarySource
+import BMSConstructibleBridge.SecondOrderProgramExpansionBoundaryArithmetic
+import BMSConstructibleBridge.SecondOrderProgramAppendRightEntry
+import BMSConstructibleBridge.SecondOrderProgramSuccessCopyEntry
+import BMSConstructibleBridge.SecondOrderProgramExpansionCopyEntry
+import BMSConstructibleBridge.SecondOrderProgramCopyShiftEntrySome
+import BMSConstructibleBridge.SecondOrderProgramExpansionParameterEntries
+import BMSConstructibleBridge.SecondOrderProgramExpansionFirstEntry
+import BMSConstructibleBridge.SecondOrderProgramExpansionAdjacentEntry
+import BMSConstructibleBridge.SecondOrderProgramBadBlockEntry
+import BMSConstructibleBridge.SecondOrderProgramExpansionAscendingBoundary
+import BMSConstructibleBridge.SecondOrderProgramExpansionPreviousToNextEntry
+import BMSConstructibleBridge.SecondOrderProgramExpansionBoundaryMiddle
+import BMSConstructibleBridge.SecondOrderProgramEntryOrderTransport
+import BMSConstructibleBridge.SecondOrderProgramExpansionInsideCopyEntryOrder
+import BMSConstructibleBridge.SecondOrderProgramUniformAncestorRecordAllRows
+import BMSConstructibleBridge.SecondOrderProgramExpansionBoundarySync
+import BMSConstructibleBridge.SecondOrderProgramExpansionRawFirstEntry
+import BMSConstructibleBridge.SecondOrderProgramExpansionTrimLowerBound
+import BMSConstructibleBridge.SecondOrderProgramExpansionBoundaryRecordTransport
+import BMSConstructibleBridge.SecondOrderProgramExpansionBoundaryStep
+import BMSConstructibleBridge.SecondOrderProgramExpansionBoundaryRows
+import BMSConstructibleBridge.SecondOrderProgramExpansionBoundaryActual
+import BMSConstructibleBridge.SecondOrderProgramMaximalParentHeight
+import BMSConstructibleBridge.SecondOrderProgramExpansionCopyRootAncestor
+import BMSConstructibleBridge.SecondOrderProgramExpansionCopyRootParent
+import BMSConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut
+import BMSConstructibleBridge.SecondOrderProgramExpansionGoodToLocalSourceRoot
+import BMSConstructibleBridge.SecondOrderProgramExpansionGoodToCopyActual
+import BMSConstructibleBridge.SecondOrderProgramExpansionCopyBoundaryIteration
+import BMSConstructibleBridge.SecondOrderProgramExpansionCopyBoundaryActualIteration
+import BMSConstructibleBridge.SecondOrderProgramExpansionEarlierParentCandidateCut
+import BMSConstructibleBridge.SecondOrderProgramExpansionGoodToCopy
+import BMSConstructibleBridge.SecondOrderProgramExpansionGoodToLocalAllRows
+import BMSConstructibleBridge.SecondOrderProgramExpansionEarlierToSuccessive
+import BMSConstructibleBridge.SecondOrderProgramExpansionPrefixToSuccessive
+import BMSConstructibleBridge.SecondOrderProgramExpansionInsideCopiesAllRows
+import BMSConstructibleBridge.SecondOrderProgramExpansionCrossingSource
+import BMSConstructibleBridge.PowerlessUniformSourceSpecification
+import BMSConstructibleBridge.PowerlessStableDiagram
+import BMSConstructibleBridge.PowerlessStableTrace
 import BMSConstructibleBridge.PowerlessPower
 import BMSConstructibleBridge.PowerlessProduct
 import BMSConstructibleBridge.PowerlessNatural
+import BMSConstructibleBridge.PowerlessFiniteChain
+import BMSConstructibleBridge.PowerlessGlobalBoundary
 import BMSConstructibleBridge.PowerlessNaturalOrder
 import BMSConstructibleBridge.PowerlessWellOrder
 import BMSConstructibleBridge.PowerlessMapping
@@ -216,6 +344,58 @@ import BMSConstructibleBridge.PowerlessTruthStep
 import BMSConstructibleBridge.PowerlessTruthCertificate
 import BMSConstructibleBridge.PowerlessTruthMonotone
 import BMSConstructibleBridge.PowerlessTruthCertificateUnion
+import BMSConstructibleBridge.PowerlessTruthClosure
+import BMSConstructibleBridge.PowerlessTruthClosureSupport
+import BMSConstructibleBridge.PowerlessTruthInduction
+import BMSConstructibleBridge.PowerlessTruthOracle
+import BMSConstructibleBridge.PowerlessOracleClosure
+import BMSConstructibleBridge.PowerlessOracleBounded
+import BMSConstructibleBridge.PowerlessOracleSupport
+import BMSConstructibleBridge.PowerlessOrdinalCollection
+import BMSConstructibleBridge.PowerlessOrdinalMinimum
+import BMSConstructibleBridge.PowerlessSourceWitnessBound
+import BMSConstructibleBridge.PowerlessSourceWitnessStep
+import BMSConstructibleBridge.PowerlessSourceWitnessSequence
+import BMSConstructibleBridge.PowerlessSourceWitnessDomain
+import BMSConstructibleBridge.PowerlessSourceClass
+import BMSConstructibleBridge.PowerlessHierarchyClass
+import BMSConstructibleBridge.PowerlessSourcePack
+import BMSConstructibleBridge.PowerlessSourceTuple
+import BMSConstructibleBridge.PowerlessSourceFamily
+import BMSConstructibleBridge.PowerlessSourceOpening
+import BMSConstructibleBridge.PowerlessSourceRequests
+import BMSConstructibleBridge.PowerlessSourceReflection
+import BMSConstructibleBridge.PowerlessSourceReflectionFamily
+import BMSConstructibleBridge.PowerlessClassBasic
+import BMSConstructibleBridge.PowerlessClassSeparation
+import BMSConstructibleBridge.PowerlessClassCollection
+import BMSConstructibleBridge.PowerlessSourceParameters
+import BMSConstructibleBridge.PowerlessSourcePadding
+import BMSConstructibleBridge.PowerlessClassAxioms
+import BMSConstructibleBridge.PowerlessClassComprehension
+import BMSConstructibleBridge.PowerlessClassCore
+import BMSConstructibleBridge.PowerlessClassFiniteSupport
+import BMSConstructibleBridge.PowerlessTruthIntroduction
+import BMSConstructibleBridge.PowerlessPartialTruthZero
+import BMSConstructibleBridge.PowerlessPartialTruthOne
+import BMSConstructibleBridge.PowerlessTruthStage
+import BMSConstructibleBridge.PowerlessOracleRules
+import BMSConstructibleBridge.PowerlessOracleIntroduction
+import BMSConstructibleBridge.PowerlessRelativeParameters
+import BMSConstructibleBridge.PowerlessPartialTruthProperty
+import BMSConstructibleBridge.PowerlessPartialTruthIntroduction
+import BMSConstructibleBridge.PowerlessEvaluationParameters
+import BMSConstructibleBridge.PowerlessTruthParameters
+import BMSConstructibleBridge.PowerlessOracleParameters
+import BMSConstructibleBridge.PowerlessPartialTruthProgress
+import BMSConstructibleBridge.PowerlessPartialTruthFirst
+import BMSConstructibleBridge.PowerlessPartialTruthSuccessor
+import BMSConstructibleBridge.PowerlessPartialTruthStep
+import BMSConstructibleBridge.PowerlessNumeral
+import BMSConstructibleBridge.PowerlessPartialTruthFinite
+import BMSConstructibleBridge.PowerlessTruthFiniteStage
+import BMSConstructibleBridge.PowerlessTruthFirstStage
+import BMSConstructibleBridge.PowerlessPartialTruth
 import BMSConstructibleBridge.PowerlessEvaluationRestriction
 import Lean.Util.CollectAxioms
 
@@ -300,7 +480,165 @@ run_cmd do
     ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthCertificate.sound_l,
     ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthCertificate.accepts_source_l,
     ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthMonotone.step_l,
-    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthCertificateUnion.union_l]
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthCertificateUnion.union_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodLabels.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodChain.initial_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteProduct.concat_graph_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelAppend.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelCoordinates.lower_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelCoordinates.upper_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelCoordinates.cross_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessMultiplication.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmetic.operations_exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmetic.base_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTerms.term_formula_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTranslation.formula_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticComprehension.models_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticRelation.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticOrder.lt_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticPrograms.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSAncestor.formula_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSAncestor.bound_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentation.initial_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentationFormula.formula_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyAncestor.ancestor_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentationReflection.image_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.member_closed_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorRecursion.member_some_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorComparable.comparable_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorStructure.row_succ_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorStructure.ancestor_le_parent_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentMaximality.no_better_middle_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentCandidate.parent_at_or_after_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentCandidate.entry_not_lt_of_no_ancestor_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRows.row_le_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorInterval.member_of_persistent_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.member_iff_record_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.member_iff_record_zero_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorBetween.member_between_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentComparison.member_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscendingAncestor.zero_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscendingAncestor.nonzero_of_right_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyEntryOrder.entry_order_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyEntryOrder.entry_order_of_copy_right_zero_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyEntryOrder.entry_value_congr_of_zero_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyEntryOrder.entry_value_common_of_zero_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorEntryOrder.entry_order_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRectangularEntry.offset_exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRectangularEntry.row_lt_of_some_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTrimPositiveEntry.row_lt_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorForward.member_of_source_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorReverse.member_source_of_copy_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorRows.member_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSuccessCopyAncestor.member_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyAncestor.member_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopies.member_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentRelocation.parent_below_or_offset_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramBlockCoordinates.below_mul_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramBlockCoordinates.offset_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySource.member_below_parent_row_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySource.positive_entry_gap_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySource.source_previous_to_next_order_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryArithmetic.previous_to_next_entry_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryArithmetic.first_entry_increases_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAppendRightEntry.entry_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSuccessCopyEntry.entry_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyEntry.entry_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyShiftEntrySome.entry_shift_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParameterEntries.last_column_lookup_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParameterEntries.width_pos_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParameterEntries.bad_head_lookup_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParameterEntries.bad_first_entry_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParameterEntries.parameter_gap_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionFirstEntry.entry_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionAdjacentEntry.entry_order_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramBadBlockEntry.entry_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionAscendingBoundary.nonzero_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionPreviousToNextEntry.entry_order_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionPreviousToNextEntry.entry_order_of_below_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryMiddle.middle_local_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryMiddle.source_middle_local_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryMiddle.source_middle_output_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramEntryOrderTransport.entry_order_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramEntryOrderTransport.entry_order_some_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopyEntryOrder.entry_order_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopyEntryOrder.entry_value_congr_of_zero_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopyEntryOrder.entry_order_of_below_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecordAllRows.member_iff_record_all_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecordAllRows.member_iff_of_middle_transport_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySync.sync_m,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySync.sync_formula_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySync.all_rows_of_step_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionRawFirstEntry.entry_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionTrimLowerBound.maximal_le_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryRecordTransport.member_iff_of_entry_transport_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryStep.member_iff_of_below_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryRows.member_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryRows.adjacent_first_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryRows.member_congr_below_maximal_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryActual.member_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramMaximalParentHeight.maximal_lt_height_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyRootAncestor.member_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyRootParent.parent_in_copy_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut.no_ancestor_after_parent_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut.earlier_copy_column_lt_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut.earlier_copy_parent_cut_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut.earlier_copy_parent_ancestor_first_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut.zero_first_ancestor_of_earlier_copy_parent_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToLocalSourceRoot.member_iff_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToCopyActual.member_iff_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscendingAncestor.first_nonzero_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscendingAncestor.nonzero_of_source_ancestor_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscendingAncestor.source_ancestor_of_nonzero_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyBoundaryIteration.first_to_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyBoundaryActualIteration.zero_first_to_copy_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyBoundaryActualIteration.zero_first_to_target_of_earlier_parent_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCandidateCut.no_zero_copy_middle_ancestor_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCandidateCut.entry_not_lt_zero_copy_of_earlier_parent_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCandidateCut.actual_ancestor_conflicts_with_zero_copy_bound_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToCopy.member_iff_of_root_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToCopy.member_iff_of_adjacent_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToCopy.member_iff_of_two_roots_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToLocalAllRows.all_rows_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopiesAllRows.member_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParentLocalityAllRows.all_rows_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierToSuccessive.member_congr_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCrossingSource.source_iff_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixRepresentation.formula_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixRepresentation.restrict_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixRepresentation.transfer_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixRepresentation.complete_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSExpansionInitialLabels.initial_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSExpansionInitialLabels.fallback_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessShiftedRestriction.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessShiftedRestriction.at_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessShiftedRestriction.order_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRelabelCrossing.edge_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSLabelBlock.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionPrefixToSuccessive.all_rows_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixReflection.image_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixReflection.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessNumeralOrder.member_iff_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessNumeralOrder.bounded_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSParentStability.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticNumeral.numeral_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSInitialSplit.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixRestoration.step_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyStep.span_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyStep.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyState.formula_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyState.bounded_induction_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSExpansionDescent.selected_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSStrictDescent.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSChainMinimum.formula_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSChainMinimum.exists_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSChainMinimum.no_chain_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSWellOrder.no_chain_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSWellOrder.matrix_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSWellOrder.models_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPureTransfer.formula_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSMatrixTransfer.matrix_l,
+    ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSMatrixTransfer.closed_l]
   let mut V : NameSet := {}
   let mut P := C.toList
   while !P.isEmpty do
@@ -322,6 +660,8 @@ run_cmd do
     `BMSConstructibleBridge.PowerlessImage, `BMSConstructibleBridge.PowerlessComprehension,
     `BMSConstructibleBridge.PowerlessPower, `BMSConstructibleBridge.PowerlessProduct,
     `BMSConstructibleBridge.PowerlessNatural, `BMSConstructibleBridge.PowerlessNaturalOrder,
+    `BMSConstructibleBridge.PowerlessFiniteChain,
+    `BMSConstructibleBridge.PowerlessGlobalBoundary,
     `BMSConstructibleBridge.PowerlessWellOrder, `BMSConstructibleBridge.PowerlessMapping,
     `BMSConstructibleBridge.PowerlessFunction, `BMSConstructibleBridge.PowerlessRestriction,
     `BMSConstructibleBridge.PowerlessFunctionUnion, `BMSConstructibleBridge.PowerlessNaturalStep,
@@ -588,7 +928,98 @@ run_cmd do
     `BMSConstructibleBridge.PowerlessTruthStep,
     `BMSConstructibleBridge.PowerlessTruthCertificate,
     `BMSConstructibleBridge.PowerlessTruthMonotone,
-    `BMSConstructibleBridge.PowerlessTruthCertificateUnion]
+    `BMSConstructibleBridge.PowerlessTruthCertificateUnion,
+    `BMSConstructibleBridge.PowerlessTruthClosure,
+    `BMSConstructibleBridge.PowerlessTruthClosureSupport,
+    `BMSConstructibleBridge.PowerlessTruthInduction,
+    `BMSConstructibleBridge.PowerlessTruthOracle,
+    `BMSConstructibleBridge.PowerlessOracleClosure,
+    `BMSConstructibleBridge.PowerlessOracleBounded,
+    `BMSConstructibleBridge.PowerlessPartialTruth,
+    `BMSConstructibleBridge.PowerlessOracleSupport,
+    `BMSConstructibleBridge.PowerlessOrdinalCollection,
+    `BMSConstructibleBridge.PowerlessOrdinalMinimum,
+    `BMSConstructibleBridge.PowerlessSourceWitnessBound,
+    `BMSConstructibleBridge.PowerlessSourceWitnessStep,
+    `BMSConstructibleBridge.PowerlessSourceWitnessSequence,
+    `BMSConstructibleBridge.PowerlessSourceWitnessDomain,
+    `BMSConstructibleBridge.PowerlessSourceClass,
+    `BMSConstructibleBridge.PowerlessHierarchyClass,
+    `BMSConstructibleBridge.PowerlessSourcePack,
+    `BMSConstructibleBridge.PowerlessSourceTuple,
+    `BMSConstructibleBridge.PowerlessSourceFamily,
+    `BMSConstructibleBridge.PowerlessSourceOpening,
+    `BMSConstructibleBridge.PowerlessSourceRequests,
+    `BMSConstructibleBridge.PowerlessSourceReflection,
+    `BMSConstructibleBridge.PowerlessSourceReflectionFamily,
+    `BMSConstructibleBridge.PowerlessClassBasic,
+    `BMSConstructibleBridge.PowerlessClassSeparation,
+    `BMSConstructibleBridge.PowerlessClassCollection,
+    `BMSConstructibleBridge.PowerlessSourceParameters,
+    `BMSConstructibleBridge.PowerlessSourcePadding,
+    `BMSConstructibleBridge.PowerlessClassAxioms,
+    `BMSConstructibleBridge.PowerlessClassComprehension,
+    `BMSConstructibleBridge.PowerlessClassCore,
+    `BMSConstructibleBridge.PowerlessClassFiniteSupport,
+    `BMSConstructibleBridge.PowerlessTruthIntroduction,
+    `BMSConstructibleBridge.PowerlessPartialTruthZero,
+    `BMSConstructibleBridge.PowerlessPartialTruthOne,
+    `BMSConstructibleBridge.PowerlessTruthStage,
+    `BMSConstructibleBridge.PowerlessOracleRules,
+    `BMSConstructibleBridge.PowerlessOracleIntroduction,
+    `BMSConstructibleBridge.PowerlessRelativeParameters,
+    `BMSConstructibleBridge.PowerlessPartialTruthProperty,
+    `BMSConstructibleBridge.PowerlessPartialTruthIntroduction,
+    `BMSConstructibleBridge.PowerlessEvaluationParameters,
+    `BMSConstructibleBridge.PowerlessTruthParameters,
+    `BMSConstructibleBridge.PowerlessOracleParameters,
+    `BMSConstructibleBridge.PowerlessPartialTruthProgress,
+    `BMSConstructibleBridge.PowerlessPartialTruthFirst,
+    `BMSConstructibleBridge.PowerlessPartialTruthSuccessor,
+    `BMSConstructibleBridge.PowerlessPartialTruthStep,
+    `BMSConstructibleBridge.PowerlessNumeral,
+    `BMSConstructibleBridge.PowerlessPartialTruthFinite,
+    `BMSConstructibleBridge.PowerlessTruthFiniteStage,
+    `BMSConstructibleBridge.PowerlessTruthFirstStage,
+    `BMSConstructibleBridge.SecondOrderListInduction,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionEarlierParentCandidateCut,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionParentLocality,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionBoundaryTruncation,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionUnshiftedEntryOrder,
+    `BMSConstructibleBridge.SecondOrderProgramRectangularParent,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionMaximalRootBound,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionParentLocalityAllRows,
+    `BMSConstructibleBridge.SecondOrderProgramUniformParentBoundedCongruence,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionGoodToFirstAllRows,
+    `BMSConstructibleBridge.SecondOrderProgramUniformParentInternalCongruence,
+    `BMSConstructibleBridge.SecondOrderProgramUniformParentBlockCongruence,
+    `BMSConstructibleBridge.SecondOrderProgramPrefixBlockAgreement,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionGoodToLocalAllRows,
+    `BMSConstructibleBridge.SecondOrderProgramUniformAncestorIntervalCut,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionCrossing,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionEarlierToSuccessive,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionInsideCopiesAllRows,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionCrossingSource,
+    `BMSConstructibleBridge.PowerlessBMSPrefixRepresentation,
+    `BMSConstructibleBridge.PowerlessBMSExpansionInitialLabels,
+    `BMSConstructibleBridge.PowerlessShiftedRestriction,
+    `BMSConstructibleBridge.PowerlessBMSRelabelCrossing,
+    `BMSConstructibleBridge.PowerlessBMSLabelBlock,
+    `BMSConstructibleBridge.SecondOrderProgramExpansionPrefixToSuccessive,
+    `BMSConstructibleBridge.PowerlessBMSPrefixReflection,
+    `BMSConstructibleBridge.PowerlessNumeralOrder,
+    `BMSConstructibleBridge.PowerlessBMSParentStability,
+    `BMSConstructibleBridge.PowerlessArithmeticNumeral,
+    `BMSConstructibleBridge.PowerlessBMSInitialSplit,
+    `BMSConstructibleBridge.PowerlessBMSPrefixRestoration,
+    `BMSConstructibleBridge.PowerlessBMSCopyStep,
+    `BMSConstructibleBridge.PowerlessBMSCopyState,
+    `BMSConstructibleBridge.PowerlessBMSExpansionDescent,
+    `BMSConstructibleBridge.PowerlessBMSStrictDescent,
+    `BMSConstructibleBridge.PowerlessBMSChainMinimum,
+    `BMSConstructibleBridge.PowerlessBMSWellOrder,
+    `BMSConstructibleBridge.SecondOrderPureTransfer,
+    `BMSConstructibleBridge.PowerlessBMSMatrixTransfer]
   let A := #[``propext, ``Classical.choice, ``Quot.sound]
   let mut n : Nat := 0
   for (c, _) in E.constants.toList do
@@ -609,6 +1040,13 @@ run_cmd do
       ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessProduct.exists_l,
       ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPower.exists_l,
       ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessNatural.induction_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteChain.chain_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteChain.zero_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteChain.append_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteChain.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteChain.serial_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessGlobalBoundary.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessGlobalBoundary.cutoff_l,
       ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessNaturalOrder.omega_transitive_l,
       ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessNaturalOrder.member_transitive_l,
       ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessWellOrder.induction_l,
@@ -1622,7 +2060,199 @@ run_cmd do
       ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthMonotone.bounded_l,
       ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthMonotone.exists_l,
       ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthMonotone.step_l,
-      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthCertificateUnion.union_l] do
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthCertificateUnion.union_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosure.step_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosure.certificate_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosure.accepts_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosure.monotone_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosure.union_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosure.adjoin_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosure.base_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosure.collect_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosureSupport.collection_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosureSupport.sentence_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosureSupport.finite_m,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosureSupport.core_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthClosureSupport.models_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthInduction.sound_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthOracle.instance_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthOracle.sound_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthOracle.accepts_source_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.certificate_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.accepts_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.monotone_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.union_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.adjoin_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.base_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.collect_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.merge_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.nand_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.family_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleClosure.original_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleBounded.witnesses_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleBounded.positive_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleBounded.negative_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruth.lower_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruth.lower_sound_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruth.lower_complete_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruth.zero_complete_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruth.lift_complete_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleSupport.collection_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleSupport.extension_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleSupport.sentence_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleSupport.finite_m,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleSupport.core_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleSupport.models_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleSupport.collection_model_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleSupport.extension_model_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOrdinalCollection.partial_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOrdinalCollection.union_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOrdinalCollection.bound_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOrdinalCollection.witnesses_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOrdinalMinimum.binding_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOrdinalMinimum.minimum_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOrdinalMinimum.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOrdinalMinimum.unique_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessBound.binding_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessBound.rank_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessBound.bound_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessStep.binding_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessStep.step_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessStep.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessStep.select_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessStep.select_unique_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessStep.select_exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessStep.selected_step_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessSequence.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessSequence.limit_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessDomain.domain_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessDomain.restrict_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessDomain.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceClass.term_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceClass.push_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceClass.domain_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceClass.formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyClass.nonempty_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyClass.domain_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyClass.env_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyClass.lift_env_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyClass.formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourcePack.binding_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourcePack.formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourcePack.pair_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourcePack.closure_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourcePack.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceTuple.empty_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceTuple.code_exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceTuple.formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceTuple.closure_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceTuple.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceFamily.binding_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceFamily.sum_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceFamily.left_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceFamily.right_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceFamily.sum_closed_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceFamily.family_closed_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceFamily.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceOpening.slot_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceOpening.skip_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceOpening.formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceOpening.push_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceOpening.witness_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceOpening.bounded_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceRequests.subset_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceRequests.witness_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceRequests.reflection_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceReflection.parameters_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceReflection.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceReflectionFamily.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassBasic.common_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassBasic.transitive_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassBasic.stage_member_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassBasic.ordinal_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassBasic.parameters_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassBasic.empty_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassBasic.pair_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassBasic.union_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassSeparation.relation_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassSeparation.structure_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassSeparation.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassCollection.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceParameters.pullback_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceParameters.unary_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceParameters.binary_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceParameters.env_exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourcePadding.formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourcePadding.push_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassAxioms.ext_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassAxioms.foundation_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassAxioms.empty_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassAxioms.pairing_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassAxioms.union_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassAxioms.infinity_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassComprehension.separation_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassComprehension.collection_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassCore.models_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassFiniteSupport.models_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthIntroduction.introduction_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthIntroduction.sentence_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthIntroduction.models_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthIntroduction.satisfies_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthZero.source_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthOne.lower_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthOne.source_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthStage.subset_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthStage.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleRules.step_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleIntroduction.introduction_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleIntroduction.sentence_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleIntroduction.models_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleIntroduction.satisfies_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeParameters.instance_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthProperty.body_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthProperty.property_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthProperty.induction_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthProperty.zero_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthIntroduction.oracle_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthIntroduction.lower_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthIntroduction.successor_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthIntroduction.original_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthIntroduction.bounded_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthIntroduction.promotion_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessEvaluationParameters.formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthParameters.truth_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthParameters.step_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleParameters.certificate_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleParameters.accepts_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleParameters.nand_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthIntroduction.nand_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthIntroduction.lift_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthProgress.boolean_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleParameters.witness_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleParameters.existential_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleParameters.positive_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessOracleParameters.negative_formula_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthIntroduction.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthIntroduction.positive_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthIntroduction.negative_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthProgress.quantifier_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthProgress.bounded_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthFirst.complete_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthSuccessor.lower_sound_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthSuccessor.lower_complete_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthSuccessor.promotion_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthSuccessor.source_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthStep.quantifier_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthStep.complete_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthStep.source_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessNumeral.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessNumeral.natural_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessNumeral.unique_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthFinite.source_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthFiniteStage.exists_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessPartialTruthFirst.source_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthFirstStage.exists_l] do
     unless E.contains c do
       throwError "缺少三阶背景接口：{c}"
   if n == 0 then
@@ -2517,3 +3147,428 @@ run_cmd do
 #print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthMonotone.exists_l
 #print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthMonotone.step_l
 #print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthCertificateUnion.union_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceReflectionFamily.exists_l
+
+-- 内部有限关系图及原有限层稳定对；背景仍为完整 PowerlessTheory。
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStageFiniteRanges.covered_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStageFiniteRanges.finite_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStageFiniteRanges.separation_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationDiagram.binding_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationDiagram.selector_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationDiagram.selected_iff_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationDiagram.product_subset_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationDiagram.separation_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStableDiagram.relation_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStableDiagram.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStableTrace.trace_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStableTrace.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceReflectionSupport.sentence_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceReflectionSupport.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthReflection.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthReflection.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthReflectingStage.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteStablePair.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessTruthReflectingStage.supported_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStabilitySupport.hierarchy_subset_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStabilitySupport.subset_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStabilitySupport.hierarchy_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStabilitySupport.introduction_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStabilitySupport.oracle_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStabilitySupport.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteStablePair.supported_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessAmbientAgreement.agreement_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessAmbientAgreement.absolute_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessAmbientStability.source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStabilitySupport.monotone_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessSupportedReflection.support_le_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessSupportedReflection.formula_le_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessSupportedReflection.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessAmbientReflection.source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessAmbientReflection.inclusion_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessAmbientReflection.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramConstraint.binding_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramConstraint.preserves_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramConstraint.instance_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramConstraint.candidate_binding_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramConstraint.candidate_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramConstraint.extract_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramFamily.realize_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramFamily.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformEvaluationLogic.nand_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformEvaluationLogic.negation_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformEvaluationLogic.truth_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformEvaluationLogic.conjunction_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformEvaluationLogic.disjunction_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformEvaluationLogic.implication_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformEvaluationLogic.biconditional_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformEvaluationLogic.existential_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformSourceSpecification.widen_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformSourceSpecification.negation_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformSourceSpecification.existential_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformSourceSpecification.universal_l
+
+-- 跨域统一数码、实际内部有限积与同一函数图的逐值好标签；仍以完整 PowerlessTheory 为背景。
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformSourceCompilation.common_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessUniformSourceCompilation.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteTheoryCode.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedStageTheory.holds_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedStageTheory.code_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedStageAbsoluteness.graph_member_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedStageAbsoluteness.holds_absolute_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedStageSource.holds_source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedStageSource.good_label_code_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteProduct.product_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteProduct.cover_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteProduct.sum_cases_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteProduct.concat_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteProduct.concat_graph_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteProduct.column_enum_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteProduct.enumeration_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramLabels.binding_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramLabels.labels_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramLabels.source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedDiagram.good_source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedDiagram.labels_source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramLabels.trace_source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessAmbientDiagram.source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessStageFiniteMapping.member_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteDiagramSource.source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelMatrix.lift_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelMatrix.graph_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelMatrix.matrix_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelMatrix.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessReflectionLevel.budget_eq_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessReflectionLevel.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramRelabelConditions.preserves_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramRelabelConditions.source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramRelabelConditions.order_source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessDiagramRelabelConditions.stable_source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelSource.conditions_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelSource.source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelSource.realize_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelReflection.transfer_l
+
+-- 实际原标签记录、逐值重标号结论及固定好标签类中的支持边界。
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelDiagram.edges_exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelDiagram.order_exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelDiagram.stable_exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelDiagram.trace_exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelDiagram.realizes_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelDiagram.trace_subset_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelDiagram.trace_realizes_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelDiagram.preserves_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelWitness.family_exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelWitness.trace_bounds_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelWitness.realizes_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelWitness.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelPreservation.extract_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedDiagram.good_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.stable_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.models_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.monotone_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.trans_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.interpolate_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.pair_exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.minimum_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.cutoff_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.lower_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.unique_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.boundary_monotone_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodBoundary.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelParameters.budget_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelParameters.source_l
+
+-- 实际重标号存在性与由实际矩阵预算构造的外部层号。
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabel.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelLevels.succ_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelLevels.length_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelLevels.bound_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelLevels.mem_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelLevels.lt_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelLevels.mono_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelLevels.budget_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelLevels.numerals_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelLevels.boundaries_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelLevels.cutoff_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelLevels.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelTemplate.budget_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelTemplate.source_l
+
+-- 通过实际常值图反射构造最小边界以下的初始好标签。
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodLabels.insert_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodLabels.below_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodLabels.pair_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodLabels.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodChain.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessGoodChain.initial_l
+
+-- 精确拼接及同一反射见证在三段标签图中的实际坐标。
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessConcatenation.graph_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessConcatenation.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessConcatenation.prefix_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessConcatenation.shift_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessConcatenation.labels_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessConcatenation.order_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelAppend.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelCoordinates.prefix_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelCoordinates.middle_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelCoordinates.last_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelCoordinates.lower_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelCoordinates.upper_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelCoordinates.top_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelabelCoordinates.cross_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessFunctionIteration.unique_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessMultiplication.operator_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessMultiplication.operator_exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessMultiplication.operator_unique_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessMultiplication.multiplication_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessMultiplication.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessMultiplication.unique_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessMultiplication.natural_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessMultiplication.zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessMultiplication.successor_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmetic.operations_exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmetic.operations_unique_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmetic.structure_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmetic.base_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTerms.val_injective_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTerms.weaken_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTerms.function_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTerms.term_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTerms.arguments_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTranslation.domain_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTranslation.domain_val_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTranslation.domain_exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTranslation.lift_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTranslation.relation_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTranslation.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticComprehension.extension_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticComprehension.comprehension_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticComprehension.models_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticRelation.edge_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticRelation.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticRelation.unique_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticRelation.value_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticRelation.function_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticOrder.lt_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticPrograms.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticPrograms.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTranslation.formula_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticRelation.edge_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSAncestor.source_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSAncestor.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSAncestor.graph_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSAncestor.bound_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSAncestor.ancestor_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentation.width_graph_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentation.of_chain_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentation.initial_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessNumeral.numeral_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessNumeral.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentationSyntax.labels_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentationSyntax.order_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentationSyntax.stable_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentationSyntax.width_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentationRows.row_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentationFormula.rows_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentationFormula.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentationFormula.representation_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyAncestor.ancestor_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRepresentationReflection.image_l
+
+-- 原成员程序的父闭包、传递、递归及逐行包含；不假定内部自然数外部标准。
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramIterationClosedSet.kept_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramIterationClosedSet.kept_language_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramIterationClosedSet.kept_syntax_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramIterationClosedSet.repeat_mem_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListOccurrence.occurs_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListOccurrence.occurs_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListOccurrence.occurs_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListOccurrence.length_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListOccurrence.zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListOccurrence.cons_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListOccurrence.reverse_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.linked_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.linked_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.linked_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.linked_zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.linked_cons_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.kept_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.kept_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.kept_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.output_kept_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.output_closed_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosure.member_closed_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorRecursion.ancestor_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorRecursion.ancestor_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorRecursion.set_exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorRecursion.parent_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorRecursion.trans_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorRecursion.member_some_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorComparable.comparable_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorStructure.parent_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorStructure.trans_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorStructure.member_some_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorStructure.ancestor_le_parent_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentMaximality.no_better_middle_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentCandidate.parent_at_or_after_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentCandidate.entry_not_lt_of_no_ancestor_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorStructure.comparable_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorStructure.row_succ_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRows.row_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRows.row_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRows.row_le_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorInterval.member_of_persistent_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.entry_lt_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.entry_lt_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.kept_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.kept_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.entry_lt_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.entry_lt_zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.member_of_record_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.member_iff_record_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.member_of_record_zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecord.member_iff_record_zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorBetween.member_between_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentComparison.entry_order_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentComparison.zero_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentComparison.succ_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentComparison.parent_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentComparison.member_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscendingAncestor.zero_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscendingAncestor.nonzero_of_right_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyEntryOrder.entry_order_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyEntryOrder.entry_order_of_copy_right_zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyEntryOrder.entry_value_congr_of_zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyEntryOrder.entry_value_common_of_zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorEntryOrder.entry_order_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRectangularEntry.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRectangularEntry.offset_exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRectangularEntry.row_lt_of_some_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTrimPositiveEntry.row_lt_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorForward.member_of_source_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorReverse.member_source_of_copy_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorRows.sync_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorRows.sync_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorRows.member_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentRelocation.parent_local_to_offset_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentRelocation.parent_offset_to_local_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentRelocation.parent_some_offset_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramPrefixEntry.entry_index_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramOffsetParentZero.zero_eligible_agree_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramOffsetParentZero.reloc_ge_zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramOffsetParentAncestor.ancestor_sync_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramOffsetParentAncestor.reloc_ge_rows_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramOffsetParentAncestor.ancestor_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramBadBlockAncestor.member_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyBadBlockAncestorRows.member_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAppendRightAncestor.member_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSuccessCopyAncestor.member_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyAncestor.member_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopies.member_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentRelocation.parent_below_or_offset_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramBlockCoordinates.below_mul_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramBlockCoordinates.offset_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySource.member_below_parent_row_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySource.positive_entry_gap_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySource.source_previous_to_next_order_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryArithmetic.previous_to_next_entry_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryArithmetic.first_entry_increases_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAppendRightEntry.entry_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSuccessCopyEntry.entry_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyEntry.entry_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyShiftEntrySome.entry_shift_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParameterEntries.last_column_lookup_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParameterEntries.width_pos_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParameterEntries.bad_head_lookup_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParameterEntries.bad_first_entry_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParameterEntries.parameter_gap_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionFirstEntry.entry_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionAdjacentEntry.entry_order_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramBadBlockEntry.entry_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionAscendingBoundary.nonzero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionPreviousToNextEntry.entry_order_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionPreviousToNextEntry.entry_order_of_below_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryMiddle.middle_local_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryMiddle.source_middle_local_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryMiddle.source_middle_output_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramEntryOrderTransport.entry_order_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramEntryOrderTransport.entry_order_some_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopyEntryOrder.entry_order_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopyEntryOrder.entry_value_congr_of_zero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopyEntryOrder.entry_order_of_below_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecordAllRows.member_iff_record_all_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecordAllRows.member_iff_of_middle_transport_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySync.sync_m
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySync.sync_formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySync.all_rows_of_step_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionRawFirstEntry.entry_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionTrimLowerBound.maximal_le_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryRecordTransport.member_iff_of_entry_transport_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryStep.member_iff_of_below_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryRows.member_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryRows.adjacent_first_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryRows.member_congr_below_maximal_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryActual.member_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramMaximalParentHeight.maximal_lt_height_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyRootAncestor.member_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyRootParent.parent_in_copy_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut.no_ancestor_after_parent_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut.earlier_copy_column_lt_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut.earlier_copy_parent_cut_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut.earlier_copy_parent_ancestor_first_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut.zero_first_ancestor_of_earlier_copy_parent_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToLocalSourceRoot.member_iff_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToCopyActual.member_iff_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscendingAncestor.first_nonzero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscendingAncestor.nonzero_of_source_ancestor_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscendingAncestor.source_ancestor_of_nonzero_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyBoundaryIteration.first_to_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyBoundaryActualIteration.zero_first_to_copy_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyBoundaryActualIteration.zero_first_to_target_of_earlier_parent_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCandidateCut.no_zero_copy_middle_ancestor_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCandidateCut.entry_not_lt_zero_copy_of_earlier_parent_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCandidateCut.actual_ancestor_conflicts_with_zero_copy_bound_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToCopy.member_iff_of_root_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToCopy.member_iff_of_adjacent_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToCopy.member_iff_of_two_roots_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToLocalAllRows.all_rows_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopiesAllRows.member_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParentLocalityAllRows.all_rows_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierToSuccessive.member_congr_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCrossingSource.source_iff_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixRepresentation.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixRepresentation.restrict_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixRepresentation.transfer_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSExpansionInitialLabels.initial_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSExpansionInitialLabels.fallback_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessShiftedRestriction.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessShiftedRestriction.at_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessShiftedRestriction.order_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRelabelCrossing.edge_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSLabelBlock.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionPrefixToSuccessive.all_rows_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixReflection.image_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixReflection.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessNumeralOrder.member_iff_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessNumeralOrder.bounded_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSParentStability.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticNumeral.numeral_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSInitialSplit.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixRestoration.step_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyStep.span_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyStep.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyState.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyState.bounded_induction_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSExpansionDescent.selected_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSStrictDescent.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSChainMinimum.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSChainMinimum.exists_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSChainMinimum.no_chain_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSWellOrder.no_chain_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSWellOrder.matrix_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSWellOrder.models_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPureTransfer.formula_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSMatrixTransfer.matrix_l
+#print axioms YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSMatrixTransfer.closed_l

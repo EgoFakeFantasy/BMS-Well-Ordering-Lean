@@ -73,3 +73,4 @@ theorem raise_l {φ : Formula ℒ Γ Δ} {p q : Formula.LevyPolarity} {m n : car
     (PowerlessSourcePolarity.natural_l hℳ hω ht q) (polarity_l e t₁ q) hC, h⟩
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceComplexity
+

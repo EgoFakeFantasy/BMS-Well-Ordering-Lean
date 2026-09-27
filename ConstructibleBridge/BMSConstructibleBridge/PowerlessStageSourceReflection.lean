@@ -54,3 +54,4 @@ theorem formula_l {Γ Δ : SortContext ℒ} (φ : Formula ℒ Γ Δ) :
   exact ⟨n, hn, fun h hA hB => at_l hℳ hω ht hT hφ h hA hB⟩
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessStageSourceReflection
+

@@ -75,3 +75,4 @@ theorem universal_l {φ : Formula ℒ (.set :: Γ) Δ}
     (PowerlessSourceSlots.fresh_l hℳ hξ hkJ) hB ((hM k).mpr (Or.inl hkJ)) h
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceComplexityQuantifier
+

@@ -25,6 +25,19 @@ printf '检查 BMS 可构造模型桥接及最终定理公理依赖\n'
   cd ConstructibleBridge
   lake build BMSConstructibleBridge
   lake build BMSTools
+  bridge_targets=()
+  for lean_source in BMSConstructibleBridge/**/*.lean BMSTools/**/*.lean; do
+    lean_module="${lean_source%.lean}"
+    bridge_targets+=("${lean_module//\//.}")
+  done
+  for ((offset = 0; offset < ${#bridge_targets[@]}; offset += lean_batch_size)); do
+    bridge_log="$(mktemp)"
+    lake build "${bridge_targets[@]:offset:lean_batch_size}" 2>&1 | tee "$bridge_log"
+    if grep -Eq 'declaration uses .sorry.|sorryAx' "$bridge_log"; then
+      printf '桥接模块仍含未完成的 Lean 证明。\n' >&2
+      exit 1
+    fi
+  done
   lake env lean BMSTools/Audit.lean
   lake env lean BMSConstructibleBridge/AxiomAudit.lean
   lake env lean BMSConstructibleBridge/FiniteBoundaryAudit.lean

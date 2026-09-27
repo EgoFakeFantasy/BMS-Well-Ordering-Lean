@@ -40,3 +40,4 @@ theorem interpolate_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
   exact (h₂ c p hc f ⟨m, hm, hf₁⟩).symm.trans (h₁ c p hc f ⟨m, hm, hf₀⟩)
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLevyComposition
+

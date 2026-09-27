@@ -45,3 +45,4 @@ theorem formula_l (hAT : PowerlessNaturalOrder.transitive_l A)
   Formula.delta0_absolute (embedding_l hAT) hφ η
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceAmbient
+

@@ -87,3 +87,4 @@ theorem member_l {α f : carrier_l ℳ} (hα : PowerlessOrdinal.ordinal_l α) (h
   exact (h g.val hg).trans (h f hf).symm ▸ g.property
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteStageHierarchy
+

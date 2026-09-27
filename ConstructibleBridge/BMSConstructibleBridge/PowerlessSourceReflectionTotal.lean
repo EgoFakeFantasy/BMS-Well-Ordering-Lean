@@ -96,3 +96,4 @@ theorem formula_l {Γ Δ : SortContext ℒ} (φ : Formula ℒ Γ Δ) :
       exact ⟨n, hn, universal_l hℳ hω ht hT he (hB .pi) hφ⟩
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceReflectionTotal
+

@@ -93,3 +93,4 @@ theorem monotone_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
   lower_l hℳ hξ (PowerlessStageStabilityOrder.monotone_l hℳ hω he hT hξ.1.1 hmn hη.1)
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessStableMinimum
+

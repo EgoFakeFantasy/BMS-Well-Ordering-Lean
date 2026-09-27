@@ -42,3 +42,4 @@ theorem minimum_l (hℳ : Theory.Models ℳ ThirdOrderTheory.theory_m)
   exact ⟨ξ, β, PowerlessOrdinal.transitive_l hκ.1 β ξ hβ hξ.1.2.1.2.1, hβ, hξ⟩
 
 end YesMetaZFC.BMS.ConstructibleBridge.ThirdOrderStablePair
+

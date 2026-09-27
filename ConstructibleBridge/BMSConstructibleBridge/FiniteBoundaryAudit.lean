@@ -1,4 +1,6 @@
 import BMSConstructibleBridge.FiniteStableBoundary
+import BMSConstructibleBridge.FiniteHeight
+import BMSConstructibleBridge.FiniteHeightRepresentation
 import BMSConstructibleBridge.EffectiveStabilityComplexity
 import Lean.Util.CollectAxioms
 
@@ -22,6 +24,8 @@ run_cmd do
       throwError "有限层路线导入了全层背景模块：{M}"
   let A := #[``propext, ``Classical.choice, ``Quot.sound]
   let S := #[`YesMetaZFC.BMS.LocalDescent,
+    `BMSConstructibleBridge.FiniteHeight,
+    `BMSConstructibleBridge.FiniteHeightRepresentation,
     `BMSConstructibleBridge.FiniteStageReflection,
     `BMSConstructibleBridge.FiniteStableBoundary,
     `BMSConstructibleBridge.EffectiveStabilityComplexity]
@@ -36,6 +40,12 @@ run_cmd do
   if n == 0 then
     throwError "没有检查任何有限层路线声明"
   for c in #[``YesMetaZFC.BMS.ConstructibleBridge.FiniteStability.wf_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.FiniteHeight.wf_iff_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.FiniteHeight.descent_iff_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.FiniteHeightRepresentation.chain_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.FiniteHeightRepresentation.representation_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.FiniteHeightRepresentation.acc_l,
+      ``YesMetaZFC.BMS.ConstructibleBridge.FiniteHeightRepresentation.wf_l,
       ``YesMetaZFC.BMS.ConstructibleBridge.FiniteStability.wellOrder_l,
       ``YesMetaZFC.BMS.ConstructibleBridge.FiniteStability.no_descent_l,
       ``YesMetaZFC.BMS.ConstructibleBridge.EffectiveStability.named_m,

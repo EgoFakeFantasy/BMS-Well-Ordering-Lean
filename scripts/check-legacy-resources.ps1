@@ -6,8 +6,19 @@ $bmsChanged = @(foreach ($bmsEntry in $bmsManifest.files) {
     $bmsPath = Join-Path $bmsRoot $bmsEntry.path
     if (-not (Test-Path -LiteralPath $bmsPath -PathType Leaf)) {
         "$($bmsEntry.path): missing"
-    } elseif ((Get-FileHash -LiteralPath $bmsPath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $bmsEntry.sha256) {
-        "$($bmsEntry.path): changed"
+    } else {
+        # Git 的 Windows 检出可将 LF 转为 CRLF；快照按 UTF-8/LF 校验源码内容。
+        $bmsText = [IO.File]::ReadAllText($bmsPath).Replace("`r`n", "`n")
+        $bmsDigest = [Security.Cryptography.SHA256]::Create()
+        try {
+            $bmsBytes = $bmsDigest.ComputeHash([Text.Encoding]::UTF8.GetBytes($bmsText))
+            $bmsHash = ([BitConverter]::ToString($bmsBytes)).Replace('-', '').ToLowerInvariant()
+        } finally {
+            $bmsDigest.Dispose()
+        }
+        if ($bmsHash -ne $bmsEntry.sha256) {
+            "$($bmsEntry.path): changed"
+        }
     }
 })
 if ($bmsChanged.Count -ne 0) {

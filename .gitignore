@@ -2,6 +2,7 @@
 /.lake
 /ConstructibleBridge/.lake
 /tmp
+/.scratch/
 /.codex-*
 /knowledge/metamath-foundations/renders/**/*.png
 **/__pycache__/

@@ -84,3 +84,4 @@ theorem successor_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
   · exact hk.symm ▸ h₁
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessStageStabilityOrder
+

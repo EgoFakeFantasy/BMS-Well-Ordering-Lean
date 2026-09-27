@@ -63,3 +63,4 @@ theorem cutoff_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
     ((hF.2 n σ (PowerlessFunction.value_mem_l hℳ hF.1 hσ).1).mp hσ) hα hβ h
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBoundaryFamily
+

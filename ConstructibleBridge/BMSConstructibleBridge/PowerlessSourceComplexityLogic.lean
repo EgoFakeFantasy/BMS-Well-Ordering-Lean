@@ -99,3 +99,4 @@ theorem biconditional_l {φ ψ : Formula ℒ Γ Δ} {p : Formula.LevyPolarity}
   exact ⟨fun h => ⟨h.1, h.2⟩, fun h => ⟨h.mp, h.mpr⟩⟩
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceComplexityLogic
+
