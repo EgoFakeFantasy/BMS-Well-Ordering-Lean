@@ -61,6 +61,9 @@ jobs:
       - name: Check original final BMS theorem axioms
         working-directory: ConstructibleBridge
         run: lake env lean BMSConstructibleBridge/AxiomAudit.lean
+      - name: Check fixed-height Z2 final theorem axioms
+        working-directory: ConstructibleBridge
+        run: lake env lean BMSConstructibleBridge/SecondOrderHereditaryBMSAxiomAudit.lean
       - name: Check finite boundary proof dependencies
         working-directory: ConstructibleBridge
         run: lake env lean BMSConstructibleBridge/FiniteBoundaryAudit.lean

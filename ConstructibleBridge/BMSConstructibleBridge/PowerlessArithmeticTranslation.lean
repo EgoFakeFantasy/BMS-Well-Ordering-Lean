@@ -118,7 +118,7 @@ theorem relation_formula_l {Γ Δ : SortContext ℒ} (η : Env ℳ Γ Δ)
   | .step, .cons _ (.cons _ (.cons _ .nil)), .cons _ (.cons _ (.cons _ .nil)) => rfl
 
 /-- 全部原公式的真值保持，特别包括任意交替的内部集合量词。 -/
-theorem formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omega_l ω)
+theorem formula_of_unique_l (hUnique : PowerlessArithmeticTerms.unique_l F)
     {Γ Δ : SortContext SecondOrderSyntax.signature_m} {Θ Λ : SortContext ℒ}
     (ξ : Env 𝒩 Γ Δ) (η : Env ℳ Θ Λ) (w z : Term ℒ Θ Λ .set)
     (ρ : assignment_m Γ Θ Λ) (τ : assignment_m Δ Θ Λ)
@@ -135,7 +135,7 @@ theorem formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : ome
     rw [formula_m, existsBlock_satisfies]
     constructor
     · rintro ⟨b, hb, h⟩
-      have h₁ := (arguments_formula_l hℳ hω he F ξ (pushBlock η b) _ _ _ _
+      have h₁ := (arguments_formula_of_unique_l he F hUnique ξ (pushBlock η b) _ _ _ _
         ((weakenTerm_eval η b w).trans hw) ((weakenTerm_eval η b z).trans hz)
         (weaken_l hρ b) (weaken_l hτ b) a _).mp hb
       rw [witnesses_eval] at h₁
@@ -143,7 +143,7 @@ theorem formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : ome
       exact (relation_formula_l (he := he) (h₀ := h₀) (F := F) _ r _ (a.eval ξ) (witnesses_eval η _)).mp h
     · intro h
       refine ⟨values_l (a.eval ξ), ?_, ?_⟩
-      · apply (arguments_formula_l hℳ hω he F ξ _ _ _ _ _
+      · apply (arguments_formula_of_unique_l he F hUnique ξ _ _ _ _ _
           ((weakenTerm_eval η _ w).trans hw) ((weakenTerm_eval η _ z).trans hz)
           (weaken_l hρ _) (weaken_l hτ _) a _).mpr
         exact witnesses_eval η _
@@ -152,30 +152,30 @@ theorem formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : ome
     change (∃ x, (term_m _ _ _ _ a _).satisfies (η.pushBound x) ∧
       (term_m _ _ _ _ b _).satisfies (η.pushBound x)) ↔ a.eval ξ = b.eval ξ
     have h (c : Term SecondOrderSyntax.signature_m Γ Δ s) (x : carrier_l ℳ) :=
-      term_formula_l hℳ hω he F ξ (η.pushBound x) _ _ _ _
+      term_formula_of_unique_l he F hUnique ξ (η.pushBound x) _ _ _ _
         ((weakenTerm_eval η (.cons x .nil) w).trans hw)
         ((weakenTerm_eval η (.cons x .nil) z).trans hz)
         (weaken_l hρ (.cons x .nil)) (weaken_l hτ (.cons x .nil)) c (.bvar .here)
     simp only [h, Term.eval, Env.pushBound_bound_here]
     exact ⟨fun ⟨_, h₁, h₂⟩ => val_injective_l (h₁.symm.trans h₂),
       fun h₁ => ⟨val_l (a.eval ξ), rfl, congrArg val_l h₁⟩⟩
-  | neg φ => exact not_congr (formula_l hℳ hω ξ η w z ρ τ hw hz hρ hτ φ)
+  | neg φ => exact not_congr (formula_of_unique_l hUnique ξ η w z ρ τ hw hz hρ hτ φ)
   | conj φ ψ =>
-    exact and_congr (formula_l hℳ hω ξ η w z ρ τ hw hz hρ hτ φ)
-      (formula_l hℳ hω ξ η w z ρ τ hw hz hρ hτ ψ)
+    exact and_congr (formula_of_unique_l hUnique ξ η w z ρ τ hw hz hρ hτ φ)
+      (formula_of_unique_l hUnique ξ η w z ρ τ hw hz hρ hτ ψ)
   | disj φ ψ =>
-    exact or_congr (formula_l hℳ hω ξ η w z ρ τ hw hz hρ hτ φ)
-      (formula_l hℳ hω ξ η w z ρ τ hw hz hρ hτ ψ)
+    exact or_congr (formula_of_unique_l hUnique ξ η w z ρ τ hw hz hρ hτ φ)
+      (formula_of_unique_l hUnique ξ η w z ρ τ hw hz hρ hτ ψ)
   | imp φ ψ =>
-    exact imp_congr (formula_l hℳ hω ξ η w z ρ τ hw hz hρ hτ φ)
-      (formula_l hℳ hω ξ η w z ρ τ hw hz hρ hτ ψ)
+    exact imp_congr (formula_of_unique_l hUnique ξ η w z ρ τ hw hz hρ hτ φ)
+      (formula_of_unique_l hUnique ξ η w z ρ τ hw hz hρ hτ ψ)
   | iff φ ψ =>
-    exact iff_congr (formula_l hℳ hω ξ η w z ρ τ hw hz hρ hτ φ)
-      (formula_l hℳ hω ξ η w z ρ τ hw hz hρ hτ ψ)
+    exact iff_congr (formula_of_unique_l hUnique ξ η w z ρ τ hw hz hρ hτ φ)
+      (formula_of_unique_l hUnique ξ η w z ρ τ hw hz hρ hτ ψ)
   | forallE s φ =>
     change (∀ x, (domain_m s _ _).satisfies (η.pushBound x) →
       (formula_m _ _ _ _ φ).satisfies (η.pushBound x)) ↔ ∀ a : sort_l ω s, φ.satisfies (ξ.pushBound a)
-    have h (a : sort_l ω s) := formula_l hℳ hω (ξ.pushBound a) (η.pushBound (val_l a)) _ _ _ _
+    have h (a : sort_l ω s) := formula_of_unique_l hUnique (ξ.pushBound a) (η.pushBound (val_l a)) _ _ _ _
       ((weakenTerm_eval η (.cons (val_l a) .nil) w).trans hw)
       ((weakenTerm_eval η (.cons (val_l a) .nil) z).trans hz)
       (lift_l hρ a) (weaken_l hτ (.cons (val_l a) .nil)) φ
@@ -193,7 +193,7 @@ theorem formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : ome
   | existsE s φ =>
     change (∃ x, (domain_m s _ _).satisfies (η.pushBound x) ∧
       (formula_m _ _ _ _ φ).satisfies (η.pushBound x)) ↔ ∃ a : sort_l ω s, φ.satisfies (ξ.pushBound a)
-    have h (a : sort_l ω s) := formula_l hℳ hω (ξ.pushBound a) (η.pushBound (val_l a)) _ _ _ _
+    have h (a : sort_l ω s) := formula_of_unique_l hUnique (ξ.pushBound a) (η.pushBound (val_l a)) _ _ _ _
       ((weakenTerm_eval η (.cons (val_l a) .nil) w).trans hw)
       ((weakenTerm_eval η (.cons (val_l a) .nil) z).trans hz)
       (lift_l hρ a) (weaken_l hτ (.cons (val_l a) .nil)) φ
@@ -207,5 +207,16 @@ theorem formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : ome
     · rintro ⟨a, h₁⟩
       refine ⟨val_l a, (domain_formula_l _ _ _ _).mpr ?_, (h a).mpr h₁⟩
       simpa only [hw₁, Term.eval, Env.pushBound_bound_here] using domain_val_l a
+
+/-- 原完整背景接口由图唯一性实例化，保持所有调用者的签名。 -/
+theorem formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omega_l ω)
+    {Γ Δ : SortContext SecondOrderSyntax.signature_m} {Θ Λ : SortContext ℒ}
+    (ξ : Env 𝒩 Γ Δ) (η : Env ℳ Θ Λ) (w z : Term ℒ Θ Λ .set)
+    (ρ : assignment_m Γ Θ Λ) (τ : assignment_m Δ Θ Λ)
+    (hw : w.eval η = ω) (hz : z.eval η = e)
+    (hρ : agrees_l η ρ ξ.boundVal) (hτ : agrees_l η τ ξ.freeVal)
+    (φ : Formula SecondOrderSyntax.signature_m Γ Δ) :
+    (formula_m w z ρ τ φ).satisfies η ↔ φ.satisfies ξ :=
+  formula_of_unique_l (unique_of_models_l hℳ hω he F) ξ η w z ρ τ hw hz hρ hτ φ
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTranslation

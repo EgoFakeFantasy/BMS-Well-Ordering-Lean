@@ -97,9 +97,20 @@ variable (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
 
 local notation "𝒩" => PowerlessArithmetic.structure_l he h₀ F
 
-include hℳ hω
+/-- 图的存在性由运算证书提供；此处单列正确翻译所需的输出唯一性。 -/
+structure unique_l (F : PowerlessArithmetic.operations_l ω e) : Prop where
+  successor : ∀ a y, PowerlessNatural.successor_l a.val y → y = (F.succ_l a).val
+  addition : ∀ a b y, PowerlessAddition.addition_l ω e a.val b.val y → y = (F.add_l a b).val
+  multiplication : ∀ a b y, PowerlessMultiplication.multiplication_l ω e a.val b.val y →
+    y = (F.mul_l a b).val
 
-theorem function_formula_l {Γ Δ : SortContext ℒ} (η : Env ℳ Γ Δ)
+include hℳ hω he in
+theorem unique_of_models_l : unique_l F where
+  successor a _ h := PowerlessNatural.successor_unique_l hℳ h (F.succ_graph_l a)
+  addition a b _ h := PowerlessAddition.unique_l hℳ hω he h (F.add_graph_l a b)
+  multiplication a b _ h := PowerlessMultiplication.unique_l hℳ hω he h (F.mul_graph_l a b)
+
+theorem function_formula_of_unique_l (hUnique : unique_l F) {Γ Δ : SortContext ℒ} (η : Env ℳ Γ Δ)
     (w z y : Term ℒ Γ Δ .set) (hw : w.eval η = ω) (hz : z.eval η = e)
     (f : SecondOrderSyntax.func_m)
     (a : Arguments ℒ Γ Δ (context_m (SecondOrderSyntax.signature_m.funcDomain f)))
@@ -115,29 +126,28 @@ theorem function_formula_l {Γ Δ : SortContext ℒ} (η : Env ℳ Γ Δ)
     have hx := (Values.cons.inj ha).1
     simp only [function_m, PowerlessNaturalStep.successor_formula_l, hx]
     change PowerlessNatural.successor_l b.val (y.eval η) ↔ y.eval η = (F.succ_l b).val
-    exact ⟨fun h => PowerlessNatural.successor_unique_l hℳ h (F.succ_graph_l b),
+    exact ⟨fun h => hUnique.successor b _ h,
       fun h => h.symm ▸ F.succ_graph_l b⟩
   | .add, .cons x (.cons t .nil), .cons b (.cons c .nil) =>
     obtain ⟨hx, ht⟩ := Values.cons.inj ha
     have ht := (Values.cons.inj ht).1
     simp only [function_m, PowerlessAdditionSyntax.addition_formula_l, hw, hz, hx, ht]
     change PowerlessAddition.addition_l ω e b.val c.val (y.eval η) ↔ y.eval η = (F.add_l b c).val
-    exact ⟨fun h => PowerlessAddition.unique_l hℳ hω he h (F.add_graph_l b c),
+    exact ⟨fun h => hUnique.addition b c _ h,
       fun h => h.symm ▸ F.add_graph_l b c⟩
   | .mul, .cons x (.cons t .nil), .cons b (.cons c .nil) =>
     obtain ⟨hx, ht⟩ := Values.cons.inj ha
     have ht := (Values.cons.inj ht).1
     simp only [function_m, PowerlessMultiplication.multiplication_formula_l, hw, hz, hx, ht]
     change PowerlessMultiplication.multiplication_l ω e b.val c.val (y.eval η) ↔ y.eval η = (F.mul_l b c).val
-    exact ⟨fun h => PowerlessMultiplication.unique_l hℳ hω he h (F.mul_graph_l b c),
+    exact ⟨fun h => hUnique.multiplication b c _ h,
       fun h => h.symm ▸ F.mul_graph_l b c⟩
 
-omit hℳ hω
 
 mutual
 /-- 对全部原项成立，参数见证不改变源项的实际求值。 -/
-theorem term_formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omega_l ω)
-    (he : PowerlessNatural.zero_l e) (F : PowerlessArithmetic.operations_l ω e)
+theorem term_formula_of_unique_l
+    (he : PowerlessNatural.zero_l e) (F : PowerlessArithmetic.operations_l ω e) (hUnique : unique_l F)
     {Γ Δ : SortContext SecondOrderSyntax.signature_m} {Θ Λ : SortContext ℒ}
     (ξ : Env (PowerlessArithmetic.structure_l he h₀ F) Γ Δ) (η : Env ℳ Θ Λ) (w z : Term ℒ Θ Λ .set)
     (ρ : assignment_m Γ Θ Λ) (τ : assignment_m Δ Θ Λ)
@@ -153,28 +163,28 @@ theorem term_formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω 
     rw [term_m, existsBlock_satisfies]
     constructor
     · rintro ⟨c, hc, h⟩
-      have h₁ := (arguments_formula_l hℳ hω he F ξ (pushBlock η c) _ _ _ _
+      have h₁ := (arguments_formula_of_unique_l he F hUnique ξ (pushBlock η c) _ _ _ _
         ((weakenTerm_eval η c w).trans hw) ((weakenTerm_eval η c z).trans hz)
         (weaken_l hρ c) (weaken_l hτ c) a _).mp hc
       rw [witnesses_eval] at h₁
       subst c
-      have h₂ := (function_formula_l hℳ hω he (h₀ := h₀) F (pushBlock η (values_l (a.eval ξ))) _ _ _
+      have h₂ := (function_formula_of_unique_l he (h₀ := h₀) F hUnique (pushBlock η (values_l (a.eval ξ))) _ _ _
         ((weakenTerm_eval η _ w).trans hw) ((weakenTerm_eval η _ z).trans hz) f _ (a.eval ξ)
         (witnesses_eval η _)).mp h
       simpa only [weakenTerm_eval, Term.eval] using h₂
     · intro h
       refine ⟨values_l (a.eval ξ), ?_, ?_⟩
-      · apply (arguments_formula_l hℳ hω he F ξ _ _ _ _ _
+      · apply (arguments_formula_of_unique_l he F hUnique ξ _ _ _ _ _
           ((weakenTerm_eval η _ w).trans hw) ((weakenTerm_eval η _ z).trans hz)
           (weaken_l hρ _) (weaken_l hτ _) a _).mpr
         exact witnesses_eval η _
-      · apply (function_formula_l hℳ hω he (h₀ := h₀) F _ _ _ _
+      · apply (function_formula_of_unique_l he (h₀ := h₀) F hUnique _ _ _ _
           ((weakenTerm_eval η _ w).trans hw) ((weakenTerm_eval η _ z).trans hz) f _ (a.eval ξ)
           (witnesses_eval η _)).mpr
         simpa only [weakenTerm_eval, Term.eval] using h
 
-theorem arguments_formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omega_l ω)
-    (he : PowerlessNatural.zero_l e) (F : PowerlessArithmetic.operations_l ω e)
+theorem arguments_formula_of_unique_l
+    (he : PowerlessNatural.zero_l e) (F : PowerlessArithmetic.operations_l ω e) (hUnique : unique_l F)
     {Γ Δ Ξ : SortContext SecondOrderSyntax.signature_m} {Θ Λ : SortContext ℒ}
     (ξ : Env (PowerlessArithmetic.structure_l he h₀ F) Γ Δ) (η : Env ℳ Θ Λ) (w z : Term ℒ Θ Λ .set)
     (ρ : assignment_m Γ Θ Λ) (τ : assignment_m Δ Θ Λ)
@@ -185,9 +195,47 @@ theorem arguments_formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) 
   match a, b with
   | .nil, .nil => exact ⟨fun _ => rfl, fun _ => True.intro⟩
   | .cons a c, .cons b d =>
-    simp only [arguments_m, Formula.satisfies, term_formula_l hℳ hω he F ξ η w z ρ τ hw hz hρ hτ,
-      arguments_formula_l hℳ hω he F ξ η w z ρ τ hw hz hρ hτ, Arguments.eval, values_l]
+    simp only [arguments_m, Formula.satisfies, term_formula_of_unique_l he F hUnique ξ η w z ρ τ hw hz hρ hτ,
+      arguments_formula_of_unique_l he F hUnique ξ η w z ρ τ hw hz hρ hτ, Arguments.eval, values_l]
     exact ⟨fun ⟨h, h₁⟩ => (by rw [h, h₁]), Values.cons.inj⟩
 end
+
+/-- 完整原背景接口保持不变，复用仅需图唯一性的通用翻译。 -/
+theorem function_formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
+    (hω : omega_l ω) (he : PowerlessNatural.zero_l e)
+    (F : PowerlessArithmetic.operations_l ω e) {Γ Δ : SortContext ℒ} (η : Env ℳ Γ Δ)
+    (w z y : Term ℒ Γ Δ .set) (hw : w.eval η = ω) (hz : z.eval η = e)
+    (f : SecondOrderSyntax.func_m)
+    (a : Arguments ℒ Γ Δ (context_m (SecondOrderSyntax.signature_m.funcDomain f)))
+    (b : Values (sort_l ω) (SecondOrderSyntax.signature_m.funcDomain f))
+    (ha : a.eval η = values_l b) :
+    (function_m w z y f a).satisfies η ↔
+      y.eval η = val_l (ω := ω) (s := SecondOrderSyntax.signature_m.funcCodomain f) ((PowerlessArithmetic.structure_l he h₀ F).funcInterp f b) :=
+  function_formula_of_unique_l he (h₀ := h₀) F (unique_of_models_l hℳ hω he F) η w z y hw hz f a b ha
+
+/-- 完整原背景接口保持不变，复用仅需图唯一性的通用翻译。 -/
+theorem term_formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omega_l ω)
+    (he : PowerlessNatural.zero_l e) (F : PowerlessArithmetic.operations_l ω e)
+    {Γ Δ : SortContext SecondOrderSyntax.signature_m} {Θ Λ : SortContext ℒ}
+    (ξ : Env (PowerlessArithmetic.structure_l he h₀ F) Γ Δ) (η : Env ℳ Θ Λ) (w z : Term ℒ Θ Λ .set)
+    (ρ : assignment_m Γ Θ Λ) (τ : assignment_m Δ Θ Λ)
+    (hw : w.eval η = ω) (hz : z.eval η = e)
+    (hρ : agrees_l η ρ ξ.boundVal) (hτ : agrees_l η τ ξ.freeVal)
+    {s : SecondOrderSyntax.sort_m} (a : Term SecondOrderSyntax.signature_m Γ Δ s)
+    (b : Term ℒ Θ Λ .set) : (term_m w z ρ τ a b).satisfies η ↔
+      b.eval η = val_l (ω := ω) (s := s) (a.eval ξ) :=
+  term_formula_of_unique_l he F (unique_of_models_l hℳ hω he F) ξ η w z ρ τ hw hz hρ hτ a b
+
+/-- 完整原背景接口保持不变，复用仅需图唯一性的通用翻译。 -/
+theorem arguments_formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omega_l ω)
+    (he : PowerlessNatural.zero_l e) (F : PowerlessArithmetic.operations_l ω e)
+    {Γ Δ Ξ : SortContext SecondOrderSyntax.signature_m} {Θ Λ : SortContext ℒ}
+    (ξ : Env (PowerlessArithmetic.structure_l he h₀ F) Γ Δ) (η : Env ℳ Θ Λ) (w z : Term ℒ Θ Λ .set)
+    (ρ : assignment_m Γ Θ Λ) (τ : assignment_m Δ Θ Λ)
+    (hw : w.eval η = ω) (hz : z.eval η = e)
+    (hρ : agrees_l η ρ ξ.boundVal) (hτ : agrees_l η τ ξ.freeVal)
+    (a : Arguments SecondOrderSyntax.signature_m Γ Δ Ξ) (b : Arguments ℒ Θ Λ (context_m Ξ)) :
+    (arguments_m w z ρ τ a b).satisfies η ↔ b.eval η = values_l (a.eval ξ) :=
+  arguments_formula_of_unique_l he F (unique_of_models_l hℳ hω he F) ξ η w z ρ τ hw hz hρ hτ a b
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticTerms

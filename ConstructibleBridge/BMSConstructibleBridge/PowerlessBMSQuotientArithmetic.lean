@@ -22,11 +22,10 @@ import BMSConstructibleBridge.SecondOrderRelations
 
 乘法侧本文件只交付正向半边：右加法图在 `ω` 上取值给出 `addition_l` 实例，以及
 乘法图的逐点回读与后继步的加法关系式。`PowerlessMultiplication.multiplication_l`
-需要 `operator_l` 的反向半边，即由任意迭代图的值折回唯一数值，而这等价于
-`PowerlessAddition.iteration_unique_l`；后者要求商结构满足 `PowerlessTheory`
-（含 Collection），不属任意 Z₂ 模型图商的已证范围。本文件只交付该侧正向半边
-`rightAdditionValue_addition_l` 与 `multiplication_succ_addition_l`，不作
-`multiplication_l` 已构造的声称。 -/
+还需要 `operator_l` 的反向半边，即由任意迭代图的值折回唯一数值。本文件保留
+正向构造；`PowerlessBMSQuotientRecursion` 现用原 Z₂ 公式归纳证明商侧唯一性，
+`PowerlessBMSQuotientMultiplication` 据此完成反向算子规格、乘法迭代及实际
+`operations_l`、`correspondence_l`，不要求商满足 Collection。 -/
 
 namespace YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientArithmetic
 

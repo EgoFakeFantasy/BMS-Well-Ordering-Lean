@@ -8,12 +8,31 @@
 本项目复用 YesMetaZFC 的逻辑与集合论基础，并在其上实现 BMS 的组合证明和可构造模型桥接；
 上游来源与贡献边界见文末。
 
-## 当前研究进度（2026-09-28）
+## 当前研究进度（2026-10-09）
 
-原 ZFC／可构造层次的 BM4 良序证明继续保留。新增研究包括任意 Z₂ 模型中的
-程序语义、祖先及展开规格、固定高度矩阵迁移，以及图商上的内部自然数与加法。
-**固定任意行数的 Z₂ 良序证明尚未完成**：商上的乘法递推规格和逐候选源模型覆盖
-仍是待证义务。最新成果、验证范围和剩余缺口见
+原 ZFC／可构造层次的 BM4 良序证明及公开接口继续保留。
+版本入口：[`zfc-constructible`](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/tree/zfc-constructible)
+保留本次更新前的 `0f8e912` 源码快照，供原资源的调用者继续使用；
+`main` 追加下述 Z₂ 证明，同时保留全部原 ZFC 模块和定理接口。
+
+**每个固定外部行数 H 的原 Z₂ 良基性目标现已完成对象推导**，入口为
+[SecondOrderHereditaryBMSWellOrder.lean](ConstructibleBridge/BMSConstructibleBridge/SecondOrderHereditaryBMSWellOrder.lean)：
+
+```lean
+theorem derives_m (H : Nat) :
+    Derives SecondOrderArithmetic.theory_m [] (SecondOrderConcreteFormula.closed_m H)
+```
+
+目标断言生成 BM4 数组不存在无限严格一步展开下降链，并限制链中全部数组的
+当前高度 ≤ H，不限制种子高度；没有 `hSources`、额外源模型或算术对应前提。
+H 是外部模式索引：交付的是每个实例的正式推导，不是 Z₂ 内部的统一全称断言。
+此 Z₂ 入口不打包线性可比性，不能据此声称对象层严格线性良序已经证明；
+原 ZFC 版本的完整 `StrictWellOrder` 结论及接口保持不变。
+背景是完整二阶理解的原 Z₂ 呈现，不是仅等一致的替代理论。
+签名中的额外 pair/start/step 槽没有增加公理，理解正文及最终目标不使用这些槽；
+最小签名的独立导出不在本次交付范围。
+本地 3993 任务联合构建、严格单文件 profile、`lean --trust=0` 导入核验
+与最终机器公理审计通过。完整路线与验证范围见
 [当前进度](docs/CURRENT_PROGRESS.md)。
 
 ## 可复用工具子库
@@ -21,7 +40,7 @@
 新增 `BMSTools`：集合构造、内部递归、有限赋值与记录编码、有符号真值证书。
 可独立选择导入分组，旧证明路径和声明不变。使用方式与精确边界见
 [工具子库说明](docs/BMS_TOOLS.md)。
-这是从弱背景研究中提取的通用工具，不是已经完成的弱背景 BMS 良序证明。
+工具子库独立于新的 Z₂ 终局接口；仅导入工具不等于导入完整对象证明。
 
 ## 主要结论
 
@@ -74,6 +93,8 @@ Stage 0–4 已完成，证明分成组合层与可构造模型层：
 | [ConstructibleStabilityFormulaData.lean](ConstructibleBridge/BMSConstructibleBridge/ConstructibleStabilityFormulaData.lean) | 最终装配所需的具体稳定公式数据 |
 | [FinalAssembly.lean](ConstructibleBridge/BMSConstructibleBridge/FinalAssembly.lean) | 两条无额外数据参数的最终定理 |
 | [AxiomAudit.lean](ConstructibleBridge/BMSConstructibleBridge/AxiomAudit.lean) | 最终定理的机器可检查公理守卫 |
+| [SecondOrderHereditaryBMSWellOrder.lean](ConstructibleBridge/BMSConstructibleBridge/SecondOrderHereditaryBMSWellOrder.lean) | 原 Z₂ 中每个固定外部高度的原闭句推导 |
+| [SecondOrderHereditaryBMSAxiomAudit.lean](ConstructibleBridge/BMSConstructibleBridge/SecondOrderHereditaryBMSAxiomAudit.lean) | Z₂ 最终接口的机器公理守卫 |
 
 2026-09-10 精简版本的 BMS Lean 源码为 **44,989 行、165 个文件**。
 统计包含组合层、桥接层、入口及公理审计；不含上游其他源码、第三方依赖、Lake 配置、文档与构建缓存。
@@ -102,6 +123,7 @@ lake build
 cd ConstructibleBridge
 lake build BMSConstructibleBridge
 lake env lean BMSConstructibleBridge/AxiomAudit.lean
+lake env lean BMSConstructibleBridge/SecondOrderHereditaryBMSAxiomAudit.lean
 ```
 
 仅在根目录运行 `lake build` 不等于验证了桥接层的最终定理。
