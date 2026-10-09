@@ -6,9 +6,11 @@ import YesMetaZFC.Logic.FirstOrder.Derivation.Substitution.Semantics
 # 逐高度目标的有类型二阶算术语法
 
 复用项目的一阶多排序语法核，以数和集合为两个排序。目标有一个全称集合量词，
-矩阵只含数量词。有限签名中的配对、起点和一步关系均由实际原始递归算法解释。
-这属于原始递归符号的定义扩张；本文件尚未提供到纯加乘语言的公式消去和对象
-总性证明，也没有把标准结构中的满足关系冒充 `Z₂` 可证性。
+矩阵只含数量词。标准结构中的配对、起点和一步关系由实际原始递归算法解释；
+原 `SecondOrderArithmetic.theory_m` 不给这些额外符号公理，理解模式及最终目标
+均排除它们。纯加乘语言中的显式程序矩阵见 `SecondOrderConcreteFormula`，
+任意模型程序图总性见 `SecondOrderProgramTotality`，逐固定外部高度的对象推导
+见 `SecondOrderHereditaryBMSWellOrder.derives_m`。
 -/
 
 namespace YesMetaZFC.BMS.ConstructibleBridge.SecondOrderSyntax
@@ -23,7 +25,7 @@ inductive sort_m where
   | set
   deriving DecidableEq
 
-/-- 有限函数签名；配对为原始递归定义扩张。 -/
+/-- 有限函数签名；额外配对槽在标准结构中按原始递归算法解释，不获对象公理。 -/
 inductive func_m where
   | zero
   | succ

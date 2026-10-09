@@ -7,7 +7,9 @@ import BMSConstructibleBridge.PowerlessRelativeSourceFamilyClosedImage
 开放为装配变量，调用原共同图族与闭包像出口。仅原 Δ 参数属于 C；
 整个装配 Θ 只要求 Class，排序图 R 和以后绑定的 J 不加入种子。
 对象结论保留完整种子、程序域和共同图族规格，不预供任何 C/G/Q/S/P/I。
-背景仍为原 Z₂；最终源模型存在性和 BMS fixed-height 推导尚待主路线完成。
+背景仍为原 Z₂；本模块保留相对闭包像接口。最终主线另由
+`SecondOrderHereditaryCandidateSource.exists_l` 构造实际遗传源，并由
+`SecondOrderHereditaryBMSWellOrder.derives_m` 完成每个固定外部高度的对象推导。
 -/
 
 namespace YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeSeedFamilyClosedImage

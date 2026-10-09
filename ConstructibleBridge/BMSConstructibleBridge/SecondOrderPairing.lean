@@ -5,7 +5,8 @@ import BMSConstructibleBridge.GraphSyntax
 # 任意模型中的实际配对图及边查询
 
 原配对公式在任意双排序结构中都有唯一输出：两种互斥分支各使用一个总项。
-这只证明正向配对图的总性和函数性，尚未证明其双射性或反向投影总性。
+本模块证明正向配对图的总性和函数性；后续单射性见 `SecondOrderPairingBounds`，
+反配对总性见 `SecondOrderUnpairing`。
 图边查询直接消费同一公式，不能转用尚无公理的配对函数符号。
 -/
 

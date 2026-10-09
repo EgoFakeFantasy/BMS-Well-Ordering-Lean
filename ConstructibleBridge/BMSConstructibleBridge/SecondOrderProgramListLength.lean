@@ -8,8 +8,10 @@ import BMSConstructibleBridge.SecondOrderMinimum
 证明；最小步数由模型内部最小元原理产生。随后用实际理解公式收集整个长度图，
 因此没有假定任意外部函数都属于模型的实数域。
 
-这里交付内部最小归零步的图、总唯一性、原码上界和零长度判据。尚未构造长度的
-七构造程序，也未证明完整 BM4 解码或最终良序；不将本节的关系图冒充这些结果。
+这里交付内部最小归零步的图、总唯一性、原码上界和零长度判据。长度的显式
+七构造程序及任意模型正确性见 `SecondOrderProgramLength`，完整生成数组解码见
+`SecondOrderProgramGeneratedDecode`；固定外部高度对象推导见
+`SecondOrderHereditaryBMSWellOrder`。本模块只提供关系图这一中间结果。
 -/
 
 namespace YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListLength

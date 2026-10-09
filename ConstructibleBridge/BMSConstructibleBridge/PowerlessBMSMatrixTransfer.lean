@@ -6,8 +6,9 @@ import BMSConstructibleBridge.SecondOrderPureTransfer
 
 将已完成的 PowerlessTheory 背景矩阵定理与纯算术跨模型真值保持连接。唯一新增输入
 是两个算术环境逐项对应；其集合分量明确包含候选实数的成员对应。这一步不构造
-PowerlessTheory 模型，也不声称已经完成 Z₂ 背景迁移。闭句迁移定理进一步把剩余
-条件明确压成源模型对目标集合候选的覆盖。
+PowerlessTheory 模型；本文件的闭句迁移接口保留源模型覆盖条件。原 Z₂ 下的实际
+逐候选源构造见 `SecondOrderHereditaryCandidateSource`，无额外源假设的固定外部
+高度对象推导见 `SecondOrderHereditaryBMSWellOrder.derives_m`。
 -/
 
 namespace YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSMatrixTransfer
@@ -30,7 +31,8 @@ variable {M : FirstOrder.Structure.{0, 0, 0, v} signature_m}
 /-- 对一个目标集合候选单独提供的 Powerless 源模型及成员代表。
 
 源模型允许依赖目标候选 `X`；这比要求一个源模型覆盖目标结构中的所有集合更贴近
-逐反例迁移所需的接口。它仍是条件数据，不声称任意 Z₂ 模型都能提供这样的源模型。
+逐反例迁移所需的接口。它在本模块中作为条件数据；任意 Z₂ 模型中每个候选的
+`Nonempty` 源证书已由 `SecondOrderHereditaryCandidateSource.exists_l` 给出。
 -/
 structure candidate_source_l (X : M.Carrier .set) where
   source : FirstOrder.Structure.{0, 0, 0, u} ℒ
@@ -133,8 +135,9 @@ theorem matrix_at_l
 
 /-- 若源模型覆盖目标中的每个集合候选，则整条原固定高度闭句迁移到目标结构。
 
-真正尚待由 Z₂ 模型构造给出的是 `hCover`：每个目标集合都有一个源集合，其成员关系经
-`C` 对应。本定理不构造源模型或该覆盖；更局部的、允许源模型依赖目标候选的接口见
+本接口显式要求 `hCover`：每个目标集合都有一个源集合，其成员关系经 `C` 对应。
+本定理不构造一个统一的源模型或该覆盖；最终 Z₂ 证明使用逐候选遗传源，不要求
+单个源覆盖全部候选。允许源模型依赖目标候选的条件式接口见
 `closed_from_candidate_sources_l`。
 -/
 theorem closed_l
@@ -167,7 +170,9 @@ theorem closed_l
 /-- 若每个目标候选各自拥有一个可迁移的源模型，则整条固定高度闭句成立。
 
 源模型可随目标集合候选变化；假设仅要求在该源模型中找到此候选的集合代表，不要求
-某一个源模型同时覆盖目标结构的全部二阶对象。源模型存在性本身仍是未完成的数学桥。
+某一个源模型同时覆盖目标结构的全部二阶对象。源模型的 `Nonempty` 证书已由
+`SecondOrderHereditaryCandidateSource.exists_l` 构造，最终出口经
+`PowerlessBMSNonemptyTransfer` 逐候选消去该证书，不抽取 Type 层源族。
 -/
 theorem closed_from_candidate_sources_l
     (H : Nat)

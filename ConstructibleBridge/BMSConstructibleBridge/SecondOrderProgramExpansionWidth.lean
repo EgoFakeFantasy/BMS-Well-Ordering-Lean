@@ -7,7 +7,9 @@ import BMSConstructibleBridge.SecondOrderProgramExpansionSuccessShape
 
 真实最大父行选出末列j之前的父列p，坏块差值d满足d+p=j。成功展开共复制succ k次，
 并保留宽度p的好部分；最后裁剪不改变列数。因此完整expand宽度是p+d*(k+1)。
-该宽度可能增长，不能用它替代主线尚待完成的序数下降。
+该宽度可能增长，不能用它作为下降度量。主线使用内部表示上界的严格下降及
+`PowerlessBMSChainMinimum` 的最小元论证，最终固定外部高度出口见
+`SecondOrderHereditaryBMSWellOrder.derives_m`。
 -/
 
 namespace YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionWidth

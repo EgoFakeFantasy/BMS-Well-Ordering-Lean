@@ -11,7 +11,8 @@ import BMSConstructibleBridge.SecondOrderUnpairing
 因此不能据此假定任意模型上的上下文无关性。
 
 本模块研究任意 ℳ ⊨ 原 `SecondOrderArithmetic.theory_m` 上的语义。
-当前已完成 §A 与 §B；下面 §C、§D 是尚待完成的任务目标，不是已有出口：
+本模块完成 §A 与 §B；§C 的存在性已在 `SecondOrderProgramRecursion` 完成，
+§D 的全函数联合出口已在 `SecondOrderProgramTotality.graph_total_l` 完成。分工如下：
 
 * §A 给出原 `prec` 的精确历史语义 `prec_history_l`（Codex 规格中的 K），
   并把它与原公式在任意上下文、环境、数项上的满足关系精确对齐；
@@ -29,7 +30,7 @@ import BMSConstructibleBridge.SecondOrderUnpairing
 的做法相同，不是注释层面的声称。
 
 本模块只新增独立文件，不让原 `PrimitiveFormulas` 反向导入 β 文件，无循环依赖。
-完成本模块只消去"原编译程序在任意 Z₂ 模型内全域唯一"的缺口，
+本模块及上述后续模块共同给出原编译程序在任意 Z₂ 模型内的全域唯一语义，
 **不等于** BM4 算法在非标准模型内的规格正确性，也不是最终固定高度 Z₂ 良序证明。
 -/
 

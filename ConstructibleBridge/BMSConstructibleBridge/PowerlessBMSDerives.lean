@@ -6,15 +6,18 @@ import BMSConstructibleBridge.SecondOrderCompleteness
 
 将条件式矩阵迁移与已有强完备性连接起来。唯一的主要输入是：对每个满足
 `theory_m` 的二阶结构及其中每个集合候选，都能提供相应的
-`candidate_source_l`。本文件不构造该源模型族，因此尚未证明任意固定高度句的
-`Derives` 结论；它只把剩余义务精确集中到源模型覆盖上。特别地，源数据中的
+`candidate_source_l`。本文件保留以源模型族为假设的条件式 `Derives` 接口。
+无额外源假设的终局另由 `SecondOrderHereditaryCandidateSource.exists_l` 逐候选给出
+`Nonempty` 证书，经 `PowerlessBMSNonemptyTransfer` 接入
+`SecondOrderHereditaryBMSWellOrder.derives_m`，不要求抽取 Type 层源族。源数据中的
 `sourceModels` 当前要求完整 `PowerlessTheory.theory_m`（包括全部 Separation 与
 Collection 实例），并非已弱化到某个有限片段。
 
 本文件的语义蕴涵显式取 `.{0, 0, 0, 0}`：模型载体固定在 `Type 0`，但仍对该宇宙
 中所有结构量化。各定理中的 `hM` 只用于把 `hSources` 限定到满足 `theory_m` 的目标模型；
 矩阵迁移证明本身使用源模型字段和对应关系，不直接消费 `hM` 的对象公理。故本文件
-不声称这些目标侧公理已被迁移证明使用或消去，真正的负担仍在逐候选 `hSources`。
+只在本接口中保留逐候选 `hSources` 假设；最终遗传源构造使用目标侧公理，并在
+`SecondOrderHereditaryBMSWellOrder` 消去该额外前提。
 -/
 
 namespace YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSDerives

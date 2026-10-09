@@ -6,8 +6,9 @@ import BMSConstructibleBridge.SecondOrderProgramGeneratedCheck
 
 高度与一步检查器现在都是显式七构造程序，不再从原始递归存在证书中选择未知代码。
 直接实例化原compiled_matrix_m与原closed_m，得到同一矩阵及全部外部高度的数码闭句。
-下面的标准语义等价和任意Z₂模型图总性仍不等于该闭句的对象理论证明；良序的内部
-数学论证及最终Derives尚待完成。当前高度限制没有加强成种子或整条历史的限制。
+本模块给出标准语义等价和任意 Z₂ 模型图总性；固定外部高度 H 的最终对象推导
+已在 `SecondOrderHereditaryBMSWellOrder.derives_m H` 完成。该出口排除当前高度始终
+≤ H 的无限严格一步展开下降链，不限制种子或历史高度，也不打包线性可比性。
 -/
 
 namespace YesMetaZFC.BMS.ConstructibleBridge.SecondOrderConcreteFormula
