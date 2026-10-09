@@ -1,5 +1,25 @@
 # 有限层稳定边界：实现与验证记录
 
+## 当前验收状态（2026-10-10）
+
+本文件主体保留旧有限边界及二阶／三阶检查点的条件定理与验收日志，
+其中“尚未完成”“未提交／未推送”仅描述对应历史源码，不是当前发布状态。
+当前数学源码已随 `main` 的 `c0db059` 发布：固定外部 H 的原 Z₂ 正式推导为
+`SecondOrderHereditaryBMSWellOrder.derives_m H`，对象句排除生成数组当前高度
+始终 ≤ H 的无限严格一步展开下降链，不限制种子高度。无需调用端源模型或
+算术对应前提；不包含对象层线性可比性、内部统一全称断言或 PRA `(G)`。
+
+实际发布源码的本地联合重哈希门通过 3993 任务，最终独立机器公理守卫通过；
+450 种既有 warning delta0，163 个原 ZFC 资源 LF 指纹不变。
+[对应远端 Lean CI](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/actions/runs/37917963731)
+的根工程与桥接工程均为 success。原完整 ZFC 快照保留在 `zfc-constructible`／`0f8e912`。
+本地最终日志 `work/bms-publication-final-aggregate-20261009.log` 的 SHA256 为
+`27ecc4987d5c51a28bc3e2be68dbda21f2a198cbaa2bdd089467ef188342fdcf`。
+历史 job 数不等于当前源码覆盖率；新的改动必须依据对应快照重新验收。
+最终状态及范围见 [CURRENT_PROGRESS.md](CURRENT_PROGRESS.md)。
+
+## 历史实现与验证记录
+
 首次记录：2026-09-12；持续更新至 2026-09-14。源码基点：`57da9d318df393b1ededbc93cd3abc745c8c8675`。
 本轮仅本地修改，未提交、未推送；旧的无额外模型参数终局保持不变。
 

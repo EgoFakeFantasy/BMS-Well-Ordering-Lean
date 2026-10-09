@@ -1,5 +1,27 @@
 # BM4 的二阶算术级背景：可数集合论路线审计
 
+## 当前状态与历史范围（2026-10-10）
+
+固定外部高度 H 的原 Z₂ 无无限严格一步展开下降链闭句现已取得正式
+`Derives SecondOrderArithmetic.theory_m [] (SecondOrderConcreteFormula.closed_m H)`，
+入口 `SecondOrderHereditaryBMSWellOrder.derives_m`，数学源码已随 `main` 的
+`c0db059` 发布；独立公理守卫为 `SecondOrderHereditaryBMSAxiomAudit`。
+原 163 个 ZFC 资源不变，原版另保留于 `zfc-constructible`。
+[该提交的 CI](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/actions/runs/37917963731)
+根／桥工程均通过；本地发布门为 3993 任务。
+
+这里是原完整二阶理解 Z₂ 的逐实例对象推导，不是等一致背景的替代结果。
+当前高度 ≤ H 的生成数组不限制种子高度；对象句不打包线性可比性。
+内部不限高度统一断言、最小签名独立导出和 PRA 核验的原始递归证明码生成器
+`(G)` 仍不在交付范围内。Lean 的逐实例 `Derives` 不等于已经得到 `(G)`。
+
+以下保留 2026-09-13 起的文献／实现审计，表格及“当前”“待证”“下一步”
+均属于各历史路线与检查点。不能把旧的“尚非对象 Z₂ 推导”继续用于新终局，
+也不能反过来声称全文所有一般解释、全局良序或强度校准义务都已完成。
+最新精确状态以 [CURRENT_PROGRESS.md](CURRENT_PROGRESS.md) 为准。
+
+## 历史审计记录
+
 日期：2026-09-13。范围：二阶背景路线及持续实现审计；本文不修改 BM4 定义、展开规则或已有良序性定理。持续实现见第 10—45 节；完整 TMC 解释及对象推导传输见第 32 节，BM4 的 `(G)` 仍未完成。额度停止断点见 `SECOND_ORDER_HANDOFF.md`。
 
 ## 0. 结论与证据等级

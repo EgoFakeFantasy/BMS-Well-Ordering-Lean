@@ -1,8 +1,13 @@
 # BMS 通用证明工具子库
 
-本轮选择提取可复用工具，不将未完成的弱背景路线打包为良序证明。
+本库提供可复用工具；仅导入工具不等于导入 BMS 良基性或良序性终局。
 子库名为 **BMSTools**，位于现有 ConstructibleBridge 工程内，
 有独立 Lake 库目标、分层入口和依赖审计。它不是独立发行的无依赖软件包。
+
+当前状态（2026-10-10）：工具已随 `main` 的 `c0db059` 发布，工程的根／桥接
+CI 均通过，见 [对应 CI](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/actions/runs/37917963731)。
+原 ZFC 版本保留在 `zfc-constructible`；原 Z₂ 的固定高度终局由独立的
+`SecondOrderHereditaryBMSWellOrder.derives_m` 提供，不隐入本工具入口。
 
 ## 使用
 
@@ -34,6 +39,11 @@ open YesMetaZFC.BMS.ConstructibleBridge
 有符号求值证书。第四组数学假设更具体，不是前三组的强度承诺。
 实现文件中的完整定理类型是前提的权威来源。
 
+当前 Assignments 分组还再导出通用的 `ParameterFusion`、`StructureCongruence`，
+Certificates 分组再导出 `BoundedFormulaCertificate`，实现位于
+`YesMetaZFC/Automation/`。这些接口的命名空间与前提以各实现文件为准，
+不要求或宣称任意对象理论自动具有所需证书。
+
 ## 不能由本库直接得到的结论
 
 - `PowerlessTheory.theory_m` 不含幂集与选择公理，但包含完整分离及收集。
@@ -42,8 +52,8 @@ open YesMetaZFC.BMS.ConstructibleBridge
 - `union_l` 消费已经给出的二元并成员方程，不负责在当前层收集任意证书族。
 - 规则对记录集单调，不代表任意扩大的记录集仍通过整表检查。
 - 含外部求值图 H 的语义有效性后置条件不能替代内部收集所需的检查公式。
-- 本库未完成父记录添入、任意族的层内收集、接受完备性、完整有限反射、
-  弱背景对象级 BMS 终局或标准 Z₃ 的强度校准。
+- 子库入口不提供无条件接受完备性、完整有限反射、对象级 BMS 终局或
+  标准 Z₃ 的强度校准。整个工程的固定高度 Z₂ 推导不能冒充本子库的无前提接口。
 
 原 ZFC／可构造证明仍从 `BMSConstructibleBridge.FinalAssembly` 调用；
 本工具入口不导入该终局，且不替换原证明。历史研究模块保留，不全数提升为推荐接口。
@@ -68,7 +78,9 @@ propext、Classical.choice、Quot.sound，并拒绝导入整库入口或 FinalAs
 后续新增推荐接口须同时给出用途、完整前提、编译与公理审计结果；
 不以增加包装定理或降低行数作为目标。
 
-## 本轮本地验收（2026-09-14）
+## 历史本地验收（2026-09-14）
+
+以下数值及“未提交／未推送”只描述当时检查点，当前发布状态以文首为准。
 
 - 独立工具构建通过：1396 jobs；工具依赖审计通过：3164 个声明。
 - 原桥接构建通过：2241 jobs；原最终定理公理审计通过。

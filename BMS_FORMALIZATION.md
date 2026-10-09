@@ -1,8 +1,28 @@
 # BMS 良序性证明 Lean 形式化
 
+## 两版入口与当前状态（2026-10-10）
+
+原 ZFC／可构造版本保留在 `zfc-constructible` 分支的 `0f8e912` 快照，
+`main` 也继续保留相同原模块与公开接口；下面 Stage 0–4 和两条定理说明的是该原版本。
+`main` 已在 `c0db059` 追加原 Z₂ 中每个外部固定高度 H 的正式推导：
+
+```lean
+theorem SecondOrderHereditaryBMSWellOrder.derives_m (H : Nat) :
+  Derives SecondOrderArithmetic.theory_m [] (SecondOrderConcreteFormula.closed_m H)
+```
+
+这个对象句排除当前高度始终 ≤ H 的生成数组无限严格一步展开下降链，不限制种子高度。
+它不打包对象层线性可比性，也不是 Z₂ 内部不限高度的统一全称命题。
+入口为 `SecondOrderHereditaryBMSWellOrder.lean`，独立守卫为
+`SecondOrderHereditaryBMSAxiomAudit.lean`；它们不替换 `FinalAssembly.lean`。
+数学源码提交的 [远端 Lean CI](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/actions/runs/37917963731)
+根工程及桥接工程均通过。本地发布门为 3993 任务；旧的 798／1531 任务记录是历史检查点。
+详细状态以 [CURRENT_PROGRESS.md](docs/CURRENT_PROGRESS.md) 为准，版本范围见
+[PROOF_VARIANTS.md](docs/PROOF_VARIANTS.md)。
+
 ## 最终结论
 
-BM4 生成记号及其严格下降关系构成严格良序：
+原 ZFC 版本证明 BM4 生成记号及其严格下降关系构成严格良序：
 
 ```lean
 theorem bm4_strictWellOrder_l :
@@ -92,7 +112,8 @@ lake build
 - 最终两个定理的公理依赖仅为 Lean/Mathlib 标准基线：
   `propext`、`Classical.choice`、`Quot.sound`。
 
-`Classical.choice` 只用于 Lean 元层选择有限复杂度证书，不作为新的集合论假设。
+这份 Lean 公理清单不等于对象理论的公理清单；后者须检查理论定义、定理参数
+及解释义务。原 ZFC 版本与新增 Z₂ 版本的背景不可仅凭 `#print axioms` 混同。
 
 机器可复核证据位于
 `ConstructibleBridge/BMSConstructibleBridge/AxiomAudit.lean`。其中的

@@ -1,5 +1,41 @@
 # 弱背景路线交接
 
+## 当前接手状态（2026-10-10，优先于全部历史任务记录）
+
+数学源码发布基点为 `c0db059b6f182ccad1426da5fb27d57bc47ef7b5`，分支 `main`。
+主目录为 `C:/Users/17857/Documents/Codex/2026-07-24/zhe/work/bms-publish-20260928`；
+当前短路径构建入口为 `C:/Users/17857/Documents/Codex/bm-cur/ConstructibleBridge`。
+旧 `YesMetaZFC-stage4`／`bm4v` 路径不代表最新源码，不用旧树整树覆盖当前树。
+原 ZFC 资源调用者使用 `zfc-constructible`／`0f8e912`；当前 main 也保留全部旧接口。
+
+已交付 `SecondOrderHereditaryBMSWellOrder.derives_m H`：原 Z₂ 对每个外部 H
+正式证明 `SecondOrderConcreteFormula.closed_m H`，排除生成数组当前高度始终
+≤ H 的无限严格一步展开下降链，不限制种子高度。没有 `hSources`、额外源模型
+或算术对应假设；遗传源核心、完整收集、实际算术对应及最后的守卫消去均已接入。
+对象句未打包线性可比性；内部不限高度统一断言、最小签名导出、PRA `(G)` 未交付。
+不要按下面旧任务重新把源核心或最终算术接线误列为本终局的未完成前提。
+
+本地发布门为 3993 任务；最终机器公理守卫仅允许三项既定 Lean 公理。
+[数学源码的远端 CI](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/actions/runs/37917963731)
+根／桥工程已通过；此结果绑定 c0db059，不引用旧日志替代后续改动的验证。
+今后实际改动 Lean 后，按风险重跑相关目标及联合门，始终串行：
+
+```bash
+cd ConstructibleBridge
+lake build BMSConstructibleBridge BMSTools BMSConstructibleBridge.SecondOrderHereditaryBMSAxiomAudit
+lake env lean BMSConstructibleBridge/AxiomAudit.lean
+lake env lean BMSConstructibleBridge/SecondOrderHereditaryBMSAxiomAudit.lean
+```
+
+根工具链 4.33.1 与桥工具链 4.33.0-rc1 保持分离，不并行覆盖共享 olean。
+继续保护 163 个原资源，使用 `scripts/check-legacy-resources.ps1`；构建成功及
+`#print axioms` 不能替代对象语言、理论参数、目标公式和推导关系的语义检查。
+普通额度不可用时停止，不消耗 credits 或重置。以下旧数值额度线、截止时间、
+代理分工与“等待裁决”均为历史状态，不自动恢复任务；现行工作以用户最新授权为准。
+更完整的当前记录见 [CURRENT_PROGRESS.md](CURRENT_PROGRESS.md)。
+
+## 历史交接与任务记录
+
 ## 本轮增量（2026-09-27 夜，WorkBuddy 执行 Codex task #44）
 
 ### 一、task 42：`PowerlessBMSMatrixTransfer.lean` 编译修复（已完成）

@@ -8,12 +8,14 @@
 本项目复用 YesMetaZFC 的逻辑与集合论基础，并在其上实现 BMS 的组合证明和可构造模型桥接；
 上游来源与贡献边界见文末。
 
-## 当前研究进度（2026-10-09）
+## 当前研究进度（2026-10-10）
 
 原 ZFC／可构造层次的 BM4 良序证明及公开接口继续保留。
 版本入口：[`zfc-constructible`](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/tree/zfc-constructible)
 保留本次更新前的 `0f8e912` 源码快照，供原资源的调用者继续使用；
-`main` 追加下述 Z₂ 证明，同时保留全部原 ZFC 模块和定理接口。
+`main` 已在提交 [`c0db059`](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/commit/c0db059b6f182ccad1426da5fb27d57bc47ef7b5)
+发布下述 Z₂ 证明，同时保留全部原 ZFC 模块和定理接口。两版的入口及边界见
+[证明版本说明](docs/PROOF_VARIANTS.md)。
 
 **每个固定外部行数 H 的原 Z₂ 良基性目标现已完成对象推导**，入口为
 [SecondOrderHereditaryBMSWellOrder.lean](ConstructibleBridge/BMSConstructibleBridge/SecondOrderHereditaryBMSWellOrder.lean)：
@@ -32,7 +34,10 @@ H 是外部模式索引：交付的是每个实例的正式推导，不是 Z₂ 
 签名中的额外 pair/start/step 槽没有增加公理，理解正文及最终目标不使用这些槽；
 最小签名的独立导出不在本次交付范围。
 本地 3993 任务联合构建、严格单文件 profile、`lean --trust=0` 导入核验
-与最终机器公理审计通过。完整路线与验证范围见
+与最终机器公理审计通过。该证明提交的
+[远端 CI](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/actions/runs/37917963731)
+已通过，`root-build` 和 `constructible-bridge` 均为 success；此结论绑定该提交，
+不代表后续提交或所有历史记录都已验证。完整路线与验证范围见
 [当前进度](docs/CURRENT_PROGRESS.md)。
 
 ## 可复用工具子库
@@ -44,7 +49,7 @@ H 是外部模式索引：交付的是每个实例的正式推导，不是 Z₂ 
 
 ## 主要结论
 
-最终入口位于 [FinalAssembly.lean](ConstructibleBridge/BMSConstructibleBridge/FinalAssembly.lean)，
+原 ZFC 版本的最终入口位于 [FinalAssembly.lean](ConstructibleBridge/BMSConstructibleBridge/FinalAssembly.lean)，
 命名空间为 `YesMetaZFC.BMS.ConstructibleBridge`。
 
 `bm4_strictWellOrder_l` 的结论是：
@@ -69,7 +74,8 @@ StrictWellOrder GeneratedArray GeneratedStrictDescent
 
 ## 证明路线
 
-Stage 0–4 已完成，证明分成组合层与可构造模型层：
+以下为原 ZFC 版本的 Stage 0–4，已完成组合层与可构造模型层。
+新增 Z₂ 逐实例路线见 [固定高度说明](docs/FIXED_HEIGHT_Z2.md)。
 
 | 阶段 | 内容 |
 | --- | --- |
@@ -98,6 +104,9 @@ Stage 0–4 已完成，证明分成组合层与可构造模型层：
 
 2026-09-10 精简版本的 BMS Lean 源码为 **44,989 行、165 个文件**。
 统计包含组合层、桥接层、入口及公理审计；不含上游其他源码、第三方依赖、Lake 配置、文档与构建缓存。
+这是历史版本数据，不是追加二阶及三阶研究后的当前规模。数学源码提交 `c0db059`
+中，BMS 组合层、整个桥接层（含历史研究模块）及 BMSTools 共 **314,553 物理行、
+2,419 个 Lean 文件**；不含其余上游逻辑代码。该全层统计也不等于 Z₂ 终局的最小依赖规模。
 
 ## 构建与复核
 
@@ -135,7 +144,8 @@ Windows 建议使用较短的检出路径，例如 `C:\src\bms`。
 
 ## 证明可信性与 CI
 
-BMS 证明源码不使用 `sorry` 或 `admit`。最终两条定理的公理依赖为：
+BMS 证明源码不使用 `sorry` 或 `admit`。原 ZFC 两条最终定理及 Z₂ 最终
+`models_l`／`derives_m` 的公理依赖均为：
 
 ```text
 propext, Classical.choice, Quot.sound
@@ -143,6 +153,8 @@ propext, Classical.choice, Quot.sound
 
 [AxiomAudit.lean](ConstructibleBridge/BMSConstructibleBridge/AxiomAudit.lean) 用
 `#guard_msgs` 检查实际的 `#print axioms` 输出；公理集合变化会导致检查失败。
+[SecondOrderHereditaryBMSAxiomAudit.lean](ConstructibleBridge/BMSConstructibleBridge/SecondOrderHereditaryBMSAxiomAudit.lean)
+独立守卫 Z₂ 最终接口；`#print axioms` 不显示定理参数，不能单靠公理清单判定对象理论强度。
 [Lean CI](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/actions/workflows/lean_action_ci.yml)
 在隔离的 runner 中分别检查根工程与桥接工程，并对桥接声明及最终定理进行公理审计。
 

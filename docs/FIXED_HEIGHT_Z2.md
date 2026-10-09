@@ -1,5 +1,36 @@
 # 固定行数的 Z₂ 逐实例路线
 
+## 当前交付（2026-10-10）
+
+这条路线的固定高度无无限下降链对象目标已随 `main` 的 `c0db059` 发布。
+正式入口为 `SecondOrderHereditaryBMSWellOrder.derives_m H`：
+
+```lean
+Derives SecondOrderArithmetic.theory_m [] (SecondOrderConcreteFormula.closed_m H)
+```
+
+每个 H 是外部自然数模式索引，载体为当前高度 ≤ H 的生成 BM4 数组，不限制
+种子高度。没有 `hSources`、额外源模型或算术对应前提；不是仅等一致理论中的替代句。
+对象句不打包线性可比性，也不宣称 Z₂ 内部不限高度统一断言或 PRA 证明码生成器 `(G)`。
+
+已闭合的最终路线是：`SecondOrderHereditaryCandidateSource.exists_l` 为每个
+原 Z₂ 模型及候选 X 提供实际完整遗传源与算术对应，
+`PowerlessBMSNonemptyTransfer.derives_m` 消去 Prop 存在证书并通过原 Type 0
+完备性回到推导核，最终 `SecondOrderHereditaryBMSWellOrder` 不再带源侧假设。
+`SecondOrderHereditaryBMSAxiomAudit` 独立守卫两个最终出口。
+
+本地发布门为 3993 任务，原 163 个 ZFC 资源指纹未变；数学源码提交的
+[远端 CI](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/actions/runs/37917963731)
+根／桥工程均通过。原完整 ZFC 良序版本保留在 `zfc-constructible`。
+后续准确状态见 [CURRENT_PROGRESS.md](CURRENT_PROGRESS.md)，版本见
+[PROOF_VARIANTS.md](PROOF_VARIANTS.md)。
+
+## 历史路线与阶段记录
+
+以下“争取”“尚未完成”“下一步”“未推送”均描述对应历史检查点，不是当前结论。
+旧额度线、分工与停工描述也不构成现行指令；不能据此重启旧任务。
+没有把本次交付之外的内部统一命题或一般接口一并标为完成。
+
 ## 本轮目标
 
 对每个外部固定的标准自然数 N，争取构造 Z₂ 对当前行数不超过 N 的

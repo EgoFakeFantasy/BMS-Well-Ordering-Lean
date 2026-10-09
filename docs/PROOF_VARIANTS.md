@@ -1,5 +1,43 @@
 # 两条证明路线与兼容性边界
 
+## 已发布版本（2026-10-10）
+
+| 版本 | GitHub 分支／数学源码基点 | 入口与交付范围 |
+| --- | --- | --- |
+| 原 ZFC／可构造证明 | `zfc-constructible`／`0f8e912` | `FinalAssembly.lean` 中的 `bm4_strictWellOrder_l` 与 `bm4_no_infinite_descent_l`；原完整严格良序结论 |
+| 原 Z₂ 固定高度证明 | `main`／`c0db059` | `SecondOrderHereditaryBMSWellOrder.derives_m H`；每个外部 H 的无无限严格一步展开下降链对象句 |
+
+`main` 并未删除旧版：原 ZFC 的 163 个资源 LF 内容指纹、模块路径及公开接口
+保持不变。旧资源调用者可以固定 `zfc-constructible`；新资源调用者可按需导入
+独立 Z₂ 模块。上传采用正常后继提交，没有强推或改写旧历史。
+
+新入口的正式类型为：
+
+```lean
+theorem derives_m (H : Nat) :
+  Derives SecondOrderArithmetic.theory_m [] (SecondOrderConcreteFormula.closed_m H)
+```
+
+没有 `hSources`、额外源模型或算术对应假设。载体是当前高度 ≤ H 的生成 BM4
+数组，不限制种子高度；H 为外部模式索引。背景是完整二阶理解的原 Z₂ 呈现，
+不是仅等一致的三阶／选择加强替代。`PowerlessTheory` 只作为被消去的解释中间层。
+签名中的额外 pair/start/step 槽没有公理，且不进入理解正文或目标。
+
+该对象句没有打包线性可比性，不交付对象层完整严格线性良序、内部不限高度
+统一断言、最小签名独立导出或 PRA 证明码生成器 `(G)`。
+三阶理论的历史研究没有因此被升级为已完成的标准 Z₃ 强度解释。
+
+数学源码提交 `c0db059` 的本地 3993 门及最终公理守卫通过；
+[远端 CI](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/actions/runs/37917963731)
+的 `root-build`、`constructible-bridge` 均为 success。独立 Z₂ 审计入口是
+`SecondOrderHereditaryBMSAxiomAudit.lean`；旧 `AxiomAudit.lean` 仍守卫原 ZFC 终局。
+具体进度及验收口径见 [CURRENT_PROGRESS.md](CURRENT_PROGRESS.md)。
+
+## 历史路线与发布门（2026-09-13／14）
+
+以下保持当时的研究记录；“未完成”“未发布”以及旧额度／停工描述不代表当前状态。
+这些旧门限不能覆盖上面的精确交付范围，也不能据此重启历史后台任务。
+
 > 2026-09-14 本轮收尾：按用户选择要求，已从现有研究成果提取
 > BMSTools 通用工具子库，见 BMS_TOOLS.md。它不是第二份良序证明；
 > 原版资源不变，下述双证明发布门仍未满足。
