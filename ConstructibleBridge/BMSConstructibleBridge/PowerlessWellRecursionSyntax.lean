@@ -60,9 +60,7 @@ theorem solution_formula_l {Γ : SortContext ℒ} (φ : Formula ℒ [] (.set :: 
   apply and_congr Iff.rfl
   apply Iff.of_eq
   apply congrArg (fun η => φ.satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match s, v with
     | .set, .here => rfl
@@ -103,9 +101,7 @@ theorem stage_formula_l {Γ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .se
   rw [← solution_formula_l φ η f R]
   apply Iff.of_eq
   apply congrArg (fun η => (solution_m φ).satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match s, v with
     | .set, .here => rfl

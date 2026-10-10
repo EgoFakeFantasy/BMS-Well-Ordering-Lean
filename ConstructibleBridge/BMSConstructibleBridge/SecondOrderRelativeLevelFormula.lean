@@ -98,9 +98,7 @@ theorem formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortContext signa
       (Automation.RelationalTranslation.argumentsSubstitution (.cons B (.cons α (.cons rα (.cons C (.cons rC .nil)))))) =
       (Env.empty (M := ℳ) |>.pushFree (rC.eval η) |>.pushFree (C.eval η) |>.pushFree (rα.eval η)
         |>.pushFree (α.eval η) |>.pushFree (B.eval η)) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v with
       | here => rfl

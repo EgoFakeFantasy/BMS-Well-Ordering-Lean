@@ -51,9 +51,7 @@ theorem instance_formula_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} ℒ}
   rw [instance_m, Formula.satisfies_substitute]
   apply Iff.of_eq
   congr 1
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     repeat' first | rfl | cases ‹Variable _ _›
 

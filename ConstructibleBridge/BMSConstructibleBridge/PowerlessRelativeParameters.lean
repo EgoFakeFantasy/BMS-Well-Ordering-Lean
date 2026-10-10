@@ -38,9 +38,7 @@ theorem instance_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} ℒ} {A : carrier_l 
     (instance_m φ a f).satisfies η ↔ φ.satisfies ξ := by
   rw [instance_m, Formula.satisfies_substitute]
   have hη : η.pullback (binding_m a f) = (PowerlessRelativization.env_l ξ).pushFree A := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases s
       cases v with

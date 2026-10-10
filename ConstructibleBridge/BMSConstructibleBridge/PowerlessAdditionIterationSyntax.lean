@@ -34,9 +34,7 @@ theorem formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : SortCo
     (PowerlessAddition.env_l (ω.eval η)) (F.eval η) (ω.eval η) (e.eval η) (a.eval η)]
   apply Iff.of_eq
   apply congrArg (fun η => (PowerlessRecursionSyntax.recursion_m PowerlessAddition.step_m).satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match s, v with
     | .set, .here => rfl

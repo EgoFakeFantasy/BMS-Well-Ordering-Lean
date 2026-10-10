@@ -86,9 +86,7 @@ theorem output_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ :
       ((arguments_m ω A P e t₁ t₂ t₃ Pair Valid D f W).eval η) =
       (env_l (ω.eval η) (A.eval η) (P.eval η) (e.eval η) (t₁.eval η) (t₂.eval η)
         (t₃.eval η) (Pair.eval η) (Valid.eval η) (D.eval η) (f.eval η)).pushFree (W.eval η) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       rcases v with _ | (_ | (_ | (_ | (_ | (_ | (_ | (_ | (_ | (_ | (_ | (_ | v)))))))))))
       all_goals first | rfl | cases v

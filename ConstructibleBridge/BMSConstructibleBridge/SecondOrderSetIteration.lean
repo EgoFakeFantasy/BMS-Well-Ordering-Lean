@@ -101,9 +101,7 @@ theorem graph_l (hℳ : Theory.Models ℳ theory_m) {Δ : SortContext signature_
   rw [Formula.satisfies_substitute, SecondOrderSetHistory.formula_l]
   have h : SecondOrderSetHistory.parameters_l
       ((((η.pushFree A).pushFree a).pushFree i).pushBound H |>.pullback (bind (Δ := Δ))) = η := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases s <;> rfl
   rw [h]

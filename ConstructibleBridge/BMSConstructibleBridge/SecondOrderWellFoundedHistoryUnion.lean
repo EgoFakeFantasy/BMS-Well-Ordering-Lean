@@ -73,9 +73,7 @@ theorem formula_l {Δ : SortContext signature_m} (φ : Formula signature_m [.set
         (show Substitution signature_m [] (.num :: .set :: .set :: Δ) [.set]
           (.num :: .num :: .num :: .set :: Δ) from .map (fun v => nomatch v) insert_m) =
       (((η.pushFree H).pushFree R).pushFree m) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v with
       | here => rfl

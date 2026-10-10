@@ -48,9 +48,7 @@ private theorem body_l (hℳ : Theory.Models ℳ theory_m) {Δ : SortContext ℒ
   refine (Formula.satisfies_substitute _ _ φ).trans ?_
   apply Iff.of_eq
   apply congrArg (fun η => Formula.satisfies η φ)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v <;> rfl
 
@@ -81,9 +79,7 @@ theorem models_l (hℳ : Theory.Models ℳ theory_m) {Δ : SortContext ℒ}
   refine (SecondOrderInterpretation.form_l hℳ φ (fun v => nomatch v) (push_l B τ)).trans ?_
   apply Iff.of_eq
   apply congrArg (fun η => Formula.satisfies η φ)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v <;> rfl
 

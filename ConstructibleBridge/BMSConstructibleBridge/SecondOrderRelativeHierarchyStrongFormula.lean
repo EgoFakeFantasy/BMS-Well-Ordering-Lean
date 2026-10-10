@@ -60,9 +60,7 @@ theorem base_formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortContext 
       (Automation.RelationalTranslation.argumentsSubstitution (.cons (.bvar .here)
         (.cons (S.weakenBound sort_m.num) (.cons (B.weakenBound sort_m.num) .nil)))) =
       (((Env.empty (M := ℳ)).pushFree (B.eval η)).pushFree (S.eval η)).pushFree n := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match v with
       | .here => rfl
@@ -82,9 +80,7 @@ theorem member_formula_l {Γ Δ : SortContext signature_m} (η : Env ℳ Γ Δ)
       (Automation.RelationalTranslation.argumentsSubstitution (.cons (.bvar .here)
         (.cons (S.weakenBound sort_m.num) (.cons (R.weakenBound sort_m.num) .nil)))) =
       (((Env.empty (M := ℳ)).pushFree (R.eval η)).pushFree (S.eval η)).pushFree n := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match v with
       | .here => rfl

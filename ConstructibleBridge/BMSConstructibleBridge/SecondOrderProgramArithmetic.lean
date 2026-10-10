@@ -70,13 +70,7 @@ theorem graph_point_l {f : Nat → Nat} (F : PrimitiveFormulas.graph_l f) (X : s
       Formula.satisfies (((Env.empty (M := ℳ)).pushFree b).pushFree a)
         (F.form (.fvar .here : Term signature_m [] [.num, .num] .num)
           (.fvar (.there .here) : Term signature_m [] [.num, .num] .num)) := by
-  have e1 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar .here : Term signature_m [] [.num, .num] .num) = a :=
-    eval_fvar_here_l ((Env.empty (M := ℳ)).pushFree b) a
-  have e2 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar (.there .here) : Term signature_m [] [.num, .num] .num) = b :=
-    eval_fvar_there_here_l (Env.empty (M := ℳ)) a b
-  simpa [e1, e2] using (hX (((Env.empty (M := ℳ)).pushFree b).pushFree a)
+  simpa only [Term.eval, Env.pushFree, Assignment.push] using (hX (((Env.empty (M := ℳ)).pushFree b).pushFree a)
     (.fvar .here) (.fvar (.there .here))).symm
 
 /-- 零图逐点关系。 -/
@@ -84,13 +78,7 @@ theorem zero_rel_l (_hℳ : Theory.Models ℳ theory_m) {X : set_l ℳ}
     (hX : graph_semantics_l PrimitiveFormulas.zero_l X) (a b : num_l ℳ) :
     relation_l X a b ↔ zero_l ℳ = b := by
   rw [graph_point_l PrimitiveFormulas.zero_l X hX a b]
-  have e1 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar .here : Term signature_m [] [.num, .num] .num) = a :=
-    eval_fvar_here_l ((Env.empty (M := ℳ)).pushFree b) a
-  have e2 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar (.there .here) : Term signature_m [] [.num, .num] .num) = b :=
-    eval_fvar_there_here_l (Env.empty (M := ℳ)) a b
-  simpa [e1, e2] using zero_semantics_l _hℳ
+  simpa only [Term.eval, Env.pushFree, Assignment.push] using zero_semantics_l _hℳ
     (((Env.empty (M := ℳ)).pushFree b).pushFree a) (.fvar .here) (.fvar (.there .here))
 
 /-- 后继图逐点关系。 -/
@@ -98,13 +86,7 @@ theorem succ_rel_l (_hℳ : Theory.Models ℳ theory_m) {X : set_l ℳ}
     (hX : graph_semantics_l PrimitiveFormulas.succ_l X) (a b : num_l ℳ) :
     relation_l X a b ↔ succ_l a = b := by
   rw [graph_point_l PrimitiveFormulas.succ_l X hX a b]
-  have e1 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar .here : Term signature_m [] [.num, .num] .num) = a :=
-    eval_fvar_here_l ((Env.empty (M := ℳ)).pushFree b) a
-  have e2 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar (.there .here) : Term signature_m [] [.num, .num] .num) = b :=
-    eval_fvar_there_here_l (Env.empty (M := ℳ)) a b
-  simpa [e1, e2] using succ_semantics_l _hℳ
+  simpa only [Term.eval, Env.pushFree, Assignment.push] using succ_semantics_l _hℳ
     (((Env.empty (M := ℳ)).pushFree b).pushFree a) (.fvar .here) (.fvar (.there .here))
 
 /-- 第一投影图逐点关系：读取模型反配对的第一坐标。 -/
@@ -112,13 +94,7 @@ theorem left_rel_l (hℳ : Theory.Models ℳ theory_m) {X : set_l ℳ}
     (hX : graph_semantics_l PrimitiveFormulas.left_l X) (a b : num_l ℳ) :
     relation_l X a b ↔ (value_l hℳ a).1 = b := by
   rw [graph_point_l PrimitiveFormulas.left_l X hX a b]
-  have e1 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar .here : Term signature_m [] [.num, .num] .num) = a :=
-    eval_fvar_here_l ((Env.empty (M := ℳ)).pushFree b) a
-  have e2 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar (.there .here) : Term signature_m [] [.num, .num] .num) = b :=
-    eval_fvar_there_here_l (Env.empty (M := ℳ)) a b
-  simpa [e1, e2] using left_semantics_l hℳ
+  simpa only [Term.eval, Env.pushFree, Assignment.push] using left_semantics_l hℳ
     (((Env.empty (M := ℳ)).pushFree b).pushFree a) (.fvar .here) (.fvar (.there .here))
 
 /-- 第二投影图逐点关系：读取模型反配对的第二坐标。 -/
@@ -126,13 +102,7 @@ theorem right_rel_l (hℳ : Theory.Models ℳ theory_m) {X : set_l ℳ}
     (hX : graph_semantics_l PrimitiveFormulas.right_l X) (a b : num_l ℳ) :
     relation_l X a b ↔ (value_l hℳ a).2 = b := by
   rw [graph_point_l PrimitiveFormulas.right_l X hX a b]
-  have e1 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar .here : Term signature_m [] [.num, .num] .num) = a :=
-    eval_fvar_here_l ((Env.empty (M := ℳ)).pushFree b) a
-  have e2 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar (.there .here) : Term signature_m [] [.num, .num] .num) = b :=
-    eval_fvar_there_here_l (Env.empty (M := ℳ)) a b
-  simpa [e1, e2] using right_semantics_l hℳ
+  simpa only [Term.eval, Env.pushFree, Assignment.push] using right_semantics_l hℳ
     (((Env.empty (M := ℳ)).pushFree b).pushFree a) (.fvar .here) (.fvar (.there .here))
 
 /-- 配对图逐点关系：两子图各自读值后按原顺序配对。 -/
@@ -143,13 +113,7 @@ theorem pair_rel_l (_hℳ : Theory.Models ℳ theory_m) {f g : Nat → Nat}
     relation_l X a b ↔
       ∃ u v : num_l ℳ, relation_l XF a u ∧ relation_l XG a v ∧ value_l u v = b := by
   rw [graph_point_l (F.pair_l G) X hX a b]
-  have e1 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar .here : Term signature_m [] [.num, .num] .num) = a :=
-    eval_fvar_here_l ((Env.empty (M := ℳ)).pushFree b) a
-  have e2 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar (.there .here) : Term signature_m [] [.num, .num] .num) = b :=
-    eval_fvar_there_here_l (Env.empty (M := ℳ)) a b
-  simpa [e1, e2] using pair_semantics_l _hℳ F G XF XG hF hG
+  simpa only [Term.eval, Env.pushFree, Assignment.push] using pair_semantics_l _hℳ F G XF XG hF hG
     (((Env.empty (M := ℳ)).pushFree b).pushFree a) (.fvar .here) (.fvar (.there .here))
 
 /-- 复合图逐点关系：先经内层图 `G`、再经外层图 `F`。 -/
@@ -159,13 +123,7 @@ theorem comp_rel_l (_hℳ : Theory.Models ℳ theory_m) {f g : Nat → Nat}
     {X : set_l ℳ} (hX : graph_semantics_l (F.comp_l G) X) (a b : num_l ℳ) :
     relation_l X a b ↔ ∃ m : num_l ℳ, relation_l XG a m ∧ relation_l XF m b := by
   rw [graph_point_l (F.comp_l G) X hX a b]
-  have e1 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar .here : Term signature_m [] [.num, .num] .num) = a :=
-    eval_fvar_here_l ((Env.empty (M := ℳ)).pushFree b) a
-  have e2 : Term.eval (((Env.empty (M := ℳ)).pushFree b).pushFree a)
-      (.fvar (.there .here) : Term signature_m [] [.num, .num] .num) = b :=
-    eval_fvar_there_here_l (Env.empty (M := ℳ)) a b
-  simpa [e1, e2] using comp_semantics_l _hℳ F G XF XG hF hG
+  simpa only [Term.eval, Env.pushFree, Assignment.push] using comp_semantics_l _hℳ F G XF XG hF hG
     (((Env.empty (M := ℳ)).pushFree b).pushFree a) (.fvar .here) (.fvar (.there .here))
 
 /-! ## 由统一语义导出函数性（Codex #1438(2) / #1442(A)）

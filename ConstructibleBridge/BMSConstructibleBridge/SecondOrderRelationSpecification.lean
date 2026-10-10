@@ -86,9 +86,7 @@ theorem body_formula_l {Γ Δ Ξ : SortContext signature_m} (η : Env ℳ Γ Ξ)
   rw [body_m, Formula.satisfies_substitute]
   apply Iff.of_eq
   apply congrArg (fun ξ => φ.satisfies ξ)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v with
     | here => rfl
@@ -110,9 +108,7 @@ theorem formula_l {Γ Δ Ξ : SortContext signature_m} (η : Env ℳ Γ Ξ)
   apply iff_congr Iff.rfl
   apply Iff.of_eq
   apply congrArg (fun ξ => φ.satisfies ξ)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v with
     | here => rfl

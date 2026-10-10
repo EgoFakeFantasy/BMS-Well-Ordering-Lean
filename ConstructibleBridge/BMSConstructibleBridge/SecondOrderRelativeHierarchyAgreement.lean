@@ -76,9 +76,7 @@ theorem formula_arguments_l {Γ Δ : SortContext signature_m} (η : Env ℳ Γ �
   have hEnv : SecondOrderRelationSpecification.parameters_l η
       (Automation.RelationalTranslation.argumentsSubstitution (.cons n (.cons I (.cons S (.cons T .nil))))) =
       ((((Env.empty (M := ℳ)).pushFree (T.eval η)).pushFree (S.eval η)).pushFree (I.eval η)).pushFree (n.eval η) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v with
       | here => rfl

@@ -66,9 +66,7 @@ theorem presentation_l {Γ Δ : SortContext ℒ} (η : Env ℳ Γ Δ)
   simp only [prefix_m, Formula.satisfies_substitute]
   apply Iff.of_eq
   apply congrArg (fun η => (PowerlessOrdinalRecursion.recursion_m operator_m).satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match s, v with
     | .set, .here => rfl

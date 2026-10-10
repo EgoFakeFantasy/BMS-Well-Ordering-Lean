@@ -56,9 +56,7 @@ theorem formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : SortCo
   refine (Formula.satisfies_substitute η _ template_m).trans ?_
   apply Iff.of_eq
   apply congrArg (fun ξ => template_m.satisfies ξ)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v with
     | here => rfl

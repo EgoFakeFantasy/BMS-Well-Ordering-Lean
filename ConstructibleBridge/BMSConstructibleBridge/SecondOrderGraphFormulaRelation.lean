@@ -67,9 +67,7 @@ theorem exists_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} signature_m}
   have htarget :
       (((ξ.pushFree m).pushFree n).pullback σ) =
       target_l ρ (push_l ⟨R, n, hn⟩ (push_l ⟨S, m, hm⟩ τ)) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v with
       | here => rfl
@@ -87,9 +85,7 @@ theorem exists_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} signature_m}
   apply Iff.of_eq
   apply congrArg (fun η => φ.satisfies η)
   rw [← hη]
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v with
     | here => rfl

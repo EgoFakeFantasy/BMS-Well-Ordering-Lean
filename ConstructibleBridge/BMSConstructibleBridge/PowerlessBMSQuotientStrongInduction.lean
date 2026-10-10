@@ -34,9 +34,7 @@ theorem strong_induct_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
         (push_l (SecondOrderNaturalGraph.code_l hℳ K.less K.less_spec n) τ) =
         η.pushFree (numberCode_l K n).val := by
       rw [← hη]
-      apply Env.ext
-      · intro s v
-        nomatch v
+      apply Env.ext (bound := []) (fun {_} v => nomatch v)
       · intro s v
         cases v <;> rfl
     rw [hEnv] at h

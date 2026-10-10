@@ -43,9 +43,7 @@ theorem induction_l (C : PowerlessBMSQuotientCoding.source_coding_l hM)
         (push_l (SecondOrderNaturalGraph.code_l hM C.less C.less_spec n) τ) =
         η.pushFree (PowerlessBMSQuotientCoding.numberCode_l C n).val := by
       rw [← hη]
-      apply Env.ext
-      · intro s v
-        nomatch v
+      apply Env.ext (bound := []) (fun {_} v => nomatch v)
       · intro s v
         cases v <;> rfl
     rw [henv] at h

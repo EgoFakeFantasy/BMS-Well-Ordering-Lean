@@ -125,9 +125,7 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) {Δ : SortContext signature
   intro H
   rw [Formula.satisfies_substitute, formula_l]
   have h : parameters_l ((((η.pushFree A).pushFree n).pushBound H).pullback (bind (Δ := Δ))) = η := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases s <;> rfl
   rw [h]

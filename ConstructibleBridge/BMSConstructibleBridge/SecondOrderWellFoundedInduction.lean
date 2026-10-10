@@ -25,17 +25,13 @@ def parameters_l {Γ Δ : SortContext signature_m} (η : Env ℳ Γ Δ) : Env �
 
 @[simp] theorem parameters_pushBound_l {Γ Δ : SortContext signature_m} {s : sort_m}
     (η : Env ℳ Γ Δ) (x : ℳ.Carrier s) : parameters_l (η.pushBound x) = parameters_l η := by
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     rfl
 
 @[simp] theorem parameters_empty_l {Δ : SortContext signature_m} (η : Env ℳ [] Δ) :
     parameters_l η = η := by
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     rfl
 
@@ -55,9 +51,7 @@ theorem at_formula_l {Γ Δ : SortContext signature_m} (φ : Formula signature_m
   refine (Formula.satisfies_substitute η _ φ).trans ?_
   apply Iff.of_eq
   apply congrArg (fun ξ => φ.satisfies ξ)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v <;> rfl
 

@@ -70,9 +70,7 @@ theorem env_exists_l {Δ : SortContext ℒ} (η : Env ℳ [] Δ) :
     obtain ⟨ξ, hξ⟩ := ih ρ
     refine ⟨ξ.push (η.freeVal .here), ?_⟩
     rw [PowerlessComprehension.env_push_l, hξ]
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v <;> rfl
 

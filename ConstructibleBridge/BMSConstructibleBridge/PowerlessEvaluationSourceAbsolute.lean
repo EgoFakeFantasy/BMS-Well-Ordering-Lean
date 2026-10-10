@@ -39,9 +39,7 @@ theorem source_l {B : carrier_l ℳ} {hB : ∃ x, member_l ℳ x B}
   simp only [PowerlessEvaluationPresentation.evaluation_m, Formula.satisfies_substitute]
   apply Iff.of_eq
   apply congrArg (fun η => (PowerlessOrdinalRecursion.recursion_m PowerlessEvaluationStep.operator_m).satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match s, v with
     | .set, .here => rfl

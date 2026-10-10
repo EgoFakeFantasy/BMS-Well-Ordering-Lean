@@ -39,9 +39,7 @@ private theorem layer_env_l (η : Env ℳ [] [.num, .num, .set, .set, .num]) :
   have hη : η = ((((((Env.empty (M := ℳ)).pushFree (η.freeVal (.there (.there (.there (.there .here)))))).pushFree
       (η.freeVal (.there (.there (.there .here))))).pushFree (η.freeVal (.there (.there .here)))).pushFree
       (η.freeVal (.there .here))).pushFree (η.freeVal .here)) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match v with
       | .here => rfl
@@ -66,9 +64,7 @@ private theorem selection_env_l (η : Env ℳ [] [.num, .set, .set]) :
         SecondOrderLegalFormulaIndex.spec_l (η.freeVal (.there .here)) (η.freeVal (.there (.there .here))) i := by
   let ρ := ((Env.empty (M := ℳ)).pushFree (η.freeVal (.there (.there .here)))).pushFree (η.freeVal (.there .here))
   have hη : η = ρ.pushFree (η.freeVal .here) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match v with
       | .here => rfl

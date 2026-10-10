@@ -52,9 +52,7 @@ private theorem body_l (hℳ : Theory.Models ℳ theory_m) {Δ : SortContext ℒ
   refine (Formula.satisfies_substitute ((environment_l τ A).pushFree a) _ (form_m φ)).trans ?_
   apply Iff.of_eq
   apply congrArg (fun η => Formula.satisfies η (form_m φ))
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v with
     | here => rfl

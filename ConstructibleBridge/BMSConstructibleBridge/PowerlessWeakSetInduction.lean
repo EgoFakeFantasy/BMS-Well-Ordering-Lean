@@ -37,9 +37,7 @@ theorem at_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : Sor
   refine (Formula.satisfies_substitute η _ φ).trans ?_
   apply Iff.of_eq
   apply congrArg (fun η => φ.satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v <;> rfl
 

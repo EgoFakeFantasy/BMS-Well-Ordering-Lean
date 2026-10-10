@@ -81,9 +81,7 @@ private theorem lift_formula_l {Δ Θ : SortContext ℒ} (φ : Formula ℒ [] (.
   refine (Formula.satisfies_substitute _ _ φ).trans ?_
   apply Iff.of_eq
   apply congrArg (fun η => φ.satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v with
     | here => rfl
@@ -148,9 +146,7 @@ theorem output_formula_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
       (sort := SetTheory.SetSort.set) y).pullbackRenaming
       (Renaming.free VariableRenaming.swapTop) =
       ((ξ.pushFree (sort := SetTheory.SetSort.set) y).pushFree (sort := SetTheory.SetSort.set) x) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v with
       | here => rfl

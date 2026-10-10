@@ -66,9 +66,7 @@ theorem body_formula_l {Δ : SortContext signature_m}
   unfold stage_l
   apply Iff.of_eq
   apply congrArg (fun ξ => φ.satisfies ξ)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v with
     | here => rfl
@@ -105,9 +103,7 @@ theorem formula_l {Δ : SortContext signature_m}
   rw [SecondOrderRelationSpecification.formula_l]
   have hEnv : SecondOrderRelationSpecification.parameters_l ((η.pushBound H).pushBound U)
       parameters_m = η.pushFree H := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v with
       | here => rfl

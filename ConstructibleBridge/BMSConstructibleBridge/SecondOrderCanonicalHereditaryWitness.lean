@@ -59,9 +59,7 @@ private theorem witness_formula_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.
   rw [witness_m, Formula.satisfies_substitute]
   apply Iff.of_eq
   apply congrArg (fun η => φ.satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v with
     | here => rfl

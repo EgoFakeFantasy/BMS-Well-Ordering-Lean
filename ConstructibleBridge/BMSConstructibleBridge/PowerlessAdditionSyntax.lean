@@ -35,9 +35,7 @@ theorem addition_formula_l {Γ Δ : SortContext ℒ} (η : Env ℳ Γ Δ) (ω e 
   rw [← PowerlessRecursionSyntax.recursion_formula_l step_m (env_l (ω.eval η)) f (ω.eval η) (e.eval η) (a.eval η)]
   apply Iff.of_eq
   apply congrArg (fun η => (PowerlessRecursionSyntax.recursion_m step_m).satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match s, v with
     | .set, .here => rfl

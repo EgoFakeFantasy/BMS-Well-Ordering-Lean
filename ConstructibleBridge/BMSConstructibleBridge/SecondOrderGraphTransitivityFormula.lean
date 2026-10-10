@@ -46,9 +46,7 @@ theorem formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortContext signa
   have hEnv : SecondOrderRelationSpecification.parameters_l η
       (Automation.RelationalTranslation.argumentsSubstitution (.cons r (.cons A .nil))) =
       SecondOrderInterpretation.target_l ρ τ := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match v with
       | .here => rfl

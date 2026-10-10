@@ -40,9 +40,7 @@ theorem binding_formula_l {Γ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .
   rw [Formula.satisfies_substitute]
   apply Iff.of_eq
   congr 1
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match s, v with
     | .set, .here => rfl
@@ -137,9 +135,7 @@ theorem separation_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
       ((.set :: .set :: Γ) : SortContext ℒ).length := (η.push g).push f
   have hζ : PowerlessComprehension.env_l ζ =
       ((PowerlessComprehension.env_l η).pushFree g).pushFree f := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v with
       | here => rfl

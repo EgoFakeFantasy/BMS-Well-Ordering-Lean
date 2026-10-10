@@ -37,9 +37,7 @@ theorem hierarchy_formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
   simp only [hierarchy_m, Formula.satisfies_substitute]
   apply Iff.of_eq
   apply congrArg (fun η => (PowerlessOrdinalRecursion.recursion_m PowerlessEvaluationHierarchy.operator_m).satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match s, v with
     | .set, .here => rfl

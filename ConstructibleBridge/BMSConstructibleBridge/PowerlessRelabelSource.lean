@@ -64,9 +64,7 @@ theorem source_l {U δ R H : carrier_l ℳ} {hU₀ : ∃ x, member_l ℳ x U}
         (Θ.map (fun p => ((p.2.1.eval η).val, (p.2.2.eval η).val))) := by
   let ζ : Env (structure_l U hU₀) [.set, .set] Δ := (η.pushBound g).pushBound B
   have hη : PowerlessDiagramConstraint.parameters_l ζ = η := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       rfl
   have hUT := PowerlessStageStructure.transitive_l hℳ hω ht hT hU.1

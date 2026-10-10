@@ -84,9 +84,7 @@ theorem trace_formula_l {Γ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .se
   intro _
   apply Iff.of_eq
   apply congrArg (fun η => φ.satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match s, v with
     | .set, .here => rfl

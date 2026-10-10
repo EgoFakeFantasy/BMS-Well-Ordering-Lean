@@ -44,9 +44,7 @@ theorem binding_formula_l {Γ Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :
   rw [Formula.satisfies_substitute]
   have h : ((η.pushBound i).pushBound a).pullback binding_m =
       (PowerlessDiagramConstraint.parameters_l η).pushFree a := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match s, v with
       | .set, .here => rfl

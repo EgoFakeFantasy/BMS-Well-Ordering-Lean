@@ -61,9 +61,7 @@ theorem transitive_formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortCo
       (Automation.RelationalTranslation.argumentsSubstitution (.cons (.bvar .here)
         (.cons (S.weakenBound sort_m.num) .nil))) =
       ((Env.empty (M := ℳ)).pushFree (S.eval η)).pushFree n := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match v with
       | .here => rfl
@@ -82,9 +80,7 @@ theorem monotone_formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortCont
       (Automation.RelationalTranslation.argumentsSubstitution (.cons (.bvar .here)
         (.cons (S.weakenBound sort_m.num) (.cons (R.weakenBound sort_m.num) .nil)))) =
       (((Env.empty (M := ℳ)).pushFree (R.eval η)).pushFree (S.eval η)).pushFree n := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match v with
       | .here => rfl

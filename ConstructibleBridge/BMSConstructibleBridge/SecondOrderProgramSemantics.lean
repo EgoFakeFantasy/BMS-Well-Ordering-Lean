@@ -177,28 +177,12 @@ theorem iteration_syntax_l {f : Nat → Nat} (G : PrimitiveFormulas.graph_l f)
         SecondOrderPairing.value_l (i.eval η) (u.eval η) = w₁ ∧
         SecondOrderPairing.value_l (x.eval η) w₁ = w₀ ∧
         relation_l XG w₀ (v.eval η) := by
-  -- 注意：不要把 `Env.pushBound` 放进 simp 列表，否则环境被展开成字面量 record，
-  -- `Term.eval_weakenBound` 就匹配不上了（与 β 模块同一处坑）。
-  simp only [iteration_m, Formula.satisfies, SecondOrderPairing.formula_l,
-    Term.eval, Term.eval_weakenBound]
-  constructor
-  · rintro ⟨w₁, w₀, h₁, h₀, hg⟩
-    refine ⟨w₁, w₀, h₁, h₀, ?_⟩
-    -- 先把绑定变量求值化简掉，再单独用 `Term.eval_weakenBound` 消去两次提升；
-    -- 两步必须分开：若在同一次 simp 里展开 `Env.pushBound`，
-    -- `Term.eval_weakenBound` 就匹配不上（与 β 模块同一处坑）。
-    have hg₁ : relation_l XG w₀
-        (Term.eval (Env.pushBound (Env.pushBound η w₁) w₀) (twice_m v)) := by
-      simpa [Term.eval, Assignment.push, Env.pushBound] using
-        (hG (Env.pushBound (Env.pushBound η w₁) w₀) v₀_m (twice_m v)).mp hg
-    simpa [Term.eval_weakenBound] using hg₁
-  · rintro ⟨w₁, w₀, h₁, h₀, hg⟩
-    refine ⟨w₁, w₀, h₁, h₀, ?_⟩
-    have hg₁ : relation_l XG w₀
-        (Term.eval (Env.pushBound (Env.pushBound η w₁) w₀) (twice_m v)) := by
-      simpa [Term.eval_weakenBound] using hg
-    simpa [Term.eval, Assignment.push, Env.pushBound] using
-      (hG (Env.pushBound (Env.pushBound η w₁) w₀) v₀_m (twice_m v)).mpr hg₁
+  simp only [iteration_m, Formula.satisfies, SecondOrderPairing.formula_l]
+  refine exists_congr fun w₁ => exists_congr fun w₀ => ?_
+  rw [hG ((η.pushBound w₁).pushBound w₀) v₀_m (twice_m v)]
+  -- 先消去项提升；绑定槽随后按定义求值，不提前展开环境。
+  simp only [twice_m, Term.eval_weakenBound]
+  rfl
 
 /-! ### 求值辅助
 
@@ -280,39 +264,17 @@ theorem transition_syntax_l (hℳ : Theory.Models ℳ theory_m) {g : Nat → Nat
         relation_l XG (SecondOrderPairing.value_l (x.eval η)
           (SecondOrderPairing.value_l (i.eval η) u)) v := by
   simp only [transition_m, Formula.satisfies]
+  refine exists_congr fun u => exists_congr fun v => ?_
+  simp only [beta_template_syntax_l hℳ, iteration_syntax_l G XG hG,
+    eval_twice_m, eval_v₁_m, eval_v₀_m, eval_succ_m]
+  -- 两个中间配对值由等式唯一确定，两侧使用同一对见证。
   constructor
-  · rintro ⟨u, v, hu, hv, hi⟩
-    let η₂ := Env.pushBound (Env.pushBound η u) v
-    refine ⟨u, v, ?_, ?_, ?_⟩
-    · have h := (beta_template_syntax_l hℳ η₂ (twice_m b) (twice_m c) (twice_m i) v₁_m).mp hu
-      simpa [η₂, eval_twice_m, eval_v₁_m] using h
-    · have h := (beta_template_syntax_l hℳ η₂ (twice_m b) (twice_m c)
-        (succ_m (twice_m i)) v₀_m).mp hv
-      simpa [η₂, eval_twice_m, eval_succ_m, eval_v₀_m] using h
-    · have h := (iteration_syntax_l G XG hG η₂ (twice_m x) (twice_m i) v₁_m v₀_m).mp hi
-      rcases h with ⟨w₁, w₀, h₁, h₀, hg⟩
-      have h₁' : SecondOrderPairing.value_l (i.eval η) u = w₁ := by
-        simpa [η₂, eval_twice_m, eval_v₁_m] using h₁
-      have h₀' : SecondOrderPairing.value_l (x.eval η) w₁ = w₀ := by
-        simpa [η₂, eval_twice_m] using h₀
-      have hg' : relation_l XG w₀ v := by
-        simpa [η₂, eval_v₀_m] using hg
-      simpa [← h₀', ← h₁'] using hg'
-  · rintro ⟨u, v, hu, hv, hi⟩
-    let η₂ := Env.pushBound (Env.pushBound η u) v
-    refine ⟨u, v, ?_, ?_, ?_⟩
-    · exact (beta_template_syntax_l hℳ η₂ (twice_m b) (twice_m c) (twice_m i) v₁_m).mpr
-        (by simpa [η₂, eval_twice_m, eval_v₁_m] using hu)
-    · exact (beta_template_syntax_l hℳ η₂ (twice_m b) (twice_m c)
-        (succ_m (twice_m i)) v₀_m).mpr
-        (by simpa [η₂, eval_twice_m, eval_succ_m, eval_v₀_m] using hv)
-    · apply (iteration_syntax_l G XG hG η₂ (twice_m x) (twice_m i) v₁_m v₀_m).mpr
-      let w₁ := SecondOrderPairing.value_l (i.eval η) u
-      let w₀ := SecondOrderPairing.value_l (x.eval η) w₁
-      refine ⟨w₁, w₀, ?_, ?_, ?_⟩
-      · simp [w₁, η₂, eval_twice_m, eval_v₁_m]
-      · simp [w₀, η₂, eval_twice_m]
-      · simpa [w₀, w₁, η₂, eval_v₀_m] using hi
+  · rintro ⟨hu, hv, w₁, w₀, h₁, h₀, hg⟩
+    exact ⟨hu, hv, by simpa only [← h₀, ← h₁] using hg⟩
+  · rintro ⟨hu, hv, hg⟩
+    exact ⟨hu, hv, SecondOrderPairing.value_l (i.eval η) u,
+      SecondOrderPairing.value_l (x.eval η) (SecondOrderPairing.value_l (i.eval η) u),
+      rfl, rfl, hg⟩
 
 /-! ### 初值的语义 -/
 
@@ -325,23 +287,9 @@ theorem initial_syntax_l (hℳ : Theory.Models ℳ theory_m) {f : Nat → Nat}
       ∃ a : num_l ℳ,
         relation_l XF (x.eval η) a ∧ beta_rel_l (b.eval η) (c.eval η) (zero_l ℳ) a := by
   simp only [initial_m, Formula.satisfies]
-  constructor
-  · rintro ⟨a, hF', hβ⟩
-    let η₁ := Env.pushBound η a
-    refine ⟨a, ?_, ?_⟩
-    · have h := (hF η₁ (shift_m x) u₀_m).mp hF'
-      simpa [η₁, eval_shift_m, eval_u₀_m] using h
-    · have h := (beta_template_syntax_l hℳ η₁ (shift_m b) (shift_m c)
-        (zero_m : Term signature_m (.num :: Γ) Δ .num) u₀_m).mp hβ
-      simpa [η₁, eval_shift_m, eval_zero_m, eval_u₀_m] using h
-  · rintro ⟨a, hF', hβ⟩
-    let η₁ := Env.pushBound η a
-    refine ⟨a, ?_, ?_⟩
-    · exact (hF η₁ (shift_m x) u₀_m).mpr
-        (by simpa [η₁, eval_shift_m, eval_u₀_m] using hF')
-    · exact (beta_template_syntax_l hℳ η₁ (shift_m b) (shift_m c)
-        (zero_m : Term signature_m (.num :: Γ) Δ .num) u₀_m).mpr
-        (by simpa [η₁, eval_shift_m, eval_zero_m, eval_u₀_m] using hβ)
+  refine exists_congr fun a => ?_
+  rw [hF (η.pushBound a) (shift_m x) u₀_m]
+  simp only [beta_template_syntax_l hℳ, eval_shift_m, eval_zero_m, eval_u₀_m]
 
 /-! ### 全部相邻步的语义 -/
 
@@ -358,23 +306,9 @@ theorem steps_syntax_l (hℳ : Theory.Models ℳ theory_m) {g : Nat → Nat}
           relation_l XG (SecondOrderPairing.value_l (x.eval η)
             (SecondOrderPairing.value_l i u)) v := by
   simp only [steps_m, Formula.satisfies]
-  constructor
-  · intro h i hi
-    let η₁ := Env.pushBound η i
-    have hlt : Formula.satisfies η₁ (PrimitiveFormulas.lt_m u₀_m (shift_m n)) := by
-      exact (SecondOrderOrder.formula_l η₁ u₀_m (shift_m n)).mpr
-        (by simpa [η₁, eval_u₀_m, eval_shift_m] using hi)
-    have ht := (transition_syntax_l hℳ G XG hG η₁
-      (shift_m b) (shift_m c) (shift_m x) u₀_m).mp (h i hlt)
-    simpa [η₁, eval_shift_m, eval_u₀_m] using ht
-  · intro h i hlt
-    let η₁ := Env.pushBound η i
-    have hi : SecondOrderOrder.lt_l i (n.eval η) := by
-      have h := (SecondOrderOrder.formula_l η₁ u₀_m (shift_m n)).mp hlt
-      simpa [η₁, eval_u₀_m, eval_shift_m] using h
-    exact (transition_syntax_l hℳ G XG hG η₁
-      (shift_m b) (shift_m c) (shift_m x) u₀_m).mpr
-      (by simpa [η₁, eval_shift_m, eval_u₀_m] using h i hi)
+  refine forall_congr' fun i => ?_
+  simp only [SecondOrderOrder.formula_l, transition_syntax_l hℳ G XG hG,
+    eval_u₀_m, eval_shift_m]
 
 /-! ### 历史的语义 -/
 
@@ -387,25 +321,9 @@ theorem recursion_syntax_l (hℳ : Theory.Models ℳ theory_m) {f g : Nat → Na
     Formula.satisfies η (recursion_m F G x n y) ↔
       prec_history_l XF XG (x.eval η) (n.eval η) (y.eval η) := by
   simp only [recursion_m, Formula.satisfies, prec_history_l]
-  constructor
-  · rintro ⟨b, c, hi, hb, hs⟩
-    let η₂ := Env.pushBound (Env.pushBound η b) c
-    refine ⟨b, c, ?_, ?_, ?_⟩
-    · have h := (initial_syntax_l hℳ F XF hF η₂ v₁_m v₀_m (twice_m x)).mp hi
-      simpa [η₂, eval_twice_m, eval_v₁_m, eval_v₀_m] using h
-    · have h := (beta_template_syntax_l hℳ η₂ v₁_m v₀_m (twice_m n) (twice_m y)).mp hb
-      simpa [η₂, eval_twice_m, eval_v₁_m, eval_v₀_m] using h
-    · have h := (steps_syntax_l hℳ G XG hG η₂ v₁_m v₀_m (twice_m x) (twice_m n)).mp hs
-      simpa [η₂, eval_twice_m, eval_v₁_m, eval_v₀_m] using h
-  · rintro ⟨b, c, hi, hb, hs⟩
-    let η₂ := Env.pushBound (Env.pushBound η b) c
-    refine ⟨b, c, ?_, ?_, ?_⟩
-    · exact (initial_syntax_l hℳ F XF hF η₂ v₁_m v₀_m (twice_m x)).mpr
-        (by simpa [η₂, eval_twice_m, eval_v₁_m, eval_v₀_m] using hi)
-    · exact (beta_template_syntax_l hℳ η₂ v₁_m v₀_m (twice_m n) (twice_m y)).mpr
-        (by simpa [η₂, eval_twice_m, eval_v₁_m, eval_v₀_m] using hb)
-    · exact (steps_syntax_l hℳ G XG hG η₂ v₁_m v₀_m (twice_m x) (twice_m n)).mpr
-        (by simpa [η₂, eval_twice_m, eval_v₁_m, eval_v₀_m] using hs)
+  refine exists_congr fun b => exists_congr fun c => ?_
+  simp only [initial_syntax_l hℳ F XF hF, beta_template_syntax_l hℳ,
+    steps_syntax_l hℳ G XG hG, eval_twice_m, eval_v₁_m, eval_v₀_m]
 
 /-! ### 最外层 prec 的语义 -/
 
@@ -420,21 +338,9 @@ theorem prec_syntax_l (hℳ : Theory.Models ℳ theory_m) {f g : Nat → Nat}
         SecondOrderPairing.value_l x n = s.eval η ∧
         prec_history_l XF XG x n (t.eval η) := by
   simp only [prec_form_m, Formula.satisfies]
-  constructor
-  · rintro ⟨x, n, hp, hr⟩
-    let η₂ := Env.pushBound (Env.pushBound η x) n
-    refine ⟨x, n, ?_, ?_⟩
-    · have h := (SecondOrderPairing.formula_l η₂ v₁_m v₀_m (twice_m s)).mp hp
-      simpa [η₂, eval_v₁_m, eval_v₀_m, eval_twice_m] using h
-    · have h := (recursion_syntax_l hℳ F G XF XG hF hG η₂ v₁_m v₀_m (twice_m t)).mp hr
-      simpa [η₂, eval_v₁_m, eval_v₀_m, eval_twice_m] using h
-  · rintro ⟨x, n, hp, hr⟩
-    let η₂ := Env.pushBound (Env.pushBound η x) n
-    refine ⟨x, n, ?_, ?_⟩
-    · exact (SecondOrderPairing.formula_l η₂ v₁_m v₀_m (twice_m s)).mpr
-        (by simpa [η₂, eval_v₁_m, eval_v₀_m, eval_twice_m] using hp)
-    · exact (recursion_syntax_l hℳ F G XF XG hF hG η₂ v₁_m v₀_m (twice_m t)).mpr
-        (by simpa [η₂, eval_v₁_m, eval_v₀_m, eval_twice_m] using hr)
+  refine exists_congr fun x => exists_congr fun n => ?_
+  simp only [SecondOrderPairing.formula_l, recursion_syntax_l hℳ F G XF XG hF hG,
+    eval_v₁_m, eval_v₀_m, eval_twice_m]
 
 /-- **公开入口版**：原 `PrimitiveFormulas.graph_l.prec_l` 给出的 `form` 本身，
 在任意模型、任意上下文、任意环境、任意数项上，正好表达"存在模型内部的一对

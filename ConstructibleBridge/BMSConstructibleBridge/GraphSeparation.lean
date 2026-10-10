@@ -98,9 +98,7 @@ private theorem body_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: Δ))
   have h₁ : (((environment_l τ A).pushFree a).pullback
       (.map VariableSubstitution.boundId insert)) =
       target_l empty (push_l (CountableGraph.child_l A a h) τ) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v with
       | here => rfl

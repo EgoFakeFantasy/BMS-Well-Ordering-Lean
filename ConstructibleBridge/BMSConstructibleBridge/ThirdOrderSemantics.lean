@@ -103,9 +103,7 @@ theorem inductive_formula_l {Γ Δ : SortContext ℒ} (η : Env ℳ Γ Δ) (a : 
   rw [SecondOrderOmegaSyntax.inductive_m, Formula.satisfies_substitute]
   apply Iff.of_eq
   apply congrArg (fun η => Formula.satisfies η SecondOrderOmegaSyntax.inductive_template_m)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match v with
     | .here => rfl

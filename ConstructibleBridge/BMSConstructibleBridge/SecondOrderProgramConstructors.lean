@@ -66,13 +66,8 @@ theorem graph_comprehension_l (hℳ : Theory.Models ℳ theory_m) {f : Nat → N
   have hXR : ∀ m n : num_l ℳ, relation_l X m n ↔ R m n := by
     intro m n
     rw [hX m n]
-    have e1 : Term.eval (((Env.empty (M := ℳ)).pushFree n).pushFree m)
-        (.fvar .here : Term signature_m [] [.num, .num] .num) = m :=
-      eval_fvar_here_l ((Env.empty (M := ℳ)).pushFree n) m
-    have e2 : Term.eval (((Env.empty (M := ℳ)).pushFree n).pushFree m)
-        (.fvar (.there .here) : Term signature_m [] [.num, .num] .num) = n :=
-      eval_fvar_there_here_l (Env.empty (M := ℳ)) m n
-    simpa [e1, e2] using hsem (((Env.empty (M := ℳ)).pushFree n).pushFree m)
+    simpa only [Term.eval, Env.pushFree, Assignment.push] using
+      hsem (((Env.empty (M := ℳ)).pushFree n).pushFree m)
       (.fvar .here) (.fvar (.there .here))
   refine ⟨X, ?_, ?_⟩
   · intro n

@@ -111,15 +111,11 @@ theorem row_locality_syntax_l (P : set_l ℳ) (x goodBound start finish row : nu
     Formula.satisfies ((row_locality_env P x goodBound start finish).pushFree row)
       row_locality_m ↔
       row_locality_l P x goodBound start finish row := by
-  simp only [row_locality_m, Formula.satisfies, SecondOrderOrder.formula_l,
+  simp only [row_locality_m, row_locality_l, Formula.satisfies, SecondOrderOrder.formula_l,
     row_locality_env, at_row_syntax_l, Term.eval, Arguments.eval,
     FirstOrder.Env.pushFree, FirstOrder.Env.pushBound, FirstOrder.Env.empty,
-    FirstOrder.Assignment.push]
-  constructor
-  · intro h target hStart hFinish found hParent
-    exact h target ⟨hStart, hFinish⟩ found hParent
-  · intro h target hRange found hParent
-    exact h target hRange.1 hRange.2 found hParent
+    FirstOrder.Assignment.push, and_imp]
+  rfl
 
 /-- 将行局部性归约为逐行强归纳步；归纳公式是上面的实际纯加乘公式。 -/
 theorem row_locality_all_of_strong_step_l (hℳ : Theory.Models ℳ theory_m)
@@ -195,11 +191,7 @@ private theorem ancestor_locality_formula_l {Γ Δ : SortContext signature_m}
     SecondOrderProgramUniformAncestorRows.row_formula_l,
     Term.eval_weakenBound]
   simp only [Term.eval, FirstOrder.Env.pushBound, FirstOrder.Assignment.push]
-  constructor
-  · intro h hStart hFinish hAbsent found hFound
-    exact h hStart hFinish (Classical.not_not.mpr hAbsent) found hFound
-  · intro h hStart hFinish hAbsent found hFound
-    exact h hStart hFinish (Classical.not_not.mp hAbsent) found hFound
+  simp only [Classical.not_not]
 
 private def ancestor_locality_env (M : set_l ℳ) (x row goodBound start finish : num_l ℳ) :
     Env ℳ [] [.num, .num, .num, .num, .num, .set] :=

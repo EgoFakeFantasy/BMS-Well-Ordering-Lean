@@ -63,9 +63,7 @@ theorem formula_l (hℳ : Theory.Models ℳ theory_m) (R : set_l ℳ)
     refine (Formula.satisfies_substitute _ bind (GraphTranslation.form_m source)).trans ?_
     apply Iff.of_eq
     apply congrArg (fun η => Formula.satisfies η (GraphTranslation.form_m source))
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match v with
       | .here | .there .here | .there (.there .here) | .there (.there (.there .here)) |

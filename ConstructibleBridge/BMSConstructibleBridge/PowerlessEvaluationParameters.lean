@@ -35,9 +35,7 @@ theorem formula_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} ℒ}
   apply Iff.of_eq
   apply congrArg (fun η =>
     (PowerlessOrdinalRecursion.recursion_m PowerlessEvaluationStep.operator_m).satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     repeat' first | rfl | cases ‹Variable _ _›
 

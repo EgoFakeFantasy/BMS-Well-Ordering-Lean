@@ -53,9 +53,7 @@ private def project_l {Γ : SortContext ℒ} (ω : carrier_l ℳ) (η : Env ℳ 
 
 private theorem project_env_l {Γ : SortContext ℒ} (ω : carrier_l ℳ) (η : Env ℳ [] Γ) :
     PowerlessComprehension.env_l (project_l ω η) = η := by
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases s
     exact coordinates_variable_l η.freeVal v
@@ -119,9 +117,7 @@ theorem comprehension_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω
   rw [Formula.satisfies_substitute]
   apply Iff.of_eq
   apply congrArg (fun η => φ.satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v <;> rfl
 

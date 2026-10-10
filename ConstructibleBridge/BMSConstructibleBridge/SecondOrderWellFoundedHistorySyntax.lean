@@ -52,9 +52,7 @@ theorem formula_l {Δ : SortContext signature_m} (φ : Formula signature_m [.set
   apply and_congr _ Iff.rfl
   apply Iff.of_eq
   apply congrArg (fun ξ => SecondOrderSetOperator.relation_l φ ξ H U)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     rfl
 

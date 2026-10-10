@@ -90,9 +90,7 @@ private theorem body_formula_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set
   have hEnv : SecondOrderRelationSpecification.parameters_l
       (((((parameters_l K τ).pushFree H).pushFree n).pushFree W).pushBound A.real |>.pushBound A.root) insert_m =
       (SecondOrderRealRowFormula.parameters_l K (push_l N (push_l A τ))).pushFree W := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       rcases v with _ | (_ | (_ | (_ | (_ | (_ | v)))))
       all_goals first | rfl | cases s <;> rfl
@@ -102,9 +100,7 @@ private theorem body_formula_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set
   apply and_congr Iff.rfl
   apply Iff.of_eq
   apply congrArg (fun ξ => φ.satisfies ξ)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     rcases v with _ | (_ | (_ | v))
     all_goals rfl

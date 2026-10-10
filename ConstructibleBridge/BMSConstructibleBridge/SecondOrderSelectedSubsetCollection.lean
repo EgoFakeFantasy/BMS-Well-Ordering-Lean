@@ -55,9 +55,7 @@ theorem selector_l {Δ : SortContext signature_m} (φ : Formula signature_m [] (
   refine (Formula.satisfies_substitute _ _ φ).trans ?_
   apply Iff.of_eq
   apply congrArg (fun η => φ.satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v <;> rfl
 

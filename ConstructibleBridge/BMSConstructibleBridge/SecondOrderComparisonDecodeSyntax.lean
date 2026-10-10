@@ -62,9 +62,7 @@ theorem query_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : 
   refine (Formula.satisfies_substitute η _ query_template_m).trans ?_
   apply Iff.of_eq
   apply congrArg (fun ξ => query_template_m.satisfies ξ)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v with
     | here => rfl

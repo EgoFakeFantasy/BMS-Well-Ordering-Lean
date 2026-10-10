@@ -139,22 +139,18 @@ theorem prec_graph_bridge_l (hℳ : Theory.Models ℳ theory_m) {f g : Nat → N
   -- 在 `[input, output]` 两自由槽上把 `hXR` 与 `prec_primitive_syntax_l` 相接。
   have key : relation_l XR (value_l x n) y ↔
       ∃ x' n' : num_l ℳ, value_l x' n' = value_l x n ∧ prec_history_l XF XG x' n' y := by
-    have e1 : Term.eval (((Env.empty (M := ℳ)).pushFree y).pushFree (value_l x n))
-        (.fvar .here : Term signature_m [] [.num, .num] .num) = value_l x n :=
-      eval_fvar_here_l ((Env.empty (M := ℳ)).pushFree y) (value_l x n)
-    have e2 : Term.eval (((Env.empty (M := ℳ)).pushFree y).pushFree (value_l x n))
-        (.fvar (.there .here) : Term signature_m [] [.num, .num] .num) = y :=
-      eval_fvar_there_here_l (Env.empty (M := ℳ)) (value_l x n) y
     have hL : Formula.satisfies (((Env.empty (M := ℳ)).pushFree y).pushFree (value_l x n))
         ((F.prec_l G).form (.fvar .here) (.fvar (.there .here))) ↔
         relation_l XR (value_l x n) y := by
-      simpa [e1, e2] using hXR (((Env.empty (M := ℳ)).pushFree y).pushFree (value_l x n))
+      simpa only [Term.eval, Env.pushFree, Assignment.push] using
+        hXR (((Env.empty (M := ℳ)).pushFree y).pushFree (value_l x n))
         (.fvar .here) (.fvar (.there .here))
     have hR : Formula.satisfies (((Env.empty (M := ℳ)).pushFree y).pushFree (value_l x n))
         ((F.prec_l G).form (.fvar .here) (.fvar (.there .here))) ↔
         ∃ x' n' : num_l ℳ, value_l x' n' = value_l x n ∧
           prec_history_l XF XG x' n' y := by
-      simpa [e1, e2] using prec_primitive_syntax_l hℳ F G XF XG hF hG
+      simpa only [Term.eval, Env.pushFree, Assignment.push] using
+        prec_primitive_syntax_l hℳ F G XF XG hF hG
         (((Env.empty (M := ℳ)).pushFree y).pushFree (value_l x n))
         (.fvar .here) (.fvar (.there .here))
     exact hL.symm.trans hR

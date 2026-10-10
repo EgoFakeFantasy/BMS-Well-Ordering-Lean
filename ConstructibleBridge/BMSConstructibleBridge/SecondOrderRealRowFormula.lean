@@ -79,9 +79,7 @@ private theorem body_formula_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set
   have hEnv : SecondOrderRelationSpecification.parameters_l
       ((((parameters_l K τ).pushFree X).pushBound A.real).pushBound A.root) insert_m =
       target_l empty_l (push_l A τ) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v with
       | here => rfl
@@ -92,9 +90,7 @@ private theorem body_formula_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set
   rw [hEnv]
   have hSource : source_l hℳ empty_l (push_l A τ) =
       (source_l hℳ empty_l τ).pushFree (SecondOrderQuotient.mk_l hℳ A) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v <;> rfl
   simpa only [hSource] using (SecondOrderInterpretation.form_l hℳ φ empty_l (push_l A τ))

@@ -28,9 +28,7 @@ private theorem graph_env_l (η : Env ℳ [] [.num, .num, .set, .set, .num]) :
       (η.freeVal (.there (.there (.there .here))))).pushFree
       (η.freeVal (.there (.there .here)))).pushFree
       (η.freeVal (.there .here))).pushFree (η.freeVal .here)) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match v with
       | .here => rfl
@@ -50,9 +48,7 @@ private theorem selection_env_l (η : Env ℳ [] [.num, .set, .set, .num]) :
       (η.freeVal (.there (.there (.there .here))))).pushFree
       (η.freeVal (.there (.there .here)))).pushFree
       (η.freeVal (.there .here))).pushFree (η.freeVal .here)) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match v with
       | .here => rfl

@@ -42,9 +42,7 @@ theorem atoms_formula_l {Γ Δ : SortContext signature_m} (η : Env ℳ Γ Δ)
           (SecondOrderMemberNormalizer.value_l (A.eval η) (r.eval η) (a.eval η) n) b := by
   have hEnv : SecondOrderRelationSpecification.parameters_l η (atom_parameters_m A r a) =
       (((Env.empty (M := ℳ)).pushFree (a.eval η)).pushFree (r.eval η)).pushFree (A.eval η) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases v with
       | here => rfl

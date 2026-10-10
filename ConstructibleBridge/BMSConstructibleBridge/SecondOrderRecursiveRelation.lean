@@ -63,9 +63,7 @@ theorem body_l {Γ Δ : SortContext signature_m} (η : Env ℳ Γ Δ)
   rw [body_m, Formula.satisfies_substitute]
   apply Iff.of_eq
   apply congrArg (fun η => Formula.satisfies η φ)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match v with
     | .here => rfl
@@ -96,9 +94,7 @@ theorem operator_l {Δ : SortContext signature_m}
     SecondOrderPairing.edge_l, body_l]
   change (∀ n a, SecondOrderPairing.relation_l Y n a ↔ rule_l φ (parameters_l η) X n a) ↔ _
   have h : parameters_l η = η := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       rfl
   rw [h]

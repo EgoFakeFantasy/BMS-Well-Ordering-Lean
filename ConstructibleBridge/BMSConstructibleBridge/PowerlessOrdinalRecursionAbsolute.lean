@@ -36,9 +36,7 @@ theorem presentation_l (φ : Formula ℒ [] (.set :: .set :: .set :: Γ))
   rw [← PowerlessWellRecursionPresentation.recursion_formula_l φ η f A R]
   apply Iff.of_eq
   apply congrArg (fun η => (PowerlessWellRecursionPresentation.recursion_m φ).satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     match s, v with
     | .set, .here => rfl

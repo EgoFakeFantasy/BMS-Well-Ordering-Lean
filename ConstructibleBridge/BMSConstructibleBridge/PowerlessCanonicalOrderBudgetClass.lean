@@ -50,9 +50,7 @@ theorem class_l
   obtain ⟨Q, hBudget⟩ := PowerlessThreeDefBudgetExists.exists_l hℳ K hBase η hA
   have hEnv : PowerlessRelativeClassRelativization.env_l η =
       PowerlessCanonicalOrderBudgetInduction.parameters_l W.val ω.val F.val G.val P₀.val := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases s
       cases v with

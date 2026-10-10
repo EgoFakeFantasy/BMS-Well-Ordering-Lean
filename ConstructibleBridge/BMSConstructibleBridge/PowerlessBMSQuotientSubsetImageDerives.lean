@@ -38,9 +38,7 @@ theorem parameters_pushBound_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ}
 
 theorem parameters_empty_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ}
     {Δ : SortContext ℒ} (η : Env 𝒩 [] Δ) : parameters_l η = η := by
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     rfl
 
@@ -51,9 +49,7 @@ theorem at_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : Sor
   refine (Formula.satisfies_substitute η _ φ).trans ?_
   apply Iff.of_eq
   apply congrArg (fun η => φ.satisfies η)
-  apply Env.ext
-  · intro s v
-    nomatch v
+  apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
     cases v with
     | here => rfl

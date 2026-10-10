@@ -45,9 +45,7 @@ theorem binding_formula_l {Γ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .
   rw [Formula.satisfies_substitute]
   have h : ((((η.pushFree g).pushFree f).pushFree D).pushBound p).pullback binding_m =
       ((η.pushFree g).pushFree f).pushFree p := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match s, v with
       | .set, .here => rfl
@@ -88,9 +86,7 @@ theorem instance_formula_l {Γ Δ : SortContext ℒ} (φ : Formula ℒ [] (.set 
       | .set, .there (.there .here) => g
       | .set, .there (.there (.there v)) => .fvar v)) =
       (((parameters_l η).pushFree (g.eval η)).pushFree (f.eval η)).pushFree (D.eval η) := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match s, v with
       | .set, .here => rfl
@@ -123,9 +119,7 @@ theorem candidate_binding_formula_l {Γ : SortContext ℒ} (φ : Formula ℒ [] 
   rw [Formula.satisfies_substitute]
   have h : (((((η.pushFree q).pushFree f).pushFree D).pushBound g).pushBound B).pullback
       candidate_binding_m = ((η.pushFree g).pushFree f).pushFree D := by
-    apply Env.ext
-    · intro s v
-      nomatch v
+    apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       match s, v with
       | .set, .here => rfl

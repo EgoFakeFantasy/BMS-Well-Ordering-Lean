@@ -153,18 +153,10 @@ theorem additionMapGraph_l (C : PowerlessBMSQuotientCoding.source_coding_l hM)
   obtain ⟨S, hS⟩ := additionRelation_exists_l hM a
   obtain ⟨f, hmap, hspec⟩ := additionMapSpec_l C a S hS
   refine ⟨f, hmap, fun x y => ?_⟩
-  constructor
-  · intro h
-    rw [← numberCode_val_numberEquiv_l C x, ← numberCode_val_numberEquiv_l C y] at h
-    exact (additionValue_iff_l C a S hS f hspec
+  simpa only [numberCode_val_numberEquiv_l C] using
+    additionValue_iff_l C a S hS f hspec
       (PowerlessBMSQuotientCoding.numberEquiv_l C x)
-      (PowerlessBMSQuotientCoding.numberEquiv_l C y)).mp h
-  · intro h
-    have h' := (additionValue_iff_l C a S hS f hspec
-      (PowerlessBMSQuotientCoding.numberEquiv_l C x)
-      (PowerlessBMSQuotientCoding.numberEquiv_l C y)).mpr h
-    rw [numberCode_val_numberEquiv_l C x, numberCode_val_numberEquiv_l C y] at h'
-    exact h'
+      (PowerlessBMSQuotientCoding.numberEquiv_l C y)
 
 /-- 乘法图模板：第二坐标等于固定参数与第一坐标之积。 -/
 def mulFormula_m : Formula signature_m [] (.num :: .num :: [.num]) :=
@@ -246,18 +238,10 @@ theorem multiplicationMapGraph_l (C : PowerlessBMSQuotientCoding.source_coding_l
   obtain ⟨S, hS⟩ := multiplicationRelation_exists_l hM a
   obtain ⟨f, hmap, hspec⟩ := multiplicationMapSpec_l C a S hS
   refine ⟨f, hmap, fun x y => ?_⟩
-  constructor
-  · intro h
-    rw [← numberCode_val_numberEquiv_l C x, ← numberCode_val_numberEquiv_l C y] at h
-    exact (multiplicationValue_iff_l C a S hS f hspec
+  simpa only [numberCode_val_numberEquiv_l C] using
+    multiplicationValue_iff_l C a S hS f hspec
       (PowerlessBMSQuotientCoding.numberEquiv_l C x)
-      (PowerlessBMSQuotientCoding.numberEquiv_l C y)).mp h
-  · intro h
-    have h' := (multiplicationValue_iff_l C a S hS f hspec
-      (PowerlessBMSQuotientCoding.numberEquiv_l C x)
-      (PowerlessBMSQuotientCoding.numberEquiv_l C y)).mpr h
-    rw [numberCode_val_numberEquiv_l C x, numberCode_val_numberEquiv_l C y] at h'
-    exact h'
+      (PowerlessBMSQuotientCoding.numberEquiv_l C y)
 
 /-- 商对象层面：数码在 `val` 上仍单射。 -/
 private theorem numberCode_val_injective_l (C : PowerlessBMSQuotientCoding.source_coding_l hM)
