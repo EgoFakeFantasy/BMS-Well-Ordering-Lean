@@ -173,9 +173,4 @@ theorem unique_l {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set :: Δ
   SecondOrderQuotient.ext_l hℳ R S (fun p =>
     (spec_iff_l φ η X Y R).mp hR p |>.trans ((spec_iff_l φ η X Y S).mp hS p).symm)
 
-#print axioms delta_l
-#print axioms spec_iff_l
-#print axioms value_read_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationBounded

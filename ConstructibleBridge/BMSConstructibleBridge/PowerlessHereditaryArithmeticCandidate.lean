@@ -130,7 +130,4 @@ theorem candidate_l (K : source_coding_l hℳ)
            representative := A
            representativeRelated := (hC A X).mpr hA }⟩
 
-#print axioms correspondence_exists_l
-#print axioms candidate_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryArithmeticCandidate

@@ -109,7 +109,4 @@ theorem properties_l
     obtain ⟨γ, hγ, hxγ, _⟩ := hCofinal x hx
     exact ⟨γ, hγ, hxγ⟩
 
-#print axioms block_limit_l
-#print axioms properties_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalDoubleTailCofinal

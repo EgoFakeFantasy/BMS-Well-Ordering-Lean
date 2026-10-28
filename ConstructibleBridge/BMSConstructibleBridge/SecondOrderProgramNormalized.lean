@@ -45,9 +45,4 @@ theorem normalized_set_l (hℳ : Theory.Models ℳ theory_m) (H L E : set_l ℳ)
     ((((Env.empty (M := ℳ)).pushFree E).pushFree L).pushFree H)
   exact ⟨S, fun x => (hS x).trans (normalized_syntax_l H L E x)⟩
 
-#print axioms normalized_l
-#print axioms normalized_m
-#print axioms normalized_syntax_l
-#print axioms normalized_set_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramNormalized

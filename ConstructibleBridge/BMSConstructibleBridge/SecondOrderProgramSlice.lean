@@ -100,12 +100,4 @@ theorem slice_length_l (hℳ : Theory.Models ℳ theory_m) {S L D : set_l ℳ}
   exact take_length_min_l hℳ hK hL
     (SecondOrderProgramListDrop.drop_length_l hℳ hI hL hD hn hv hd) hvy
 
-#print axioms input_m
-#print axioms slice_m
-#print axioms drop_array_encode_l
-#print axioms slice_encode_l
-#print axioms input_rel_l
-#print axioms slice_rel_l
-#print axioms slice_length_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSlice

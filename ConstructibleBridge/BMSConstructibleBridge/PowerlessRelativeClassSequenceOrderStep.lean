@@ -102,6 +102,4 @@ theorem step_l {ω n m X R L P Q : type_l hℳ B}
     exact (hTRead f g).mpr ⟨hf, hg, p, q, hpD, hqD, hfp, hgq,
       (hCompare hf hg hfp hgq).mpr hfg⟩
 
-#print axioms step_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceOrderStep

@@ -181,10 +181,4 @@ theorem function_agreement_l (C : PowerlessBMSQuotientCoding.source_coding_l hM)
       (hg.2.2 _ _ v y (PowerlessBMSQuotientCoding.numberCode_l C k).property
         (PowerlessBMSQuotientSuccessor.successor_l C k) hw.2 hy)
 
-#print axioms agreement_induction_m
-#print axioms addition_agreement_l
-#print axioms addition_iff_l
-#print axioms addition_unique_l
-#print axioms function_agreement_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientRecursion

@@ -55,7 +55,4 @@ theorem trim_le_l (hℳ : Theory.Models ℳ theory_m) {H L E : set_l ℳ}
     z ≤ h := by
   exact (trim_bound_iff_zero_rows_l hℳ hH hE hz h).mpr (zero_rows_l hℳ hL hE hx)
 
-#print axioms zero_rows_l
-#print axioms trim_le_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRectangularHeight

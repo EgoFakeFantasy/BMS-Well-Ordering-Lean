@@ -190,7 +190,4 @@ theorem ancestor_in_good_at_maximal_l
       SecondOrderProgramUniformAncestorStructure.ancestor_le_parent_l hℳ hP hM hq hancestor
     exact lt_of_le_of_lt hfoundLe (show parent < p from hgood)
 
-#print axioms parent_in_good_at_maximal_l
-#print axioms ancestor_in_good_at_maximal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionMaximalRootBound

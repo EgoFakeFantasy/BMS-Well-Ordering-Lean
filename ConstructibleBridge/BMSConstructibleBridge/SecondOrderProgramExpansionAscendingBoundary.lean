@@ -77,6 +77,4 @@ theorem nonzero_l (hℳ : Theory.Models ℳ theory_m)
     exact SecondOrderProgramAscendingAncestor.nonzero_of_source_ancestor_l
       hℳ hAsc hM hrow hmid
 
-#print axioms nonzero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionAscendingBoundary

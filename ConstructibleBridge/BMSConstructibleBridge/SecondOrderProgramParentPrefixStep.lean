@@ -106,7 +106,4 @@ theorem succ_congr_l (hℳ : Theory.Models ℳ theory_m) {P L J : set_l ℳ}
     exact and_congr (he p hp)
       (forall_congr' fun i => imp_congr_right fun _ => imp_congr_right fun hi => not_congr (he i hi))
 
-#print axioms zero_congr_l
-#print axioms succ_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentPrefixStep

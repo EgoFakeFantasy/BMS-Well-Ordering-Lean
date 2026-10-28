@@ -87,6 +87,4 @@ theorem linear_l {ω X R L S : type_l hℳ B}
     · exact Or.inl ((comparison_l hn hm hfn hgm hRead).mpr (Or.inl hnm))
     · exact Or.inr (Or.inr ((comparison_l hm hn hgm hfn hRead).mpr (Or.inl hmn)))
 
-#print axioms linear_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceOrderLinear

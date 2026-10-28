@@ -115,13 +115,4 @@ theorem optional_nonzero_l (hℳ : Theory.Models ℳ theory_m) {O : set_l ℳ}
     · exact nonzero_l hℳ x hz
     · exact (not_le_of_gt ((SecondOrderOrder.succ_iff_l hℳ x y).mpr hxy)) hle
 
-#print axioms less_m
-#print axioms optional_less_m
-#print axioms less_eval_l
-#print axioms optional_eval_l
-#print axioms optional_encode_l
-#print axioms less_zero_l
-#print axioms optional_zero_l
-#print axioms optional_nonzero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramOptionalCompare

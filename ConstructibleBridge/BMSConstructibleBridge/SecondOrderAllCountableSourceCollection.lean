@@ -61,11 +61,8 @@ theorem relativized_formula_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
     · intro s v; nomatch v
     · intro s v
       cases s
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v <;> rfl
+      rcases v with _ | _ | v
+      all_goals first | rfl | cases v <;> rfl
   rw [hEnv]
   exact PowerlessRelativeClassRelativization.formula_l K φ ((η.pushFree x).pushFree y)
 
@@ -162,9 +159,5 @@ theorem models_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {Δ :
 theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: Δ)) :
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m φ)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ φ)
-
-#print axioms collection_l
-#print axioms source_models_l
-#print axioms derives_m
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderAllCountableSourceCollection

@@ -72,6 +72,4 @@ theorem exists_l {Δ Θ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set ::
       | here => exact (hFixed x.val (hD X.val hXD x.val hx)).2
       | there v => exact (hFixed (σ.freeVal v).val (hParams v)).2) hCapture
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassWholeCollapseSeparation

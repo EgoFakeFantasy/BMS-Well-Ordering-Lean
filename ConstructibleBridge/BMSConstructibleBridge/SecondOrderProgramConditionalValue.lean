@@ -36,6 +36,4 @@ theorem branch_value_l (hℳ : Theory.Models ℳ theory_m) {t y n : code_m}
   simp only [ht hT, hy hY, hn hN]
   by_cases h : ft x = zero_l ℳ <;> simp [h]
 
-#print axioms branch_value_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramConditionalValue

@@ -174,18 +174,4 @@ theorem parent_zero_none_l (hℳ : Theory.Models ℳ theory_m) {P L J : set_l �
       · exact Or.inl ht
       · exact Or.inr ⟨lt_of_not_ge ht, h⟩
 
-#print axioms search_input_m
-#print axioms search_m
-#print axioms parent_zero_m
-#print axioms search_input_eval_l
-#print axioms search_encode_l
-#print axioms range_encode_l
-#print axioms parent_zero_encode_l
-#print axioms search_input_rel_l
-#print axioms search_rel_l
-#print axioms parent_zero_rel_l
-#print axioms eligible_l
-#print axioms parent_zero_some_l
-#print axioms parent_zero_none_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentZero

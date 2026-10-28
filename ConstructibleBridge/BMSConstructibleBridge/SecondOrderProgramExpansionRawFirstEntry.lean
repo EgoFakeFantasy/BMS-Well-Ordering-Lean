@@ -102,6 +102,4 @@ theorem entry_l (hℳ : Theory.Models ℳ theory_m)
   simpa only [add_zero_l hℳ] using
     ((hentry (succ_l (add_l a (mul_l t gap)))).mpr hshift)
 
-#print axioms entry_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionRawFirstEntry

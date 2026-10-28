@@ -172,10 +172,4 @@ theorem parameter_gap_l (hℳ : Theory.Models ℳ theory_m)
     hℳ hJ hO hjl row (succ_l c)).mp hc
   exact ⟨a, c, gap, hfa, hlc, ha, hc, hd, hpos, hsum⟩
 
-#print axioms last_column_lookup_l
-#print axioms width_pos_l
-#print axioms bad_head_lookup_l
-#print axioms bad_first_entry_l
-#print axioms parameter_gap_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParameterEntries

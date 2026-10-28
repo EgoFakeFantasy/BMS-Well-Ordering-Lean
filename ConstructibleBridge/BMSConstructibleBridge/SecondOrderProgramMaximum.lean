@@ -57,8 +57,4 @@ theorem max_rel_l (hℳ : Theory.Models ℳ theory_m) {M : set_l ℳ}
       have hk0 : k ≠ zero_l ℳ := fun h => hab ((sub_zero_iff_l hℳ hD a b).mp (h ▸ hk))
       exact Or.inr ⟨k, hk0, hk, (max_eq_left (le_of_not_ge hab)).symm.trans hy⟩
 
-#print axioms max_m
-#print axioms max_eval_l
-#print axioms max_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramMaximum

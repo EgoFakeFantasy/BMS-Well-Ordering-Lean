@@ -104,16 +104,9 @@ theorem formula_l {Γ Δ : SortContext signature_m} (η : Env ℳ Γ Δ)
       (((Env.empty (M := ℳ)).pushFree (R.eval η)).pushFree (R'.eval η)).pushFree (I.eval η) := by
     apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => nomatch v
+      rcases v with _ | _ | _ | v
+      all_goals first | rfl | nomatch v
   rw [hEnv]
   exact template_formula_l _ _ _
-
-#print axioms formula_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPredecessorCorrespondenceFormula

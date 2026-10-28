@@ -212,10 +212,4 @@ theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: �
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m φ B P₀)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 φ B P₀)
 
-#print axioms operator_formula_l
-#print axioms result_l
-#print axioms witness_l
-#print axioms functional_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalClassSkolem

@@ -88,7 +88,4 @@ theorem orders_l {J U A Q Q' Y L L' : SecondOrderQuotient.type_l hℳ}
   PowerlessRelativeClassRowOrderCanonical.graph_unique_l
     (PowerlessRelativeClassRowOrderCanonical.graph_congr_l (fun _ _ => Iff.rfl) hQ hL) hL'
 
-#print axioms queries_l
-#print axioms orders_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSatisfactionQueryUnique

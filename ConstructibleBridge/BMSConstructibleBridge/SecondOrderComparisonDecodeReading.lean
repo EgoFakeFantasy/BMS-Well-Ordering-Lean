@@ -88,7 +88,4 @@ theorem graph_l (K : source_coding_l hℳ)
   · rintro ⟨⟨hx, hy, h⟩, hp⟩
     exact ⟨hx, hy, (query_l K A R hA f x y).mpr h, hp⟩
 
-#print axioms query_l
-#print axioms graph_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonDecodeReading

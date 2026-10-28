@@ -54,6 +54,4 @@ theorem exists_l
       | here => exact hHead
       | there v => exact hLift (η.freeVal (.there v)) (hTail _ v)
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitParameterBounds

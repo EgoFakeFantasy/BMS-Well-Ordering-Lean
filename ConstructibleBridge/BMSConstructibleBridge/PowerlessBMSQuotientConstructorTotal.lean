@@ -90,7 +90,4 @@ theorem unique_l (K : source_coding_l hℳ) {T t a b n m : type_l hℳ}
   subst q
   exact node_unique_l K hT hSpec hn hm
 
-#print axioms exists_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientConstructorTotal

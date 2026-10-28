@@ -193,9 +193,4 @@ theorem fold_back_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {C F L E K 
 本模块公共声明仅允许既有标准公理集合（propext/Quot.sound/Classical.choice），无新增公理，
 亦不得有 `sorryAx`。审计置于命名空间内、`end` 之前。 -/
 
-#print axioms entries_back_m
-#print axioms entries_back_language_m
-#print axioms entries_back_syntax_l
-#print axioms fold_back_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListMapIndices

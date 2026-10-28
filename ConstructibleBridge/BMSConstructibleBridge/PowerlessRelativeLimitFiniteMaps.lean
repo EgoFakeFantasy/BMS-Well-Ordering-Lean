@@ -98,7 +98,4 @@ theorem member_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {B β
   subset_member_l hℳ hBase hLimit hC K hωC
     (fun x hx => PowerlessRelativeLevelClosure.transitive_l hℳ hBase hC X hXC x hx) hn hf
 
-#print axioms subset_member_l
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitFiniteMaps

@@ -98,8 +98,4 @@ theorem configuration_exists_l (K : source_coding_l hℳ)
     SecondOrderComparisonNativeConfiguration.exists_l K hCoding A hα hF P₀ f C
   exact ⟨Q, D, R, p, hConfig, by simpa only [hP₀, hf, hC] using hSupport⟩
 
-#print axioms exists_l
-#print axioms with_initial_l
-#print axioms configuration_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonStaticSupport

@@ -129,7 +129,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
     row_formula_l, Term.eval]
   exact fun _ _ hC hW => length_l hℳ hC hW
 
-#print axioms length_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderLegacyFormulaTranslationLength

@@ -142,8 +142,4 @@ theorem member_congr_l (hℳ : Theory.Models ℳ theory_m)
   · exact SecondOrderProgramCopyAncestorReverse.member_source_of_copy_l
       hℳ hC hH hL hE hB hO hU hD hJ hM hx hb hpw hh hf hblk hr hi hj hsource hbelow
 
-#print axioms sync_m
-#print axioms sync_formula_l
-#print axioms member_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorRows

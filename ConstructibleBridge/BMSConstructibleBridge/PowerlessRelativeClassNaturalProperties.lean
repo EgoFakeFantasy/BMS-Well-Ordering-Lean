@@ -68,7 +68,4 @@ theorem upper_l {a b : type_l hℳ B} (ha : mem_l hℳ a.val ω.val) (hb : mem_l
   · exact ⟨a, ha, fun _ h => h, fun x hx => ho.wellOrder.linear.trans x.val (ho.transitive b.val hb x.val hx)
       b.val hb a.val ha hx hba⟩
 
-#print axioms tags_natural_l
-#print axioms upper_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassNaturalProperties

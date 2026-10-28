@@ -90,6 +90,4 @@ theorem exists_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
     rw [← hn'] at hz'
     exact hUnique n z y hz'.2 hy
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientSubsetFunction

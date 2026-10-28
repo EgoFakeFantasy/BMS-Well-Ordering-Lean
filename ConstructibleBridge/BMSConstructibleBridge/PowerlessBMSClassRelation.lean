@@ -89,6 +89,4 @@ theorem exists_l (C : source_coding_l hℳ) {Δ : SortContext ℒ}
   exact ⟨R, hEdge, PowerlessBMSClassRelationDomain.wf_l C φ η R hTotal hUnique
     (fun n m h => (hEdge n m).mp h)⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSClassRelation

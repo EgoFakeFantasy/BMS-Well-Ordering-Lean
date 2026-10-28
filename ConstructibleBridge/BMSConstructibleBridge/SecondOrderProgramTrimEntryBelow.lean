@@ -57,6 +57,4 @@ theorem entry_l (hℳ : Theory.Models ℳ theory_m) {T H J L E : set_l ℳ}
     exact and_congr (iff_of_true (show SecondOrderOrder.lt_l r h from hrh) hr)
       (SecondOrderProgramTrimNormalized.coordinates_l hℳ hT hH hL hE hx hz hy hc hd r a).symm
 
-#print axioms entry_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTrimEntryBelow

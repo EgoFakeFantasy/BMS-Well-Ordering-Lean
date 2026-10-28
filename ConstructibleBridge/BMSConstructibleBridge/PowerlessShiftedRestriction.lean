@@ -108,8 +108,4 @@ theorem order_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
   obtain ⟨_, j₁, hj₁, hb⟩ := (hG j b).mp hb
   exact hf i₁ j₁ a b (PowerlessAdditionOrder.monotone_l hℳ hω he hij hi₁ hj₁) ha hb
 
-#print axioms exists_l
-#print axioms at_l
-#print axioms order_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessShiftedRestriction

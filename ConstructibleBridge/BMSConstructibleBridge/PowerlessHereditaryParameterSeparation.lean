@@ -190,8 +190,4 @@ theorem derives_m {Θ Ε : SortContext ℒ} (ψ : Formula ℒ [] (.set :: Θ))
       (GraphTranslation.form_m (Metatheory.Formula.forall_close (schema_m ψ B ω X ν))) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 ψ B ω X ν)
 
-#print axioms exists_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryParameterSeparation

@@ -58,6 +58,4 @@ theorem exists_l
     obtain ⟨x, hx, hMin⟩ := hFoundation U hU.2
     exact ⟨x, hx, fun y hy hlt => hMin y ((hRead y x).mp hlt).2.2 hy⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassOrdinalOrder

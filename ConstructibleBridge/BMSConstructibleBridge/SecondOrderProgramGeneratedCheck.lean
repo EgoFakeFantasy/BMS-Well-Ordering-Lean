@@ -135,14 +135,4 @@ theorem check_one_l (hℳ : Theory.Models ℳ theory_m) {C D E : set_l ℳ}
   by_cases huw : u = w <;> by_cases huv : u = v <;>
     simp [huw, huv, nonzero_l hℳ (zero_l ℳ), Ne.symm (nonzero_l hℳ (zero_l ℳ))]
 
-#print axioms smaller_m
-#print axioms larger_m
-#print axioms expanded_m
-#print axioms step_test_m
-#print axioms same_test_m
-#print axioms check_m
-#print axioms check_encode_l
-#print axioms check_eval_l
-#print axioms check_one_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramGeneratedCheck

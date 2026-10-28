@@ -64,6 +64,4 @@ theorem formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortContext signa
     obtain ⟨Z, rfl⟩ := SecondOrderQuotient.surj_l hℳ z
     exact h X Z hx hz
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderGraphTransitivityFormula

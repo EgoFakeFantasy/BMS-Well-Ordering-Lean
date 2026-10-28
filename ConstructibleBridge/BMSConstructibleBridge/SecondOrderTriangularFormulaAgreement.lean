@@ -76,7 +76,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
     agreement_formula_l, Term.eval]
   exact fun V W hV hW => values_l hℳ hV hW
 
-#print axioms values_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderTriangularFormulaAgreement

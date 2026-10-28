@@ -55,7 +55,4 @@ theorem no_compare_l (hℳ : Theory.Models ℳ theory_m) {E J : set_l ℳ}
   rw [entry_zero_l hℳ hE hJ hz hr ha, entry_zero_l hℳ hE hJ hz hr hc] at hlt
   exact lt_irrefl (zero_l ℳ) hlt
 
-#print axioms entry_zero_l
-#print axioms no_compare_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramZeroRowEntries

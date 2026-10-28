@@ -65,7 +65,4 @@ theorem holds_absolute_l {c N α : type_l U} (hN : member_l ℳ N.val ω.val)
       ⟨⟨f, hfU⟩, (PowerlessSourceGraphAbsolute.map_l hUT).mpr hf,
         (PowerlessValueAbsolute.query_l hUT).mpr hq⟩⟩
 
-#print axioms graph_member_l
-#print axioms holds_absolute_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedStageAbsoluteness

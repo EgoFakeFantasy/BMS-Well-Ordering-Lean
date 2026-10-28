@@ -84,6 +84,4 @@ theorem exists_l
       (hCoding.translation_numeric n m).trans
         (hCertificate.trans (PowerlessRelativeClassLegacyTranslation.numeric_l K C n m)).symm
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCofinalLegacyNumericReading

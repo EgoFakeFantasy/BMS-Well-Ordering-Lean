@@ -143,7 +143,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
   obtain ⟨C, hC, _⟩ := SecondOrderLegacyFormulaTranslation.exists_l hℳ
   exact ⟨C, hC, domain_l hℳ hV hC⟩
 
-#print axioms domain_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderLegacyFormulaTranslationDomain

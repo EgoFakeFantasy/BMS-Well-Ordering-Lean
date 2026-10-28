@@ -79,8 +79,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
   obtain ⟨t, ht⟩ := exists_l hℳ n
   exact ⟨t, ht, fun v hv => unique_l hℳ hv ht⟩
 
-#print axioms exists_l
-#print axioms successor_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderTriangularArithmetic

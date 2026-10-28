@@ -87,7 +87,4 @@ theorem exists_l
     W F P₀ ω e t₁ t₂ t₃ Pair N Valid Translation G hCode hδ hF hMap hEq hOrder
   exact ⟨⟨Pord, hClass⟩, q, hMap, hEq, hLevel⟩
 
-#print axioms equations_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderClassHistory

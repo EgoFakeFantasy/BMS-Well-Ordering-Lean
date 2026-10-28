@@ -182,23 +182,4 @@ theorem raw_rel_l (hℳ : Theory.Models ℳ theory_m) {R M I A F : set_l ℳ}
   simp only [hm hM, hi hI, ha hA, hf hF, exists_eq_left']
   by_cases hz : m x = zero_l ℳ <;> simp [hz]
 
-#print axioms fallback_m
-#print axioms maximal_m
-#print axioms row_input_m
-#print axioms parent_input_m
-#print axioms parent_test_m
-#print axioms success_input_m
-#print axioms after_row_m
-#print axioms raw_m
-#print axioms expand_m
-#print axioms fallback_encode_l
-#print axioms maximal_eval_l
-#print axioms row_input_eval_l
-#print axioms parent_test_encode_l
-#print axioms success_input_eval_l
-#print axioms after_row_encode_l
-#print axioms raw_encode_l
-#print axioms expand_encode_l
-#print axioms raw_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansion

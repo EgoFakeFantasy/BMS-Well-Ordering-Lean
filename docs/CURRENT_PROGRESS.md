@@ -1,6 +1,6 @@
 # BMS 当前进度
 
-更新日期：2026-10-10。当前开发目录为 `work/bms-publish-20260928`；9 月 30 日以来
+更新日期：2026-10-28。当前开发目录为 `work/bms-publish-20260928`；9 月 30 日以来
 新增源码尚未同步回旧 `bm4v` 工作树。原 ZFC／可构造证明保留其模块路径与定理签名。
 每个固定外部高度 H 的原 Z₂ 良基性闭句已完成对象推导：生成 BM4 数组没有
 高度始终 ≤ H 的无限严格一步展开下降链，不限制种子高度。没有把线性可比性
@@ -26,6 +26,32 @@
   最小算术签名的独立导出、PRA 内核验的原始递归证明码生成器 `(G)`。
 - 上次发布仅同步 README、版本与工程状态文档，不新增 Lean 数学代码。
   历史额度线、分工、停工和下一步文字不是现行指令；实时任务以用户最新授权为准。
+
+2026-10-28 精简第二轮（基点 `8a55fbd`，范围为原 ZFC 与 Z₂ 两个审计入口的仓库内
+导入闭包，2199 个 Lean 文件）：354725 → 349429 物理行，净减 5296 行；另新增 57 行的
+集中守卫 `SecondOrderCoreAxiomAudit.lean`（不在该闭包内）。两类分别报告：
+
+- 审计输出压缩：删除 1291 个中间桥接模块末尾 3817 条只打印、不会失败的
+  `#print axioms` 及其相邻空行，共 5124 行。删除前先在未改源码上编译新守卫：
+  它逐个检查两个终局导入闭包内全部 `BMSConstructibleBridge` 模块声明，只允许
+  `propext`、`Classical.choice`、`Quot.sound`，越界即报错；并用 `#guard_msgs` 自检
+  “去掉 `Classical.choice` 时必须拒绝 `bm4_strictWellOrder_l`”，守卫失效即构建失败。
+  另有一次性核对确认 3817 个被删打印目标全部解析为该守卫覆盖的桥接常量。
+  `#guard_msgs` 形式的两个终局精确守卫与 163 个冻结旧资源均未改动。
+- 证明体精简：26 个模块中，首支均为 `rfl` 的嵌套 `cases v with | here | there`
+  链（20 模块 131 行）及每支均为 `rfl` 的 `match s, v with` 枚举（6 模块 41 行）
+  改为本库已有的 `rcases v with _ | … | v` 加 `all_goals first | rfl | …` 写法，
+  只改证明体。逐模块对比改写前后的本地常量清单，唯一差异是被删战术 `match`
+  生成的辅助匹配器 `PowerlessRelativeClassDoubling.exists_l.match_1_3`。
+
+验证（Linux，桥接工具链 4.33.0-rc1；Mathlib 缓存主机被网络策略拦截，依赖从源码构建）：
+改写前基线 `lake build` 两个审计入口 3565 任务退出 0；改写后连同新守卫 3566 任务
+退出 0，无 error／sorry，warning 行数与基线同为 476。三个审计入口
+`AxiomAudit`、`SecondOrderHereditaryBMSAxiomAudit`、`SecondOrderCoreAxiomAudit`
+的 `lake env lean` 均退出 0，新守卫检查 27041 个声明、1935 个模块。26 个改写
+模块单独检查退出 0 且无新增 warning；163 个旧资源 LF 指纹不变。
+这不是 `scripts/check-all.sh` 全仓验收：根工程全部目标、闭包外桥接模块及其余
+三个审计入口没有在本地重跑，交由远端 CI。`check-all.sh` 已加入新守卫。
 
 2026-10-10 本地精简首批：`PowerlessHereditaryArithmeticCandidate.lean`
 从 146 降至 136 物理行，合并零／后继／加法／乘法的数码单射回传步骤，

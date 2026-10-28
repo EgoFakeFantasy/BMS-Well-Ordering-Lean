@@ -164,15 +164,4 @@ theorem trim_bound_l (hℳ : Theory.Models ℳ theory_m) {T E H : set_l ℳ}
   rw [fold_bound_l hℳ hF hE hH x (zero_l ℳ) y b ((trim_bridge_l hℳ hT hF x y).mp hy)]
   exact and_iff_right (zero_le_l hℳ b)
 
-#print axioms upper_l
-#print axioms upper_m
-#print axioms upper_syntax_l
-#print axioms upper_cons_l
-#print axioms upper_zero_l
-#print axioms invariant_m
-#print axioms invariant_language_m
-#print axioms invariant_syntax_l
-#print axioms fold_bound_l
-#print axioms trim_bound_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTrimBounds

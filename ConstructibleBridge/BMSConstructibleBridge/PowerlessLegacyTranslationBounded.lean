@@ -337,7 +337,4 @@ theorem certificate_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ
     member_m, member_l, Arguments.eval, up₂, up, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms certificate_delta_l
-#print axioms certificate_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyTranslationBounded

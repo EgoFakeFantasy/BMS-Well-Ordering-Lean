@@ -65,7 +65,4 @@ theorem derives_m : Derives theory_m []
     (SecondOrderArithmetic.comprehension_m (SecondOrderRelations.formula_m formula_m)) :=
   SecondOrderRelations.comprehension_m formula_m pure_m
 
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelationBoolean

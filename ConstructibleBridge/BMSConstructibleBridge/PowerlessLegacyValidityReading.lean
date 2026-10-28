@@ -147,11 +147,4 @@ theorem rule_l (f : type_l hℳ) (X : set_l ℳ) (n l : num_l ℳ)
       ((PowerlessLegacyNumericReading.code_eq_l K n _).trans ⟨Eq.symm, Eq.symm⟩))
     (cases_l K hN X hRead tag payload l)
 
-#print axioms atomic_l
-#print axioms query_l
-#print axioms binary_l
-#print axioms existential_l
-#print axioms cases_l
-#print axioms rule_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyValidityReading

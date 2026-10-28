@@ -38,7 +38,4 @@ theorem formula_l {Γ Δ : SortContext ℒ} {φ : Formula ℒ Γ Δ}
     φ.satisfies η ↔ φ.satisfies (PowerlessRelativeClassRelativization.env_l η) :=
   Formula.delta0_absolute embedding_l hφ η
 
-#print axioms embedding_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassBounded

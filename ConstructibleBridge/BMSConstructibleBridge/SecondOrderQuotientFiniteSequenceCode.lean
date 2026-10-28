@@ -61,7 +61,4 @@ theorem exists_l (K : source_coding_l hℳ) {E : SecondOrderModel.set_l ℳ}
   exact ⟨c, fun i j => (hc i j).trans
     (and_congr (numberCode_mem_iff_lt_l K i n).symm (hH i j))⟩
 
-#print axioms relation_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderQuotientFiniteSequenceCode

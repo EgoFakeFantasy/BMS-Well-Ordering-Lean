@@ -108,13 +108,4 @@ theorem repeat_state_l (hℳ : Theory.Models ℳ theory_m) {R L : set_l ℳ}
   obtain ⟨z, hz, hstate⟩ := repeat_exists_l hℳ hR hL hn hs k
   exact (function_value_unique_l (function_of_semantics_l hℳ (repeat_m step_m) hR) hz hy) ▸ hstate
 
-#print axioms state_l
-#print axioms state_m
-#print axioms state_syntax_l
-#print axioms invariant_m
-#print axioms invariant_language_m
-#print axioms invariant_syntax_l
-#print axioms repeat_exists_l
-#print axioms repeat_state_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentRowIteration

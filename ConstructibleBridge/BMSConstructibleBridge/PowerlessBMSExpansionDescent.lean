@@ -101,6 +101,4 @@ theorem selected_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : om
     PowerlessBMSPrefixRepresentation.complete_l hU
       ((PowerlessBMSRepresentation.width_graph_l hL _ _).mpr hwidth)⟩
 
-#print axioms selected_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSExpansionDescent

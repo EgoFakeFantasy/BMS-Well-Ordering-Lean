@@ -164,7 +164,4 @@ theorem exists_l {C₀ C₁ C₂ C₃ W ω F G P₀ α δ f : type_l hℳ}
     SecondOrderMemberDefBasicClosure.union_l hℳ hDef₂₃ hHC₂
       (fun x hx y hy => hTrans₂ x y hx hy) hUnion⟩
 
-#print axioms body_delta_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderLightHistoryLimitPrefix

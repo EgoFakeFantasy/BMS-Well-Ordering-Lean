@@ -121,7 +121,4 @@ theorem empty_exists_l (hℳ : Theory.Models ℳ theory_m) : ∃ A : SecondOrder
   exact ⟨fun x hx => False.elim (hEmpty x hx), fun x hx => False.elim (hEmpty x hx),
     fun x hx => False.elim (hEmpty x hx)⟩
 
-#print axioms exists_l
-#print axioms empty_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalSuccessor

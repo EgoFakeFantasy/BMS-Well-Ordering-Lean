@@ -87,8 +87,4 @@ theorem unique_l (K : source_coding_l hℳ) {S one two I f g : type_l hℳ}
   obtain ⟨rfl, rfl⟩ := pairing_injective_l K hS hn hc hm hd hfPair hgPair
   exact PowerlessBoundedSequenceCode.unique_l K hn hfMap hgMap hfCode hgCode
 
-#print axioms delta_l
-#print axioms pairing_injective_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBoundedSequenceIndex

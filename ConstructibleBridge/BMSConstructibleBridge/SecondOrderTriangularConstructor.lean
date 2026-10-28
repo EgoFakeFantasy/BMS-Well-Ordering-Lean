@@ -106,7 +106,4 @@ theorem injective_l (hℳ : Theory.Models ℳ theory_m) {t a b s d f n : num_l �
   obtain ⟨hts, hpq⟩ := node_injective_l hℳ hn hm
   exact ⟨hts, SecondOrderTriangularInjective.injective_l hℳ (hpq ▸ hp) hq⟩
 
-#print axioms bounds_l
-#print axioms injective_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderTriangularConstructor

@@ -67,6 +67,4 @@ theorem iff_l (hℳ : Theory.Models ℳ theory_m) {B : set_l ℳ}
     PowerlessRelativeHierarchySemantics.level_l hℳ (mk_l hℳ ⟨B, zero_l ℳ, hB⟩) (mk_l hℳ α) (mk_l hℳ C) ↔
       SecondOrderRelativeLevel.spec_l hℳ B hB α C := ⟨reverse_l hℳ hBase, forward_l hℳ hBase⟩
 
-#print axioms iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLevelCorrespondence

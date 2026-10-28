@@ -98,6 +98,4 @@ theorem member_l (K : source_coding_l hℳ) {B β C D E a F : type_l hℳ}
       obtain ⟨q, hq, hPair'⟩ := SecondOrderFiniteAdditionAgreement.value_l K hF hn hg hValue
       exact (SecondOrderPairObjects.ordered_unique_l hℳ hPair' hPair) ▸ hq
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessAdditionBoundedGraph

@@ -53,6 +53,4 @@ theorem seed_exists_l (hℳ : Theory.Models ℳ theory_m) (A X Y : SecondOrderGr
   obtain ⟨Q, D, R, S, h, hS⟩ := exists_l hℳ A hα B hB hBase
   exact ⟨B, hB, Q, D, R, S, hX, hY, h, hS⟩
 
-#print axioms seed_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalStrongHierarchy

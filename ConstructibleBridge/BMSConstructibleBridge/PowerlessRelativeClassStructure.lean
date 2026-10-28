@@ -73,8 +73,4 @@ theorem foundation_l : SecondOrderFoundation.formula_m.TrueIn (structure_l hℳ 
   exact ⟨⟨q, PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase a.property hqa⟩, hqa,
     fun z hz => hMin z.val hz⟩
 
-#print axioms structure_l
-#print axioms pairing_l
-#print axioms foundation_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassStructure

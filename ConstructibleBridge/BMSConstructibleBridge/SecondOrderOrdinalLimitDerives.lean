@@ -67,7 +67,4 @@ theorem models_l (hℳ : Theory.Models ℳ theory_m) :
 theorem derives_m : Derives theory_m [] (GraphTranslation.form_m sentence_m) :=
   SecondOrderAxioms.interpretation_m sentence_m (fun _ hℳ => models_l hℳ)
 
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalLimitDerives

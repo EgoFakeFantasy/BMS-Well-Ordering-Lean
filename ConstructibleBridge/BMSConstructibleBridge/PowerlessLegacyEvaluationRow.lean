@@ -191,9 +191,6 @@ theorem source_formula_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
     SecondOrderPairing.edge_l, raw_up, Term.eval_weakenBound, Term.eval]
   exact ⟨fun ⟨_, rfl, h⟩ => h, fun h => ⟨_, rfl, h⟩⟩
 
-#print axioms guard_formula_l
-#print axioms source_formula_l
-
 def body_m {Γ Δ : SortContext ℒ}
     (ω e B A E C T U R n l c q L z f : Term ℒ Γ Δ .set) : Formula ℒ Γ Δ :=
   .imp (guard_m ω e E C n l c q L) <|
@@ -301,9 +298,6 @@ theorem row_formula_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
     (by simpa only [w, up, ξ, Term.eval_weakenBound] using hn) rfl rfl rfl rfl rfl
   simpa only [w, up, ξ, Term.eval_weakenBound, Term.eval, Env.pushBound_bound_here,
     Env.pushBound_bound_there] using h
-
-#print axioms body_formula_l
-#print axioms row_formula_l
 
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyEvaluationRow

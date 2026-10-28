@@ -85,8 +85,4 @@ theorem exists_l {ω X E : type_l hℳ B}
   obtain ⟨U, hU, hUOnto⟩ := of_spec_l hω hE hOnto hS hI hJ
   exact ⟨S, I, J, U, hS, hI, hJ, hU, hUOnto⟩
 
-#print axioms identity_l
-#print axioms of_spec_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSatisfactionIndexEnumeration

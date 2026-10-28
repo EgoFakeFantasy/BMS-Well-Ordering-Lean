@@ -131,7 +131,4 @@ theorem instance_l {P : carrier_l 𝒱 → Prop} {hP : ∃ x, P x}
       exact hν v
   · exact hD
 
-#print axioms formula_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassRelativeParameters

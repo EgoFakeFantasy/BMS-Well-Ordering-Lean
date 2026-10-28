@@ -119,6 +119,4 @@ theorem exists_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.sign
       (ω := ω.eval η) (A := A.eval η) (S := S.eval η) (F := F) (G := G) (R := R)
       hr K hωEq hS hF hSystem heEq hMap hSpec hV⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitSatisfaction

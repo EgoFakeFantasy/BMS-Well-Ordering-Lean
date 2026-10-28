@@ -99,7 +99,4 @@ theorem extension_l {C ω e T A t₁ t₂ t₃ S F G n m Y : type_l hℳ}
     exact ⟨F, (PowerlessRelativeLimitHistory.congr_l (hSame k (Or.inr rfl))).mp
       (PowerlessRelativeLimitHistory.self_l hF.1), hY⟩
 
-#print axioms formula_l
-#print axioms extension_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessEvaluationFiniteHistory

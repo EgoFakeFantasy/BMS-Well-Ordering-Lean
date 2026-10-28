@@ -70,6 +70,4 @@ theorem exists_l (f S X : type_l hℳ B) : ∃ Y : type_l hℳ B, ∀ y,
     exact (hY y').mpr ⟨hyX, (hFormula y').mpr
       ⟨n', hn, (PowerlessRelativeClassFunctionAbsolute.value_l f n' y').mpr hValue⟩⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSelectedImage

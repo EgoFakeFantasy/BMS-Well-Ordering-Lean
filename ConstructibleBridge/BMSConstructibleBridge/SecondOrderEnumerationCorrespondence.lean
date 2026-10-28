@@ -72,7 +72,4 @@ theorem total_l (C : source_coding_l hℳ) (f : type_l hℳ)
     have hn' : (numberCode_l C n).val = x := congrArg Subtype.val hn
     exact ⟨n, (hK n m).mpr (hn'.symm ▸ hxy)⟩
 
-#print axioms exists_l
-#print axioms total_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderEnumerationCorrespondence

@@ -79,7 +79,4 @@ theorem formula_l {Δ Γ Θ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .se
     exact hIso.2.2.2.1 x.val z.val y.val w.val hxy hzw
   exact PowerlessSourceRelationalIsomorphism.formula_l R hTotal hOnto hEq hMem ψ ξ ζ h
 
-#print axioms nonempty_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessWholeCollapseTruth

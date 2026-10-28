@@ -100,8 +100,4 @@ theorem derives_m {Δ : SortContext ℒ} (C D ω e T A S t₁ t₂ t₃ F G n m 
   exact (PowerlessEvaluationClause.query_formula_l η F k f).trans
     ((query_l hn' hF' hG' hSubset' hk).trans (PowerlessEvaluationClause.query_formula_l η G k f).symm)
 
-#print axioms exists_l
-#print axioms query_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessEvaluationHistoryRestriction

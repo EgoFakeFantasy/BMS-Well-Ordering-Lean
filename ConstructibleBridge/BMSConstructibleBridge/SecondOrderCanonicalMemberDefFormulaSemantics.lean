@@ -84,6 +84,4 @@ theorem formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortContext signa
       rw [weakenTerm_eval η b A, weakenTerm_eval η b r, weakenTerm_eval η b W]
       exact h
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalMemberDefFormulaSemantics

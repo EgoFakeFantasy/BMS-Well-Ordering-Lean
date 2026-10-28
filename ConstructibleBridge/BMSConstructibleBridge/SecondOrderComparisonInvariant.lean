@@ -96,7 +96,4 @@ theorem induction_l {A I J T G : type_l hℳ}
   by_contra hyBad
   exact hMin y hy ((hRead y).mpr ⟨hTrans x hxA y hy, hyBad⟩)
 
-#print axioms at_formula_l
-#print axioms induction_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonInvariant

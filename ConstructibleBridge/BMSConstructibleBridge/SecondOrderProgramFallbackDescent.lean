@@ -87,8 +87,4 @@ theorem no_chain_l (hℳ : Theory.Models ℳ theory_m) {E M L Y : set_l ℳ}
   obtain ⟨k, hk, hne⟩ := hstep i x y hx hy
   exact width_lt_l hℳ hE hM hL hxn hym (hnone i x hx) hk hne
 
-#print axioms zero_width_l
-#print axioms width_lt_l
-#print axioms no_chain_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramFallbackDescent

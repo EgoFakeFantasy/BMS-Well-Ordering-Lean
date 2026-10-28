@@ -78,8 +78,4 @@ theorem models_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) : sen
 theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m sentence_m) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ)
 
-#print axioms successor_ordinal_l
-#print axioms limit_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCutoffLimit

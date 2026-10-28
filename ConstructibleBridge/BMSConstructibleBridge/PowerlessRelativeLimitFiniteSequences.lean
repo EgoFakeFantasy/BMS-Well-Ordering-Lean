@@ -82,7 +82,4 @@ theorem exists_l {B δ E β C ω X : type_l hℳ}
   obtain ⟨S, hS⟩ := SecondOrderFiniteSequencesDerives.exists_l hℳ ω hω X
   exact ⟨S, member_l hBase hInner hE hOuter hC hEarlier hω hωE hXE hS, hS⟩
 
-#print axioms member_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitFiniteSequences

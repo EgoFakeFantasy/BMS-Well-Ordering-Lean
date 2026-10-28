@@ -47,6 +47,4 @@ theorem hereditary_l (K : source_coding_l hℳ) (U : type_l hℳ B)
   exact PowerlessHereditaryCodedCollectionDecoded.hereditary_l K hBase V O
     hV hOSub hVTrace hOTrace hRows X hX
 
-#print axioms hereditary_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryNormalizedCollection

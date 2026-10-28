@@ -143,6 +143,4 @@ theorem closed_l (I : Raw → Prop)
     have hEq : p = q.val := SecondOrderQuotient.ext_l hℳ _ _ (fun z => (hp z).trans (hqRaw z).symm)
     exact hEq.symm ▸ hqI
 
-#print axioms closed_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassOperationRequests

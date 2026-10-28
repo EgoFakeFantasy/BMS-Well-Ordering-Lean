@@ -132,15 +132,8 @@ theorem graph_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ}
   apply Env.ext
   · intro s v; nomatch v
   · intro s v; cases s
-    cases v with
-    | here => rfl
-    | there v => cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => exact hτ v
+    rcases v with _ | _ | _ | _ | v
+    all_goals first | rfl | exact hτ v
 
 /-- 任意装配上下文中的实际见证图仍属于原相对可构造类。 -/
 theorem class_l (K : source_coding_l hℳ) {Ε Δ : SortContext ℒ}
@@ -242,12 +235,5 @@ theorem models_l (h𝒩 : Theory.Models ℳ SecondOrderArithmetic.theory_m)
 theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: Δ)) :
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m φ)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 φ)
-
-#print axioms exists_l
-#print axioms witness_l
-#print axioms graph_formula_l
-#print axioms class_l
-#print axioms models_l
-#print axioms derives_m
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeSourceSkolemGraph

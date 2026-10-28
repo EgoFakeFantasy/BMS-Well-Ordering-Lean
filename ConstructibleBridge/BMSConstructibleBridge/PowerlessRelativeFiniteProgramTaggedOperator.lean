@@ -180,11 +180,4 @@ theorem derives_m {Δ : SortContext ℒ} (B W : Term ℒ [] Δ .set) (F : List (
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m B W F)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 B W F)
 
-#print axioms delta_l
-#print axioms relation_formula_l
-#print axioms functional_l
-#print axioms closed_l
-#print axioms total_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramTaggedOperator

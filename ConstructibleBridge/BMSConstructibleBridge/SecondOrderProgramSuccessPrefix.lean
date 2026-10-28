@@ -125,8 +125,4 @@ theorem member_l (hℳ : Theory.Models ℳ theory_m) {S M L : set_l ℳ}
     (fun _ _ h => SecondOrderProgramUniformParentOrder.parent_lt_l hℳ hP h)
     (fun t ht q => parent_l hℳ hS hP hL hx hp hy (t := t) ht u q) ht i q
 
-#print axioms prefix_l
-#print axioms parent_l
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSuccessPrefix

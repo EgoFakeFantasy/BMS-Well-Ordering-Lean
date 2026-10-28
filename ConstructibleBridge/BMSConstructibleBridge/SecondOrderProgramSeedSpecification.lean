@@ -106,9 +106,4 @@ theorem height_l (hℳ : Theory.Models ℳ theory_m) {S T : set_l ℳ}
     (succ_l (zero_l ℳ)) b h hcol (Or.inl rfl)
   exact nonzero_l hℳ (zero_l ℳ) (function_value_unique_l hEf (hb h hhn) hz)
 
-#print axioms columns_l
-#print axioms width_l
-#print axioms zero_rows_seed_l
-#print axioms height_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSeedSpecification

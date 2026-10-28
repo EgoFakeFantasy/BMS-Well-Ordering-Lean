@@ -112,6 +112,4 @@ theorem exists_l (K : source_coding_l hℳ) (A : SecondOrderGraph.code_l ℳ)
     subst m
     exact hxn.trans hym.symm
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderStageIndexFunction

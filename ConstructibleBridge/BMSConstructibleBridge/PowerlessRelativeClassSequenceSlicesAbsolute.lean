@@ -52,7 +52,4 @@ theorem lift_l {ω n X : type_l hℳ B} (hω : omega_l (ℳ := 𝒩) ω)
   apply SecondOrderQuotient.ext_l hℳ
   exact fun f => (spec_l hω hn hQ f).trans (hP f).symm
 
-#print axioms spec_l
-#print axioms lift_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceSlicesAbsolute

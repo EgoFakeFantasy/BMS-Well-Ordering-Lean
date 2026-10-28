@@ -94,7 +94,4 @@ theorem formula_l (hωClass : omega_l (ℳ := structure_l hℳ B hBase) ω)
     PowerlessRelationalSourceCompilation.formula_certified_l hωClass ht hConstruct φ ξ hk hξ
   exact ⟨c, N, hc, hN, hkN, of_derivation_l K hω he ht hT hSpec hV hD hc hN, h⟩
 
-#print axioms of_derivation_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationalCodeValidity

@@ -161,8 +161,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.
   refine ⟨H, hHC, (map_formula_l _ _ _ _).mpr hH, ?_⟩
   exact (formula_l _ _ _ _).mpr hHistory
 
-#print axioms exists_l
-#print axioms value_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitHistory

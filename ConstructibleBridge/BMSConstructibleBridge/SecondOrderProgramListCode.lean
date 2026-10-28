@@ -270,35 +270,4 @@ theorem tail_lt_l (hℳ : Theory.Models ℳ theory_m) {T : set_l ℳ}
 
 /-! ## 全部新公开声明的内核依赖审计 -/
 
-#print axioms pred_step_m
-#print axioms pred_rec_m
-#print axioms pred_input_m
-#print axioms pred_m
-#print axioms cons_m
-#print axioms head_m
-#print axioms tail_m
-#print axioms pred_eval_l
-#print axioms cons_encode_l
-#print axioms head_encode_l
-#print axioms tail_encode_l
-#print axioms pred_step_rel_l
-#print axioms pred_rec_zero_l
-#print axioms pred_rec_succ_l
-#print axioms pred_input_rel_l
-#print axioms pred_bridge_l
-#print axioms pred_zero_l
-#print axioms pred_succ_l
-#print axioms cons_rel_l
-#print axioms head_succ_l
-#print axioms tail_succ_l
-#print axioms head_cons_l
-#print axioms tail_cons_l
-#print axioms unpair_zero_l
-#print axioms head_zero_l
-#print axioms tail_zero_l
-#print axioms le_square_l
-#print axioms coordinates_le_pair_l
-#print axioms coordinates_lt_cons_l
-#print axioms tail_lt_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListCode

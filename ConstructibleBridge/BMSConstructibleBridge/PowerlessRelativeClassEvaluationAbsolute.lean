@@ -126,8 +126,4 @@ theorem equations_l (ω e T A S t₁ t₂ t₃ G : type_l hℳ B)
     exact hValue.trans ((hFour.2.2.2 (PowerlessRelativeClassConstructorBounds.constructor_to_ambient_l hω h)).trans
       (and_congr Iff.rfl (exists_l ω A S G f a b hS).symm))
 
-#print axioms update_l
-#print axioms exists_l
-#print axioms equations_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassEvaluationAbsolute

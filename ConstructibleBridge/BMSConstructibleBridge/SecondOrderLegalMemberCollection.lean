@@ -101,6 +101,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) (A : SecondOrderGraph.code_
   · intro hφ
     exact ⟨n, hn, (hRead n).mpr hφ, SecondOrderBisimulation.refl_l hℳ A.real n⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderLegalMemberCollection

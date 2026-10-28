@@ -86,7 +86,4 @@ theorem exists_l {ω X T G : type_l hℳ B}
       ⟨n, hn, map_widen_l hfMap (fun y hy => hTrans X hXT y hy)⟩))
   exact ⟨S, hS, PowerlessHereditaryExtension.exists_l ω S W F hω hWTrans hSW hF hWonto⟩
 
-#print axioms map_widen_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryFiniteSequenceEnvelope

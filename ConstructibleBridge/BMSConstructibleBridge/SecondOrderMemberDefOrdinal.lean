@@ -79,6 +79,4 @@ theorem member_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {C D 
         exact (hRead' n hn).mpr hX
     exact hzα ▸ hz
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefOrdinal

@@ -100,8 +100,4 @@ theorem reading_l (K : source_coding_l hℳ) {N P : type_l hℳ}
         ⟨fun hi => hiNot ((numberCode_mem_iff_lt_l K i l).mp hi),
           congrArg (fun n => (numberCode_l K n).val) hjEq⟩⟩
 
-#print axioms delta_l
-#print axioms formula_l
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyPaddingBounded

@@ -191,10 +191,4 @@ theorem body_numeric_l (K : source_coding_l hℳ) {N F A f : SecondOrderQuotient
       (and_congr (PowerlessLegacyNumericReading.budget_l K hN m p L)
         (and_congr Iff.rfl (tail_numeric_l K l L f b)))))
 
-#print axioms tail_delta_l
-#print axioms select_delta_l
-#print axioms select_formula_l
-#print axioms tail_numeric_l
-#print axioms body_numeric_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyImageIndicesBounded

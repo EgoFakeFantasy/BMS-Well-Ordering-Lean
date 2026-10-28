@@ -97,7 +97,4 @@ theorem member_l (hℳ : Theory.Models ℳ theory_m) {T M L E : set_l ℳ}
   exact SecondOrderProgramAncestorCongruence.member_congr_l hℳ parent_m parent_m hP hP hM hM
     (value_l x r) (value_l y r) (parent_l hℳ hT hP hL hE hx hy r) t i q
 
-#print axioms parent_l
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTrimParent

@@ -45,6 +45,4 @@ theorem member_none_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {M C : se
   obtain ⟨j, hj, _⟩ := (member_nonzero_l hℳ c hM hA hL hE ha hl i).mp h
   exact (not_lt_of_ge (show zero_l ℳ ≤ j from zero_le_l hℳ j)) hj
 
-#print axioms member_none_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorNone

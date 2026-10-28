@@ -126,7 +126,4 @@ theorem decoder_l {ω X Q e one d S : type_l hℳ B}
     (φ := φ) (delta_l x q z o a (.fvar .here) (.fvar (.there .here))) η S Q hTotal
   exact ⟨R, hR, fun f p hEntry hf hp => (hRead f p).mpr ⟨hf, hp, (hφ f p).mpr (Or.inl hEntry)⟩⟩
 
-#print axioms delta_l
-#print axioms decoder_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassPairEnumeration

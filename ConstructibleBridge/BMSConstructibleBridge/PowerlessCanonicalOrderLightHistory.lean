@@ -181,8 +181,4 @@ theorem full_reading_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m)
   · rintro ⟨hMap, hSteps⟩
     exact ⟨hMap, fun a _ha E _hE hValue => hSteps a E hValue⟩
 
-#print axioms delta_l
-#print axioms formula_l
-#print axioms full_reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderLightHistory

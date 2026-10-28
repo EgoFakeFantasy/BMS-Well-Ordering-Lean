@@ -94,7 +94,4 @@ theorem exists_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) (K : 
   refine ⟨F, ?_⟩
   simpa only [hAcode] using hBudget
 
-#print axioms start_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyLightHistoryBudgetExists

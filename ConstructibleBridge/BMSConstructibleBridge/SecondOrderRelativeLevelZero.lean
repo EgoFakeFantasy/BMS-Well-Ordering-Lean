@@ -47,7 +47,4 @@ theorem base_object_l (hℳ : Theory.Models ℳ theory_m) (B : set_l ℳ)
   exact (SecondOrderRelativeClass.congr_l hℳ (value_l hℳ hEmpty hC)).mp
     (SecondOrderRelativeClass.level_l hℳ B hB hBase α C hα hC)
 
-#print axioms value_l
-#print axioms base_object_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeLevelZero

@@ -110,7 +110,4 @@ theorem derives_m {Δ : SortContext signature_m} (R X : Term signature_m [] Δ .
   intro η
   exact models_l hℳ η R X n r
 
-#print axioms transport_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteRootTransport

@@ -134,9 +134,4 @@ theorem derives_m {Δ : SortContext ℒ} (B ω I A z r S D : Term ℒ [] Δ .set
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m B ω I A z r S D)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ B ω I A z r S D)
 
-#print axioms path_iff_l
-#print axioms cover_l
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessKleeneBrouwerRestrictedPaths

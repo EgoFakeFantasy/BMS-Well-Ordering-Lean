@@ -69,7 +69,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) {S E G : set_l ℳ}
     exact ⟨i, m, hi, hIm, SecondOrderGraph.trans_l hℳ hBn
       (hUnique i hi n m hIn (hFR i hi m hIm))⟩
 
-#print axioms select_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteRootRepresentatives

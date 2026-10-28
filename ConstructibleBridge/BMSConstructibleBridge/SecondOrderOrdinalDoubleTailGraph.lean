@@ -193,7 +193,4 @@ noncomputable def code_l (hℳ : Theory.Models ℳ theory_m) {S G : set_l ℳ} {
     (hG : spec_l S r G) (hS : ∀ a, SecondOrderDomain.wf_l S a) (n m : num_l ℳ) :
     SecondOrderGraph.code_l ℳ := ⟨G, root_l n m, wf_l hℳ hG hS _⟩
 
-#print axioms exists_l
-#print axioms wf_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalDoubleTailGraph

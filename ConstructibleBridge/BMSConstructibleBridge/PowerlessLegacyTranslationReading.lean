@@ -178,8 +178,4 @@ theorem point_l (n l q : num_l ℳ) :
     ((PowerlessLegacyNumericReading.code_eq_l K n _).trans ⟨Eq.symm, Eq.symm⟩))
     (cases_l K hN hT hSpec X hRead tag p l q)
 
-#print axioms constructor_l
-#print axioms query_l
-#print axioms point_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyTranslationReading

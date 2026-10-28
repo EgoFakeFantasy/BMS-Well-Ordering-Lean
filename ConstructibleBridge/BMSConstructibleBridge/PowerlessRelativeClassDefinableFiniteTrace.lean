@@ -128,8 +128,4 @@ theorem exists_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
     exact ⟨T, E, g, hEC, hGC, PowerlessDefinableFiniteTrace.extension_l K φ η
       (n := (numberCode_l K i).val) (numberCode_l K i).property hF hG hT hRead hz.2 hd⟩
 
-#print axioms finite_formula_l
-#print axioms induction_derives_m
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassDefinableFiniteTrace

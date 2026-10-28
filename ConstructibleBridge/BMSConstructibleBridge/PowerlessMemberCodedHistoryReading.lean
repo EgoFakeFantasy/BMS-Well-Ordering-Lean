@@ -213,9 +213,4 @@ theorem point_l (K : source_coding_l hℳ)
     (PowerlessMemberOperationClosure.transitive_l hTrans U).mp hUTrans,
     (PowerlessMemberOperationClosure.closed_l hTrans hClosed U).mp hUClosed⟩
 
-#print axioms satisfaction_l
-#print axioms def_l
-#print axioms finite_l
-#print axioms point_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberCodedHistoryReading

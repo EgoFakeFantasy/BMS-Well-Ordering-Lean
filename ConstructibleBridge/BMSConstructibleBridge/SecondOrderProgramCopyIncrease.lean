@@ -83,11 +83,4 @@ theorem increase_rel_l (hℳ : Theory.Models ℳ theory_m) {I D : set_l ℳ}
   rw [hv]
   simp only [hd hD, exists_eq_left']
 
-#print axioms difference_input_m
-#print axioms difference_m
-#print axioms product_m
-#print axioms increase_m
-#print axioms increase_eval_l
-#print axioms increase_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyIncrease

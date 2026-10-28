@@ -74,6 +74,4 @@ theorem exists_l (K : source_coding_l hℳ) (hLimit : limit_l hℳ β) (hC : lev
   exact PowerlessRelativeCofinalSatisfaction.exists_l (F := F) hC hLimit hCofinal
     η w z n t a x y d hParams hω hFC hStatic
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCofinalSatisfactionForDomain

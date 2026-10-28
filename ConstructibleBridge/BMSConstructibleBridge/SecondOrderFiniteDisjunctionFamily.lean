@@ -74,6 +74,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) {V E D Q R T F : set_l ℳ}
   obtain ⟨p, hp⟩ := SecondOrderFiniteDisjunctionSyntax.total_l hℳ hS l
   exact ⟨_, row_l hℳ hS hV hE hT hF l c p hc hp⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteDisjunctionFamily

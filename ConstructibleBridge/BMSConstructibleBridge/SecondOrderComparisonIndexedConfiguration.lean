@@ -85,6 +85,4 @@ theorem of_native_l {K : source_coding_l hℳ} {p : SecondOrderComparisonNativeR
     configuration_l K.omega B (v A) F r (v p.I) (v p.J) (v p.T) :=
   ⟨h.ordinal, h.indexMap, h.indexOnto, h.indexSubset, h.hierarchy, h.layerMap, h.layerRead⟩
 
-#print axioms configuration_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonIndexedConfiguration

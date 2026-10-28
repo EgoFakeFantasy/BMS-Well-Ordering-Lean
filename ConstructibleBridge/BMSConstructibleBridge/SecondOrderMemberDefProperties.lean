@@ -33,8 +33,6 @@ theorem subset_l (hℳ : Theory.Models ℳ theory_m) {X Y B : type_l hℳ}
     rw [hn, ← hAX]
     exact (SecondOrderMemberStructure.value_l hℳ A a ha n).property
 
-#print axioms subset_l
-
 /-- 任意源公式及参数定义的子集属于实际 Def 输出。 -/
 theorem coverage_l (hℳ : Theory.Models ℳ theory_m) (A : SecondOrderGraph.code_l ℳ)
     (a : num_l ℳ) (ha : SecondOrderPairing.relation_l A.real a A.root) {Y : type_l hℳ}
@@ -84,9 +82,6 @@ theorem mother_member_l (hℳ : Theory.Models ℳ theory_m) {X Y : type_l hℳ}
     have h : SecondOrderMemberDef.spec_l hℳ (mk_l hℳ A) Y :=
       Or.inr ⟨A, a, ha, V, E, D, Q, R, T, F, H, rfl, P, hHY⟩
     exact hAX ▸ mother_member_of_nonempty_l hℳ A a ha h
-
-#print axioms coverage_l
-#print axioms mother_member_l
 
 theorem parameter_member_of_nonempty_l (hℳ : Theory.Models ℳ theory_m) (A : SecondOrderGraph.code_l ℳ)
     (a : num_l ℳ) (ha : SecondOrderPairing.relation_l A.real a A.root) {Y x : type_l hℳ}
@@ -144,8 +139,5 @@ theorem transitive_l (hℳ : Theory.Models ℳ theory_m) {X Y : type_l hℳ}
     ∀ x z, mem_l hℳ x Y → mem_l hℳ z x → mem_l hℳ z Y := by
   intro x z hx hz
   exact contains_l hℳ hDef hTrans z (subset_l hℳ hDef hx z hz)
-
-#print axioms contains_l
-#print axioms transitive_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefProperties

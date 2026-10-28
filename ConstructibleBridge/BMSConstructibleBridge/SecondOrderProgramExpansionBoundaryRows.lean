@@ -188,8 +188,4 @@ theorem member_congr_below_maximal_l (hℳ : Theory.Models ℳ theory_m)
   exact member_congr_l hℳ hX hW hP hI hS hT hZ hB hL hE hD hJ hAsc hM hO
     hx hmax hlast hparent hd hbad hy hv htrim hz row hrowmin t i ht hi
 
-#print axioms member_congr_l
-#print axioms adjacent_first_l
-#print axioms member_congr_below_maximal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryRows

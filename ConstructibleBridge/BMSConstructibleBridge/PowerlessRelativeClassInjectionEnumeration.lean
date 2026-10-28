@@ -93,7 +93,4 @@ theorem exists_l {ω X R d : type_l hℳ B}
   obtain ⟨i, ⟨hi, hRi⟩, _⟩ := hR.2 y hy
   exact ⟨i, hi, (hValue i y).mpr ⟨hi, hy, Or.inl hRi⟩⟩
 
-#print axioms delta_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassInjectionEnumeration

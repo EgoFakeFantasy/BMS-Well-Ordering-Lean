@@ -157,8 +157,4 @@ theorem transitive_superset_derives_m : Derives SecondOrderArithmetic.theory_m [
     (GraphTranslation.form_m (guarded_m SecondOrderTransitiveSuperset.formula_m)) :=
   derives_m _ (fun _ h𝒩 B hBase => PowerlessHereditaryStructure.transitive_superset_l h𝒩 B hBase)
 
-#print axioms formula_l
-#print axioms infinity_derives_m
-#print axioms transitive_superset_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryRelativization

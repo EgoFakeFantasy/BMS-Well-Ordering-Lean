@@ -114,9 +114,4 @@ theorem spec_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : S
         (T.eval η) (F.eval η) (R.eval η) := by
   simp only [spec_m, spec_l, Formula.satisfies, domain_formula_l, zero_formula_l, equations_formula_l]
 
-#print axioms domain_formula_l
-#print axioms zero_formula_l
-#print axioms equations_formula_l
-#print axioms spec_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionSpecification

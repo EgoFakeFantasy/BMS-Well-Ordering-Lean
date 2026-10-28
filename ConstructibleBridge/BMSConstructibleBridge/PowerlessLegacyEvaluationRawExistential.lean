@@ -73,6 +73,4 @@ theorem equation_l (K : source_coding_l hℳ) {ω A e t₁ t₂ t₃ P F S : typ
       K hd hLength hUpdate hLink hU hv
     exact ⟨v, d, hD v, hd, (hChild d g hd.1 hg hNewLink).mpr hValue⟩
 
-#print axioms equation_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyEvaluationRawExistential

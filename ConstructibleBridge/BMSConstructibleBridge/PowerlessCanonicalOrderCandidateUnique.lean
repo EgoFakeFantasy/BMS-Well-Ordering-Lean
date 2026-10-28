@@ -59,6 +59,4 @@ theorem unique_l {C C' ω A P Sat D E E' : type_l hℳ}
   subst L'
   exact SecondOrderWellOrderEndExtensionUnique.unique_l hRaw.extension hRaw'.extension
 
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderCandidateUnique

@@ -132,7 +132,4 @@ theorem formula_l {Γ Δ : SortContext ℒ} (φ : Formula ℒ Γ Δ) (η : Env �
         exact ⟨lift_l (hBase := hBase) x,
           (predicate_formula_l _ (.bvar .here)).mpr x.property, (h x).mpr hx⟩
 
-#print axioms predicate_formula_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryIntrinsicRelativization

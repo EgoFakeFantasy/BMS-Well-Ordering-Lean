@@ -56,7 +56,4 @@ theorem enumeration_l {ω U V G H : type_l hℳ B}
   obtain ⟨F, hF, hOnto⟩ := PowerlessRelativeClassEnumerationUnion.exists_l hω hG hH hGOnto hHOnto hW
   exact ⟨W, hW, F, hF, hOnto⟩
 
-#print axioms exists_l
-#print axioms enumeration_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassBinaryUnion

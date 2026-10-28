@@ -149,11 +149,4 @@ theorem representative_exists_l (C : source_coding_l hM) (X : SecondOrderModel.s
     · intro hn
       exact ⟨n, hn, rfl⟩
 
-#print axioms exists_l
-#print axioms numberCode_injective_l
-#print axioms numberCode_surjective_l
-#print axioms numberEquiv_l
-#print axioms numberCode_mem_iff_lt_l
-#print axioms representative_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientCoding

@@ -137,6 +137,4 @@ theorem formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortContext signa
   · rintro ⟨G, P, h⟩
     exact ⟨G, P, h.graph, h.selection, h.graft⟩
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPredecessorUnionFormula

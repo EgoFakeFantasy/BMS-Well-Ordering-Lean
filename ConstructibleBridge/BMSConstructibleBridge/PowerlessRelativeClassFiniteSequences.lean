@@ -86,7 +86,4 @@ theorem exists_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {B β
   obtain ⟨S, hS⟩ := SecondOrderFiniteSequencesDerives.exists_l hℳ ω hω X
   exact ⟨S, member_l hℳ hBase hLimit hC hω hωC hXC hS, hS⟩
 
-#print axioms member_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFiniteSequences

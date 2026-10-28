@@ -27,6 +27,4 @@ theorem numeral_l (k : Nat) : PowerlessNumeral.numeral_l e k
     exact ⟨(SecondOrderProgramArithmetic.numeral_val_l
       (ℳ := PowerlessArithmetic.structure_l he h₀ F) k).val, h, F.succ_graph_l _⟩
 
-#print axioms numeral_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessArithmeticNumeral

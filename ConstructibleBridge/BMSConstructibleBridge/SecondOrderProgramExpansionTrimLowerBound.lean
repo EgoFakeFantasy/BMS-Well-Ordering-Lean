@@ -94,6 +94,4 @@ theorem maximal_le_l (hℳ : Theory.Models ℳ theory_m)
   have hzmax : SecondOrderOrder.lt_l z maximal := lt_of_not_ge hnot
   exact (SecondOrderOrder.irrefl_l hℳ z) (hall z hzmax)
 
-#print axioms maximal_le_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionTrimLowerBound

@@ -91,6 +91,4 @@ theorem contains_l (hℳ : Theory.Models ℳ theory_m) {B R S : set_l ℳ}
       ⟨i, ⟨Y, zero_l ℳ, hYw⟩, hi, hY, rfl,
         (formula_l hℳ B S i hB).mp (hPast i hi) Y hY hYw X hx⟩
 
-#print axioms contains_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyBase

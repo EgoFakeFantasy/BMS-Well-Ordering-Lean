@@ -146,7 +146,4 @@ theorem instance_l (K : source_coding_l hℳ) {S : type_l hℳ}
       (hGraph _ _).mpr ⟨?_, (hRead n _).mpr ⟨j, hj, rfl⟩⟩⟩
     exact (PowerlessBMSQuotientSuccessor.successor_l K n (numberCode_l K n).val).mpr (Or.inr rfl)
 
-#print axioms delta_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBoundedExponentiation

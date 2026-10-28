@@ -252,12 +252,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m []
     (GraphTranslation.form_m sentence_m) :=
   SecondOrderAxioms.interpretation_m sentence_m (fun _ hℳ => models_l hℳ)
 
-#print axioms induction_derives_m
-#print axioms ordered_l
-#print axioms adjoin_l
-#print axioms member_l
-#print axioms subset_member_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteHullAssignments

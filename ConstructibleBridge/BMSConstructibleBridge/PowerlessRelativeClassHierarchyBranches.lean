@@ -75,7 +75,4 @@ theorem union_l (f a X : M) :
       exact (h x.val).mpr ⟨b.val, Y.val, hb,
         (PowerlessRelativeClassFunctionAbsolute.value_l f b Y).mp hY, hxY⟩
 
-#print axioms limit_l
-#print axioms union_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassHierarchyBranches

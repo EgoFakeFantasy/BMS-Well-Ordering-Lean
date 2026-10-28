@@ -134,8 +134,4 @@ theorem member_l
   intro hx
   exact ((hQ t x).trans ⟨fun h => h.2.2, fun h => ⟨ht, hx, h⟩⟩).symm
 
-#print axioms query_exists_l
-#print axioms exists_l
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitSelectedSatisfactionRows

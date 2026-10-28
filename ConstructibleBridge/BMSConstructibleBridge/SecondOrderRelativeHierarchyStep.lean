@@ -110,7 +110,4 @@ theorem root_l (hℳ : Theory.Models ℳ theory_m) {B R H W : set_l ℳ} {n : nu
       ⟨Y, zero_l ℳ, hRows m hm.1 Y hY⟩ hDef
   · exact SecondOrderPredecessorUnionSemantics.root_l hℳ hUnion hRows
 
-#print axioms exists_l
-#print axioms root_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyStep

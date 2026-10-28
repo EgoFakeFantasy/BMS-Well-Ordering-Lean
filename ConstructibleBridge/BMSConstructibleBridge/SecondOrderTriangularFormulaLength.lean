@@ -68,7 +68,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
   simp only [sentence_m, Formula.TrueIn, Formula.satisfies, spec_formula_l, monotone_formula_l, Term.eval]
   exact fun V hV => monotone_l hℳ hV
 
-#print axioms monotone_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderTriangularFormulaLength

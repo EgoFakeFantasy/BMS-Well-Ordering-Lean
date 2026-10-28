@@ -108,6 +108,4 @@ theorem monotone_l (hℳ : Theory.Models ℳ theory_m) {B R S : set_l ℳ}
     exact (formula_l hℳ R S i).mp (hPast i hi)
   · exact hS k
 
-#print axioms monotone_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyMonotonicity

@@ -43,6 +43,4 @@ theorem values_l (K : source_coding_l hℳ) {ω A e t₁ t₂ t₃ T F R S : typ
   rw [hω, he, ht₁, ht₂, ht₃] at hRawR hRawS
   exact PowerlessSatisfactionUnique.values_l K hT hPair hV hF hRawR hRawS
 
-#print axioms values_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSatisfactionUnique

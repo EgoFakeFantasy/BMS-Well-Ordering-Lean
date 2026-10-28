@@ -118,8 +118,4 @@ theorem query_iff_l (K : source_coding_l hℳ) {B : type_l hℳ}
       hnm, hTrace, ?_⟩
     exact (sound_l K hN hT hSpec hV m l hTrace n ((numberCode_mem_iff_lt_l K n m).mp hnm)).mpr hn
 
-#print axioms sound_l
-#print axioms exists_l
-#print axioms query_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFormulaValidityTrace

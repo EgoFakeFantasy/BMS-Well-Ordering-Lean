@@ -70,6 +70,4 @@ theorem unique_l (hℳ : Theory.Models ℳ theory_m) (A B : SecondOrderGraph.cod
   subst E'
   exact common_l hℳ A B a b ha hb hAB V E D D' Q Q' R R' T U F G H J P P'
 
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderLegalMemberIndependence

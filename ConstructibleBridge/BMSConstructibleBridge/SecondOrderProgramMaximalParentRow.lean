@@ -152,20 +152,4 @@ theorem maximal_some_l (hℳ : Theory.Models ℳ theory_m) {M G H T : set_l ℳ}
         relation_l T (value_l x j) (zero_l ℳ) := by
   rw [maximal_rel_l hℳ hM hG hH hh, greatest_some_l hℳ test_m hG hT]
 
-#print axioms last_index_m
-#print axioms last_column_m
-#print axioms height_m
-#print axioms test_input_m
-#print axioms test_m
-#print axioms maximal_m
-#print axioms last_index_encode_l
-#print axioms last_column_encode_l
-#print axioms height_encode_l
-#print axioms test_encode_l
-#print axioms maximal_encode_l
-#print axioms test_rel_l
-#print axioms maximal_rel_l
-#print axioms maximal_none_l
-#print axioms maximal_some_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramMaximalParentRow

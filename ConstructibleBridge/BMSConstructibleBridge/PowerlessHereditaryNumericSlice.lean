@@ -56,6 +56,4 @@ theorem coded_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
   refine (hTrace n).symm.trans ⟨fun h => hAbs.mp ((hV n₀).mp h).2, fun h => ?_⟩
   exact (hV n₀).mpr ⟨(numberCode_l K n).property, hAbs.mpr h⟩
 
-#print axioms coded_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryNumericSlice

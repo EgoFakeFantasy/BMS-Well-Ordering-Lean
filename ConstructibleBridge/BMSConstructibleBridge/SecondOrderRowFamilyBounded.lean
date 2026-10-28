@@ -106,9 +106,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.
   exact (formula_l η _ _ _ _).trans
     ((family_iff_l hℳ).trans (SecondOrderRowOrderCanonical.family_formula_l η _ _ _ _).symm)
 
-#print axioms delta_l
-#print axioms formula_l
-#print axioms family_iff_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRowFamilyBounded

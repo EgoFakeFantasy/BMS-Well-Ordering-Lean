@@ -112,10 +112,4 @@ theorem append_member_l (hℳ : Theory.Models ℳ theory_m) {A M L : set_l ℳ}
     ((le_iff_l hℳ n (add_l n m)).mpr ⟨m, rfl⟩)
     (fun j hj => append_entry_l hℳ hA hJ hL hE hx hy hz hj) r ht i q
 
-#print axioms take_parent_l
-#print axioms take_member_l
-#print axioms append_entry_l
-#print axioms append_parent_l
-#print axioms append_member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramPrefixPreservation

@@ -70,8 +70,4 @@ theorem raw_bound_l (hℳ : Theory.Models ℳ theory_m) {E : set_l ℳ}
   exact (bound_value_l hℳ trim_m hT η a b hy).trans
     (trim_bound_iff_zero_rows_l hℳ hT hE hy (b.eval η))
 
-#print axioms bound_rel_l
-#print axioms bound_value_l
-#print axioms raw_bound_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRawHeightFormula

@@ -133,13 +133,4 @@ theorem fold_encode_l (c : code_m) (s : List Nat) (v : Nat) :
   rw [PrimitiveProgram.id_l, Nat.unpair_pair, SecondOrderProgramLength.length_encode_l,
     fold_repeat_eval_l, Nat.unpair_pair]
 
-#print axioms fold_call_m
-#print axioms fold_m
-#print axioms fold_call_rel_l
-#print axioms fold_at_length_l
-#print axioms fold_zero_l
-#print axioms fold_cons_l
-#print axioms fold_repeat_eval_l
-#print axioms fold_encode_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListFold

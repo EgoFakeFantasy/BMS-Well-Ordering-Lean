@@ -115,7 +115,4 @@ theorem exists_l (K : source_coding_l hℳ) (U I₀ : M)
       SecondOrderBisimulation.trans_l hℳ D.real Y.real G D.root (SecondOrderModel.zero_l ℳ) _
         (hZero ▸ hDY) hTag⟩
 
-#print axioms graft_spec_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryCodedCollection

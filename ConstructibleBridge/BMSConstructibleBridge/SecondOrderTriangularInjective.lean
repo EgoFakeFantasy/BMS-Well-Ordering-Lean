@@ -72,7 +72,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
   simp only [formula_m, Formula.satisfies, SecondOrderTriangularPairing.formula_l, Term.eval]
   exact fun hc hd => injective_l hℳ hc hd
 
-#print axioms injective_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderTriangularInjective

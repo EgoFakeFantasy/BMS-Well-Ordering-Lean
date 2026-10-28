@@ -167,8 +167,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
   simp only [sentence_m, Formula.TrueIn, Formula.satisfies, spec_formula_l, row_formula_l, Term.eval]
   exact fun _ hC => unique_l hℳ hC
 
-#print axioms unique_l
-#print axioms exists_unique_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderLegacyFormulaTranslationUnique

@@ -73,6 +73,4 @@ theorem exists_l {ω X G : type_l hℳ B}
   obtain ⟨i, hi, hif⟩ := hFOnto f hfS
   exact ⟨i, hi, (hRead i p).mpr ⟨hi, hp, f, hfS, hif, hfp⟩⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassPairFamilyEnumeration

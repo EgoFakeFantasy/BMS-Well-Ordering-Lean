@@ -117,8 +117,4 @@ theorem graft_l (K : source_coding_l hℳ) (S G₀ P₀ : M)
   exact (hRead c d).trans (hFormula.trans
     (PowerlessCodedCollectionReading.graft_instance_l K hS hG hP hGTrace hPTrace c d))
 
-#print axioms roots_l
-#print axioms tagged_l
-#print axioms graft_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryCodedCollectionGraphs

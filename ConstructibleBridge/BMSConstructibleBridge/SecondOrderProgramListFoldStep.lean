@@ -159,15 +159,4 @@ theorem fold_step_cons_eval_l (c : code_m) (a v : Nat) (s : List Nat) :
   rw [if_neg htest, fold_update_eval_l, tail_encode_l, head_encode_l]
   rfl
 
-#print axioms fold_input_m
-#print axioms fold_update_m
-#print axioms fold_step_m
-#print axioms fold_input_rel_l
-#print axioms fold_update_rel_l
-#print axioms fold_step_zero_l
-#print axioms fold_step_cons_l
-#print axioms fold_update_eval_l
-#print axioms fold_step_empty_eval_l
-#print axioms fold_step_cons_eval_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListFoldStep

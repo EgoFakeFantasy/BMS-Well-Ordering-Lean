@@ -175,9 +175,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
     row_formula_l, Term.eval]
   exact fun _ _ _ _ hX hY => agreement_l hℳ hX hY
 
-#print axioms local_l
-#print axioms cell_bound_l
-#print axioms agreement_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderLegacyValidityBudget

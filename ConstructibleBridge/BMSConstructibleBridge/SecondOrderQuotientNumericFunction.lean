@@ -40,6 +40,4 @@ theorem exists_l (K : source_coding_l hℳ) {E : SecondOrderModel.set_l ℳ}
   · rintro ⟨j, hj, rfl⟩
     exact (PowerlessBMSQuotientFunctions.value_iff_relation_l K E F hSpec i j).mpr hj
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderQuotientNumericFunction

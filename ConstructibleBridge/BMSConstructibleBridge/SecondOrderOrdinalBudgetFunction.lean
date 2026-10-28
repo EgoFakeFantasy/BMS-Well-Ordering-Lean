@@ -161,8 +161,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) (S : set_l ℳ) (r : num_l 
   obtain ⟨Y, F, hMap, hRead⟩ := from_spec_l hℳ hS A hQ hD hRel hG k
   exact ⟨Q, D, R, G, hQ, hD, hRel, hG, Y, F, hMap, hRead⟩
 
-#print axioms index_covers_l
-#print axioms from_spec_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalBudgetFunction

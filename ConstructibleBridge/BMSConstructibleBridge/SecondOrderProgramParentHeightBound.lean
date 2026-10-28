@@ -117,10 +117,4 @@ theorem ancestor_row_lt_l (hℳ : Theory.Models ℳ theory_m) {M E : set_l ℳ}
   by_contra hr
   exact hm (ancestor_none_l hℳ hM hE hz (show b ≤ r from le_of_not_gt hr) t i)
 
-#print axioms parent_none_l
-#print axioms maximal_bound_l
-#print axioms maximal_zero_l
-#print axioms ancestor_none_l
-#print axioms ancestor_row_lt_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentHeightBound

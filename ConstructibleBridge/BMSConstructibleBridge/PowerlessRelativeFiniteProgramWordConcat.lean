@@ -308,12 +308,4 @@ theorem derives_m {Δ : SortContext ℒ} (B ω e n w m z Q : Term ℒ [] Δ .set
       (GraphTranslation.form_m (sentence_m B ω e n w m z Q)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 B ω e n w m z Q)
 
-#print axioms finite_class_l
-#print axioms given_exists_l
-#print axioms exists_l
-#print axioms prefix_l
-#print axioms suffix_l
-#print axioms length_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramWordConcat

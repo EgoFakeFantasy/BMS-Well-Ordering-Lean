@@ -133,13 +133,4 @@ theorem sub_zero_iff_l (hℳ : Theory.Models ℳ theory_m) {R : set_l ℳ}
   · intro h
     exact Or.inr ⟨rfl, h⟩
 
-#print axioms sub_m
-#print axioms sub_eval_l
-#print axioms invariant_m
-#print axioms invariant_language_m
-#print axioms invariant_syntax_l
-#print axioms invariant_l
-#print axioms sub_rel_l
-#print axioms sub_zero_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSubtraction

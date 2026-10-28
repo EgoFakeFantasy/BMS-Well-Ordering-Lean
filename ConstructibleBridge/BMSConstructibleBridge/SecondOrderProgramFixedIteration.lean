@@ -57,10 +57,4 @@ theorem fixed_rel_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {R C : set_
   · exact function_value_unique_l (function_of_semantics_l hℳ (repeat_m c) hR) h
   · exact fun he => he ▸ h
 
-#print axioms fixed_m
-#print axioms fixed_language_m
-#print axioms fixed_syntax_l
-#print axioms fixed_l
-#print axioms fixed_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramFixedIteration

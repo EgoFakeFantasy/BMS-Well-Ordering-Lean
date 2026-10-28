@@ -67,6 +67,4 @@ theorem exists_l (K : source_coding_l hℳ) {ω A P e t₁ t₂ t₃ Pair Valid 
   exact ⟨S, I, J, U, Q, Y, L, hIndex, hRead, hRows, hGraph, hOrder, hSubset,
     PowerlessRelativeClassAmbientWellOrder.of_subset_l hOrder hSubset⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyMemberDefCanonicalAmbient

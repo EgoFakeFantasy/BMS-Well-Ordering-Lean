@@ -127,6 +127,4 @@ theorem class_formula_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
     Arguments.eval, Term.eval, Term.eval_weakenBound]
   rfl
 
-#print axioms level_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeHierarchySemantics

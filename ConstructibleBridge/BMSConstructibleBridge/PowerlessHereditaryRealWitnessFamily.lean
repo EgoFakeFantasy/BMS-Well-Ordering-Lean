@@ -130,7 +130,4 @@ theorem exists_l (K : source_coding_l hℳ)
   · intro hm
     exact ⟨V, (hReading N V).mpr hV, hm⟩
 
-#print axioms membership_formula_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryRealWitnessFamily

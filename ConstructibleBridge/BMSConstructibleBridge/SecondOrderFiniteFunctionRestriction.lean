@@ -66,7 +66,4 @@ theorem exists_l (K : source_coding_l hℳ) {B β C A H a F : type_l hℳ}
       hBase hLimit hC K hωC hAC hmω hMap
   exact ⟨g, hgC, hg⟩
 
-#print axioms trace_exists_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteFunctionRestriction

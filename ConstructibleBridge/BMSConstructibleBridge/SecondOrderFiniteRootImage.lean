@@ -46,6 +46,4 @@ theorem exists_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} signature_m}
   · rintro ⟨i, n, hi, hIn, hBn⟩
     exact ⟨n, hb i hi n hIn, (hx n).mpr ⟨i, hi, hIn⟩, hBn⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteRootImage

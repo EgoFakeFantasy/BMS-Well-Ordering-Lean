@@ -100,6 +100,4 @@ theorem agrees_l (C : source_coding_l hℳ) {Δ : SortContext ℒ}
     obtain ⟨c, hc⟩ := hTrans a _ hφ _ hDB
     exact ⟨c, (hEdge c a).mpr ⟨_, _, hc, hφ, hDB⟩, (hRead c d).mpr ⟨D.wf, hc⟩⟩
 
-#print axioms agrees_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSClassCollapse

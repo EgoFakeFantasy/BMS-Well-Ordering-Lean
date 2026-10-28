@@ -167,10 +167,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m []
     (GraphTranslation.form_m sentence_m) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ)
 
-#print axioms exists_l
-#print axioms point_formula_l
-#print axioms result_formula_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCutoffHistoryCoverage

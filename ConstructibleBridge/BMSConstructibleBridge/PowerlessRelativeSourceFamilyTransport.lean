@@ -115,8 +115,4 @@ theorem eliminate_l {Θ Δ : SortContext ℒ} (ν : Env 𝒩 [] Θ)
         ((free (τ v), .fvar .here) :: G.map (fun p => (free p.1, free p.2)))
         (fun w => free (σ w)) (fun w => (hf (σ w)).trans (hσ w)) h₀
 
-#print axioms imp_l
-#print axioms imp_read_l
-#print axioms eliminate_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeSourceFamilyTransport

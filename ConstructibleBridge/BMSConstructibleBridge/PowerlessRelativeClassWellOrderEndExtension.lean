@@ -49,8 +49,6 @@ theorem exists_l {C D R S : type_l hℳ B}
     (hL x y).trans (and_congr Iff.rfl (and_congr Iff.rfl (body_formula_l _ _ _ _ _ _)))
   exact ⟨L, SecondOrderWellOrderEndExtension.of_graph_l hR hS hRead, hRead⟩
 
-#print axioms exists_l
-
 /-- 完整成员规格固定扩张对象，避免只比较读值的伪唯一性。 -/
 theorem exists_unique_l {C D R S : type_l hℳ B}
     (hR : wellOrder_l (ℳ := 𝒱) C.val R.val) (hS : wellOrder_l (ℳ := 𝒱) D.val S.val) :
@@ -77,7 +75,5 @@ theorem exists_unique_l {C D R S : type_l hℳ B}
     (SecondOrderWellOrderEndExtensionUnique.reading_l hGraph)
   exact ⟨L, ⟨hGraph, hOrder⟩, fun T hT =>
     Subtype.ext (SecondOrderWellOrderEndExtensionUnique.unique_l hT.1 hGraph)⟩
-
-#print axioms exists_unique_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassWellOrderEndExtension

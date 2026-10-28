@@ -93,7 +93,4 @@ theorem family_l (hℳ : Theory.Models ℳ theory_m) (A B : SecondOrderGraph.cod
     rw [(hK x n).mp hx, (hK y m).mp hy]
     rfl
 
-#print axioms exists_l
-#print axioms family_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberCorrespondence

@@ -94,7 +94,4 @@ theorem iteration_l (K : source_coding_l hℳ)
     (SecondOrderFunctionProperties.value_mem_l hℳ hF hy).2
     (hx'.symm ▸ hy'.symm ▸ successor_l hG hS i)
 
-#print axioms exists_l
-#print axioms iteration_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalTailFunction

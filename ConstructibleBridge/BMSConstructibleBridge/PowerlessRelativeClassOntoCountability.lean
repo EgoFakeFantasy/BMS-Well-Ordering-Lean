@@ -128,8 +128,4 @@ theorem cutoff_derives_m : Derives SecondOrderArithmetic.theory_m []
     (GraphTranslation.form_m cutoff_sentence_m) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => cutoff_models_l hℳ)
 
-#print axioms countable_l
-#print axioms derives_m
-#print axioms cutoff_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassOntoCountability

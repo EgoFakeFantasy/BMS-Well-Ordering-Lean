@@ -216,8 +216,4 @@ theorem exists_l {ω X Y E J P : type_l hℳ B}
   obtain ⟨n, hn, hnf⟩ := hFOnto f hfS
   exact ⟨n, hn, (hRead n p).mpr ⟨hn, hp, f, hfS, hnf, hfp⟩⟩
 
-#print axioms entry_delta_l
-#print axioms decoder_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassProductEnumeration

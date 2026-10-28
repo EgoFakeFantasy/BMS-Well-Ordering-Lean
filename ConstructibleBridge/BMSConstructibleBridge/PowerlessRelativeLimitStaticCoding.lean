@@ -79,6 +79,4 @@ theorem exists_l (K : source_coding_l hℳ) (hLimit : limit_l hℳ β) (hC : lev
     hTC, hsC, hfC, hTags, hT,
     PowerlessRelativeClassConstructorTotal.functional_of_spec_l K hωEq rfl hMap hSpec, hN, hValid⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitStaticCoding

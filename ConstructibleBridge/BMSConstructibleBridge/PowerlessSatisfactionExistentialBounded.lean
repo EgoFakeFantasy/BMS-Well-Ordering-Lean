@@ -106,8 +106,4 @@ theorem derives_m :
     ((exists_iff_l hℳ hS').trans
       (PowerlessFiniteEvaluationRelationEquations.exists_formula_l η _ _ _ _ _ _).symm)
 
-#print axioms delta_l
-#print axioms exists_iff_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionExistentialBounded

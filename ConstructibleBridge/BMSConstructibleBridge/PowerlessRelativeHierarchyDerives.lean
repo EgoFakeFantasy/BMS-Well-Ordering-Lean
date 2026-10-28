@@ -116,7 +116,4 @@ theorem exists_derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTrans
 theorem unique_derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m uniqueness_sentence_m) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => uniqueness_models_l hℳ)
 
-#print axioms exists_derives_m
-#print axioms unique_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeHierarchyDerives

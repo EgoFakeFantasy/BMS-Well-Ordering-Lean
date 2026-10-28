@@ -124,9 +124,4 @@ theorem derives_m {Δ : SortContext ℒ} (B ω Q : Term ℒ [] Δ .set) :
       (GraphTranslation.form_m (sentence_m B ω Q)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 B ω Q)
 
-#print axioms exists_l
-#print axioms decode_l
-#print axioms length_unique_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramDomain

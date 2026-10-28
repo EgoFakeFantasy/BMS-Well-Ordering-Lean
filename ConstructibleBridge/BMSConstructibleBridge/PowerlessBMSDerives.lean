@@ -51,7 +51,4 @@ theorem derives_of_candidate_sources_m (H : Nat)
   SecondOrderCompleteness.derives_m
     (semantically_entails_of_candidate_sources_l H hSources)
 
-#print axioms semantically_entails_of_candidate_sources_l
-#print axioms derives_of_candidate_sources_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSDerives

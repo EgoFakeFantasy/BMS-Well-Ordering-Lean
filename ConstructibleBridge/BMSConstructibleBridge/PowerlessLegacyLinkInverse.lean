@@ -103,6 +103,4 @@ theorem inverse_l (K : source_coding_l hℳ) (A : SecondOrderGraph.code_l ℳ)
       have hy : y = b := ((hNumber z y).mp hUValue).trans ((hNumber z b).mp hZ).symm
       exact hy.symm ▸ hTailValue i hPad.1 hi
 
-#print axioms inverse_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyLinkInverse

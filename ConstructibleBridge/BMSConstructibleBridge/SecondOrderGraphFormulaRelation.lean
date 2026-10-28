@@ -91,6 +91,4 @@ theorem exists_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} signature_m}
     | here => rfl
     | there v => cases v <;> rfl
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderGraphFormulaRelation

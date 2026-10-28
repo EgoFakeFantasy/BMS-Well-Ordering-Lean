@@ -92,6 +92,4 @@ theorem exists_l (K : source_coding_l hℳ) (i : SecondOrderModel.num_l ℳ) {ω
     rw [hj']
     exact (PowerlessBMSQuotientRecursion.addition_iff_l K j i y.val).mpr hAdd'
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassAdditionOperator

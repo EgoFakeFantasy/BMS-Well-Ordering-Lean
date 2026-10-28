@@ -34,6 +34,4 @@ theorem value_l (K : source_coding_l hℳ) {i j : SecondOrderModel.num_l ℳ}
     (SecondOrderModel.add_l i j)).mpr rfl
   exact PowerlessBMSQuotientRecursion.value_unique_l (hM := hℳ) hMap hFy hExpected
 
-#print axioms value_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteAdditionEndpoint

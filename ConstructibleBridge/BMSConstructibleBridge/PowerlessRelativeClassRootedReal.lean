@@ -107,7 +107,4 @@ theorem rows_l (K : source_coding_l hℳ) (U : type_l hℳ B) (r : SecondOrderMo
     simpa only [eq_self, hNe, false_and, true_and, false_or] using
       hRead (SecondOrderModel.succ_l (SecondOrderModel.zero_l ℳ)) m
 
-#print axioms coded_l
-#print axioms rows_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassRootedReal

@@ -134,11 +134,4 @@ theorem limit_order_l (K : source_coding_l hℳ) {C f D I J F G X Y Q : type_l h
   · intro x y hx _ hyx
     exact SecondOrderWellOrderCoherentUnion.initial_l hJ hF hCoherent hi hx ((hRead y x).mp hyx)
 
-#print axioms tags_l
-#print axioms zero_order_l
-#print axioms zero_graph_l
-#print axioms successor_order_l
-#print axioms limit_graph_l
-#print axioms limit_order_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonStagePreservation

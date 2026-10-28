@@ -72,6 +72,4 @@ theorem local_l (K : source_coding_l hℳ) (p : parameters_l ℳ)
   ⟨forward_l K p hω he hJ hI R H H' hR n W hPast,
     forward_l K p hω he hJ hI R H' H hR n W (fun i hi t => (hPast i hi t).symm)⟩
 
-#print axioms local_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonNativeLocal

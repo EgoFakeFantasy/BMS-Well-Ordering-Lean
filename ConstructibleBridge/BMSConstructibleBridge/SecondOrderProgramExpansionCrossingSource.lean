@@ -141,6 +141,4 @@ theorem source_iff_l
       apply SecondOrderProgramUniformAncestorStructure.trans_l hℳ hM ?_ hroot
       simpa only [add_zero_l hℳ] using hcopy
 
-#print axioms source_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCrossingSource

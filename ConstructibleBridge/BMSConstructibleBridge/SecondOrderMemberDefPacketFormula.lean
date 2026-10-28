@@ -44,13 +44,8 @@ theorem atoms_formula_l {Γ Δ : SortContext signature_m} (η : Env ℳ Γ Δ)
       (((Env.empty (M := ℳ)).pushFree (a.eval η)).pushFree (r.eval η)).pushFree (A.eval η) := by
     apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => nomatch v
+      rcases v with _ | _ | _ | v
+      all_goals first | rfl | nomatch v
   simp only [atoms_m, Formula.satisfies, SecondOrderRelationSpecification.formula_l, hEnv,
     SecondOrderMemberDefAtoms.equality_formula_l, SecondOrderMemberDefAtoms.membership_formula_l]
 
@@ -143,7 +138,5 @@ theorem pure_m : language_m formula_m = true := by
   change (language_m _ && (language_m _ && language_m _)) = true
   rw [hArithmetic, hQ, hR]
   rfl
-
-#print axioms packet_formula_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefPacketFormula

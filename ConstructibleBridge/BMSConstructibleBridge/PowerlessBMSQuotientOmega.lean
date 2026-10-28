@@ -74,7 +74,4 @@ theorem exists_l
   obtain ⟨A, hA⟩ := SecondOrderOmega.exists_l hM
   exact ⟨A, omega_l hM hA⟩
 
-#print axioms omega_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientOmega

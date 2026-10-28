@@ -42,6 +42,4 @@ theorem read_l {ω A S e R p c f n x : type_l hℳ}
     exact ⟨c, f, n, g, hc, (hS f).mpr ⟨n, hn, hf⟩, hn, (hS g).mpr ⟨n, hn, hg⟩,
       hp, hf, hg, he, (PowerlessAssignmentUpdateBounded.update_iff_l hℳ hf hg he hx).mpr hUpdate, hValue⟩
 
-#print axioms read_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderSatisfactionRows

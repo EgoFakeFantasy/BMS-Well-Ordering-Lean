@@ -82,6 +82,4 @@ theorem exists_l (K : source_coding_l hℳ) (hLimit : limit_l hℳ β) (hW : lev
   exact ⟨Q, hQW, (PowerlessSatisfactionNormalizedMatrix.spec_iff_of_coverage_l
     hωRaw heEmpty hNω hTω hCoverage).mpr ⟨s, hsW, hSeq, hQSat, hClean⟩⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCofinalNormalizedSatisfaction

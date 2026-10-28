@@ -56,7 +56,4 @@ theorem exists_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.sign
   have hLift := PowerlessRelativeLevelClosure.subset_l hℳ hBase haγ hc hD
   exact ⟨γ, D, hγβ, hD, hγLimit, hLift X hXc, fun s v => hLift _ (hParamsC s v)⟩
 
-#print axioms cofinal_formula_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCofinalLimitBounds

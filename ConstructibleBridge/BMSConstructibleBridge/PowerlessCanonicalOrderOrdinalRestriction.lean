@@ -92,6 +92,4 @@ theorem exists_l (K : source_coding_l hℳ)
       · rintro ⟨b, Q, hb, hQ, hp⟩
         exact ⟨b, Q, hb, ((hGRead b Q).mp hQ).2, hp⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderOrdinalRestriction

@@ -277,12 +277,4 @@ theorem history_exists_l {I J F G X Y : type_l hℳ}
   obtain ⟨L, hGraph, hL⟩ := graph_exists_l hJ hF hG hCoherent hStages hC
   exact ⟨C, L, hC, hGraph, hL⟩
 
-#print axioms restrict_l
-#print axioms initial_l
-#print axioms of_graph_l
-#print axioms exists_l
-#print axioms graph_unique_l
-#print axioms carrier_unique_l
-#print axioms history_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderWellOrderCoherentUnion

@@ -121,7 +121,4 @@ noncomputable def code_l (hℳ : Theory.Models ℳ theory_m) {S G : set_l ℳ} {
     (hG : spec_l S r G) (hS : ∀ a, SecondOrderDomain.wf_l S a) (n : num_l ℳ) :
     SecondOrderGraph.code_l ℳ := ⟨G, value_l (succ_l (zero_l ℳ)) n, wf_l hℳ hG hS _⟩
 
-#print axioms exists_l
-#print axioms wf_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalTailGraph

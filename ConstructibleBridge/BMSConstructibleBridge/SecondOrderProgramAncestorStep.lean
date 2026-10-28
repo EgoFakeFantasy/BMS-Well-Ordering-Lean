@@ -155,21 +155,4 @@ theorem advance_rel_l (hℳ : Theory.Models ℳ theory_m) {A : set_l ℳ}
   · exact fun hy => ⟨x, value_l p (succ_l (value_l p v)), rfl,
       ⟨p, succ_l (value_l p v), rfl, rfl, rfl⟩, hy⟩
 
-#print axioms query_input_m
-#print axioms query_m
-#print axioms next_parent_m
-#print axioms next_list_m
-#print axioms advance_m
-#print axioms gate_m
-#print axioms step_m
-#print axioms query_eval_l
-#print axioms gate_eval_l
-#print axioms step_some_eval_l
-#print axioms step_none_eval_l
-#print axioms query_input_rel_l
-#print axioms query_rel_l
-#print axioms next_parent_rel_l
-#print axioms next_list_rel_l
-#print axioms advance_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorStep

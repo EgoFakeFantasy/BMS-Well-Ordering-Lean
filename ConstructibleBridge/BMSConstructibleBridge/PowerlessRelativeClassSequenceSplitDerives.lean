@@ -159,7 +159,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m []
   PowerlessRelativeClassRelativization.derives_m sentence_m
     (fun _ hℳ B hBase => models_l hℳ B hBase)
 
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceSplitDerives

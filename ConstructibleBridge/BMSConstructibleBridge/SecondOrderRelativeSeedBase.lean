@@ -35,6 +35,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) (X Y : SecondOrderGraph.cod
   · intro U V hU hV
     exact (hMembers V).mpr (hTrans U V ((hMembers U).mp hU) hV)
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeSeedBase

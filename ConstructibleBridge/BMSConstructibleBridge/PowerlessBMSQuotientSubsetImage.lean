@@ -129,7 +129,4 @@ theorem exists_l (C : source_coding_l hℳ) {Δ : SortContext ℒ}
   · rintro ⟨n, hn⟩
     exact ⟨n, (SecondOrderQuotient.eq_iff_l hℳ Y _).mp (hSlice n _ hn).symm⟩
 
-#print axioms relation_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientSubsetImage

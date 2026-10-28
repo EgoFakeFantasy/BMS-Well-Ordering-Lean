@@ -88,9 +88,4 @@ theorem guard_l (K : source_coding_l hℳ)
   obtain ⟨_, _, _, _, hW⟩ := h
   exact SecondOrderComparisonStageTotal.guard_l K hW
 
-#print axioms output_formula_l
-#print axioms decoded_congr_l
-#print axioms exists_unique_l
-#print axioms guard_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonHistoryStage

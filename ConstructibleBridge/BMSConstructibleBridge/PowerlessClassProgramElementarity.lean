@@ -229,8 +229,4 @@ theorem derives_m {Γ Δ : SortContext ℒ} (Φ : PowerlessClassFiniteElementari
   SecondOrderAxioms.interpretation_m _
     (fun _ h𝒩 => models_l h𝒩 Φ ν ω e B P₀ C Q t₀ t₁ t₂ a S P s t)
 
-#print axioms image_formula_l
-#print axioms elementarity_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassProgramElementarity

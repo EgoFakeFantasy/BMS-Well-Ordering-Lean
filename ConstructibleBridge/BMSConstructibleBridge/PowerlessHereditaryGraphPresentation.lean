@@ -162,8 +162,4 @@ theorem real_presentation_l (K : source_coding_l hℳ) {X : SecondOrderQuotient.
   exact ⟨U, hU, R, r, hWf, hTrace,
     ((SecondOrderQuotient.eq_iff_l hℳ _ _).mpr hEq).trans hRoot⟩
 
-#print axioms class_graph_l
-#print axioms presentation_l
-#print axioms real_presentation_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryGraphPresentation

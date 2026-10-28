@@ -77,7 +77,4 @@ theorem exists_l (K : source_coding_l hℳ) {ω A : type_l hℳ B}
   exact (PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase)
     F' (number_l hBase K ω hωEq i) y).trans (hRead i y.val)
 
-#print axioms exists_ambient_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteAssignmentLift

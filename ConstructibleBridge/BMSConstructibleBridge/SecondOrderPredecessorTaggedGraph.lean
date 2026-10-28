@@ -97,7 +97,4 @@ theorem wf_l (hℳ : Theory.Models ℳ theory_m) {R H G W : set_l ℳ} {n i a : 
     (hw : SecondOrderDomain.wf_l W a) : SecondOrderDomain.wf_l G (value_l i a) :=
   SecondOrderTaggedDomain.wf_l hℳ i W G (fiber_l hℳ hG hi hW) a hw
 
-#print axioms local_l
-#print axioms wf_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPredecessorTaggedGraph

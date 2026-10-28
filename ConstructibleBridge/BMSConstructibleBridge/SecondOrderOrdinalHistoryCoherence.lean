@@ -59,6 +59,4 @@ theorem rows_l (hℳ : Theory.Models ℳ theory_m) (A A' : SecondOrderGraph.code
     n m ((hI n m).mpr ⟨hn, hm, hnm⟩) W W'
     (hS.wellFounded n W hWn) (hT.wellFounded m W' hW'm) hWn hW'm
 
-#print axioms rows_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalHistoryCoherence

@@ -107,7 +107,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) (B : set_l ℳ)
   obtain ⟨C, f, _, hMap, hf⟩ := SecondOrderRelativeLevelMap.exists_l hℳ B hB hBase A hA
   exact ⟨f, mk_l hℳ C, history_l hℳ hA hMap hf⟩
 
-#print axioms step_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeHierarchyRealization

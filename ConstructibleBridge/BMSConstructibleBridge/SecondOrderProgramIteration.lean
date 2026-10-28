@@ -113,14 +113,4 @@ theorem repeat_shift_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {R C : s
   · intro hty
     exact (function_value_unique_l hRf htv hty) ▸ hxv
 
-#print axioms repeat_step_m
-#print axioms repeat_m
-#print axioms repeat_step_eval_l
-#print axioms repeat_eval_l
-#print axioms repeat_step_rel_l
-#print axioms repeat_zero_l
-#print axioms repeat_succ_l
-#print axioms repeat_common_l
-#print axioms repeat_shift_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramIteration

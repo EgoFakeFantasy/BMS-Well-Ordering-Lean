@@ -58,6 +58,4 @@ theorem induct_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.sign
   intro n
   exact row_formula_l (η.pushFree (numberCode_l K n).val) _ _ _ _ _ _
 
-#print axioms induct_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionUniqueRow

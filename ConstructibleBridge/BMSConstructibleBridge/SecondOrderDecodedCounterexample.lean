@@ -63,6 +63,4 @@ theorem arrays_l (hℳ : Theory.Models ℳ theory_m) {D E K : set_l ℳ}
     obtain ⟨hvw, hne⟩ := (check_one_l hℳ hC hD hE b a k v u w hdv hdu hew).mp hk
     exact ⟨k, hvw ▸ hew, hne⟩
 
-#print axioms arrays_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderDecodedCounterexample

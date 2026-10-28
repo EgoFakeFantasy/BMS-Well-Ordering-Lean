@@ -92,7 +92,4 @@ theorem level_unique_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m)
   obtain ⟨A', g, r', hA', ha', hg, hz⟩ := hz
   exact agree_l hℳ hA hA' hf hg a ⟨ha, ha'⟩ y z ⟨hy, hz⟩
 
-#print axioms agree_l
-#print axioms level_unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeHierarchyAgreement

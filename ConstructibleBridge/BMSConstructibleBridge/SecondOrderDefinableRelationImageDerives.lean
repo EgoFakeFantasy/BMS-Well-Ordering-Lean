@@ -105,7 +105,4 @@ theorem product_derives_m :
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m product_m) :=
   derives_m _
 
-#print axioms derives_m
-#print axioms product_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderDefinableRelationImageDerives

@@ -105,9 +105,4 @@ theorem exists_canonical_l : ∃ V : SecondOrderModel.set_l ℳ,
   obtain ⟨N, F, hN, hF⟩ := exists_for_coding_l K hω hωEq hV
   exact ⟨V, hV, N, F, hN, hF⟩
 
-#print axioms certificate_iff_l
-#print axioms exists_l
-#print axioms exists_for_coding_l
-#print axioms exists_canonical_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassLegacyValidity

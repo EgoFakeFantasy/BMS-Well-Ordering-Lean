@@ -74,6 +74,4 @@ theorem image_l (K : PowerlessBMSQuotientCoding.source_coding_l hℳ)
       exact (hU v _).mp hv
     exact (hZ Y).mpr ⟨m, hm, hFm, hYm⟩
 
-#print axioms image_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefRowImage

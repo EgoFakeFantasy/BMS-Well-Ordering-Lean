@@ -168,11 +168,4 @@ theorem output_formula_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
       PowerlessRelativeFiniteProgramBoundOutput.output_l, hRun]
   exact h₀.trans hOut
 
-#print axioms prefix_delta_l
-#print axioms run_delta_l
-#print axioms output_delta_l
-#print axioms output_member_l
-#print axioms run_formula_l
-#print axioms output_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramBoundOutputBounded

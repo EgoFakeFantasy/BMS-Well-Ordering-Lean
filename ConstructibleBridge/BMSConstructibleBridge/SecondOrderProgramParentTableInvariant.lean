@@ -95,12 +95,4 @@ theorem chain_budget_l (hℳ : Theory.Models ℳ theory_m) {A E : set_l ℳ}
     SecondOrderProgramParentTable.parent_m hA hP (value_l x (value_l r v)) b n y
     (fun _ _ hp => parent_lt_l hℳ hP hE hv hp)
 
-#print axioms decreasing_l
-#print axioms decreasing_m
-#print axioms decreasing_syntax_l
-#print axioms next_lt_l
-#print axioms parent_lt_l
-#print axioms chain_below_l
-#print axioms chain_budget_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentTableInvariant

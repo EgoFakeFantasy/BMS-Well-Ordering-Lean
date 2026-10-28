@@ -83,10 +83,4 @@ theorem member_lt_l (hℳ : Theory.Models ℳ theory_m) {M : set_l ℳ}
   obtain ⟨j, hj, hji⟩ := (member_nonzero_l hℳ parent_m hM hA hL hE hv hn i).mp hi
   exact chain_below_l hℳ hA hL hE hv hn j hj i hji
 
-#print axioms parent_lt_l
-#print axioms chain_budget_l
-#print axioms chain_ge_l
-#print axioms chain_below_l
-#print axioms member_lt_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentOrder

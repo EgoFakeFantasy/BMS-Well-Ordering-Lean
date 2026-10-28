@@ -133,7 +133,4 @@ theorem source_of_later_first_l (hℳ : Theory.Models ℳ theory_m)
   have hearlier : earlier < k := lt_of_lt_of_le hcopies (show later ≤ k from hlater)
   exact (hboundary earlier i hearlier hi).mpr htoNext
 
-#print axioms first_between_l
-#print axioms source_of_later_first_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryTruncation

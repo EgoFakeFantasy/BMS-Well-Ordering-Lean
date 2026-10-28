@@ -101,11 +101,4 @@ theorem test_nonzero_l (hℳ : Theory.Models ℳ theory_m) (r : Nat) (c : code_m
     compare_next_nonzero_l hℳ r hD hJ]
   rfl
 
-#print axioms constant_value_l
-#print axioms compare_input_rel_l
-#print axioms compare_next_rel_l
-#print axioms compare_next_nonzero_l
-#print axioms eligible_l
-#print axioms test_nonzero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentFilter

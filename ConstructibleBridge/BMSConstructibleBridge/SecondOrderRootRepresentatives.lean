@@ -79,7 +79,4 @@ theorem injective_l (hℳ : Theory.Models ℳ theory_m) {A Q D : set_l ℳ} {r m
   · exact h
   · exact False.elim (hm'.2 n h hn'.1 ((hQ n m).mpr (SecondOrderBisimulation.symm_l hℳ A A m n hEq)))
 
-#print axioms covers_l
-#print axioms injective_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRootRepresentatives

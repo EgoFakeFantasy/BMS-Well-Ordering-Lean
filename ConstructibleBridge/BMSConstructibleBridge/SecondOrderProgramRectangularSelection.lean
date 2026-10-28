@@ -69,8 +69,4 @@ theorem slice_rectangular_l (hℳ : Theory.Models ℳ theory_m) {T L E D : set_l
   exact (rectangular_iff_all_l hS).mpr ⟨slice_length_l hℳ hT hL hD hn hd hy,
     slice_all_l hℳ hT hL hE hD hn hd hy hxs⟩
 
-#print axioms append_rectangular_l
-#print axioms take_rectangular_l
-#print axioms slice_rectangular_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRectangularSelection

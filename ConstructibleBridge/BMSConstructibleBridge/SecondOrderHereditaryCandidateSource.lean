@@ -46,6 +46,4 @@ theorem exists_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.sign
   exact PowerlessHereditaryArithmeticCandidate.candidate_l (hBase := hBase)
     K hSource (ω := O) (e := e) rfl rfl X A₀ hTrace
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderHereditaryCandidateSource

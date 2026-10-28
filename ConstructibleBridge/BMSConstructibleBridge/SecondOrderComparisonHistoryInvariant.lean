@@ -113,7 +113,4 @@ theorem exists_l (K : source_coding_l hℳ) (p : parameters_l ℳ)
     have hb := (SecondOrderFunctionLaws.value_mem_l hℳ hConfig.indexMap hjb).2
     exact (hInvariant b hb j Y Q ⟨hj, hjb⟩).2 i X P ⟨hi, a, hia, hab⟩
 
-#print axioms realize_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonHistoryInvariant

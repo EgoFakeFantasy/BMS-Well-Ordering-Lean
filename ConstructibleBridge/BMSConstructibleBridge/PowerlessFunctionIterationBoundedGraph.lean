@@ -101,6 +101,4 @@ theorem member_l (K : source_coding_l hℳ) {B β C D E A H a F : type_l hℳ}
       obtain ⟨q, hq, hPair'⟩ := SecondOrderFiniteFunctionAgreement.value_l K hH hF hn hg hValue
       exact (SecondOrderPairObjects.ordered_unique_l hℳ hPair' hPair) ▸ hq
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFunctionIterationBoundedGraph

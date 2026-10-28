@@ -71,6 +71,4 @@ theorem member_congr_l (hℳ : Theory.Models ℳ theory_m)
       hright hrow hi hq
   exact h₁.symm.trans h₂
 
-#print axioms member_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopies

@@ -81,6 +81,4 @@ theorem member_l (hℳ : Theory.Models ℳ theory_m)
     hℳ hX hW hP hI hB hL hE hD hJ hM hx hmax hlast hparent hd hb hy
       hcopy hrowHeight hzero hi).mp hbad
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyRootAncestor

@@ -112,9 +112,4 @@ theorem edge_derives_m {Δ : SortContext ℒ} (ω I A z r p n k a b f : Term ℒ
       (GraphTranslation.form_m (edge_sentence_m ω I A z r p n k a b f)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => edge_models_l hℳ ω I A z r p n k a b f)
 
-#print axioms edge_l
-#print axioms extension_iff_l
-#print axioms derives_m
-#print axioms edge_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessKleeneBrouwerPathBranch

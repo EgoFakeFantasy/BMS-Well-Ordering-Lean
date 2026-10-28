@@ -80,7 +80,4 @@ theorem of_spec_l (K : source_coding_l hℳ) {ω A P e t₁ t₂ t₃ Pair Valid
     intro z hz
     exact hSubset z (hH.symm ▸ hz)
 
-#print axioms empty_l
-#print axioms of_spec_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalMemberDefStep

@@ -63,6 +63,4 @@ theorem original_l (K : source_coding_l hℳ)
     hPairMap hPair hV hValid hE hRaw
   exact ⟨E₀, hSame.symm, PowerlessRelativeClassCanonicalStepReading.uniform_l hE₀.1⟩
 
-#print axioms original_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalStepOriginal

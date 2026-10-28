@@ -250,10 +250,4 @@ theorem reloc_ge_rows_l (hℳ : Theory.Models ℳ theory_m)
   · intro f hf t ht q
     exact reloc_ge_succ_l hℳ hR hC hO hL hE hJ hP hM hb hk hblk hy f hf t ht q
 
-#print axioms parent_descends_l
-#print axioms ancestor_sync_l
-#print axioms hagree_l
-#print axioms reloc_ge_succ_l
-#print axioms reloc_ge_rows_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopiesBlockParentAncestor

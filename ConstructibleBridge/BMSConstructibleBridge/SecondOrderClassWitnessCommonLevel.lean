@@ -107,7 +107,4 @@ theorem exists_l (K : source_coding_l hℳ) {t₁ t₂ t₃ Pair Valid P₀ S : 
   obtain ⟨D, hD, y, hyD, hφ⟩ := ha.1
   exact ⟨y, PowerlessRelativeLevelClosure.subset_l hℳ hBase (hBound a haC) hD hL y hyD, hφ⟩
 
-#print axioms rank_request_formula_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderClassWitnessCommonLevel

@@ -131,8 +131,4 @@ theorem exists_l
     hωW heW hNW hFW hAW hSeqW hIdxW
   exact ⟨Idx, I, hIdxW, hIW, hIdx, hI⟩
 
-#print axioms product_exists_l
-#print axioms exists_for_index_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitLegacyImageIndices

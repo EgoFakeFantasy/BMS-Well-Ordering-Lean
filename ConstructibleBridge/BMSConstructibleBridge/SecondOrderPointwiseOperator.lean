@@ -68,13 +68,8 @@ theorem body_formula_l {Δ : SortContext signature_m}
   apply congrArg (fun ξ => φ.satisfies ξ)
   apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
-    cases v with
-    | here => rfl
-    | there v => cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases s <;> rfl
+    rcases v with _ | _ | _ | v
+    all_goals first | rfl | cases s <;> rfl
 
 private def parameters_m {Δ : SortContext signature_m} :
     VariableSubstitution signature_m (.set :: Δ) [.set, .set] Δ
@@ -143,8 +138,5 @@ theorem local_l {Δ : SortContext signature_m}
   intro H K U V hU hV n hPast t
   rw [(formula_l φ η H U).mp hU, (formula_l φ η K V).mp hV]
   exact exists_congr (fun W => and_congr (h H K n hPast W) Iff.rfl)
-
-#print axioms total_l
-#print axioms rows_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPointwiseOperator

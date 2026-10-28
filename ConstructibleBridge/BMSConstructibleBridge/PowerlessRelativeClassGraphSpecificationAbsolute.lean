@@ -108,8 +108,4 @@ theorem def_l (ω e N Q U G D : M) :
   simpa only [φ, PowerlessMemberDefImageBounded.formula_l, Term.eval,
     Env.pushFree_here, Env.pushFree_there, PowerlessRelativeClassRelativization.env_l, η] using h
 
-#print axioms graph_l
-#print axioms satisfaction_l
-#print axioms def_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassGraphSpecificationAbsolute

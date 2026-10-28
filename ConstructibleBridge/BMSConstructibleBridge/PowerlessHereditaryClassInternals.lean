@@ -130,11 +130,8 @@ theorem models_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) :
     · intro _ v; nomatch v
     · intro s v
       cases s
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => nomatch v
+      rcases v with _ | _ | v
+      all_goals first | rfl | nomatch v
   exact (PowerlessHereditaryClass.formula_l K η (.fvar .here) (.fvar (.there .here))).trans <|
     (correspondence_l (hBase := hBase) X).trans <|
       (envelope_formula_l η' (.fvar .here)).symm.trans <|
@@ -143,8 +140,5 @@ theorem models_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) :
 
 theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m sentence_m) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ)
-
-#print axioms correspondence_l
-#print axioms derives_m
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryClassInternals

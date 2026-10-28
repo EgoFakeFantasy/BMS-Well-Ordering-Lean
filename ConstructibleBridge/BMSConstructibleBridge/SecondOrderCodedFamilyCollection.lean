@@ -99,8 +99,4 @@ theorem row_mem_l (hℳ : Theory.Models ℳ theory_m) {H I : set_l ℳ}
   (hC _).mpr ⟨i, ⟨Y, zero_l ℳ, hWf⟩, hi, hY, rfl,
     SecondOrderGraph.refl_l hℳ _⟩
 
-#print axioms exists_l
-#print axioms unique_l
-#print axioms row_mem_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCodedFamilyCollection

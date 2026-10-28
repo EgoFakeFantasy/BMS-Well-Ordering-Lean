@@ -64,6 +64,4 @@ theorem exists_l (K : source_coding_l hℳ) {A : type_l hℳ B}
     rw [(hNumber n x).mp hnx, (hNumber m y).mp hmy]
     exact h.membership n m
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyMemberEnumeration

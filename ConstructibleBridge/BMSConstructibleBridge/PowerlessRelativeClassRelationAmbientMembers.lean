@@ -68,8 +68,6 @@ theorem exists_l {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set :: Δ
       (PowerlessRelativeClassFunctionAbsolute.ordered_l (hBase := hBase) X' Y' P).mpr hxy,
       (formula_absolute_l hφ η X' Y').mpr hBody⟩
 
-#print axioms exists_l
-
 /-- 精确成员图同时提供逐值接口；两者不能互相混淆。 -/
 theorem exists_spec_l {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set :: Δ)}
     (hφ : Formula.IsDelta0 membershipLevyBound φ) (η : Env (structure_l hℳ B hBase) [] Δ)
@@ -96,7 +94,5 @@ theorem exists_spec_l {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set 
   refine ⟨G, hG, fun x y => ?_⟩
   exact (PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) G x y).trans
     ((hRaw x y).trans (and_congr Iff.rfl (and_congr Iff.rfl (formula_absolute_l hφ η x y).symm)))
-
-#print axioms exists_spec_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassRelationAmbientMembers

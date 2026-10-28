@@ -164,10 +164,4 @@ theorem derives_m {Δ Ε : SortContext ℒ} (Φ : PowerlessRelativeFiniteElement
       (GraphTranslation.form_m (sentence_m Φ I W T H B ω τ)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ Φ hΦ I W T H B ω τ)
 
-#print axioms result_formula_l
-#print axioms stage_formula_l
-#print axioms target_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCodedHistoryCollapseDerives

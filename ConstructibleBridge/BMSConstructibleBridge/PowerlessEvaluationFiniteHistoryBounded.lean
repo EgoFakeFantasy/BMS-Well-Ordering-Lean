@@ -98,7 +98,4 @@ theorem trace_iff_l (K : source_coding_l hℳ) {B β C e N T A S t₁ t₂ t₃ 
     exact ⟨H, hJC, (PowerlessHistoryBounded.history_iff_l hℳ hF).mpr hHistory,
       (PowerlessEvaluationStepBounded.step_iff_l (hℳ := hℳ) hω he hN hT hS).mpr hStep⟩
 
-#print axioms delta_l
-#print axioms trace_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessEvaluationFiniteHistoryBounded

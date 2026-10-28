@@ -95,8 +95,4 @@ theorem formula_l {Γ Δ : SortContext ℒ} (η : Env 𝒩₀ Γ Δ)
   rw [hEval]
   exact ordinal_l (a.eval η)
 
-#print axioms source_l
-#print axioms ordinal_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassOrdinalAbsolute

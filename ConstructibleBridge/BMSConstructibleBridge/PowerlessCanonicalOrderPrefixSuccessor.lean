@@ -64,6 +64,4 @@ theorem member_l {B ξ C α β f g q E : type_l hℳ}
   exact PowerlessHierarchyLightHistoryRestriction.successor_member_l hℳ hBase
     hLimit hC hUC hβC hgC hβ hSucc hfU hgU hRead
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderPrefixSuccessor

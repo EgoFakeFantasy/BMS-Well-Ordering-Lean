@@ -284,14 +284,4 @@ theorem parent_none_congr_l (hℳ : Theory.Models ℳ theory_m)
         rw [← he'] at hc₂
         exact absurd ((hagree e hej).mp hc₂) (hall e hej)
 
-#print axioms lt_add_left_l
-#print axioms lt_of_add_lt_add_left_l
-#print axioms parent_below_or_offset_l
-#print axioms parent_local_to_offset_l
-#print axioms parent_offset_to_local_l
-#print axioms parent_some_offset_congr_l
-#print axioms parent_local_to_flat_l
-#print axioms parent_flat_to_local_l
-#print axioms parent_none_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentRelocation

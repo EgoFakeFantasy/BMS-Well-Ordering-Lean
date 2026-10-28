@@ -153,8 +153,4 @@ theorem foundation_derives_m : Derives SecondOrderArithmetic.theory_m []
     (GraphTranslation.form_m (guarded_m SecondOrderFoundation.formula_m)) :=
   derives_m _ (fun _ h𝒩 B hBase => PowerlessRelativeClassStructure.foundation_l h𝒩 B hBase)
 
-#print axioms formula_l
-#print axioms pairing_derives_m
-#print axioms foundation_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassRelativization

@@ -126,10 +126,4 @@ theorem parent_entries_lt_l (hℳ : Theory.Models ℳ theory_m) {P J : set_l ℳ
   · obtain ⟨M, _, hM⟩ := graph_total_l hℳ (member_m parent_m)
     exact (parent_succ_eligible_l hℳ hP hM hJ hp).2
 
-#print axioms eligible_l
-#print axioms parent_succ_some_l
-#print axioms parent_succ_none_l
-#print axioms parent_succ_eligible_l
-#print axioms parent_entries_lt_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentSpecification

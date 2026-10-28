@@ -88,6 +88,4 @@ theorem exists_l (K : source_coding_l hℳ) (S P : set_l ℳ)
       obtain ⟨m, _hm, rfl, rfl⟩ := (hValue j x).mp hX
       exact ⟨m, (hA m n).mpr hEdge, rfl⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderSelectedCollapseFunction

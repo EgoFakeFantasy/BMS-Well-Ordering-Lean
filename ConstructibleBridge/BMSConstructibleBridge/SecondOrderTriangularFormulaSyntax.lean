@@ -128,7 +128,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
     ((SecondOrderRecursiveRelation.operator_l formula_m Env.empty W W).mp hW n l).trans (h W n l))
   exact hWV ▸ Iff.rfl
 
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderTriangularFormulaSyntax

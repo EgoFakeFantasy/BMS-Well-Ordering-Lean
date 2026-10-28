@@ -45,6 +45,4 @@ theorem exists_l {Δ : SortContext ℒ} (η : Env (structure_l hℳ B hBase) [] 
       | here => exact hyD
       | there v => exact hLift (η.freeVal (.there v)).val (hParams _ v)
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassParameterBounds

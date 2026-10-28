@@ -84,8 +84,4 @@ theorem exists_l (hInjective : injective_l (𝒩 := 𝒩) ω e T) (hDistinct : d
   simp only [PowerlessFiniteEvaluationClause.holds_l, fiber_l hInjective hn,
     h₁, h₂, h₃, true_and, false_and, false_or]
 
-#print axioms tags_distinct_l
-#print axioms member_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteEvaluationBranches

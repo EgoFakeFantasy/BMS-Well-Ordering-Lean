@@ -132,14 +132,4 @@ theorem greatest_succ_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {R C : 
   rw [prec_graph_succ_l hℳ (graph_m .zero) (graph_m (search_step_m c)) Z S hZ hS R hR hZf hSf]
   simp only [search_step_rel_l hℳ c hS hC]
 
-#print axioms query_m
-#print axioms search_step_m
-#print axioms greatest_m
-#print axioms search_step_eval_l
-#print axioms greatest_eval_l
-#print axioms query_rel_l
-#print axioms search_step_rel_l
-#print axioms greatest_zero_l
-#print axioms greatest_succ_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramGreatest

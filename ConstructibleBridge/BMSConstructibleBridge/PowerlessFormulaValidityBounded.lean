@@ -111,7 +111,4 @@ theorem query_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : 
     member_m, member_l, Arguments.eval, up, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms query_delta_l
-#print axioms query_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFormulaValidityBounded

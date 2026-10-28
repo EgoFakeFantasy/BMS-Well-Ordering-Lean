@@ -114,9 +114,4 @@ theorem level_l (K : source_coding_l hℳ)
   subst Pair'
   exact level_valid_l (valid_values_l K h h')
 
-#print axioms pair_unique_l
-#print axioms valid_values_l
-#print axioms level_valid_l
-#print axioms level_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalCodingAgreement

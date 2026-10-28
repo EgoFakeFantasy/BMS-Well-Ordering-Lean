@@ -87,7 +87,4 @@ theorem constructor_l (K : source_coding_l hℳ) {ω e T t a b c : type_l hℳ B
   rw [hω, he, ht, ha, hb, hc] at hRaw
   exact (PowerlessBMSQuotientTriangularSyntax.constructor_l K hT hSpec k i j n).mp hRaw
 
-#print axioms tags_l
-#print axioms constructor_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSyntaxReading

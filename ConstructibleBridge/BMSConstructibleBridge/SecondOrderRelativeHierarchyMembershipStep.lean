@@ -71,6 +71,4 @@ theorem step_l (hℳ : Theory.Models ℳ theory_m) {B R S : set_l ℳ} {n : num_
     exact (SecondOrderPredecessorUnionSemantics.mem_l hℳ hUnion hRows ⟨U, zero_l ℳ, hU⟩).mpr
       ⟨k, ⟨Y, zero_l ℳ, hYw⟩, hk, hY, rfl, hPast k hk i hik U Y hU hYw hUi hY⟩
 
-#print axioms step_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyMembershipStep

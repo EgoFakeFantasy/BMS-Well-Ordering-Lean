@@ -167,8 +167,4 @@ theorem exists_l (K : source_coding_l hℳ)
     exact ⟨T, f, K.omega, h.1⟩
   exact ⟨V, X, hVHC, hXHC, hφ, hRequest, hRow⟩
 
-#print axioms formula_l
-#print axioms sequences_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryRootedWitnessFamily

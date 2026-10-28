@@ -55,6 +55,4 @@ theorem copy_rectangular_l (hℳ : Theory.Models ℳ theory_m) {C L E : set_l �
   have hc := (copy_column_l hℳ hC hK hP hL hE hy hq hx.1 hj hs').mp hs
   exact column_length_l hℳ hK hL hc (hx.2 j hj s' hs')
 
-#print axioms copy_rectangular_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyRectangular

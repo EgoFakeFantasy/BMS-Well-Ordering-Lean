@@ -130,7 +130,4 @@ theorem row_formula_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
   simpa only [w, up, ξ, Term.eval_weakenBound, Term.eval, Env.pushBound_bound_here,
     Env.pushBound_bound_there] using h
 
-#print axioms body_formula_l
-#print axioms row_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyEvaluationRawRow

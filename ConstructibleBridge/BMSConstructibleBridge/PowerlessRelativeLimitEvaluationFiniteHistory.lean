@@ -129,7 +129,4 @@ theorem exists_l (K : source_coding_l hℳ)
     apply (template_formula_l η ω e T A S t₁ t₂ t₃ C _).mpr
     exact ⟨G, hGC, PowerlessEvaluationFiniteHistory.extension_l hF hG hm hRead hY⟩
 
-#print axioms induction_derives_m
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitEvaluationFiniteHistory

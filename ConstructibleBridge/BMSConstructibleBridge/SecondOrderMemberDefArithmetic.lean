@@ -165,6 +165,4 @@ theorem packet_formula_l {Γ Δ : SortContext signature_m} (η : Env ℳ Γ Δ)
     evaluation_formula_l, family_formula_l, up, Arguments.eval, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms packet_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefArithmetic

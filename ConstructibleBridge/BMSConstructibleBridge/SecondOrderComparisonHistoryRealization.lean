@@ -56,6 +56,4 @@ theorem exists_l (K : source_coding_l hℳ) (p : parameters_l ℳ)
   have hU : setRel_l K U W := (SecondOrderRealTraceSyntax.reading_l K B U.property W).mp hB
   exact ⟨U, hU, (SecondOrderComparisonHistoryStage.decoded_congr_l K hG' hG).mp hOutput⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonHistoryRealization

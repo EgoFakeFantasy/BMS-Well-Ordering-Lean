@@ -48,7 +48,4 @@ theorem transitive_of_l (hℳ : Theory.Models ℳ SecondOrderWeakSetTheory.theor
       fun z hz => hdc z (had z hz)⟩
   exact fun z hz => ((hmem z).mp (hc.2.2 d hxd hClosed z hz)).2
 
-#print axioms unique_l
-#print axioms transitive_of_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteClosureProperties

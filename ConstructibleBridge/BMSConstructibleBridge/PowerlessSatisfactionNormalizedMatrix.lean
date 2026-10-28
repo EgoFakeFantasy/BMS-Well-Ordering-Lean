@@ -129,10 +129,4 @@ theorem unique_of_coverage_l (K : source_coding_l hℳ)
   subst S'
   exact PowerlessSatisfactionGraphClean.unique_l K hT hPair hV hF hSat hSat' hClean hClean'
 
-#print axioms delta_l
-#print axioms formula_l
-#print axioms spec_iff_l
-#print axioms spec_iff_of_coverage_l
-#print axioms unique_of_coverage_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionNormalizedMatrix

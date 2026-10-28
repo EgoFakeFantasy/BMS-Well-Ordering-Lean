@@ -119,11 +119,4 @@ theorem repeat_congr_l (hℳ : Theory.Models ℳ theory_m) (c d : code_m) {C D R
     have hi := (SecondOrderPairingBounds.injective_l hℳ z (value_l a b) z (value_l t w) he).2
     exact (congrArg (value_l x) hi) ▸ hr
 
-#print axioms coupled_l
-#print axioms coupled_m
-#print axioms coupled_language_m
-#print axioms coupled_syntax_l
-#print axioms common_state_l
-#print axioms repeat_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorIterationCongruence

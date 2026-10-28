@@ -80,7 +80,4 @@ theorem collection_l (K : source_coding_l hℳ)
   obtain ⟨y, hyC, hy⟩ := hC x hx
   exact ⟨y, hyC, (hRead x y).mp hy⟩
 
-#print axioms separation_l
-#print axioms collection_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryProjectSchemas

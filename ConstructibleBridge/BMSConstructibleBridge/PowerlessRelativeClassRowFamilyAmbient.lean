@@ -79,8 +79,4 @@ theorem exists_l (I A Q : type_l hℳ B) :
     let Z' : type_l hℳ B := ⟨Z, row_class_l (hBase := hBase) (i := i') hRow⟩
     exact (hRange Z').mpr ⟨i', hi, (row_absolute_l (hBase := hBase) A Q i' Z').mpr hRow⟩
 
-#print axioms row_absolute_l
-#print axioms row_class_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassRowFamilyAmbient

@@ -39,6 +39,4 @@ theorem exists_l (K : source_coding_l hℳ) {ω : type_l hℳ B}
   obtain ⟨f, hf, hRead⟩ := PowerlessRelativeClassNumericTrace.exists_l K hω hωEq hE n
   exact ⟨f, hf, fun i j => (hRead i j).trans (and_congr Iff.rfl (hSpec i j))⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassMembershipTrace

@@ -44,6 +44,4 @@ theorem root_l (hℳ : Theory.Models ℳ theory_m) {P M : set_l ℳ}
   · exact (not_lt_of_ge (show bound ≤ found from hfound)) hgood
   · exact SecondOrderOrder.irrefl_l hℳ found (SecondOrderOrder.trans_l hℳ hbefore hafter)
 
-#print axioms root_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorIntervalCut

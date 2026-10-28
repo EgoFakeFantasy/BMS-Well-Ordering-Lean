@@ -92,6 +92,4 @@ theorem successor_l {n m X R f f' g g' a b : type_l hℳ B}
       intro i hi x hx
       exact (hPrefix' i hi x hx).symm.trans (hPrefix i hi x hx)
 
-#print axioms successor_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceLexicographic

@@ -89,10 +89,4 @@ theorem copies_rectangular_l (hℳ : Theory.Models ℳ theory_m) {R L E : set_l 
   obtain ⟨z, hz, hzr⟩ := rectangular_exists_l hℳ hR hL hE hb A l n
   exact (function_value_unique_l (function_of_semantics_l hℳ copies_m hR) hz hy) ▸ hzr
 
-#print axioms stage_m
-#print axioms stage_language_m
-#print axioms stage_syntax_l
-#print axioms rectangular_exists_l
-#print axioms copies_rectangular_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopiesRectangular

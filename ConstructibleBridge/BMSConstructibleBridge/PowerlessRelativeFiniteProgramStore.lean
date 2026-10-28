@@ -206,9 +206,4 @@ theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: �
       (GraphTranslation.form_m (sentence_m φ B C A D f c t₀ t₁ t₂ q)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 φ B C A D f c t₀ t₁ t₂ q)
 
-#print axioms store_formula_l
-#print axioms exists_l
-#print axioms unique_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramStore

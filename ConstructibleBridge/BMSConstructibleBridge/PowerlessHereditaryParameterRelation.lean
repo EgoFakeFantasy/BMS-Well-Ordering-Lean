@@ -104,7 +104,4 @@ theorem values_l (hB : PowerlessHereditaryClass.member_l hℳ B B)
     have hp' := (PowerlessRelativeClassFunctionAbsolute.ordered_l (hBase := hBase) x y p₀).mpr hp
     exact ⟨p₀, (hG p₀).mpr ⟨x, y, hx, hy, hp', hφ⟩, hp'⟩
 
-#print axioms exists_l
-#print axioms values_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryParameterRelation

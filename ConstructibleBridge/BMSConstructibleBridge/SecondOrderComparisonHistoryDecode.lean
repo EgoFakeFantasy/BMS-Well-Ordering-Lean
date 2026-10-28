@@ -147,9 +147,4 @@ theorem value_congr_l (K : source_coding_l hℳ)
     (hG n P).trans ((exists_congr (fun X => and_congr (hSection X) Iff.rfl)).trans (hG' n P).symm)
   simpa only [hnEq] using hValue
 
-#print axioms value_congr_l
-#print axioms total_l
-#print axioms unique_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonHistoryDecode

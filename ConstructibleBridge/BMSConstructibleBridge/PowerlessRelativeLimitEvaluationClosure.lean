@@ -79,6 +79,4 @@ theorem exists_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.sign
   rw [hωEq] at hS' hEquation' hGraph' ⊢
   exact PowerlessRelativeLimitEvaluationGraph.equations_l K hBase hInner hD hωD hS' hEquation' hGraph'
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitEvaluationClosure

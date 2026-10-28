@@ -54,7 +54,4 @@ theorem cases_l (K : source_coding_l hℳ) {n : type_l hℳ} (hn : mem_l hℳ n 
   · exact Or.inr ⟨(numberCode_l K j).val, (numberCode_l K j).property,
       PowerlessBMSQuotientSuccessor.successor_l K j⟩
 
-#print axioms successor_injective_l
-#print axioms cases_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderNaturalCases

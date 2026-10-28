@@ -74,10 +74,4 @@ theorem bound_rel_l (hℳ : Theory.Models ℳ theory_m) {D E : set_l ℳ}
   · rintro ⟨x, hx, hz⟩
     exact (bound_decoded_l hℳ hD hE η a b hx).mpr hz
 
-#print axioms height_m
-#print axioms height_eval_l
-#print axioms height_rel_l
-#print axioms bound_decoded_l
-#print axioms bound_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramGeneratedHeight

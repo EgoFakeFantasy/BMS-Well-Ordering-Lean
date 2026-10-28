@@ -91,8 +91,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m []
   intro ℳ hℳ B hBase
   exact sentence_l.mpr (fun _ hω _ he => exists_l (hBase := hBase) hω he)
 
-#print axioms exists_ambient_l
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassTriangularDerives

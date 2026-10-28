@@ -162,9 +162,4 @@ theorem unique_l (K : source_coding_l hℳ) {e S one two n c f g : type_l hℳ}
     have hx := SecondOrderOmegaTransitive.member_l hℳ K.omega_spec hn hmem.1
     exact ((hcf x hx y hmem.2).mp ((hcg x hx y hmem.2).mpr ⟨hmem.1, hxy⟩)).2
 
-#print axioms delta_l
-#print axioms bit_instance_l
-#print axioms exists_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBoundedSequenceCode

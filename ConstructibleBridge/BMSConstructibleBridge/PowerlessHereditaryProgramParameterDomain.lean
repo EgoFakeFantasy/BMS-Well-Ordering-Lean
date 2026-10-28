@@ -88,7 +88,4 @@ theorem derives_m {Ε : SortContext ℒ} (Δ : SortContext ℒ)
       (GraphTranslation.form_m (sentence_m Δ B ω t₀ t₁ t₂ τ)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 Δ B ω t₀ t₁ t₂ τ)
 
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryProgramParameterDomain

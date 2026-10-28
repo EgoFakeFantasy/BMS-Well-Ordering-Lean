@@ -137,6 +137,4 @@ theorem preservation_l (K : source_coding_l hℳ) {ω A e t₁ t₂ t₃ P F S :
       exact PowerlessLegacyEvaluationRawExistential.equation_l K hω he hP hPair
         hF hSat ht₃ hE hD hT hc hSlot hLink hU hOnto hCode hValid hfRaw hNext
 
-#print axioms preservation_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyEvaluationRawPreservation

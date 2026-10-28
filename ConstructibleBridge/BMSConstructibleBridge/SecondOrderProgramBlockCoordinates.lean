@@ -60,7 +60,4 @@ theorem offset_l (hℳ : Theory.Models ℳ theory_m) {p w t c : num_l ℳ}
     (SecondOrderProgramParentRelocation.lt_of_add_lt_add_left_l hℳ hut)
   exact ⟨s, q, hs, hq, congrArg (add_l p) he |>.trans hu⟩
 
-#print axioms below_mul_l
-#print axioms offset_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramBlockCoordinates

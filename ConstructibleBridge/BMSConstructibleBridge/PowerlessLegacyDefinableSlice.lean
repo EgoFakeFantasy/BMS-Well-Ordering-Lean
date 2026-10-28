@@ -93,6 +93,4 @@ theorem exists_l (K : source_coding_l hℳ) {ω A Seq Sat : type_l hℳ B}
       hc hQuery hBound hPreservation hU hf hLink hSeq ht' (x := y') hv).mp hFv
     exact (hZ y').mpr ⟨hyA, hQueryY⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyDefinableSlice

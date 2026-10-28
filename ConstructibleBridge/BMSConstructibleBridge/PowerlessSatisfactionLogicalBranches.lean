@@ -139,10 +139,4 @@ theorem nand_l {c a b L f : type_l hℳ B} {n i j l : SecondOrderModel.num_l ℳ
   exact (read_class_l K hωEq hS hF hR hc hL hValid hMap).trans
     (hEquation.trans (not_congr (and_congr hReadA.symm hReadB.symm)))
 
-#print axioms read_class_l
-#print axioms zero_l
-#print axioms membership_l
-#print axioms equality_l
-#print axioms nand_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionLogicalBranches

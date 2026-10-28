@@ -60,8 +60,6 @@ theorem restrict_l {A R : type_l hℳ B}
       PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase U.property hy⟩
     exact ⟨y', hy, fun z hz hlt => hMin z.val hz ((hValue z y').mp hlt)⟩
 
-#print axioms restrict_l
-
 /-- 三个线序条款可沿成员提升传输；环境最小元条款必须另证。 -/
 theorem of_minimum_l {A R : type_l hℳ B}
     (hR : wellOrder_l (ℳ := structure_l hℳ B hBase) A R)
@@ -86,7 +84,5 @@ theorem of_minimum_l {A R : type_l hℳ B}
     · exact Or.inl ((hValue _ _).mp hlt)
     · exact Or.inr (Or.inl (congrArg Subtype.val hEq))
     · exact Or.inr (Or.inr ((hValue _ _).mp hgt))
-
-#print axioms of_minimum_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassAmbientWellOrder

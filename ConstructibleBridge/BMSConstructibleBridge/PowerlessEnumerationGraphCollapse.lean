@@ -70,6 +70,4 @@ theorem exists_l (K : source_coding_l hℳ) {T f : SecondOrderQuotient.type_l h�
   exact ⟨hWf, fun r X hX => PowerlessBMSClassCollapse.agrees_l K φ η R hWf hUnique hEdge'
     hClosed r X ((hRead _ X).mpr hX)⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessEnumerationGraphCollapse

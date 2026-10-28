@@ -96,7 +96,4 @@ theorem range_l (K : source_coding_l hℳ) (A : SecondOrderGraph.code_l ℳ)
   · rintro ⟨i, j, _, hj, rfl⟩
     exact (SecondOrderFunctionProperties.value_mem_l hℳ hf (hValue i j hj)).2
 
-#print axioms exists_l
-#print axioms range_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberFiniteFunctionAssignment

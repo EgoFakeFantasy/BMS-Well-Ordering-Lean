@@ -58,6 +58,4 @@ theorem block_read_last_l (hℳ : Theory.Models ℳ theory_m) {R C L E : set_l �
   exact append_right_l hℳ hP hL hE (copies_width_l hℳ hR hL hb hacc)
     (copy_width_l hℳ hC hL hblkc hb) hpy hr a
 
-#print axioms block_read_last_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopiesBlock

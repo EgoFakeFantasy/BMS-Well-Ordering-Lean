@@ -87,10 +87,4 @@ theorem step_some_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {S C : set_
   obtain ⟨B, _, hB⟩ := graph_total_l hℳ gate_m
   rw [step_rel_of_value_l hℳ c hS hC hB hp, gate_some_l hℳ hB]
 
-#print axioms gate_none_l
-#print axioms gate_some_l
-#print axioms step_rel_of_value_l
-#print axioms step_none_l
-#print axioms step_some_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorTransition

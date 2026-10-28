@@ -85,7 +85,4 @@ theorem union_l (hℳ : Theory.Models ℳ theory_m) {C D X U : type_l hℳ}
       exact (hRead' n hn).mpr ⟨y, hyX, hwy⟩
   exact hzU ▸ hz
 
-#print axioms empty_l
-#print axioms union_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefBasicClosure

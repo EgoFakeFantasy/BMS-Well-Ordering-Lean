@@ -180,7 +180,4 @@ theorem guard_l (K : source_coding_l hℳ)
   · intro x hx
     exact False.elim (PowerlessBMSQuotientSuccessor.zero_l K x hx)
 
-#print axioms exists_unique_l
-#print axioms guard_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonStageTotal

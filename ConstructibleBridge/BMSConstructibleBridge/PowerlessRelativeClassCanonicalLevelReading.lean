@@ -79,6 +79,4 @@ theorem reading_l (K : source_coding_l hℳ)
   rw [hSame, hω, he']
   exact hLevel b X P hX
 
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalLevelReading

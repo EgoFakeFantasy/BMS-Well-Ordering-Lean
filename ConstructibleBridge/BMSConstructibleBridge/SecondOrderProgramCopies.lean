@@ -124,15 +124,4 @@ theorem copies_succ_l (hℳ : Theory.Models ℳ theory_m) {R C P : set_l ℳ}
   · rintro ⟨v, s, hv, hc, hp⟩
     exact ⟨v, hv, s, hc, hp⟩
 
-#print axioms copy_call_m
-#print axioms step_m
-#print axioms copies_m
-#print axioms copy_call_eval_l
-#print axioms append_array_encode_l
-#print axioms step_encode_l
-#print axioms copies_encode_l
-#print axioms step_rel_l
-#print axioms copies_zero_l
-#print axioms copies_succ_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopies

@@ -123,8 +123,4 @@ theorem graft_instance_l (K : source_coding_l hℳ) {S G₀ P₀ : SecondOrderQu
         (PowerlessNumberSuccessorReading.successor_l K b _).mpr rfl,
         (PowerlessRootedRealSyntax.row_instance_l K hS hG hGTrace a b).mpr hRow⟩
 
-#print axioms roots_instance_l
-#print axioms tagged_instance_l
-#print axioms graft_instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedCollectionReading

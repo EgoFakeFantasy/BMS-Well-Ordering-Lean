@@ -151,8 +151,4 @@ theorem coverage_derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTra
 theorem class_derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m class_sentence_m) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => class_models_l hℳ)
 
-#print axioms covered_l
-#print axioms coverage_derives_m
-#print axioms class_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeOrdinalCoverage

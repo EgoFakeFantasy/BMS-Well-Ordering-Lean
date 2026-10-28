@@ -83,6 +83,4 @@ theorem level_formula_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ} (η
     SecondOrderComparisonHistoryAgreementStep.read_formula_l, up₈, up₄, up, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms level_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalLevelSyntax

@@ -105,8 +105,4 @@ theorem source_previous_to_next_order_l (hℳ : Theory.Models ℳ theory_m)
     (SecondOrderProgramExpansionBoundaryArithmetic.previous_to_next_entry_l hℳ hgap).trans
       hsource.symm⟩
 
-#print axioms member_below_parent_row_l
-#print axioms positive_entry_gap_l
-#print axioms source_previous_to_next_order_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySource

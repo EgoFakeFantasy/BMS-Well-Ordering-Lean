@@ -167,18 +167,4 @@ theorem entry_rel_l (hℳ : Theory.Models ℳ theory_m) {R B O U : set_l ℳ}
   simp only [hb hB, ho hO, hu hU]
   by_cases hz : b (value_l A (value_l j r)) = zero_l ℳ <;> simp [hz]
 
-#print axioms context_m
-#print axioms coordinate_m
-#print axioms value_m
-#print axioms ascending_input_m
-#print axioms first_input_m
-#print axioms last_input_m
-#print axioms update_input_m
-#print axioms update_m
-#print axioms entry_m
-#print axioms inputs_eval_l
-#print axioms update_encode_l
-#print axioms entry_encode_l
-#print axioms entry_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyEntry

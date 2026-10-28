@@ -78,7 +78,4 @@ theorem canonical_exists_l (hℳ : Theory.Models ℳ theory_m) (A : set_l ℳ) (
   subst b
   exact hUnique W' hW'
 
-#print axioms output_exists_l
-#print axioms canonical_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalMemberDefGraph

@@ -169,12 +169,4 @@ theorem derives_m {Δ : SortContext ℒ} (B β L A I J α P a E : Term ℒ [] Δ
       (GraphTranslation.form_m (sentence_m B β L A I J α P a E)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ B β L A I J α P a E)
 
-#print axioms point_l
-#print axioms of_point_l
-#print axioms end_l
-#print axioms closed_l
-#print axioms successor_l
-#print axioms member_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationalCollapseOrdinalCut

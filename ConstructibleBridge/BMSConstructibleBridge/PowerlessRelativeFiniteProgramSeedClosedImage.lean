@@ -109,7 +109,4 @@ theorem derives_m {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set :: �
   SecondOrderAxioms.interpretation_m _
     (fun _ hℳ => models_l hℳ hφ B β C W ω Q G e t₀ t₁ t₂ a S P)
 
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramSeedClosedImage

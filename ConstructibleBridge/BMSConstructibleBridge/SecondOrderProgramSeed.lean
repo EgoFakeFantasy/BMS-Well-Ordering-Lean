@@ -112,16 +112,4 @@ theorem seed_rel_l (hℳ : Theory.Models ℳ theory_m) {S R : set_l ℳ}
   · rintro ⟨a, b, rfl, rfl, hy⟩
     exact hy
 
-#print axioms replicate_step_m
-#print axioms replicate_m
-#print axioms zeros_m
-#print axioms ones_m
-#print axioms seed_m
-#print axioms replicate_encode_l
-#print axioms seed_encode_l
-#print axioms replicate_step_rel_l
-#print axioms replicate_zero_l
-#print axioms replicate_succ_l
-#print axioms seed_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSeed

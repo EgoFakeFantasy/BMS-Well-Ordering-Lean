@@ -80,10 +80,4 @@ theorem ancestor_order_l (hℳ : Theory.Models ℳ theory_m) (r : Nat) {R L E : 
   exact ordered_invariant_l hℳ (parent_m r) hR hL hE hP x b n
     (fun _ _ hp => parent_lt_l hℳ r hP hp)
 
-#print axioms search_input_rel_l
-#print axioms search_rel_l
-#print axioms successor_lt_l
-#print axioms parent_lt_l
-#print axioms ancestor_order_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentOrder

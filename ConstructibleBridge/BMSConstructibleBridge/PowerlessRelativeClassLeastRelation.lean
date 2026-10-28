@@ -132,10 +132,6 @@ theorem exists_l (A Y E R : type_l hℳ B)
       ⟨x, PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase A.property hx⟩
       ⟨y, PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase Y.property hy⟩).mpr ⟨hx, hy, hLeast⟩
 
-#print axioms least_formula_l
-#print axioms least_absolute_l
-#print axioms exists_l
-
 include hBase in
 /-- 实际有界公式直接产生最小见证图；关系图在证明内构造，不是额外输入。 -/
 theorem of_formula_l {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set :: Δ)}
@@ -162,7 +158,5 @@ theorem of_formula_l {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set :
   · rintro ⟨hx, hy, hxy, hMin⟩
     exact ⟨hx, hy, (hE x y).mpr ⟨hx, hy, hxy⟩,
       fun z hz hxz => hMin z hz ((hE x z).mp hxz).2.2⟩
-
-#print axioms of_formula_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassLeastRelation

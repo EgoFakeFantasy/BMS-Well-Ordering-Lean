@@ -187,9 +187,4 @@ theorem valid_reading_l (K : source_coding_l hℳ) {N P : type_l hℳ}
       exact (numberCode_mem_iff_lt_l K k l).mpr
         (hNoExtra k j ((read_reading_l K hN hPnumeric c k j).mp hRead))
 
-#print axioms read_delta_l
-#print axioms read_reading_l
-#print axioms valid_delta_l
-#print axioms valid_reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyAssignmentBounded

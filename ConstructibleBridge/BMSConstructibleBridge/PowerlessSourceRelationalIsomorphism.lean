@@ -88,8 +88,4 @@ theorem formula_l {Γ Δ : SortContext ℒ} (R : carrier_l ℳ → carrier_l �
       obtain ⟨x, hxy⟩ := hOnto y
       exact ⟨x, (formula_l R hTotal hOnto hEq hMem φ _ _ (push_l R η ξ h hxy)).mpr hφ⟩
 
-#print axioms term_l
-#print axioms push_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceRelationalIsomorphism

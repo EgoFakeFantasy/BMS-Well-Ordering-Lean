@@ -90,8 +90,4 @@ theorem conclusion_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ}
     parameters_pushBound_l, up₂, up, Term.eval_weakenBound, Term.eval,
     Env.pushBound_bound_here, Env.pushBound_bound_there]
 
-#print axioms relation_formula_l
-#print axioms operator_formula_l
-#print axioms conclusion_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalCodedSkolemSyntax

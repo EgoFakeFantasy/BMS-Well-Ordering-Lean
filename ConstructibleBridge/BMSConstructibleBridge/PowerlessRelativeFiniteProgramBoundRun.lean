@@ -55,7 +55,4 @@ theorem native_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
     PowerlessRelativeFiniteProgramExecution.relation_formula_l K]
   rfl
 
-#print axioms run_formula_l
-#print axioms native_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramBoundRun

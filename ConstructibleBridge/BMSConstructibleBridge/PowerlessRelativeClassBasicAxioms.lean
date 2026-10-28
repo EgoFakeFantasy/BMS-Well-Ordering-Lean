@@ -51,8 +51,4 @@ theorem union_derives_m : Derives SecondOrderArithmetic.theory_m []
     (GraphTranslation.form_m (PowerlessRelativeClassRelativization.guarded_m SecondOrderUnion.formula_m)) :=
   PowerlessRelativeClassRelativization.derives_m _ (fun _ h𝒩 B hBase => union_l h𝒩 B hBase)
 
-#print axioms union_l
-#print axioms empty_derives_m
-#print axioms union_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassBasicAxioms

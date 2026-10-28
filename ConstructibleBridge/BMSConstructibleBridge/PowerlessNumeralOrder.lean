@@ -53,7 +53,4 @@ theorem bounded_l (he : PowerlessNatural.zero_l e) (hb : numeral_l e l b)
       exact ⟨k, Nat.lt_trans hkl (Nat.lt_succ_self l), hk⟩
     · exact ⟨l, Nat.lt_succ_self l, hc⟩
 
-#print axioms member_iff_l
-#print axioms bounded_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessNumeralOrder

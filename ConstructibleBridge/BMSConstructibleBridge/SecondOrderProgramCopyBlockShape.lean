@@ -59,7 +59,4 @@ theorem copy_width_l (hℳ : Theory.Models ℳ theory_m) {C L : set_l ℳ}
   obtain ⟨q, _, hqm⟩ := (copy_rel_l hℳ hC hM hP b t y).mp hc
   exact map_length_l hℳ column_m hM hL q b y n hqm hn
 
-#print axioms column_length_l
-#print axioms copy_width_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyBlockShape

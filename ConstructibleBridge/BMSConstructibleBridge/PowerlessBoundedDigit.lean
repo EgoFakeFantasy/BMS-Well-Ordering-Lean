@@ -100,7 +100,4 @@ theorem instance_l (K : source_coding_l hℳ) {S : type_l hℳ}
       (fun h => hNot ((numberCode_mem_iff_lt_l K r p).mp h)),
       (numberCode_mem_iff_lt_l K r (SecondOrderModel.add_l p p)).mpr hLt⟩
 
-#print axioms delta_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBoundedDigit

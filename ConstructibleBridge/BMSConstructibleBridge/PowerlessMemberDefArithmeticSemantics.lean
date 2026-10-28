@@ -153,9 +153,4 @@ theorem legal_read_l (C : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
           | here => exact hB
           | there t => nomatch t
 
-#print axioms edge_formula_l
-#print axioms legal_formula_l
-#print axioms packet_formula_l
-#print axioms legal_read_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefArithmeticSemantics

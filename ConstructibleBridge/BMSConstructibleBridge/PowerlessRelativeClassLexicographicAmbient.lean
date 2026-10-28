@@ -92,6 +92,4 @@ theorem exists_l {X Y R S : type_l hℳ B}
     rw [hxa] at hPairZRaw
     exact hMinB y.val ((hWRead y.val).mpr ⟨hy, z, hz, hPairZRaw⟩) hyb
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassLexicographicAmbient

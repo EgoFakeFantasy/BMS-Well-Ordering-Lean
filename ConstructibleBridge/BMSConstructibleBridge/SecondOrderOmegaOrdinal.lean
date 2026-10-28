@@ -48,6 +48,4 @@ theorem ordinal_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {ω 
     · exact Or.inr (Or.inl rfl)
     · exact Or.inr (Or.inr ((numberCode_mem_iff_lt_l C j i).mpr h))
 
-#print axioms ordinal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOmegaOrdinal

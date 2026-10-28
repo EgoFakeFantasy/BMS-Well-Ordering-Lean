@@ -129,8 +129,4 @@ theorem values_l (K : source_coding_l hℳ) {A T F R S : type_l hℳ}
     rw [hEq] at hFc h ⊢
     exact (hRows n L hL f hFc hf).mpr h
 
-#print axioms existential_congr_l
-#print axioms rows_l
-#print axioms values_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionUnique

@@ -141,11 +141,4 @@ theorem expand_some_l (hℳ : Theory.Models ℳ theory_m) {E M P J S T : set_l �
   rw [SecondOrderProgramExpansionFallback.expand_rel_l hℳ hE hR hT]
   simp only [raw_some_l hℳ hR hM hP hJ hS hm hj hp]
 
-#print axioms row_input_some_l
-#print axioms parent_test_l
-#print axioms success_input_some_l
-#print axioms after_row_some_l
-#print axioms raw_some_l
-#print axioms expand_some_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionSelected

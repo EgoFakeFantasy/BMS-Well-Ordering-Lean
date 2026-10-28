@@ -83,9 +83,4 @@ theorem decode_bounded_l (hℳ : Theory.Models ℳ theory_m) {D H L E : set_l �
   obtain ⟨n, h, hyr, hh⟩ := decode_normalized_l hℳ hD hH hL hE hy
   exact ⟨n, h, hyr, hh, (trim_bound_iff_zero_rows_l hℳ hH hE hh b).mpr hb⟩
 
-#print axioms seed_normalized_l
-#print axioms run_normalized_l
-#print axioms decode_normalized_l
-#print axioms decode_bounded_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramGeneratedNormalized

@@ -53,6 +53,4 @@ theorem read_l (K : source_coding_l hℳ) {ω A Seq Sat f t : type_l hℳ}
       (PowerlessLegacyDefinableRawRows.read_l K hω hE hD hF hc hQuery hBound
         hPreservation hU hf hLink hSeq ht hx).mp hRow⟩
 
-#print axioms read_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyDefinableRawRowImage

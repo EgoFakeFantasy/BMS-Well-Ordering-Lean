@@ -125,8 +125,4 @@ theorem exists_unique_l (K : source_coding_l hℳ)
     ⟨A, F, r, I, J, T, G, q, h, i, hia, (h.configuration.layerRead i X).mpr ⟨a, hia, haX⟩, hiP⟩
   exact ⟨P, hP, fun Q hQ => (unique_l K hCoding hQ hP).2⟩
 
-#print axioms unique_l
-#print axioms extension_l
-#print axioms exists_unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalLevel

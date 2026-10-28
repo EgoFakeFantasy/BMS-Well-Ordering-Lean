@@ -69,7 +69,4 @@ theorem exists_reverse_l (hℳ : Theory.Models ℳ theory_m) {E : set_l ℳ}
     (fun y => by obtain ⟨x, hx⟩ := hK y; exact ⟨x, (hSwap y x).mpr hx⟩) d l hd
   exact ⟨c, hc, fun i x y hx hy => (hSwap y x).mp (h i y x hy hx)⟩
 
-#print axioms exists_l
-#print axioms exists_reverse_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderAssignmentTransport

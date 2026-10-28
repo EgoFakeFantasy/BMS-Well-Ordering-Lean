@@ -165,10 +165,4 @@ theorem derives_m {Δ : SortContext ℒ} (ω A X M S : Term ℒ [] Δ .set) :
       (GraphTranslation.form_m (sentence_m ω A X M S)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ _ => models_l ω A X M S)
 
-#print axioms map_subset_l
-#print axioms delta_l
-#print axioms spec_iff_of_coverage_l
-#print axioms spec_iff_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteSequencesBounded

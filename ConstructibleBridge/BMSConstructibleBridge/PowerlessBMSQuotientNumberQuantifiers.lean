@@ -39,7 +39,4 @@ theorem exists_l (C : source_coding_l hℳ) (P : SecondOrderQuotient.type_l hℳ
   · rintro ⟨n, hP⟩
     exact ⟨(numberCode_l C n).val, (numberCode_l C n).property, hP⟩
 
-#print axioms forall_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientNumberQuantifiers

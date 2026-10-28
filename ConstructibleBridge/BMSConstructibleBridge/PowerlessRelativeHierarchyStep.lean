@@ -90,6 +90,4 @@ theorem unique_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m)
         have hde := hPast b hb d e hd he
         exact (hUnion x).mpr ⟨b, d, hb, hd, hde.symm ▸ hxe⟩
 
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeHierarchyStep

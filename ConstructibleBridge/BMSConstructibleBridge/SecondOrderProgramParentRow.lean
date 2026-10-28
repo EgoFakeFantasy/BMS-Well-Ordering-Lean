@@ -92,14 +92,4 @@ theorem step_encode_l (a : BMSArray) (r : Nat) :
         (Nat.pair (r + 1) (Encodable.encode (table_l r a)))))) = _
   rw [Nat.unpair_pair, Nat.unpair_pair, next_table_encode_l]
 
-#print axioms zero_table_m
-#print axioms next_table_m
-#print axioms initial_m
-#print axioms step_m
-#print axioms map_table_l
-#print axioms zero_table_encode_l
-#print axioms next_table_encode_l
-#print axioms initial_encode_l
-#print axioms step_encode_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentRow

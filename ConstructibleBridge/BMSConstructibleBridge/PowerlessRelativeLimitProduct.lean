@@ -83,6 +83,4 @@ theorem member_l
     ⟨a₃, c₃, ha₃, hc₃, SecondOrderMemberDefBoundedSlice.member_l hℳ hDef₃ hTrans₂
       (body_delta_l _ _ _) η hParams hSlice⟩
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitProduct

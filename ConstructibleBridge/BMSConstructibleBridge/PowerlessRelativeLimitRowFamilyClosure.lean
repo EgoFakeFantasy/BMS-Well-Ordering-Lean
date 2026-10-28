@@ -58,6 +58,4 @@ theorem member_l
   exact (PowerlessRelativeLimitClosure.value_l hℳ hBase hLimit hW Y).mpr
     ⟨α₂, C₂, hα₂, hC₂, hYC₂⟩
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitRowFamilyClosure

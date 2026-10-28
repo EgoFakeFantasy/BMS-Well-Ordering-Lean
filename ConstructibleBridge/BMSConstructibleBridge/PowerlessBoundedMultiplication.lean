@@ -151,7 +151,4 @@ theorem instance_l (K : source_coding_l hℳ) {S : type_l hℳ}
     refine ⟨g, hgS, (trace_equiv_l K hS i hH).mpr hg, (hRead _ _).mpr ⟨?_, hEndpoint⟩⟩
     exact (PowerlessBMSQuotientSuccessor.successor_l K j (numberCode_l K j).val).mpr (Or.inr rfl)
 
-#print axioms delta_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBoundedMultiplication

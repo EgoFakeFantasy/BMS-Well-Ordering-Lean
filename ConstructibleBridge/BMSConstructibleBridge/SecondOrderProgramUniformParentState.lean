@@ -108,10 +108,4 @@ theorem parent_past_end_l (hℳ : Theory.Models ℳ theory_m) {P L : set_l ℳ}
     exact ⟨v, hs, hv,
       (lookup_past_end_l hℳ hE hI ((length_rel_l hℳ hL hI v n).mp hv) t y hnt).mpr hy⟩
 
-#print axioms run_rel_l
-#print axioms run_state_l
-#print axioms parent_rel_l
-#print axioms parent_table_l
-#print axioms parent_past_end_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentState

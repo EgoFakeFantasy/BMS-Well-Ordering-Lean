@@ -54,8 +54,6 @@ theorem exists_l {ω A P : type_l hℳ B}
   exact ⟨L, PowerlessRelativeClassAmbientWellOrder.of_subset_l hL
     (fun z hz => (hInclusion z hz).2)⟩
 
-#print axioms exists_l
-
 /-- 消去原呈现参数，并处理空母集分支；序图仍属于同一个相对类。 -/
 theorem of_spec_l {ω A P : type_l hℳ B} {D : SecondOrderQuotient.type_l hℳ}
     (hΩ : omega_l (ℳ := 𝒩) ω) (hP : wellOrder_l (ℳ := 𝒱) A.val P.val)
@@ -80,7 +78,5 @@ theorem of_spec_l {ω A P : type_l hℳ B} {D : SecondOrderQuotient.type_l hℳ}
   · obtain ⟨A₀, a, ha, V, E, I, Q, R, T, F, H, hA, hPresentation, hH⟩ := hD
     obtain ⟨L, hL⟩ := exists_l hΩ hP hPresentation hA.symm
     exact ⟨L, hH ▸ hL⟩
-
-#print axioms of_spec_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyMemberDefWellOrderAmbient

@@ -87,6 +87,4 @@ theorem edge_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ}
     Env.pushBound_bound_here, Env.pushBound_bound_there]
   rfl
 
-#print axioms edge_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalCodedEdgeSyntax

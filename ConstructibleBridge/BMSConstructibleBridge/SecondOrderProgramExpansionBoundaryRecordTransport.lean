@@ -164,6 +164,4 @@ theorem member_iff_of_entry_transport_l (hℳ : Theory.Models ℳ theory_m)
       exact (hbelowCandidate s hs).mpr ((htargetRecord.mp h).2.1 s hs)
     exact iff_of_false hsourceFalse htargetFalse
 
-#print axioms member_iff_of_entry_transport_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryRecordTransport

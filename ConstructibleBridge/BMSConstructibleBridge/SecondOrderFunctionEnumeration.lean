@@ -86,7 +86,4 @@ theorem finite_l {ω k f x : type_l hℳ} (hk : mem_l hℳ k ω)
   obtain ⟨g, hg, hCover, hInj⟩ := exists_l hℳ hf
   exact ⟨k, hk, g, hg, hCover, hInj⟩
 
-#print axioms exists_l
-#print axioms finite_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFunctionEnumeration

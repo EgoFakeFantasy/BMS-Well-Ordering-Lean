@@ -76,8 +76,4 @@ theorem decode_l (K : source_coding_l hℳ) {C f ω A P e t₁ t₂ t₃ Pair Va
   have hEq := SecondOrderComparisonRoundtrip.decode_encode_l K hf hOnto (bounded_l hStep hDC) hW hQ
   exact ⟨SecondOrderComparisonRoundtrip.compatible_spec_l K hf hW, hEq ▸ hQ⟩
 
-#print axioms bounded_l
-#print axioms exists_unique_l
-#print axioms decode_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalOrderComparison

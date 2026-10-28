@@ -68,8 +68,4 @@ theorem agrees_l (hℳ : Theory.Models ℳ theory_m) {R S : set_l ℳ} (hS : spe
     have hdR := ((hS d b).mp hd).2
     exact ⟨d, hdR, (hf d d).mpr ⟨rfl, SecondOrderDomain.child_l hℳ R b d hb hdR⟩⟩
 
-#print axioms exists_l
-#print axioms wf_l
-#print axioms agrees_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderValidRootGraph

@@ -88,11 +88,8 @@ theorem body_formula_l {Γ Δ Ξ : SortContext signature_m} (η : Env ℳ Γ Ξ)
   apply congrArg (fun ξ => φ.satisfies ξ)
   apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
-    cases v with
-    | here => rfl
-    | there v => cases v with
-      | here => rfl
-      | there v => cases s <;> rfl
+    rcases v with _ | _ | v
+    all_goals first | rfl | cases s <;> rfl
 
 theorem formula_l {Γ Δ Ξ : SortContext signature_m} (η : Env ℳ Γ Ξ)
     (φ : Formula signature_m [] (.num :: .num :: Δ))
@@ -118,7 +115,5 @@ theorem formula_l {Γ Δ Ξ : SortContext signature_m} (η : Env ℳ Γ Ξ)
         change (Term.weakenBound sort_m.num (Term.weakenBound sort_m.num (τ v))).eval
           ((η.pushBound x).pushBound y) = (τ v).eval η
         rw [Term.eval_weakenBound, Term.eval_weakenBound]
-
-#print axioms formula_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelationSpecification

@@ -78,6 +78,4 @@ theorem member_congr_l (hℳ : Theory.Models ℳ theory_m)
       (fun h => h (SecondOrderProgramParentHeightBound.ancestor_none_l hℳ hM hE hzero hrowAbove
         (add_l p (add_l (mul_l d rightCopy) q)) (add_l p (add_l (mul_l d rightCopy) i))))
 
-#print axioms member_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopiesAllRows

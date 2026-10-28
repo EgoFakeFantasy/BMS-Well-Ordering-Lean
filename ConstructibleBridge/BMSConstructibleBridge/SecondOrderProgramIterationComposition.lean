@@ -70,10 +70,4 @@ theorem composition_rel_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {R C 
   · exact fun hxy => (function_value_unique_l hRf hxz hxy) ▸ htz
   · exact fun hty => (function_value_unique_l hRf htz hty) ▸ hxz
 
-#print axioms composition_m
-#print axioms composition_language_m
-#print axioms composition_syntax_l
-#print axioms composition_common_l
-#print axioms composition_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramIterationComposition

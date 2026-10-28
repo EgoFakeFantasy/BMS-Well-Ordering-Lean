@@ -155,8 +155,4 @@ theorem budget_of_tail_l {B D W ξ Cstart F : type_l hℳ}
       PowerlessRelativeOrdinalBudgetReading.earlier_l hℳ A hQ hD hRel hG hS i n hi hn hIndex t z
     exact PowerlessRelativeLevelClosure.members_l hℳ hBase hTailEarlier hE hC₀
 
-#print axioms successor_eq_l
-#print axioms level_subset_l
-#print axioms budget_of_tail_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyLightHistoryBudgetProvider

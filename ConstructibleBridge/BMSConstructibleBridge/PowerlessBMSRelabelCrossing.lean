@@ -123,6 +123,4 @@ theorem edge_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omega_
     (F.add_graph_l (add_l (ℳ := 𝒩) p (mul_l d earlier)) i)
     (F.add_graph_l (add_l (ℳ := 𝒩) p (mul_l d later)) q) ha₁ hb₁
 
-#print axioms edge_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSRelabelCrossing

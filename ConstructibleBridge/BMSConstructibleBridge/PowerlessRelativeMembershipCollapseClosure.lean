@@ -136,11 +136,4 @@ theorem derives_m {Δ : SortContext ℒ} (I T H : Term ℒ [] Δ .set) :
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m I T H)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ I T H)
 
-#print axioms pair_l
-#print axioms binary_l
-#print axioms closed_l
-#print axioms assignments_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeMembershipCollapseClosure

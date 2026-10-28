@@ -80,11 +80,4 @@ theorem stops_iff_l (hℳ : Theory.Models ℳ theory_m) {I : set_l ℳ}
     exact le_of_not_gt (fun hkn => hn.2 k hkn hk)
   · exact stops_mono_l hℳ hI x hn.1
 
-#print axioms after_stop_m
-#print axioms after_stop_language_m
-#print axioms after_stop_syntax_l
-#print axioms after_stop_l
-#print axioms stops_mono_l
-#print axioms stops_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListStops

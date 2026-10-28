@@ -73,6 +73,4 @@ theorem joint_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
   simpa only [PowerlessDefinableFiniteTrace.trace_l, history_l, relation_formula_l K,
     ThirdOrderSemantics.member_l, SecondOrderQuotient.structure_l] using hF
 
-#print axioms joint_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramJointRead

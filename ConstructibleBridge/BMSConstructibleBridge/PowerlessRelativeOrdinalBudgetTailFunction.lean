@@ -194,8 +194,4 @@ theorem exists_l (K : source_coding_l hℳ)
   have hz := hDecode n m hn p z hp hpz
   exact (hz.trans hy.symm) ▸ hpz
 
-#print axioms range_l
-#print axioms slice_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeOrdinalBudgetTailFunction

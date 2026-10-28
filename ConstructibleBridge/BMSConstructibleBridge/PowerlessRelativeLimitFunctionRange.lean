@@ -112,8 +112,4 @@ theorem union_member_l
     obtain ⟨a, hValue⟩ := (hR y).mp hyR
     exact ⟨a, y, (SecondOrderFunctionProperties.value_mem_l hℳ hf hValue).1, hValue, hpy⟩
 
-#print axioms exists_l
-#print axioms value_member_l
-#print axioms union_member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitFunctionRange

@@ -73,7 +73,4 @@ theorem copy_column_l (hℳ : Theory.Models ℳ theory_m) {C K P L E : set_l ℳ
   rw [hqq] at hqm
   exact map_lookup_entry_l hℳ column_m hM hK hL hE q b y n j s w hqm hn hj hs
 
-#print axioms column_entry_l
-#print axioms copy_column_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyBlockLookup

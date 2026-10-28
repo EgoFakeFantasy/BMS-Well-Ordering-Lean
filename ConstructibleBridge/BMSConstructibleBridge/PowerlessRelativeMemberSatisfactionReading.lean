@@ -239,13 +239,4 @@ theorem guarded_l (hW : PowerlessNaturalOrder.transitive_l (ℳ := 𝒱) W)
   exact ⟨static_raw_l K hW hClosed hωEq heEq hStatic,
     static_l K hW hClosed hωEq heEq hStatic hSat⟩
 
-#print axioms coordinates_l
-#print axioms assignment_l
-#print axioms sequences_l
-#print axioms exists_l
-#print axioms spec_l
-#print axioms static_l
-#print axioms static_raw_l
-#print axioms guarded_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeMemberSatisfactionReading

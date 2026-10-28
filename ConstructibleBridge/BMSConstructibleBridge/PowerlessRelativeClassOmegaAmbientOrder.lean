@@ -63,6 +63,4 @@ theorem of_comparison_l {ω R : type_l hℳ B}
     exact ⟨x, hx, fun y hy hlt =>
       hMin y ((hGraph y x (hU.1 y hy) (hU.1 x hx)).mp hlt) hy⟩
 
-#print axioms of_comparison_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassOmegaAmbientOrder

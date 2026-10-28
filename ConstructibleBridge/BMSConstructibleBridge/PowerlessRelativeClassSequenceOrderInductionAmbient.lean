@@ -113,7 +113,4 @@ theorem all_l {ω X R L : type_l hℳ B} (hω : omega_l (ℳ := 𝒩) ω)
       (hIrr _ (hNum (SecondOrderModel.succ_l i))) hSucc (hTrans _ (hNum i))
       hP hQ' hRead hR hOld
 
-#print axioms zero_l
-#print axioms all_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceOrderInductionAmbient

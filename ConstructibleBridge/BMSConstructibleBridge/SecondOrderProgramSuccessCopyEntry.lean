@@ -99,6 +99,4 @@ theorem entry_l (hℳ : Theory.Models ℳ theory_m)
         (SecondOrderProgramCopiesBlockEntry.block_entry_agree_l hℳ hR hQ hO hL hE hJ
           hbw ht hblk hr hi)
 
-#print axioms entry_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSuccessCopyEntry

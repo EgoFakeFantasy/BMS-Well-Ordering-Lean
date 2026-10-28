@@ -69,9 +69,4 @@ theorem chain_none_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {A C : set
   simp only [repeat_none_l hℳ c hR hC hp, exists_eq_left',
     SecondOrderUnpairing.unpair_l, reverse_zero_l hℳ hT hF]
 
-#print axioms repeat_none_l
-#print axioms repeat_some_l
-#print axioms chain_zero_l
-#print axioms chain_none_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorBoundary

@@ -116,7 +116,4 @@ theorem family_l (K : source_coding_l hℳ) {t₁ t₂ t₃ Pair Valid B P₀ S 
   obtain ⟨X, hX, hφ, hRequest⟩ := (formula_l K φ η B K.omega e o S (numberCode_l K n).val V).mp hMin.2.1
   exact ⟨V, X, hX, hφ, hRequest, hRead⟩
 
-#print axioms formula_l
-#print axioms family_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalHereditaryWitness

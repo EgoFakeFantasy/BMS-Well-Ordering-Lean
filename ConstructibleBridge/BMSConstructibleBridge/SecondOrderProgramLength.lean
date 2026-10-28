@@ -85,12 +85,4 @@ theorem length_graph_l (hℳ : Theory.Models ℳ theory_m) {I : set_l ℳ}
   obtain ⟨L, hLf, hL⟩ := graph_total_l hℳ length_m
   exact ⟨L, hL, hLf, length_rel_l hℳ hL hI⟩
 
-#print axioms length_input_m
-#print axioms length_m
-#print axioms length_encode_l
-#print axioms input_rel_l
-#print axioms length_bridge_l
-#print axioms length_rel_l
-#print axioms length_graph_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramLength

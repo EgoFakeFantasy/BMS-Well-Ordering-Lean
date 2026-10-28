@@ -143,7 +143,4 @@ theorem zero_first_to_target_of_earlier_parent_l
     hℳ hP hM hJ hL hn htarget hearlier hlocal hfirstTarget hentry
       hparentTarget hbelow hzeroFirst
 
-#print axioms zero_first_to_copy_l
-#print axioms zero_first_to_target_of_earlier_parent_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyBoundaryActualIteration

@@ -155,19 +155,4 @@ theorem length_graph_l (hℳ : Theory.Models ℳ theory_m) {I : set_l ℳ}
   obtain ⟨k, hk, hu⟩ := length_exists_l hℳ hI x
   exact ⟨k, (hspec x k).mpr hk, fun j hj => hu j ((hspec x j).mp hj)⟩
 
-#print axioms iterate_step_eval_l
-#print axioms iterate_encode_l
-#print axioms stops_encode_l
-#print axioms stops_m
-#print axioms stops_syntax_l
-#print axioms length_spec_l
-#print axioms stops_set_l
-#print axioms length_exists_l
-#print axioms length_bound_l
-#print axioms length_zero_l
-#print axioms length_m
-#print axioms length_language_m
-#print axioms length_syntax_l
-#print axioms length_graph_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListLength

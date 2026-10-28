@@ -136,10 +136,4 @@ theorem minimum_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: Δ)) (η 
   have hyX := initial_l K hCoding hP hxX hyx
   exact hMin y ((hU y).mpr ⟨hyX, hφy⟩) ((restrict_l K hCoding hP hyX hxX).mp hyx)
 
-#print axioms edge_formula_l
-#print axioms minimum_l
-#print axioms restrict_l
-#print axioms initial_l
-#print axioms compare_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalClassOrder

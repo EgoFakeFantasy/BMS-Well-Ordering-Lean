@@ -95,7 +95,4 @@ theorem open_formula_l {Δ Θ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .
       (PowerlessSourceFreeBinding.env_l ζ) hProject hCapture).trans
         (PowerlessSourceFreeBinding.formula_l ψ ζ))
 
-#print axioms formula_l
-#print axioms open_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassWholeCollapseReflection

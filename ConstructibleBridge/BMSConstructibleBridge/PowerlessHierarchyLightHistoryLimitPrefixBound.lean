@@ -205,11 +205,4 @@ theorem class_exists_l {B D W α C C₂ f : type_l hℳ}
   exact ⟨⟨H, PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase C₁.property hHC₁⟩,
     hHC₁, hH, hUnion, hfC₂⟩
 
-#print axioms body_delta_l
-#print axioms body_reading_l
-#print axioms exact_l
-#print axioms union_l
-#print axioms exists_l
-#print axioms class_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyLightHistoryLimitPrefixBound

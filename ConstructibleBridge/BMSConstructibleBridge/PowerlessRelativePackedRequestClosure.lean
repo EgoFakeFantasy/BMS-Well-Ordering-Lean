@@ -104,7 +104,4 @@ theorem level_closure_l {Ε Δ : SortContext ℒ} (n : Nat)
     simpa only [hEq] using hq
   exact closure_l n φ ζ B W R J τ η d d hB hW₀ hτ hGraph I hIW hd hPair hPairI' hClosure
 
-#print axioms closure_l
-#print axioms level_closure_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativePackedRequestClosure

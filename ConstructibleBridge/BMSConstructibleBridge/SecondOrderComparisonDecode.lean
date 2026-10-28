@@ -135,7 +135,4 @@ theorem values_l (K : source_coding_l hℳ) {C f P : type_l hℳ}
     obtain ⟨p, hp⟩ := SecondOrderPairObjects.ordered_exists_l hℳ x y
     exact ⟨p, (hP p).mpr ⟨x, y, h, hp⟩, hp⟩
 
-#print axioms exists_unique_l
-#print axioms values_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonDecode

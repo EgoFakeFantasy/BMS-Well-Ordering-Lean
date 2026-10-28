@@ -171,8 +171,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.
     (Iff.trans ?_ (PowerlessEvaluationClause.clause_formula_l η _ _ _ _ _ _ _ _ _ _).symm)
   exact guarded_iff_l hω' he' hN' hT' hS' hf
 
-#print axioms delta_l
-#print axioms clause_iff_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessEvaluationClauseBounded

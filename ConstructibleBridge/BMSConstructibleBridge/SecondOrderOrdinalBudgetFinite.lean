@@ -109,8 +109,4 @@ theorem limit_l
         earlier_l hℳ hG hS hR hin (succ_l j) (zero_l ℳ),
         (successor_l hℳ hG hS hR i j _).mpr (Or.inr rfl)⟩
 
-#print axioms successor_l
-#print axioms zero_eq_base_l
-#print axioms limit_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalBudgetFinite

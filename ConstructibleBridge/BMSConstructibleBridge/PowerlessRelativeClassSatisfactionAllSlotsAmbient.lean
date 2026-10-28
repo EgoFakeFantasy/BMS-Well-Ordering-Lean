@@ -88,6 +88,4 @@ theorem exists_l {ω A P : type_l hℳ B}
     exact (hRange Z).mpr ⟨t', (hJ t').mpr ⟨e, p, he, hp, ht'⟩,
       (hSlice he hp ht' Z).mpr hSliceZ⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSatisfactionAllSlotsAmbient

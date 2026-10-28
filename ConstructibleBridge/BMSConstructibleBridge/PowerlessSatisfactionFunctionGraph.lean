@@ -44,6 +44,4 @@ theorem graph_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : 
     SecondOrderObjectSyntax.member_m, Arguments.eval, up, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms graph_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionFunctionGraph

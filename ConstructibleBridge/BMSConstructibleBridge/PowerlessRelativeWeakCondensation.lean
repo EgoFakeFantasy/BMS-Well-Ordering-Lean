@@ -101,8 +101,4 @@ theorem exists_l (K : source_coding_l hℳ) {B T : type_l hℳ}
       exact hT d hdT x (hcd ▸ hxc)
   exact ⟨J, hJ, hOrd, hLimit, hEq.symm ▸ hLevel⟩
 
-#print axioms successor_l
-#print axioms limit_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeWeakCondensation

@@ -90,7 +90,4 @@ theorem graph_l (hTrans : PowerlessNaturalOrder.transitive_l W)
   exact (PowerlessSourceGraphAbsolute.value_l hTrans).trans
     ((hRead a.val r.val).trans (and_congr Iff.rfl (and_congr Iff.rfl hMatrix.symm)))
 
-#print axioms graph_l
-#print axioms graph_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefFunctionAbsolute

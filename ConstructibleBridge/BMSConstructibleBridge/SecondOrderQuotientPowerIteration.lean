@@ -91,7 +91,4 @@ theorem exists_l (K : source_coding_l hℳ) {b : SecondOrderModel.num_l ℳ}
   apply (hHPoint r _).mpr
   rw [hEq, SecondOrderMultiplication.mul_comm_l hℳ r b]
 
-#print axioms multiplier_exists_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderQuotientPowerIteration

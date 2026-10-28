@@ -109,7 +109,4 @@ theorem functional_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ 
     SecondOrderObjectSyntax.member_m, Arguments.eval, up, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms constructor_from_ambient_l
-#print axioms functional_of_spec_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassConstructorTotal

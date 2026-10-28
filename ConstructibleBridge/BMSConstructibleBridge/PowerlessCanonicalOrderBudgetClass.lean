@@ -53,17 +53,8 @@ theorem class_l
     apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
       cases s
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => cases v with
-            | here => rfl
-            | there v => cases v with
-              | here => rfl
-              | there v => nomatch v
+      rcases v with _ | _ | _ | _ | _ | v
+      all_goals first | rfl | nomatch v
   have hBudget' : PowerlessThreeDefBudget.spec_l hℳ
       (PowerlessCanonicalOrderBudgetInduction.parameters_l W.val ω.val F.val G.val P₀.val)
         B (mk_l hℳ A) Q := hEnv ▸ hBudget
@@ -77,7 +68,5 @@ theorem class_l
   exact ⟨ν, C, hC, PowerlessCanonicalOrderBudgetInduction.bounded_l hBase K
     ω e t₁ t₂ t₃ Pair N Valid Translation G hCode hδ hF hH hEquations hOrder
     hBudget' δ ν C H hQ hC hSelf⟩
-
-#print axioms class_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderBudgetClass

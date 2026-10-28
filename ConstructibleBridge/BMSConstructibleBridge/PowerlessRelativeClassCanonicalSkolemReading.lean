@@ -57,11 +57,8 @@ theorem request_formula_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
   have hν : ∀ v : Variable (.set :: .set :: Δ) .set,
       (show Term ℒ [] (.set :: .set :: Δ) .set from .fvar v).eval ζ = (ξ.freeVal v).val := by
     intro v
-    cases v with
-    | here => rfl
-    | there v => cases v with
-      | here => rfl
-      | there v => rfl
+    rcases v with _ | _ | v
+    all_goals rfl
   have hInstance := instance_l K φ ζ (free₂_m b) (fun v => .fvar v) ξ hB hν
   have hClass : (PowerlessRelativeHierarchySyntax.class_m (free₂_m b)
       (show Term ℒ [] (.set :: .set :: Δ) .set from .fvar .here)).satisfies ζ := by
@@ -153,10 +150,5 @@ theorem relation_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
     ω P₀ x y hω hCoding hB hSeed hBound
     (fun z => request_formula_l K φ b η hb x z)
     (fun z hz => output_class_l K φ b _ (hRead.trans hb) x.val z hz)
-
-#print axioms request_formula_l
-#print axioms output_class_l
-#print axioms transfer_l
-#print axioms relation_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalSkolemReading

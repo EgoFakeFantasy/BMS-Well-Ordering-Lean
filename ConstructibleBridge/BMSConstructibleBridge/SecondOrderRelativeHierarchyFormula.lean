@@ -113,6 +113,4 @@ theorem formula_l (hℳ : Theory.Models ℳ theory_m) (η : Env ℳ [] context_m
     SecondOrderPredecessorUnionFormula.formula_l hℳ, Term.eval]
   rfl
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyFormula

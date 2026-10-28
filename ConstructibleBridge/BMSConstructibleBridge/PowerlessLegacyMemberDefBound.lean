@@ -55,6 +55,4 @@ theorem bounded_l {ω A P : type_l hℳ B}
   exact ⟨Y, L, hL, PowerlessLegacyMemberDefInclusion.members_l
     (hBase := hBase) K hΩ hω h hC hU hNumber hOnto hPreservation hSeq hI hFamily⟩
 
-#print axioms bounded_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyMemberDefBound

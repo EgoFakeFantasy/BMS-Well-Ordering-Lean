@@ -38,7 +38,4 @@ theorem base_l (hℳ : Theory.Models ℳ theory_m) {B : set_l ℳ}
   exact (SecondOrderGraph.mem_congr_l hℳ (SecondOrderGraph.refl_l hℳ X) hEq).mpr
     (hS.base n W hW V.wf X hX)
 
-#print axioms transitive_l
-#print axioms base_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeLevelProperties

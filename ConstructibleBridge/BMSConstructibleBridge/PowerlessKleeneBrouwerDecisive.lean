@@ -132,9 +132,4 @@ theorem derives_m {Δ : SortContext ℒ} (ω I f g : Term ℒ [] Δ .set) :
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m ω I f g)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ ω I f g)
 
-#print axioms decisive_formula_l
-#print axioms of_compare_l
-#print axioms to_compare_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessKleeneBrouwerDecisive

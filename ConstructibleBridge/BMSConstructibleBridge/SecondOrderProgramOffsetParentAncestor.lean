@@ -197,8 +197,4 @@ theorem ancestor_l (hℳ : Theory.Models ℳ theory_m)
   exact ancestor_sync_l hℳ hL hE hJ hP hM hx hb hj
     (reloc_ge_rows_l hℳ hL hE hJ hP hM hx hb hbound hentry r) q
 
-#print axioms ancestor_sync_l
-#print axioms reloc_ge_rows_l
-#print axioms ancestor_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramOffsetParentAncestor

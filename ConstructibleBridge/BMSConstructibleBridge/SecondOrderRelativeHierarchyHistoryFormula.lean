@@ -78,6 +78,4 @@ theorem formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortContext signa
     SecondOrderInterpretation.domain_l, stage_formula_l hℳ, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyHistoryFormula

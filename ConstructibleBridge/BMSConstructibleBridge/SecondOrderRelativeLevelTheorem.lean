@@ -103,7 +103,4 @@ theorem exists_derives_m : Derives theory_m [] existence_sentence_m :=
 theorem unique_derives_m : Derives theory_m [] uniqueness_sentence_m :=
   SecondOrderCompleteness.derives_m (fun _ hℳ => uniqueness_models_l hℳ)
 
-#print axioms exists_derives_m
-#print axioms unique_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeLevelTheorem

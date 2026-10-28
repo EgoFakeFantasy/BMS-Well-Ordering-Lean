@@ -87,7 +87,4 @@ theorem instance_l (K : source_coding_l hℳ) {i j : SecondOrderModel.num_l ℳ}
   rw [hb] at hValue'
   exact ⟨H.val, F.val, hH', hF', hValue'⟩
 
-#print axioms operator_to_ambient_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryMultiplicationAbsolute

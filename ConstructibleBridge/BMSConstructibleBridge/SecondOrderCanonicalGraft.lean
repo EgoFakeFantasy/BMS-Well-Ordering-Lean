@@ -31,6 +31,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) (R P : set_l ℳ) :
   obtain ⟨G, hG⟩ := SecondOrderGraft.exists_l hℳ R P
   exact ⟨G, hG, fun H hH => unique_l hℳ hH hG⟩
 
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalGraft

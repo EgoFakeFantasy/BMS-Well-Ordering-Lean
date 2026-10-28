@@ -111,8 +111,4 @@ theorem history_past_l (K : source_coding_l hℳ)
   exact SecondOrderComparisonHistoryDecode.value_congr_l K D hD hG hG' hPast j
     ((hPred j).mpr ⟨b, hjb, hb⟩) P
 
-#print axioms past_formula_l
-#print axioms output_local_l
-#print axioms history_past_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonStageLocal

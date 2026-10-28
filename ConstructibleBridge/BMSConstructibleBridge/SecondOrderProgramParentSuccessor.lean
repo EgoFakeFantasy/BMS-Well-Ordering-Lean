@@ -108,19 +108,4 @@ theorem parent_encode_l (r : Nat) (a : BMSArray) (t : Nat) :
   | zero => exact parent_zero_encode_l a t
   | succ r ih => exact successor_encode_l r (parent_m r) a ih t
 
-#print axioms compare_input_m
-#print axioms compare_next_m
-#print axioms test_m
-#print axioms search_input_m
-#print axioms search_m
-#print axioms successor_m
-#print axioms compare_input_eval_l
-#print axioms compare_next_encode_l
-#print axioms test_nonzero_eval_l
-#print axioms test_encode_l
-#print axioms search_encode_l
-#print axioms successor_encode_l
-#print axioms parent_m
-#print axioms parent_encode_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentSuccessor

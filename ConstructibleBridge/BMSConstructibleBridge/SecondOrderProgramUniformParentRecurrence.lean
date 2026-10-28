@@ -80,9 +80,4 @@ theorem succ_table_l (hℳ : Theory.Models ℳ theory_m) {R N : set_l ℳ}
   · rintro ⟨v, w, hv, hw, hy⟩
     exact ⟨_, hv, (step_rel_l hℳ hS hN x _ v y).mpr ⟨w, hw, hy⟩⟩
 
-#print axioms zero_l
-#print axioms succ_l
-#print axioms zero_table_l
-#print axioms succ_table_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentRecurrence

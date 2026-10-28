@@ -202,9 +202,4 @@ theorem closed_from_candidate_sources_l
   exact (Formula.satisfies_instantiateFreeTop ρ (numeral_m H)
     SecondOrderConcreteFormula.matrix_m).mpr hTarget
 
-#print axioms matrix_l
-#print axioms matrix_at_l
-#print axioms closed_l
-#print axioms closed_from_candidate_sources_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSMatrixTransfer

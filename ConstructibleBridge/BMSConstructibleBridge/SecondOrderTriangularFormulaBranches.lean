@@ -71,6 +71,4 @@ theorem existential_l (hℳ : Theory.Models ℳ theory_m) {V : set_l ℳ} (hV : 
     relation_l V n l ↔ SecondOrderOrder.lt_l a l ∧ relation_l V b l := by
   simpa [SecondOrderEvaluationEquations.numeral_eq_l hℳ] using constructor_case_l hℳ hV hn l
 
-#print axioms constructor_case_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderTriangularFormulaBranches

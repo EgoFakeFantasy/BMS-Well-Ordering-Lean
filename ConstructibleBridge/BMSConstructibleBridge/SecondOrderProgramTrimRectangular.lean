@@ -50,6 +50,4 @@ theorem trim_rectangular_l (hℳ : Theory.Models ℳ theory_m) {T H L E : set_l 
     (SecondOrderProgramMapLookup.map_lookup_lt_l hℳ column_m hM hC hL hE z x y n j s hm hx.1 hj).mp hs
   exact take_length_min_l hℳ hK hL (hx.2 j hj a ha) ((column_rel_l hℳ hC hK z j a s).mp hc)
 
-#print axioms trim_rectangular_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTrimRectangular

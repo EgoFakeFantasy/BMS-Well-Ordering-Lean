@@ -41,17 +41,8 @@ theorem source_l {B : carrier_l ℳ} {hB : ∃ x, member_l ℳ x B}
   apply congrArg (fun η => (PowerlessOrdinalRecursion.recursion_m PowerlessEvaluationStep.operator_m).satisfies η)
   apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
-    match s, v with
-    | .set, .here => rfl
-    | .set, .there .here => rfl
-    | .set, .there (.there .here) => rfl
-    | .set, .there (.there (.there .here)) => rfl
-    | .set, .there (.there (.there (.there .here))) => rfl
-    | .set, .there (.there (.there (.there (.there .here)))) => rfl
-    | .set, .there (.there (.there (.there (.there (.there .here))))) => rfl
-    | .set, .there (.there (.there (.there (.there (.there (.there .here)))))) => rfl
-    | .set, .there (.there (.there (.there (.there (.there (.there (.there .here))))))) => rfl
-    | .set, .there (.there (.there (.there (.there (.there (.there (.there (.there .here)))))))) => rfl
+    rcases v with _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | v
+    all_goals first | rfl | nomatch v
 
 theorem stage_l {ω e T t₁ t₂ t₃ β B : carrier_l ℳ} (hω : omega_l ω)
     (ht : PowerlessEvaluationTags.tags_l e t₁ t₂ t₃) (hT : PowerlessTriangular.triangular_l ω e T)

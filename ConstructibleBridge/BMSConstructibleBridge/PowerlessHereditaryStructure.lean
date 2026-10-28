@@ -91,8 +91,4 @@ theorem transitive_superset_l : SecondOrderTransitiveSuperset.formula_m.TrueIn (
   obtain ⟨t, ht, hat, hTrans⟩ := PowerlessHereditaryTransitiveSuperset.exists_l hℳ hBase a.property
   exact ⟨⟨t, ht⟩, fun z hz => hTrans a.val hat z.val hz, fun x y hx hy => hTrans x.val hx y.val hy⟩
 
-#print axioms structure_l
-#print axioms infinity_l
-#print axioms transitive_superset_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryStructure

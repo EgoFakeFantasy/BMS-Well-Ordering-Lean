@@ -84,6 +84,4 @@ theorem member_l (hℳ : Theory.Models ℳ theory_m) {B R S : set_l ℳ}
     exact (formula_l R S i).mp (hPast i hi)
   · exact hS k
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyMembership

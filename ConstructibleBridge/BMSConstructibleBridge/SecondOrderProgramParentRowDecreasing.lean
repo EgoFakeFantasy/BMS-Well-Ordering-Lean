@@ -92,8 +92,4 @@ theorem run_decreasing_l (hℳ : Theory.Models ℳ theory_m) {R E : set_l ℳ}
       (SecondOrderPairingBounds.injective_l hℳ _ _ _ _ he).2).2
     exact hwv ▸ next_decreasing_l hℳ hN hE hw
 
-#print axioms zero_decreasing_l
-#print axioms next_decreasing_l
-#print axioms run_decreasing_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentRowDecreasing

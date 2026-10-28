@@ -100,10 +100,4 @@ theorem guard_l (K : source_coding_l hℳ)
   obtain ⟨_, _, hW⟩ := h
   exact SecondOrderCanonicalOrderComparisonTotalized.guard_l K hW
 
-#print axioms output_formula_l
-#print axioms local_l
-#print axioms history_local_l
-#print axioms exists_unique_l
-#print axioms guard_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonSuccessorSyntax

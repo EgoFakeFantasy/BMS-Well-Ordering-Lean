@@ -57,7 +57,4 @@ theorem reading_l (K : source_coding_l hℳ)
   exact (spec_l hF c l).trans
     (PowerlessRelativeClassValidity.query_iff_l K hω hωEq he ht hT hSpec hV hN c l)
 
-#print axioms spec_l
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassValidityAbsolute

@@ -124,7 +124,4 @@ theorem exists_l (K : source_coding_l hℳ) {δ : Raw}
   intro a X P hX hP
   exact SecondOrderCanonicalLevel.order_l ((hRead a X P hX).mp hP)
 
-#print axioms reading_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalHistoryReading

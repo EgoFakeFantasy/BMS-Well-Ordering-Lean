@@ -118,6 +118,4 @@ theorem reading_l (K : source_coding_l hℳ) {ω e t₁ t₂ t₃ t₄ P N F V Q
   rw [hω, he, ht₁, ht₂, ht₃, ht₄] at h
   exact h.trans (query_l K hN hP hPair hΩ rfl hV hV₀ hC n s)
 
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRawLegacyNumericReading

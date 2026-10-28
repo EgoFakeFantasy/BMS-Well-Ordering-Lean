@@ -137,6 +137,4 @@ theorem member_source_of_copy_l (hℳ : Theory.Models ℳ theory_m)
     have hge : g' = e := injective_l hℳ (function_value_unique_l hJf htg' hte)
     simpa only [hca, hge] using hcg
 
-#print axioms member_source_of_copy_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorReverse

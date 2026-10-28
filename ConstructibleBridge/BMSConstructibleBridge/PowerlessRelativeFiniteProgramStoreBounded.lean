@@ -218,9 +218,4 @@ theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: �
   SecondOrderAxioms.interpretation_m _
     (fun _ h𝒩 => models_l h𝒩 φ B β C W A D f c t₀ t₁ t₂ q S E g)
 
-#print axioms store_delta_l
-#print axioms reading_iff_l
-#print axioms store_formula_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramStoreBounded

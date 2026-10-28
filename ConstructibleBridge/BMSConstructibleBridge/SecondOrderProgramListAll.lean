@@ -73,11 +73,4 @@ theorem all_reverse_l (hℳ : Theory.Models ℳ theory_m) {T L E S : set_l ℳ}
   obtain ⟨k, hjk, hk⟩ := SecondOrderProgramReverseConsequences.index_exists_l hℳ hj
   exact hx k hk a ((SecondOrderProgramReverseConsequences.lookup_l hℳ hT hL hE hy hn hjk a).mp ha)
 
-#print axioms all_l
-#print axioms all_m
-#print axioms all_syntax_l
-#print axioms all_zero_l
-#print axioms all_cons_l
-#print axioms all_reverse_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListAll

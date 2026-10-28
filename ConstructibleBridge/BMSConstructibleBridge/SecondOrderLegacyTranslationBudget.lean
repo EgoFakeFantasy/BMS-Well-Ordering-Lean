@@ -150,9 +150,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
   simp only [sentence_m, Formula.TrueIn, Formula.satisfies, spec_formula_l, row_formula_l, Term.eval]
   exact fun _ _ _ _ hX hY => agreement_l hℳ hX hY
 
-#print axioms point_formula_l
-#print axioms local_l
-#print axioms agreement_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderLegacyTranslationBudget

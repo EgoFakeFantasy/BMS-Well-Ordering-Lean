@@ -160,7 +160,4 @@ theorem unique_l (K : source_coding_l hℳ)
     have hSame := hAgree a ⟨ha, ha⟩ Q P ⟨hQ.2, hP⟩
     exact hSame ▸ hQ.2
 
-#print axioms agreement_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalHistoryAgreement

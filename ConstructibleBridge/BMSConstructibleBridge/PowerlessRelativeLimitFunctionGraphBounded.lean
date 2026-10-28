@@ -76,6 +76,4 @@ theorem member_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m)
       obtain ⟨q, hq, hPair'⟩ := (hRead x y).mpr ⟨hx, hy, hxy⟩
       exact (SecondOrderPairObjects.ordered_unique_l hℳ hPair' hPair) ▸ hq
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitFunctionGraphBounded

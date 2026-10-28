@@ -186,6 +186,4 @@ theorem image_iff_l
         (Idx := Idx) (Sat := Sat) (l := code_l K l) (t := tRaw) (j := j)
         hlω htIdx hjPair x)).trans (hRowImage x))
 
-#print axioms image_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyImageDefRawIdentification

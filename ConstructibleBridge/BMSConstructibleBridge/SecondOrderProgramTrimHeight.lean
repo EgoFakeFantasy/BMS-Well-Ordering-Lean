@@ -127,15 +127,4 @@ theorem trim_fold_cons_l (hℳ : Theory.Models ℳ theory_m) {F H : set_l ℳ}
   · rintro ⟨h, hh, hy⟩
     exact ⟨max v h, ⟨h, hh, rfl⟩, hy⟩
 
-#print axioms trim_step_m
-#print axioms trim_input_m
-#print axioms trim_m
-#print axioms trim_step_eval_l
-#print axioms array_encode_l
-#print axioms trim_fold_encode_l
-#print axioms trim_encode_l
-#print axioms trim_step_rel_l
-#print axioms trim_bridge_l
-#print axioms trim_fold_cons_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTrimHeight

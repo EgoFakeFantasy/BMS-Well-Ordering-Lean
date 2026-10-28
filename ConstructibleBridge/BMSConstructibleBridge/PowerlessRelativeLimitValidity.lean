@@ -120,7 +120,4 @@ theorem exists_l (K : source_coding_l hℳ)
     (t₁ := t₁') (t₂ := t₂') (t₃ := t₃')
     K hωClass hωEq he htClass hT hSpec hV hN c l)
 
-#print axioms query_exists_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitValidity

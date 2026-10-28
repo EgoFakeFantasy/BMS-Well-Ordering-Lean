@@ -132,17 +132,4 @@ theorem compare_nonzero_l (hℳ : Theory.Models ℳ theory_m) {B J : set_l ℳ}
     exact ⟨x, y, function_value_unique_l hCf hu ((candidate_rel_l hℳ hC hJ a t r i _).mpr hx),
       function_value_unique_l hTf hv ((target_rel_l hℳ hT hJ a t r i _).mpr hy), hxy⟩
 
-#print axioms candidate_input_m
-#print axioms candidate_m
-#print axioms target_m
-#print axioms compare_m
-#print axioms candidate_input_eval_l
-#print axioms candidate_encode_l
-#print axioms target_encode_l
-#print axioms compare_encode_l
-#print axioms candidate_input_rel_l
-#print axioms candidate_rel_l
-#print axioms target_rel_l
-#print axioms compare_nonzero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramEntryCompare

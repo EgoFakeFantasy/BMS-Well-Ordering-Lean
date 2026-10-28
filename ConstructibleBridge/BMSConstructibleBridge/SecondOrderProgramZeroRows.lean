@@ -74,9 +74,4 @@ theorem trim_bound_iff_zero_rows_l (hℳ : Theory.Models ℳ theory_m) {T E : se
   obtain ⟨H, _, hH⟩ := graph_total_l hℳ support_m
   exact (trim_bound_l hℳ hT hE hH hy b).trans (upper_iff_zero_rows_l hℳ hE hH x b)
 
-#print axioms support_bound_l
-#print axioms zero_rows_l
-#print axioms upper_iff_zero_rows_l
-#print axioms trim_bound_iff_zero_rows_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramZeroRows

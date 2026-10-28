@@ -44,6 +44,4 @@ theorem query_iff_l (K : source_coding_l hℳ)
   · rintro ⟨m, hm, H, _, hk, hHistory, hQuery⟩
     exact ⟨m, hm, H, (hQ H).mpr ⟨m, hm, hHistory.1⟩, hk, hHistory, hQuery⟩
 
-#print axioms query_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitEvaluationHistoryBound

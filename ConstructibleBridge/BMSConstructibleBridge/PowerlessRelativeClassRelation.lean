@@ -116,7 +116,4 @@ theorem derives_m {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set :: �
       (SecondOrderDefinableRelationImageDerives.sentence_m φ))) :=
   PowerlessRelativeClassRelativization.derives_m _ (fun _ _ _ _ => models_l hφ)
 
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassRelation

@@ -48,6 +48,4 @@ theorem coded_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
   refine (hRead n m).trans ⟨fun h => ((hQ _ _).mp h).2.2, fun h => ?_⟩
   exact (hQ _ _).mpr ⟨(numberCode_l K n).property, (numberCode_l K m).property, h⟩
 
-#print axioms coded_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryNumericRelation

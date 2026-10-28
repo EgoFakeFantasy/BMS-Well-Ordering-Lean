@@ -127,11 +127,4 @@ theorem order_l {C I J F G X Y L : type_l hℳ}
   obtain ⟨T, hT, hOrder, _⟩ := SecondOrderWellOrderCoherentUnion.graph_exists_l hJ hF hG hCoherent hStages hCover
   exact SecondOrderWellOrderCoherentUnion.graph_unique_l hT hL ▸ hOrder
 
-#print axioms output_formula_l
-#print axioms local_l
-#print axioms history_local_l
-#print axioms graph_total_l
-#print axioms exists_unique_l
-#print axioms order_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonLimitSyntax

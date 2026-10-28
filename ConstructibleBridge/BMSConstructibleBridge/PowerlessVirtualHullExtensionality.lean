@@ -198,9 +198,4 @@ theorem derives_m {Δ : SortContext ℒ} (θ : Formula ℒ [] (.set :: .set :: �
   SecondOrderAxioms.interpretation_m _
     (fun _ h𝒩 => models_l h𝒩 θ Φ ω e t₁ t₂ t₃ Pair Valid B P₀ C A D s t)
 
-#print axioms extensional_l
-#print axioms upper_l
-#print axioms domain_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessVirtualHullExtensionality

@@ -95,7 +95,4 @@ theorem graft_formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortContext
   simp only [graft_m, SecondOrderRelationSpecification.formula_l, graft_env_l]
   rfl
 
-#print axioms layer_formula_l
-#print axioms graft_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefGraphFormula

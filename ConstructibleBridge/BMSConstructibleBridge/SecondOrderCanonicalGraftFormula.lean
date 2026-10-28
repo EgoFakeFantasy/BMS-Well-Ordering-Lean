@@ -59,6 +59,4 @@ theorem iff_l (hℳ : Theory.Models ℳ theory_m) (R P G : set_l ℳ) :
   have hEq := SecondOrderCanonicalGraft.unique_l hℳ hG (graft_l hℳ hH)
   exact hEq ▸ hH
 
-#print axioms iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalGraftFormula

@@ -93,9 +93,4 @@ theorem graph_l (ω e S one two : type_l hℳ B) : ∃ G : type_l hℳ B,
     (PowerlessBoundedSequenceIndex.formula_l ((η.pushFree f).pushFree I) w z s a b
       (.fvar .here) (.fvar (.there .here))))
 
-#print axioms absolute_l
-#print axioms exists_l
-#print axioms unique_l
-#print axioms graph_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceIndex

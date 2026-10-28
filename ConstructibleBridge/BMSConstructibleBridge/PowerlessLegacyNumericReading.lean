@@ -101,9 +101,4 @@ theorem budget_l (l n B : num_l ℳ) :
     exact ⟨code_l K (SecondOrderModel.add_l l n), (numberCode_l K _).property,
       (PowerlessBoundedAddition.instance_l K hN l n _).mpr rfl, hCap.mpr hB⟩
 
-#print axioms exists_number_l
-#print axioms node_l
-#print axioms query_l
-#print axioms budget_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyNumericReading

@@ -48,8 +48,4 @@ theorem value_exists_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {C : set
   have hf (x : num_l ℳ) : relation_l C x (f x) := (Classical.choose_spec (hCf x)).1
   exact ⟨f, value_of_graph_l hℳ c hC hf, hf⟩
 
-#print axioms graph_equiv_l
-#print axioms value_of_graph_l
-#print axioms value_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCallbackValue

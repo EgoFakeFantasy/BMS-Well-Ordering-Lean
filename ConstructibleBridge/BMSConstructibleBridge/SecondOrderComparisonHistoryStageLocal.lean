@@ -83,7 +83,4 @@ theorem output_local_l (K : source_coding_l hℳ)
   ⟨forward_l K hJ hI R H H' hR E E' hE hE' n hPast,
     forward_l K hJ hI R H' H hR E' E hE' hE n (fun i hi t => (hPast i hi t).symm)⟩
 
-#print axioms decoded_read_l
-#print axioms output_local_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonHistoryStageLocal

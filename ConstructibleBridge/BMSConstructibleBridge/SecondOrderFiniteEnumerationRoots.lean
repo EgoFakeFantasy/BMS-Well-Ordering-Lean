@@ -95,7 +95,4 @@ theorem exists_l (C : source_coding_l hℳ) {S E G : SecondOrderModel.set_l ℳ}
       (hR i n).mpr ?_, (SecondOrderQuotient.eq_iff_l hℳ Y _).mp hn⟩
     exact hix.symm ▸ hn ▸ hxy
 
-#print axioms relation_exists_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteEnumerationRoots

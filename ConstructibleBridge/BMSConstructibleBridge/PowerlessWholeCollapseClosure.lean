@@ -117,8 +117,4 @@ theorem target_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: Δ
     have hEq : p = q := SecondOrderQuotient.ext_l hℳ p q (fun z => (hp z).trans (hq z).symm)
     exact hEq.symm ▸ hqT
 
-#print axioms pair_l
-#print axioms binary_l
-#print axioms target_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessWholeCollapseClosure

@@ -175,10 +175,4 @@ theorem nonzero_of_right_l (hℳ : Theory.Models ℳ theory_m) {B M J L : set_l 
     · exact hr h
     · exact hpmid h
 
-#print axioms zero_congr_l
-#print axioms nonzero_of_right_l
-#print axioms first_nonzero_l
-#print axioms nonzero_of_source_ancestor_l
-#print axioms source_ancestor_of_nonzero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscendingAncestor

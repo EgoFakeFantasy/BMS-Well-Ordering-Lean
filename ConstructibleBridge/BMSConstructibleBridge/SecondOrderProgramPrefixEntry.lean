@@ -72,8 +72,4 @@ theorem take_entry_l (hℳ : Theory.Models ℳ theory_m) {K J L E : set_l ℳ}
     (lt_of_lt_of_le hj (min_le_left n k)) hj
     (fun s => (SecondOrderProgramTakeIndices.take_lookup_l hℳ hK hL hE hx hy hj s).symm) r v
 
-#print axioms entry_index_congr_l
-#print axioms entry_congr_l
-#print axioms take_entry_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramPrefixEntry

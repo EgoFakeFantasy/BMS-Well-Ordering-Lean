@@ -65,12 +65,4 @@ theorem graphs_total_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} signature_m}
   obtain ⟨E, hEf, hE⟩ := graph_total_l hℳ check_m
   exact ⟨H, E, hHf, hH, hEf, hE⟩
 
-#print axioms matrix_m
-#print axioms matrix_pure_m
-#print axioms matrix_sound_l
-#print axioms closed_m
-#print axioms closed_pure_m
-#print axioms closed_sound_l
-#print axioms graphs_total_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderConcreteFormula

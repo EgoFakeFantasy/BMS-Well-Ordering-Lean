@@ -76,8 +76,4 @@ theorem instance_l (K : PowerlessBMSQuotientCoding.source_coding_l hℳ)
     ((hF c.val l.val).trans ((PowerlessRelativeClassValidity.query_iff_l K hω hωEq he ht hT hSpec hV hN c.val l.val).symm.trans
       (query_absolute_l (hBase := hBase) ω e N T t₁ t₂ t₃ c l).symm))
 
-#print axioms spec_formula_l
-#print axioms query_absolute_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFormulaValiditySpecification

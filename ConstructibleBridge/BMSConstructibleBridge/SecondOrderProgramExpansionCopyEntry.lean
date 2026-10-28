@@ -101,6 +101,4 @@ theorem entry_l (hℳ : Theory.Models ℳ theory_m)
   exact (SecondOrderProgramTrimEntryBelow.entry_l hℳ hT hZ hJ hL hE hvr hz htrim
     hcol hrow q).symm.trans (hentry q)
 
-#print axioms entry_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyEntry

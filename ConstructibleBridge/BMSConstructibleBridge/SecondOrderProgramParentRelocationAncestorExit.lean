@@ -584,15 +584,4 @@ theorem ancestor_exit_sync_l (hℳ : Theory.Models ℳ theory_m) (c d : code_m)
     member_nonzero_l hℳ d hB₂ hA₂ hL hE hchain₂ hlen_u q
   exact hB₁.trans (hflat.trans hB₂.symm)
 
-#print axioms common_state_exit_l
-#print axioms exit_state_l
-#print axioms reverse_exists_l
-#print axioms below_offset_l
-#print axioms ancestor_exit_sync_l
-
-#print axioms exit_state_m
-#print axioms exit_state_language_m
-#print axioms flat_start_l
-#print axioms local_start_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentRelocationAncestorExit

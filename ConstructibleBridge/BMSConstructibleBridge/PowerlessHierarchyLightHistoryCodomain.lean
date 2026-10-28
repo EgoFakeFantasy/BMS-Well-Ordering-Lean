@@ -71,8 +71,4 @@ theorem exists_l {B D A Ω W : type_l hℳ}
   exact ⟨f, PowerlessHierarchyLightHistoryUnique.from_original_l hℳ hRead
     (fun _ hx => hx) (codomain_l hℳ hBase hA hW hBelow hf)⟩
 
-#print axioms codomain_l
-#print axioms original_exists_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyLightHistoryCodomain

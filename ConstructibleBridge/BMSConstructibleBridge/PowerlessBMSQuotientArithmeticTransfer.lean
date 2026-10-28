@@ -84,9 +84,4 @@ theorem derives_m (φ : Sentence SecondOrderSyntax.signature_m)
   apply SecondOrderAxioms.interpretation_m
   exact fun _ hℳ => models_l hℳ φ hφ h
 
-#print axioms coverage_l
-#print axioms closed_l
-#print axioms closure_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientArithmeticTransfer

@@ -103,9 +103,4 @@ theorem noncollection_derives_m {ψ : FirstOrder.Sentence ℒ}
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m ψ) :=
   SecondOrderAxioms.interpretation_m ψ (fun _ hℳ => noncollection_l hℳ hψ hNot)
 
-#print axioms separation_l
-#print axioms noncollection_l
-#print axioms finite_models_l
-#print axioms noncollection_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientAxioms

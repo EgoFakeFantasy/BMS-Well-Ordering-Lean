@@ -96,11 +96,8 @@ theorem models_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.sign
     · intro _ v; nomatch v
     · intro s v
       cases s
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v <;> rfl
+      rcases v with _ | _ | v
+      all_goals first | rfl | cases v <;> rfl
   change (graph_m φ).satisfies ρ
   rw [hρ]
   apply (graph_formula_l φ η _ _ _).mpr
@@ -111,8 +108,5 @@ theorem derives_m {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set :: �
     (hφ : Formula.IsDelta0 membershipLevyBound φ) :
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m φ)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ hφ)
-
-#print axioms graph_formula_l
-#print axioms derives_m
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitRelationalGraphDerives

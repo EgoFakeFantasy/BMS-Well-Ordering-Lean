@@ -135,9 +135,4 @@ theorem extension_graph_iff_l (A P L D E : SecondOrderQuotient.type_l hℳ) :
   exact forall_congr' fun p => iff_congr Iff.rfl (exists_congr fun x => exists_congr fun y =>
     and_congr Iff.rfl (and_congr Iff.rfl ((and_congr Iff.rfl (hφ x y)).trans and_comm)))
 
-#print axioms row_delta_l
-#print axioms extension_delta_l
-#print axioms row_graph_iff_l
-#print axioms extension_graph_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderGraphBounded

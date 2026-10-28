@@ -380,9 +380,4 @@ theorem derives_m {Δ Θ : SortContext ℒ} (φ : Formula ℒ [] (.set :: Δ))
   SecondOrderAxioms.interpretation_m _
     (fun _ h𝒩 => models_l h𝒩 φ B T X ν)
 
-#print axioms restriction_delta_l
-#print axioms class_exists_l
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassReflectedSeparation

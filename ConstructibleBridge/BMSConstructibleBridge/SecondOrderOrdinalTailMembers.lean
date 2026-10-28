@@ -83,7 +83,4 @@ theorem successor_l (n : num_l ℳ) (X : SecondOrderGraph.code_l ℳ) :
       · exact Or.inr (Or.inr ⟨m, (lt_succ_l hℳ m n).mpr (Or.inl hm), hXm⟩)
     · exact Or.inr (Or.inr ⟨n, (lt_succ_l hℳ n n).mpr (Or.inr rfl), hX⟩)
 
-#print axioms members_l
-#print axioms successor_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalTailMembers

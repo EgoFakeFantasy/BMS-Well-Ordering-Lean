@@ -55,7 +55,4 @@ theorem membership_l {f L A i j : type_l hℳ B}
     exact ⟨x', y', (PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) f i x').mpr hx,
       (PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) f j y').mpr hy, hxy⟩
 
-#print axioms equality_l
-#print axioms membership_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassEvaluationAtomicAbsolute

@@ -83,6 +83,4 @@ theorem minimum_l {ω X R L S : type_l hℳ B}
   · subst m
     exact hMin g ((hVRead g).mpr ⟨hgU, (hP g).mpr hgm⟩) hgx
 
-#print axioms minimum_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceOrderMinimum

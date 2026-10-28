@@ -43,6 +43,4 @@ theorem exists_l (K : source_coding_l hℳ) {ω A : type_l hℳ B}
   exact ⟨f', (PowerlessRelativeClassFunctionAbsolute.map_l (hBase := hBase)
     f' (number_l hBase K ω hω L) A).mpr hf, hLink⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyAssignmentRealization

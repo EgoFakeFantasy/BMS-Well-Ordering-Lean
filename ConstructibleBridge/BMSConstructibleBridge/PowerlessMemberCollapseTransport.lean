@@ -235,14 +235,4 @@ theorem global_l (H : Raw) (hH : SecondOrderFunctionObjects.map_l hℳ H I T)
 
 end Quotient
 
-#print axioms term_l
-#print axioms env_exists_l
-#print axioms relation_l
-#print axioms push_l
-#print axioms push_free_l
-#print axioms formula_l
-#print axioms graph_l
-#print axioms member_l
-#print axioms global_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberCollapseTransport

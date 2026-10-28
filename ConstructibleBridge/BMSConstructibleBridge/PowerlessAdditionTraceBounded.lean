@@ -81,7 +81,4 @@ theorem equiv_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {ω e a n g : �
   · rintro ⟨m, hm, hg, h₀, hStep⟩
     exact ⟨m, hSucc m hm, hm, hg, h₀, fun k hk l _ x _ y _ hl hx hy => hStep k l x y hk hl hx hy⟩
 
-#print axioms delta_l
-#print axioms equiv_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessAdditionTraceBounded

@@ -128,7 +128,4 @@ theorem closure_l {Ε Δ : SortContext ℒ}
     hLeast hSome
   exact ⟨y₀, hy, hWitness.1⟩
 
-#print axioms reading_l
-#print axioms closure_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeSourceGraphReading

@@ -54,7 +54,4 @@ theorem entry_order_some_l (hℳ : Theory.Models ℳ theory_m) {J : set_l ℳ}
   · intro hlt
     exact ⟨a, b, ha, hb, hlt⟩
 
-#print axioms entry_order_congr_l
-#print axioms entry_order_some_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramEntryOrderTransport

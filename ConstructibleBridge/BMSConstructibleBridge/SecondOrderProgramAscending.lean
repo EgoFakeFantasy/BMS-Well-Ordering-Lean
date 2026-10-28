@@ -176,21 +176,4 @@ theorem ascending_zero_l (hℳ : Theory.Models ℳ theory_m) {B A : set_l ℳ}
     · rw [if_neg hjz, ha]
       simp only [ne_eq, hjz, not_false_eq_true, true_and]
 
-#print axioms array_m
-#print axioms limit_m
-#print axioms parent_column_m
-#print axioms local_m
-#print axioms row_m
-#print axioms member_input_m
-#print axioms member_test_m
-#print axioms below_m
-#print axioms ascending_m
-#print axioms member_input_eval_l
-#print axioms member_test_encode_l
-#print axioms below_eval_l
-#print axioms ascending_encode_l
-#print axioms member_input_rel_l
-#print axioms member_test_rel_l
-#print axioms ascending_zero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAscending

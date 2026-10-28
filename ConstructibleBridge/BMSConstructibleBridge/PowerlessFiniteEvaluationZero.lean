@@ -49,6 +49,4 @@ theorem formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : SortCo
   simp only [formula_m, Formula.satisfies, value_formula_l, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms relation_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteEvaluationZero

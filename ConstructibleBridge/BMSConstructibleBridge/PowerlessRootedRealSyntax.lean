@@ -98,9 +98,4 @@ theorem edge_instance_l (K : source_coding_l hℳ) {S V : SecondOrderQuotient.ty
       (PowerlessBoundedNumericPairing.instance_l K hS n m _).mpr rfl,
       (row_instance_l K hS hV hTrace _ _).mpr hRow⟩
 
-#print axioms row_delta_m
-#print axioms edge_delta_m
-#print axioms row_instance_l
-#print axioms edge_instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRootedRealSyntax

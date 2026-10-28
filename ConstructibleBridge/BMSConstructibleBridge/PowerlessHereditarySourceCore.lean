@@ -63,6 +63,4 @@ theorem models_l (K : source_coding_l hℳ)
   | collection φ =>
     exact PowerlessHereditaryProjectSchemas.collection_l K hB hNonempty φ
 
-#print axioms models_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditarySourceCore

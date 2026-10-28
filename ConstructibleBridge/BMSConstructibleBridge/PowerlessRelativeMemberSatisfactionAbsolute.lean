@@ -292,12 +292,4 @@ theorem guarded_l
   have hT' : map_l (ℳ := 𝒱) T.val K.omega K.omega := by simpa only [hωEq] using hT
   exact spec_l K hB hβ hW hCofinal hωEq heEq hT' hSat
 
-#print axioms addition_member_l
-#print axioms iteration_raw_l
-#print axioms addition_l
-#print axioms constructor_l
-#print axioms exists_l
-#print axioms spec_l
-#print axioms guarded_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeMemberSatisfactionAbsolute

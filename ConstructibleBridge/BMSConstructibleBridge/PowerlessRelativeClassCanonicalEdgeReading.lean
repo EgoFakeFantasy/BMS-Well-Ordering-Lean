@@ -96,7 +96,4 @@ theorem edge_l (K : source_coding_l hℳ) (ω P₀ x y : M)
       g, R, P, hPoint, hxX,
       (PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) P x y).mpr hValue⟩
 
-#print axioms selected_l
-#print axioms edge_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalEdgeReading

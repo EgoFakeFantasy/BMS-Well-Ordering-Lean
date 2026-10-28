@@ -101,8 +101,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m []
   intro ω hω e he
   exact exists_l (hBase := hBase) hω he
 
-#print axioms constructor_to_ambient_l
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassConstructorBounds

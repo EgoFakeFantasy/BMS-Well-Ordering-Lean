@@ -152,7 +152,4 @@ theorem exists_l (K : source_coding_l hℳ) (A C H F : type_l hℳ B)
   exact ⟨U, P, R, hPRead, hR, fun p y =>
     (hRead p y).trans (and_congr Iff.rfl (and_congr Iff.rfl (hφ p y)))⟩
 
-#print axioms matrix_delta_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassIndexedIteration

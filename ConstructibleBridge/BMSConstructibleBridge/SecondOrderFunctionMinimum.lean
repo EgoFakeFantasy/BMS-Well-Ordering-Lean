@@ -50,9 +50,4 @@ theorem not_descending_l (hℳ : Theory.Models ℳ theory_m) {F : set_l ℳ}
   obtain ⟨b, hb, _⟩ := hF (succ_l i)
   exact hmin (succ_l i) b hb (hstep i n b hi hb)
 
-#print axioms range_m
-#print axioms range_syntax_l
-#print axioms minimum_l
-#print axioms not_descending_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFunctionMinimum

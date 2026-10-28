@@ -92,6 +92,4 @@ theorem below_maximal_l (hℳ : Theory.Models ℳ theory_m)
       hx hmax hlast hparent hd hbad hy hv htrim hz hrow hcopyPos hcopy hn ih
       hstart hfinish hParent
 
-#print axioms below_maximal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParentLocality

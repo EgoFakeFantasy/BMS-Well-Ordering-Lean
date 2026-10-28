@@ -96,6 +96,4 @@ theorem exists_map_l
       exact hCoordinates.2.symm
     exact hzy
 
-#print axioms exists_map_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientFunctions

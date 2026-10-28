@@ -126,8 +126,4 @@ theorem union_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {B β 
     SecondOrderMemberDefBasicClosure.union_l hℳ hDef hXc
       (PowerlessRelativeLevelClosure.transitive_l hℳ hBase hc) hU⟩
 
-#print axioms value_l
-#print axioms ordered_l
-#print axioms union_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitClosure

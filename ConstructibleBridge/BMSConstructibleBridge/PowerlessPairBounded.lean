@@ -69,6 +69,4 @@ theorem ordered_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ 
   exact ⟨fun ⟨s, _, t, _, hs, ht, hp⟩ => ⟨s, t, hs, ht, hp⟩,
     fun ⟨s, t, hs, ht, hp⟩ => ⟨s, (hp _).mpr (Or.inl rfl), t, (hp _).mpr (Or.inr rfl), hs, ht, hp⟩⟩
 
-#print axioms ordered_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessPairBounded

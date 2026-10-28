@@ -59,6 +59,4 @@ theorem entry_order_congr_l (hℳ : Theory.Models ℳ theory_m)
     hC hH hL hE hB hO hU hD hJ hb hf hblk hr hi hj
   exact SecondOrderProgramAscendingAncestor.zero_congr_l hℳ hB hM hij
 
-#print axioms entry_order_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyAncestorEntryOrder

@@ -52,7 +52,4 @@ theorem derives_m (H : Nat)
   intro M hM
   exact closed_l H (hSources hM)
 
-#print axioms closed_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSNonemptyTransfer

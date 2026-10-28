@@ -61,7 +61,4 @@ theorem unique_l (hℳ : Theory.Models ℳ theory_m) {A : set_l ℳ} {r a : num_
   obtain ⟨G, _, hGF⟩ := SecondOrderDefinableFamily.exists_l hℳ E D T
   exact ⟨rfl, rfl, rfl, rfl, rfl, rfl, (hGF F h.family).trans (hGF F' h'.family).symm⟩
 
-#print axioms exists_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefPacket

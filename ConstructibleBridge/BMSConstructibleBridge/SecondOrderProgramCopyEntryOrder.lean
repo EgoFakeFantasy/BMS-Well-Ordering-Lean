@@ -292,9 +292,4 @@ theorem entry_order_of_copy_right_zero_l (hℳ : Theory.Models ℳ theory_m)
   exact ⟨vi, vj, (hbi _).mpr hvi, (hbj _).mpr hvj,
     lt_of_le_of_lt (le_add_of_nonneg_right (zero_le_l hℳ s)) had⟩
 
-#print axioms entry_order_congr_l
-#print axioms entry_order_of_copy_right_zero_l
-#print axioms entry_value_congr_of_zero_l
-#print axioms entry_value_common_of_zero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyEntryOrder

@@ -137,9 +137,4 @@ theorem irreflexive_derives_m {Δ : SortContext ℒ} (ω I : Term ℒ [] Δ .set
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (irreflexive_m ω I)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => irreflexive_models_l hℳ ω I)
 
-#print axioms difference_formula_l
-#print axioms compare_formula_l
-#print axioms irreflexive_l
-#print axioms irreflexive_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessKleeneBrouwerSyntax

@@ -68,6 +68,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) {S G : set_l ℳ} {r : num_
         SecondOrderBisimulation.trans_l hℳ X.real S G X.root r _ hXr (hOld r)⟩
     · exact ⟨value_l (succ_l (zero_l ℳ)) m, (hRead _).mpr (Or.inr ⟨m, rfl⟩), hXm⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalTailRange

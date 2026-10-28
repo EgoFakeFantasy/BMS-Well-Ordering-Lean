@@ -110,12 +110,4 @@ theorem extensionality_l (hℳ : Theory.Models ℳ theory_m) {L E : set_l ℳ}
             ((lookup_cons_succ_l hℳ hE a t i z).mpr hz))
   exact key x y n hx hy he
 
-#print axioms entries_l
-#print axioms entries_m
-#print axioms entries_syntax_l
-#print axioms extensionality_m
-#print axioms extensionality_language_m
-#print axioms extensionality_syntax_l
-#print axioms extensionality_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListExtensionality

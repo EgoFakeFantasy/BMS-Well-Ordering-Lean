@@ -113,7 +113,4 @@ theorem derives_m {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: Δ)}
     (GraphTranslation.form_m (PowerlessRelativeClassRelativization.guarded_m (SecondOrderSeparationAxiom.sentence_m φ))) :=
   PowerlessRelativeClassRelativization.derives_m _ (fun _ _ _ _ => models_l hφ)
 
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassDeltaSeparation

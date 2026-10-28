@@ -59,7 +59,4 @@ theorem exists_member_l (K : source_coding_l hℳ)
     (fun x hx => hTrans A x hAW hx)
   exact ⟨f, hfW, hf, hLink⟩
 
-#print axioms exists_l
-#print axioms exists_member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyAssignmentRawRealization

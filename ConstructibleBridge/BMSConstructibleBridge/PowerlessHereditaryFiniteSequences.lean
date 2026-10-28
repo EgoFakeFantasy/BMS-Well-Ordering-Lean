@@ -48,6 +48,4 @@ theorem exists_l {ω X : type_l hℳ B}
   exact PowerlessHereditaryFiniteSequenceEnvelope.exists_l hω
     ((hT X).mpr (Or.inl hXU)) ((hT ω).mpr (Or.inr hωV)) hTTrans hF hOnto
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryFiniteSequences

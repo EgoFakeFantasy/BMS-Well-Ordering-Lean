@@ -82,7 +82,4 @@ theorem zero_l {ω n X R L P : type_l hℳ B}
     obtain ⟨i, _, _, hi, _⟩ := (at_length_l hn (hEmpty n) hP hRead f hf g hg).mp hfg
     exact hEmpty i hi
 
-#print axioms same_length_l
-#print axioms zero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceOrderSlices

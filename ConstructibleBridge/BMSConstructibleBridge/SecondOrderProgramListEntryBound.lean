@@ -61,10 +61,4 @@ theorem below_cons_l (hℳ : Theory.Models ℳ theory_m) {E : set_l ℳ}
   · exact hv j ((SecondOrderOrder.succ_iff_l hℳ j m).mp hi) a
       ((lookup_cons_succ_l hℳ hE p v j a).mp ha)
 
-#print axioms below_l
-#print axioms below_m
-#print axioms below_syntax_l
-#print axioms below_zero_l
-#print axioms below_cons_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListEntryBound

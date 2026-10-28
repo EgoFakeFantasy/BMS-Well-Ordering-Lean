@@ -87,7 +87,4 @@ theorem output_exists_l (hℳ : Theory.Models ℳ theory_m) (R H : set_l ℳ) (n
   rintro W' ⟨G', P', hW'⟩
   exact local_l hℳ hW' hW (fun _ _ _ => Iff.rfl)
 
-#print axioms output_exists_l
-#print axioms local_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPredecessorUnion

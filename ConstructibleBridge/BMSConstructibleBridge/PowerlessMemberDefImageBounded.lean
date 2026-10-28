@@ -260,10 +260,4 @@ theorem formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : SortCo
   simp only [formula_m, holds_l, Formula.satisfies, empty_formula_l,
     PowerlessPairBounded.pair_formula_l, image_formula_l]
 
-#print axioms product_delta_l
-#print axioms indices_delta_l
-#print axioms queries_delta_l
-#print axioms delta_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefImageBounded

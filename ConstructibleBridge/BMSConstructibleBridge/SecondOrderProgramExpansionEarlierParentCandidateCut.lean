@@ -1336,25 +1336,4 @@ theorem parent_locality_step_at_expansion_copy_interval_l
     hx hmax hlast hparentSource hd hbad hy hv htrim hz hrowMax hrowTrim hrowHeight
     hcopyPos hcopyAgain hcopyBound hn htargetBound hentry hrowsLocal hstart hfinish hParent
 
-#print axioms no_zero_copy_middle_ancestor_l
-#print axioms entry_not_lt_zero_copy_of_earlier_parent_l
-#print axioms actual_ancestor_conflicts_with_zero_copy_bound_l
-#print axioms row_locality_language_m
-#print axioms row_locality_below_of_strong_step_l
-#print axioms ancestor_locality_all_of_strong_step_l
-#print axioms ancestors_local_of_row_locality_l
-#print axioms parent_locality_of_lower_nonancestor_l
-#print axioms parent_locality_of_not_all_lower_roots_l
-#print axioms current_copy_root_ancestor_of_all_lower_source_roots_l
-#print axioms earlier_parent_impossible_of_all_lower_roots_and_zero_l
-#print axioms actual_parent_in_copy_of_nonzero_ascending_l
-#print axioms earlier_parent_impossible_of_all_lower_roots_l
-#print axioms parent_locality_of_all_lower_roots_l
-#print axioms parent_locality_at_expansion_copy_target_l
-#print axioms positive_offset_below_width_l
-#print axioms positive_parent_row_below_trim_l
-#print axioms expansion_copy_root_entry_l
-#print axioms parent_locality_at_expansion_copy_interval_l
-#print axioms parent_locality_step_at_expansion_copy_interval_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCandidateCut

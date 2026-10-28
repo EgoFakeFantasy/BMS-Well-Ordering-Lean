@@ -118,8 +118,4 @@ theorem reading_l (K : source_coding_l hℳ) {N P A U f : type_l hℳ}
       exact (hLink a y).mpr
         ⟨b, (PowerlessLegacyPaddingBounded.reading_l K hN hPnumeric c l L z a b).mp hPad, hUy⟩
 
-#print axioms delta_l
-#print axioms formula_l
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyLinkBounded

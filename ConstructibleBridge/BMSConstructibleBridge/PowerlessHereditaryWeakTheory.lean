@@ -72,8 +72,4 @@ theorem interpretation_m {φ : Sentence ℒ} (h : Derives SecondOrderWeakSetTheo
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m φ)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => sentence_models_l hℳ h)
 
-#print axioms models_l
-#print axioms sentence_models_l
-#print axioms interpretation_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryWeakTheory

@@ -106,8 +106,4 @@ theorem exists_l
   · intro p hp
     exact (hFilter p).mp ((hSlice p).mp hp).2
 
-#print axioms filter_delta_l
-#print axioms filter_formula_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSatisfactionClean

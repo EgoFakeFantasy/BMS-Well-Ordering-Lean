@@ -123,6 +123,4 @@ theorem exists_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: Δ
   rw [hb, range_formula_l]
   exact ⟨And.right, fun hy => ⟨hCover y hy, hy⟩⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientBoundedImage

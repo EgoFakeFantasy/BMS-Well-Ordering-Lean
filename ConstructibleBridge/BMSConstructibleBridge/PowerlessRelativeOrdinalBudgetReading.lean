@@ -96,9 +96,4 @@ theorem empty_eq_base_l (n : num_l ℳ) (hn : SecondOrderModel.mem_l n D)
   exact hEmpty (index_l hℳ A hD i hi)
     ((index_member_l hℳ A hQ hD hRel i n hi hn).mpr hin)
 
-#print axioms index_member_l
-#print axioms class_l
-#print axioms earlier_l
-#print axioms empty_eq_base_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeOrdinalBudgetReading

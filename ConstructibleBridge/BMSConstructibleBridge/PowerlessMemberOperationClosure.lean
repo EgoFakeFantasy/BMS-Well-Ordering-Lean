@@ -68,7 +68,4 @@ theorem closed_l (hTrans : PowerlessNaturalOrder.transitive_l (ℳ := ℳ) W)
         · exact (hc ⟨z, hTrans a.val z a.property hz⟩).mpr (Or.inl hz)
         · exact (hc ⟨z, hTrans b.val z b.property hz⟩).mpr (Or.inr hz)
 
-#print axioms transitive_l
-#print axioms closed_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberOperationClosure

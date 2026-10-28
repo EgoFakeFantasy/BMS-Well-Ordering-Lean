@@ -92,11 +92,4 @@ theorem contains_nonzero_l (hℳ : Theory.Models ℳ theory_m) {C L E : set_l �
   push Not
   simp only [query_nonzero_l hℳ hQ hE]
 
-#print axioms contains_m
-#print axioms contains_eval_l
-#print axioms contains_zero_encode_l
-#print axioms contains_encode_l
-#print axioms contains_rel_l
-#print axioms contains_nonzero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListContains

@@ -65,7 +65,4 @@ theorem reading_l (K : source_coding_l hℳ) {N : type_l hℳ}
     exact (PowerlessBoundedAddition.instance_l K hN i (SecondOrderModel.succ_l r) _).mpr
       (congrArg (code_l K) hIndex.symm)
 
-#print axioms delta_l
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyIndexBounded

@@ -85,6 +85,4 @@ theorem trace_l {ω e a n g : type_l hℳ B}
   exact (class_equiv_l hω hn).symm.trans (hRead.trans (ambient_equiv_l
     ((PowerlessRelativeClassOmegaAbsolute.omega_l (hBase := hBase) ω).mp hω) hn))
 
-#print axioms trace_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFiniteTraceAbsolute

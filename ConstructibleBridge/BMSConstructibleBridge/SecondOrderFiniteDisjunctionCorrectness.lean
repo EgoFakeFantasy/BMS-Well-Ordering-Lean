@@ -172,7 +172,4 @@ theorem correct_l (hℳ : Theory.Models ℳ theory_m) {S E D Q R T : set_l ℳ}
       ih q hq, SecondOrderEvaluationEquations.equality_l hℳ E D Q R T hT l c _ _ hc]
     exact (prefix_successor_l hℳ E Q c n).symm
 
-#print axioms legal_l
-#print axioms correct_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteDisjunctionCorrectness

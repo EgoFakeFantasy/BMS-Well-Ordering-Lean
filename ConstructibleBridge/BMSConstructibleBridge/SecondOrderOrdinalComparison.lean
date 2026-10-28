@@ -46,6 +46,4 @@ theorem compare_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {α 
   · exact Or.inr (Or.inl h)
   · exact Or.inr (Or.inr h)
 
-#print axioms compare_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalComparison

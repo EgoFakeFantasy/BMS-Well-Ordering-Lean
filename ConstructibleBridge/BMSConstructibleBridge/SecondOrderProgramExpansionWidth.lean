@@ -76,7 +76,4 @@ theorem some_width_l (hℳ : Theory.Models ℳ theory_m) {E M L : set_l ℳ}
   exact ⟨j, p, d, hn, hpj, SecondOrderProgramSubtractionBounds.sub_add_l hℳ hD hd (Or.inr hpj),
     selected_width_l hℳ hE hM hP hL hD hn hm hp hd hy⟩
 
-#print axioms selected_width_l
-#print axioms some_width_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionWidth

@@ -48,6 +48,4 @@ theorem target_bounds_l (hℳ : Theory.Models ℳ theory_m) {P J O L E : set_l �
   exact ⟨htarget,
     SecondOrderProgramRectangularEntry.row_lt_of_some_l hℳ hJ hO hL hE hx htarget hb⟩
 
-#print axioms target_bounds_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRectangularParent

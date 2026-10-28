@@ -130,19 +130,4 @@ theorem success_rel_l (hℳ : Theory.Models ℳ theory_m) {S G C P : set_l ℳ}
   · rintro ⟨_, _, rfl, rfl, h⟩
     exact h
 
-#print axioms index_m
-#print axioms row_m
-#print axioms parent_m
-#print axioms good_m
-#print axioms bad_m
-#print axioms parameter_m
-#print axioms copies_input_m
-#print axioms copied_m
-#print axioms success_m
-#print axioms good_encode_l
-#print axioms bad_encode_l
-#print axioms copied_encode_l
-#print axioms success_encode_l
-#print axioms success_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionSuccess
