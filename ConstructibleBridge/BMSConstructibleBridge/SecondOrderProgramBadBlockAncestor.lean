@@ -70,6 +70,4 @@ theorem member_l (hℳ : Theory.Models ℳ theory_m) {B L E D J M : set_l ℳ}
   exact (SecondOrderProgramOffsetParentAncestor.ancestor_l
     hℳ hL hE hJ hP hM hx.1 hbr.1 hbound hentry r v u hv).symm
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramBadBlockAncestor

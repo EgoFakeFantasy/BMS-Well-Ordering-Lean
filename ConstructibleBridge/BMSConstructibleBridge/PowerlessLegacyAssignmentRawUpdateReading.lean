@@ -63,7 +63,4 @@ theorem prepend_l (K : source_coding_l hℳ) {A f g x U : type_l hℳ}
     simp only [hi, false_and, ne_eq, not_false_eq_true, true_and, false_or, hPad]
     exact hLink i y
 
-#print axioms point_l
-#print axioms prepend_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyAssignmentRawUpdateReading

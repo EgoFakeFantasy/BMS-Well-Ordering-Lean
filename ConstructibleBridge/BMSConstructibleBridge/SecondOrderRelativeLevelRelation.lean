@@ -184,7 +184,4 @@ theorem graph_exists_l (hℳ : Theory.Models ℳ theory_m) (B : set_l ℳ)
       SecondOrderGraph.child_mem_l hℳ C m hm, (quotient_code_l hℳ N M).mp hLevel⟩
     exact ⟨n, m, h, hp⟩
 
-#print axioms exists_l
-#print axioms graph_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeLevelRelation

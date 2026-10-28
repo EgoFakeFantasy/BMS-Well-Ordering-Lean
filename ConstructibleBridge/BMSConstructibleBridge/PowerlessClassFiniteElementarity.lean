@@ -217,8 +217,4 @@ theorem formula_l {Δ Θ : SortContext ℒ} (D E : Formula ℒ [] (.set :: Θ))
     exact ⟨entry_l D E p.2 ν ζ η hIP hν hD hE (h p List.mem_cons_self),
       ih (fun q hq => h q (List.mem_cons_of_mem _ hq))⟩
 
-#print axioms parameters_formula_l
-#print axioms entry_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassFiniteElementarity

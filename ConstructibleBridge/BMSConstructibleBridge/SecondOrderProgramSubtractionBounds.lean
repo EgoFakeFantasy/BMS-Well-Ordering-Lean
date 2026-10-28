@@ -42,7 +42,4 @@ theorem sub_add_l (hℳ : Theory.Models ℳ theory_m) {D : set_l ℳ}
   · exact hc
   · exact (SecondOrderNumbers.zero_add_l hℳ b).trans (le_antisymm hb hab)
 
-#print axioms sub_le_l
-#print axioms sub_add_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSubtractionBounds

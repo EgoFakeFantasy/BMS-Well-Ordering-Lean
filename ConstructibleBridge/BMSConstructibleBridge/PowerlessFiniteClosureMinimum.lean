@@ -79,7 +79,4 @@ theorem sentence_formula_l : sentence_m.TrueIn ℳ ↔
 theorem derives_m : Derives SecondOrderWeakSetTheory.theory_m [] sentence_m :=
   PowerlessFiniteSupport.derives_m (fun _ hℳ => sentence_formula_l.mpr (exists_l hℳ))
 
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteClosureMinimum

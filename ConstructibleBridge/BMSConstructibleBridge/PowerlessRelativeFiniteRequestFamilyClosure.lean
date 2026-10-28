@@ -106,8 +106,4 @@ theorem requests_l {Δ : SortContext ℒ} (Φ : PowerlessRelativeFiniteElementar
   exact PowerlessSourcePredicateRequests.subset_l
     (fun q hq => List.mem_flatMap.mpr ⟨p, hp, hq⟩) h
 
-#print axioms family_length_m
-#print axioms closed_l
-#print axioms requests_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteRequestFamilyClosure

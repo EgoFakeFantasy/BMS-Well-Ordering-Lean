@@ -54,6 +54,4 @@ theorem exists_l {Δ : SortContext ℒ} (η : Env (structure_l hℳ B hBase) [] 
   exact ⟨δ, C, hαδ, hLimit, hCofinal, hC, hLift X.val hXc,
     fun s v => hLift (η.freeVal v).val (hParams s v)⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCofinalParameterBounds

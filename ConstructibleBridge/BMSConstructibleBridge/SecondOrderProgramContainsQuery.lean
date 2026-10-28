@@ -100,13 +100,4 @@ theorem query_nonzero_l (hℳ : Theory.Models ℳ theory_m) {Q E : set_l ℳ}
   · exact fun he => he ▸ hv
   · exact function_value_unique_l (function_of_semantics_l hℳ lookup_m hE) hv
 
-#print axioms read_input_m
-#print axioms query_values_m
-#print axioms query_m
-#print axioms query_encode_l
-#print axioms query_nonzero_encode_l
-#print axioms read_input_rel_l
-#print axioms query_rel_of_value_l
-#print axioms query_nonzero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramContainsQuery

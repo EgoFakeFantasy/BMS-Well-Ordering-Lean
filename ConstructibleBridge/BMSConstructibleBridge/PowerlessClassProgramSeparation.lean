@@ -124,6 +124,4 @@ theorem exists_l (K : source_coding_l hℳ) {Δ Θ : SortContext ℒ}
     θ (η.pushFree U) (ω.eval η) T H (D.eval η) ψ χ X hIso hTargetClass
     (fun x hx => hClass x ((hImage x).mp hx)) hD hFixed hXD hParams hCapture
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassProgramSeparation

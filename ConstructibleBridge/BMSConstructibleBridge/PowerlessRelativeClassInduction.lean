@@ -84,7 +84,4 @@ theorem induction_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
     (fun n hn => (formula_l K φ η _).mpr (hStep n ((formula_l K φ η n).mp hn)))
   exact fun n => (formula_l K φ η n).mp (h n)
 
-#print axioms induction_derives_m
-#print axioms induction_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassInduction

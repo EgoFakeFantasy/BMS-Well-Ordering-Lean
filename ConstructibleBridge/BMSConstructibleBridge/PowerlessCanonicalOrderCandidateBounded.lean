@@ -186,10 +186,4 @@ theorem reading_l {C ω A P Sat D E S I J N T K U Q Y L : Raw}
     intro j hj x hx
     exact (h.queryRead j x).trans ⟨fun h => h.2.2, fun h => ⟨hj, hx, h⟩⟩
 
-#print axioms data_delta_l
-#print axioms delta_l
-#print axioms formula_l
-#print axioms query_read_l
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderCandidateBounded

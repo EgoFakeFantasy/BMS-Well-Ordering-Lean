@@ -30,6 +30,4 @@ theorem value_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.signa
   exact ⟨PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase htClass ((ht x).mpr (Or.inl rfl)),
     PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase htClass ((ht y).mpr (Or.inr rfl))⟩
 
-#print axioms value_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassValueCoordinates

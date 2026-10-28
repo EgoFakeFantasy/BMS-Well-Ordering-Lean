@@ -59,8 +59,6 @@ theorem formula_l (C : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
     exact ⟨P.mapping, P.onto, ⟨P.formula_codes, P.powers, P.domain, P.evaluation, P.family⟩,
       fun n m x y hx hy => ⟨P.equality n m x y hx hy, P.membership n m x y hx hy⟩, P.collection⟩
 
-#print axioms formula_l
-
 /-- 任意纯证书的实数域守卫给出原模型实数，再回读全部证书。 -/
 theorem represents_l (C : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
     (η : Env (SecondOrderQuotient.structure_l hℳ) Γ Δ) (w z X Y f V E D Q R T F : Term ℒ Γ Δ .set)
@@ -89,7 +87,5 @@ theorem represents_l (C : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
   exact SecondOrderEnumeratedMemberDef.represents_l C
     ((formula_l C η w z X Y f V E D Q R T F aV aE aD aQ aR aT aF v e d q r t g
       hw hz rfl rfl rfl rfl rfl rfl rfl hv he hd hq hr ht hg).mp h)
-
-#print axioms represents_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefEnumerationSemantics

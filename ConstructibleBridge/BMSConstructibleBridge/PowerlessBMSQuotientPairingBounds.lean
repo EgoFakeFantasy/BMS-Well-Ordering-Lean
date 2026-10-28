@@ -103,8 +103,4 @@ theorem constructor_bounds_l (K : source_coding_l hℳ) {T t a b n : type_l hℳ
   exact ⟨h₀.elim (fun h => hnOrdinal.transitive p hpn a h) (fun h => h.symm ▸ hpn),
     h₁.elim (fun h => hnOrdinal.transitive p hpn b h) (fun h => h.symm ▸ hpn)⟩
 
-#print axioms instance_l
-#print axioms coordinates_l
-#print axioms constructor_bounds_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientPairingBounds

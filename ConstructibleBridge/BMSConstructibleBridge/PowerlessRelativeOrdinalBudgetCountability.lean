@@ -169,6 +169,4 @@ theorem below_l (K : source_coding_l hℳ) (A : SecondOrderGraph.code_l ℳ)
   exact PowerlessRelativeCountableOrdinalBound.below_l (hBase := hBase) K K.omega_spec hTOrd
     ⟨I.val, I.property, (PowerlessRelativeClassFunctionAbsolute.map_l I U O).mp hI, hIInj⟩ hΩ
 
-#print axioms below_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeOrdinalBudgetCountability

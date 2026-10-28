@@ -214,17 +214,4 @@ theorem next_none_l (hℳ : Theory.Models ℳ theory_m) {P L M J : set_l ℳ}
       · exact Or.inl ht
       · exact Or.inr ⟨lt_of_not_ge ht, h⟩
 
-#print axioms array_input_rel_l
-#print axioms range_rel_l
-#print axioms range_zero_l
-#print axioms compare_input_rel_l
-#print axioms compare_rel_l
-#print axioms compare_nonzero_l
-#print axioms eligible_l
-#print axioms test_nonzero_l
-#print axioms search_rel_l
-#print axioms next_rel_l
-#print axioms next_some_l
-#print axioms next_none_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRuntimeParentSpecification

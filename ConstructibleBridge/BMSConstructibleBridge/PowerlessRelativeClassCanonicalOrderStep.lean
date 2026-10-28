@@ -101,9 +101,4 @@ theorem exists_l {ω A P R D : type_l hℳ B}
   exact ⟨E, ⟨L, hL, hGraph⟩, hE, fun x y hx hy => SecondOrderWellOrderEndExtension.old_l hAD hRead hx hy,
     fun x y hx hyx => SecondOrderWellOrderEndExtension.initial_l hRead hx hyx⟩
 
-#print axioms candidate_congr_l
-#print axioms candidate_unique_l
-#print axioms unique_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalOrderStep

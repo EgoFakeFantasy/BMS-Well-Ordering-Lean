@@ -79,13 +79,4 @@ theorem pair_value_l (hℳ : Theory.Models ℳ theory_m) {c d : code_m}
   · intro h
     exact ⟨f x, g x, rfl, rfl, h⟩
 
-#print axioms value_spec_l
-#print axioms zero_value_l
-#print axioms succ_value_l
-#print axioms id_value_l
-#print axioms left_value_l
-#print axioms right_value_l
-#print axioms comp_value_l
-#print axioms pair_value_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramValue

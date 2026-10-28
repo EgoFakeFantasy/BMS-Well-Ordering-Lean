@@ -73,6 +73,4 @@ theorem member_l (K : source_coding_l hℳ) {β C E : SecondOrderQuotient.type_l
   rw [hEq]
   exact ⟨hE'C, hBounded, E'.property, hOrder⟩
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitCanonicalOrderSuccessor

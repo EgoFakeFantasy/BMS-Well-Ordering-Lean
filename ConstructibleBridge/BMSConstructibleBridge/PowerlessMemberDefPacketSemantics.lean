@@ -66,6 +66,4 @@ theorem formula_l (C : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
         | .there (.there (.there (.there (.there .here)))) => ht
         | .there (.there (.there (.there (.there (.there .here))))) => hf
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefPacketSemantics

@@ -138,9 +138,4 @@ theorem extension_exists_l (hℳ : Theory.Models ℳ theory_m) (R : set_l ℳ) :
     (SecondOrderValidRootGraph.agrees_l hℳ hS a ha)
     (SecondOrderPairSet.tag_eq_l hℳ _ S G (fiber_l hℳ hG) a)
 
-#print axioms exists_l
-#print axioms wf_l
-#print axioms bounded_l
-#print axioms extension_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteExtensionGraph

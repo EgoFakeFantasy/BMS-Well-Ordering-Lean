@@ -46,6 +46,4 @@ theorem entry_l (hℳ : Theory.Models ℳ theory_m) {A L E J : set_l ℳ}
   exact SecondOrderProgramPrefixEntry.entry_index_congr_l hℳ hJ hL hE hzlen hy
     hbound hi (fun a => append_right_l hℳ hA hL hE hx hy hz hi a) r q
 
-#print axioms entry_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAppendRightEntry

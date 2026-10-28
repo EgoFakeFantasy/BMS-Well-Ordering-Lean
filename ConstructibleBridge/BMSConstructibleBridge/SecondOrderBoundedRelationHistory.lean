@@ -43,6 +43,4 @@ theorem exists_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
   obtain ⟨x, y, hx, hy, hxy⟩ := hProper n P hP p hp
   exact (hD p).mpr ⟨x, y, hx, hy, trivial, hxy⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderBoundedRelationHistory

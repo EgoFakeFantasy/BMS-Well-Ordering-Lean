@@ -123,6 +123,4 @@ theorem ordinal_l (n m : num_l ℳ) :
     · exact Or.inr (Or.inl hx)
     · exact Or.inr (Or.inr ⟨i, j, hx⟩)
 
-#print axioms ordinal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalDoubleTailOrder

@@ -73,6 +73,4 @@ theorem value_l (hℳ : Theory.Models ℳ theory_m) {B : set_l ℳ}
   rw [← hInput, ← hOutput] at hValue
   exact hValue
 
-#print axioms value_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeLevelSuccessor

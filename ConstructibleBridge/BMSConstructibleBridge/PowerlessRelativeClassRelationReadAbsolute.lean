@@ -48,6 +48,4 @@ theorem read_l {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set :: Δ)}
       ⟨x, PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase X.property hx⟩
       ⟨y, PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase Y.property hy⟩).mpr ⟨hx, hy, hBody⟩
 
-#print axioms read_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassRelationReadAbsolute

@@ -58,17 +58,8 @@ theorem formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : SortCo
   apply congrArg (fun ξ => template_m.satisfies ξ)
   apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
-    cases v with
-    | here => rfl
-    | there v => cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => cases v with
-            | here => rfl
-            | there v => nomatch v
+    rcases v with _ | _ | _ | _ | _ | v
+    all_goals first | rfl | nomatch v
 
 variable {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.signature_m}
   {hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m}
@@ -115,8 +106,5 @@ theorem reading_l (K : source_coding_l hℳ)
     have hn' : (numberCode_l K n).val = a := congrArg Subtype.val hn
     have hm' : (numberCode_l K m).val = b := congrArg Subtype.val hm
     simpa only [hn', hm'] using (hEdge n m).trans (h n m)
-
-#print axioms formula_l
-#print axioms reading_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonEncodeSyntax

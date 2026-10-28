@@ -75,6 +75,4 @@ theorem transitive_l (hℳ : Theory.Models ℳ theory_m) {B R S : set_l ℳ}
   · intro i hi Y hYw hY
     exact (formula_l hℳ S i).mp (hPast i hi) Y hY hYw
 
-#print axioms transitive_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyTransitivity

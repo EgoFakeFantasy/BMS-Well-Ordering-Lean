@@ -268,7 +268,4 @@ theorem formula_l {Γ Δ : SortContext signature_m} (C : correspondence_l (M := 
         exact ⟨a, hBody⟩
   | .existsE .set ψ => simp [pure_m] at _hφ
 
-#print axioms correspondence_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPureTransfer

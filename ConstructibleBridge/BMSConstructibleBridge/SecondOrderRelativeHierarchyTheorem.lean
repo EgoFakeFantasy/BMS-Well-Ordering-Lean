@@ -42,6 +42,4 @@ theorem models_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} signature_m}
 theorem derives_m : Derives theory_m [] sentence_m :=
   SecondOrderCompleteness.derives_m (fun _ hℳ => models_l hℳ)
 
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyTheorem

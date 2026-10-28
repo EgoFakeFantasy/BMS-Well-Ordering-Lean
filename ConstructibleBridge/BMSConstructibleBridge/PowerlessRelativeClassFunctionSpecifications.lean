@@ -113,8 +113,4 @@ theorem def_l
   exact (PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) D a r).trans
     ((hRead a.val r.val).trans (and_congr Iff.rfl (and_congr Iff.rfl hMatrix.symm)))
 
-#print axioms satisfaction_l
-#print axioms def_l
-#print axioms coverage_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFunctionSpecifications

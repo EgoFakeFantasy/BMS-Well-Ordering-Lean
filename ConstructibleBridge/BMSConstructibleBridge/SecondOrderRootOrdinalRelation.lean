@@ -136,8 +136,4 @@ theorem compare_l (hℳ : Theory.Models ℳ theory_m) (A : SecondOrderGraph.code
     obtain ⟨c, hc, hJC⟩ := hJI
     exact Or.inr (Or.inr ((hR j i).mpr ⟨hj, hi, c, hc, (hQ j c).mpr hJC⟩))
 
-#print axioms wf_l
-#print axioms transitive_l
-#print axioms compare_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRootOrdinalRelation

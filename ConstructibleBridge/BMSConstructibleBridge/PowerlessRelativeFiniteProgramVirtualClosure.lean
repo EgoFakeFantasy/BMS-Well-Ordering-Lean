@@ -404,13 +404,4 @@ theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: �
       (GraphTranslation.form_m (sentence_m φ B C ω Q e t₀ t₁ t₂ a S P)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 φ B C ω Q e t₀ t₁ t₂ a S P)
 
-#print axioms class_l
-#print axioms constant_l
-#print axioms normal_l
-#print axioms pair_l
-#print axioms call_l
-#print axioms closure_l
-#print axioms conclusion_formula_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramVirtualClosure

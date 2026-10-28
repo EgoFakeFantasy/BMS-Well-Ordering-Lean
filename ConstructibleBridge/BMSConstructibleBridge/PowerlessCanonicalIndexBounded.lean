@@ -278,10 +278,4 @@ theorem formula_reading_l {Γ Δ : SortContext ℒ} (η : Env 𝒱 Γ Δ)
       (N.eval η) (T.eval η) (K.eval η) (U.eval η) :=
   (formula_l η C ω A P S I J N T K U).trans (reading_l hCoverage)
 
-#print axioms delta_l
-#print axioms formula_l
-#print axioms reading_l
-#print axioms canonical_spec_l
-#print axioms formula_reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalIndexBounded

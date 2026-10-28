@@ -88,7 +88,4 @@ theorem formula_l (C : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
     Term.eval, Term.eval_weakenBound]
   rfl
 
-#print axioms nonempty_formula_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefSemantics

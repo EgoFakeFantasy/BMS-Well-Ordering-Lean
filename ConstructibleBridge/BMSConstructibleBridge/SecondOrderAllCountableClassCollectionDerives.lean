@@ -103,6 +103,4 @@ theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: �
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m φ B)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ φ B)
 
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderAllCountableClassCollectionDerives

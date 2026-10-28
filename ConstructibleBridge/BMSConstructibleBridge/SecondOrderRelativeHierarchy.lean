@@ -95,7 +95,4 @@ theorem rows_wf_l (hℳ : Theory.Models ℳ theory_m) {B R S : set_l ℳ}
   intro i hi Y hY
   exact (rows_formula_l S i).mp (hPast i hi) Y hY
 
-#print axioms exists_l
-#print axioms rows_wf_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchy

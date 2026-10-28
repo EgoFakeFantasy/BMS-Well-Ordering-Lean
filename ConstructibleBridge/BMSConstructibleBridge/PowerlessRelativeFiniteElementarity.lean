@@ -279,10 +279,4 @@ theorem formula_l {Δ Ε : SortContext ℒ} (Φ : family_m Δ) (ζ : Env ℳ [] 
     exact ⟨entry_l p.2 ζ I W τ η hIW hI₀ hW₀ hτ (h p (by simp)),
       ih (fun q hq => h q (List.mem_cons_of_mem _ hq))⟩
 
-#print axioms entry_l
-#print axioms append_formula_l
-#print axioms subfamily_formula_l
-#print axioms entry_formula_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteElementarity

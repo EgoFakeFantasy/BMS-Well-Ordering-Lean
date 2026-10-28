@@ -84,6 +84,4 @@ theorem exists_l (C : source_coding_l hℳ) (A : SecondOrderGraph.code_l ℳ)
     have hn' : y n = z := congrArg Subtype.val hn
     exact ⟨(numberCode_l C n).val, (numberCode_l C n).property, (hNumber n z).mpr hn'.symm⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberEnumeration

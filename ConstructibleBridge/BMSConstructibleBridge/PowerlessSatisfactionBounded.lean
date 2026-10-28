@@ -57,8 +57,4 @@ theorem holds_iff_value_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ}
   · intro h
     exact ⟨hc, hf, l, hl, hF, hMap, h⟩
 
-#print axioms delta_l
-#print axioms formula_l
-#print axioms holds_iff_value_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionBounded

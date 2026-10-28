@@ -156,15 +156,4 @@ theorem terminates_l (hℳ : Theory.Models ℳ theory_m) {I : set_l ℳ}
   · intro hy
     exact hy ▸ hi0
 
-#print axioms iterate_step_m
-#print axioms iterate_m
-#print axioms iterate_step_rel_l
-#print axioms iterate_zero_l
-#print axioms iterate_succ_l
-#print axioms invariant_m
-#print axioms invariant_language_m
-#print axioms invariant_syntax_l
-#print axioms bounded_output_l
-#print axioms terminates_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListIteration

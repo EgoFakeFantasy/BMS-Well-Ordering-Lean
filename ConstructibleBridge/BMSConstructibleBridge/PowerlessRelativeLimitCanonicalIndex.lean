@@ -252,8 +252,4 @@ theorem exists_l
 
 end
 
-#print axioms reading_l
-#print axioms to_index_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitCanonicalIndex

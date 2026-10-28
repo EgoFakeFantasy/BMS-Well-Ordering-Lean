@@ -72,6 +72,4 @@ theorem step_l (hℳ : Theory.Models ℳ theory_m) {B R S W : set_l ℳ} {n : nu
     exact successor_transitive_l hℳ ⟨Y, zero_l ℳ, hYw⟩ (hTrans m hm.1 Y hYw hY) hW hDef
   · exact union_transitive_l hℳ hUnion hRows hTrans
 
-#print axioms step_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyClosure

@@ -58,11 +58,4 @@ theorem member_encode_l (a : BMSArray) (r t i : Nat) :
   exact SecondOrderProgramAncestorMembership.member_encode_l parent_m (BMS.parent r a)
     (Nat.pair (Encodable.encode a) r) (parent_encode_l a r) t i
 
-#print axioms input_m
-#print axioms run_m
-#print axioms parent_m
-#print axioms run_encode_l
-#print axioms parent_encode_l
-#print axioms member_encode_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParent

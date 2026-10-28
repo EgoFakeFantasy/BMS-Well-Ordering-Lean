@@ -97,8 +97,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.
   exact (formula_l η _ _ _ _).trans
     ((history_iff_l hℳ hF').trans (PowerlessRelativeLimitHistory.formula_l η _ _ _).symm)
 
-#print axioms delta_l
-#print axioms history_iff_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHistoryBounded

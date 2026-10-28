@@ -74,12 +74,8 @@ theorem exists_l (K : source_coding_l hℳ)
       apply Env.ext
       · intro s v; nomatch v
       · intro s v
-        match s, v with
-        | .set, .here => rfl
-        | .set, .there .here => rfl
-        | .set, .there (.there .here) => rfl
-        | .set, .there (.there (.there .here)) => rfl
-        | .set, .there (.there (.there (.there .here))) => rfl
+        rcases v with _ | _ | _ | _ | _ | v
+        all_goals first | rfl | nomatch v
     rw [hη] at hAbs
     exact hAbs.trans
       (formula_l (𝒩 := SecondOrderQuotient.structure_l hℳ) C K.omega e.val n.val y.val)
@@ -114,7 +110,5 @@ theorem exists_l (K : source_coding_l hℳ)
   have hEq := hEnd n y rfl hy.2
   have hNy' := (PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) F n y).mp hNy
   exact hEq ▸ hNy'
-
-#print axioms exists_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassDoubling

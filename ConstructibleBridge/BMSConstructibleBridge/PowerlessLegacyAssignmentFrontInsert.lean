@@ -74,7 +74,4 @@ theorem exists_l (K : source_coding_l hℳ) {ω A f x : type_l hℳ B}
   exact ⟨g, hg, hUpdate, PowerlessLegacyAssignmentUpdateReading.prepend_l K hω
     hd hLength hf hg hUpdate hLink hU hx⟩
 
-#print axioms ext_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyAssignmentFrontInsert

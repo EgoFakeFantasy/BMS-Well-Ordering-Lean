@@ -78,8 +78,4 @@ theorem member_lt_l (hℳ : Theory.Models ℳ theory_m) (r : Nat) {M : set_l ℳ
   obtain ⟨j, hj, hji⟩ := (member_nonzero_l hℳ (parent_m r) hM hA hL hE hv hn i).mp hi
   exact parent_chain_below_l hℳ r hA hL hE hv hn j hj i hji
 
-#print axioms chain_below_l
-#print axioms parent_chain_below_l
-#print axioms member_lt_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorFinalBound

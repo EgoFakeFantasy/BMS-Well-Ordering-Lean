@@ -120,9 +120,4 @@ theorem derives_m {Δ : SortContext ℒ} (ω A F R : Term ℒ [] Δ .set) :
   exact (domain_formula_l η ω A F R).trans
     (domain_iff_l.trans (PowerlessSatisfactionSpecification.domain_formula_l η ω A F R).symm)
 
-#print axioms domain_delta_l
-#print axioms domain_iff_l
-#print axioms zero_iff_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionDomainBounded

@@ -166,9 +166,4 @@ theorem certificate_iff_l {D : type_l hℳ}
     exact (hRead n l q).mp
       ((sound_l K hN hT hSpec hG hC n B hTrace n (Or.inl rfl) l q hBound).mpr hQuery)
 
-#print axioms decode_l
-#print axioms sound_l
-#print axioms exists_l
-#print axioms certificate_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyTranslationTrace

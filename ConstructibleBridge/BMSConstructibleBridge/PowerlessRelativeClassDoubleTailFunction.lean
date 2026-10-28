@@ -405,9 +405,4 @@ theorem exists_l (K : source_coding_l hℳ)
       (numberCode_l K m).val, (numberCode_l K n).property, (numberCode_l K m).property, hp⟩,
       hC n m, (hφ p _).mpr (hWitness n m p hp)⟩
 
-#print axioms block_next_l
-#print axioms blocks_class_l
-#print axioms matrix_delta_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassDoubleTailFunction

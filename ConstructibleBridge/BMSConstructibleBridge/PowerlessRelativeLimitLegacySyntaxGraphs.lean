@@ -223,8 +223,4 @@ theorem exists_l (K : source_coding_l hℳ)
   refine ⟨G, F, hGW, hFW, hG, hGnumeric, hF, fun n m => ?_⟩
   exact (hF _ _).trans (PowerlessRelativeClassLegacyTranslation.numeric_l K C n m)
 
-#print axioms exists_validity_l
-#print axioms exists_translation_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitLegacySyntaxGraphs

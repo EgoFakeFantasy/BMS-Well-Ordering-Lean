@@ -91,11 +91,4 @@ theorem symmetric_l (hℳ : Theory.Models ℳ theory_m) {T : set_l ℳ}
   obtain ⟨z, hyz, _⟩ := function_of_semantics_l hℳ reverse_m hT y
   exact (involution_l hℳ hT hxy hyz) ▸ hyz
 
-#print axioms index_symm_l
-#print axioms index_exists_l
-#print axioms lookup_l
-#print axioms below_reverse_l
-#print axioms involution_l
-#print axioms symmetric_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramReverseConsequences

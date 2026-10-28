@@ -112,9 +112,4 @@ theorem graft_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : 
     PowerlessRootedRealSyntax.row_formula_l, member_m, Arguments.eval, up, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms tagged_delta_m
-#print axioms graft_delta_m
-#print axioms tagged_formula_l
-#print axioms graft_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedCollectionSyntax

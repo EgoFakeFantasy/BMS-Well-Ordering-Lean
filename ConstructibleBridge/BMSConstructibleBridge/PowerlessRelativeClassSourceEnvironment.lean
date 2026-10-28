@@ -71,8 +71,4 @@ theorem member_l {A m f : type_l hℳ B} {hA : ∃ a, ThirdOrderSemantics.member
     exact hcEq ▸ hdEq ▸ hcd
   · exact fun h => ⟨(s.eval η).val, (t.eval η).val, hη s, hη t, h⟩
 
-#print axioms natural_l
-#print axioms equal_l
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSourceEnvironment

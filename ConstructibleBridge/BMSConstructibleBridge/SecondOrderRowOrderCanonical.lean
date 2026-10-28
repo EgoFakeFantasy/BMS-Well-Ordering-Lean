@@ -194,9 +194,4 @@ theorem unique_models_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m
 theorem unique_derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m unique_sentence_m) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => unique_models_l hℳ)
 
-#print axioms family_ambient_l
-#print axioms exists_l
-#print axioms derives_m
-#print axioms unique_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRowOrderCanonical

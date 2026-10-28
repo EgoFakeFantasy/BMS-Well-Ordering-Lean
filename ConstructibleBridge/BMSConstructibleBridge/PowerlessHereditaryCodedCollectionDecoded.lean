@@ -45,6 +45,4 @@ theorem hereditary_l (K : source_coding_l hℳ) {B : SecondOrderQuotient.type_l 
     exact (hX D).trans ((hC D).symm.trans (SecondOrderQuotient.mem_iff_l hℳ D C).symm)
   exact hSame.symm ▸ hHC
 
-#print axioms hereditary_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryCodedCollectionDecoded

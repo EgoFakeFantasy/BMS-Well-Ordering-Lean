@@ -138,7 +138,4 @@ theorem derives_m {Δ : SortContext ℒ} (C ω e N T A S t₁ t₂ t₃ Q G : Te
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m C ω e N T A S t₁ t₂ t₃ Q G)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ _ => models_l C ω e N T A S t₁ t₂ t₃ Q G)
 
-#print axioms equations_of_query_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteEvaluationRelationEquations

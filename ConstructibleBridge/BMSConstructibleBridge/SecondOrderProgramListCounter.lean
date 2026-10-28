@@ -133,15 +133,4 @@ theorem step_eval_l (x k v : Nat) :
   rw [Nat.unpair_pair, Nat.unpair_pair, PrimitiveProgram.add_l,
     SecondOrderProgramNonzero.nonzero_eval_l]
 
-#print axioms count_input_m
-#print axioms count_test_m
-#print axioms count_step_m
-#print axioms count_m
-#print axioms input_rel_l
-#print axioms test_rel_l
-#print axioms step_rel_l
-#print axioms count_zero_l
-#print axioms count_succ_l
-#print axioms step_eval_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListCounter

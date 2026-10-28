@@ -49,6 +49,4 @@ theorem members_l (hℳ : Theory.Models ℳ theory_m) {S G : set_l ℳ} {r : num
         SecondOrderBisimulation.trans_l hℳ X.real S G X.root r _ hXr (hOld r)⟩
     · exact ⟨root_l i j, (tail_edge_l hℳ hG _ n m).mpr (Or.inr ⟨i, j, rfl, hOrder⟩), hXij⟩
 
-#print axioms members_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalDoubleTailMembers

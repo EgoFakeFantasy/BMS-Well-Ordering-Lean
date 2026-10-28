@@ -88,6 +88,4 @@ theorem equation_l (K : source_coding_l hℳ) {ω A e t₁ t₂ t₃ P F S : typ
       ((PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) S
         (number_l (hBase := hBase) K a) g).mp hValue)⟩
 
-#print axioms equation_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyEvaluationExistential

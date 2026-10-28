@@ -64,6 +64,4 @@ theorem exists_l (K : source_coding_l hℳ) (O A : N)
   exact ⟨i₁, hi, (PowerlessHereditaryFunctionAbsolute.value_l (hBase := hBase) F i₁ x).mpr
     ((PowerlessRelativeClassFunctionAbsolute.value_l G i x₀).mp hix)⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryEnumeration

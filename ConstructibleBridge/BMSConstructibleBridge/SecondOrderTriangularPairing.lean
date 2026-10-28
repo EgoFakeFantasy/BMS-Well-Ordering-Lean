@@ -88,8 +88,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
   obtain ⟨c, hc⟩ := exists_l hℳ a b
   exact ⟨c, hc, coordinates_l hℳ hc, fun d hd => unique_l hℳ hd hc⟩
 
-#print axioms formula_l
-#print axioms coordinates_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderTriangularPairing

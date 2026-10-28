@@ -144,8 +144,4 @@ theorem result_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ}
   simp only [result_m, statement_l, Formula.satisfies, point_formula_l hExt, up₁₇, up,
     Term.eval_weakenBound, Term.eval, Env.pushBound_bound_here, Env.pushBound_bound_there]
 
-#print axioms finite_formula_l
-#print axioms point_formula_l
-#print axioms result_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedHistoryCoverageSyntax

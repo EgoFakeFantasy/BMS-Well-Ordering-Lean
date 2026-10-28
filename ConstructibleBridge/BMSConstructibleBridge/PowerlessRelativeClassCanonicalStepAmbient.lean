@@ -137,7 +137,4 @@ theorem uniform_l (K : source_coding_l hℳ) {ω A P e t₁ t₂ t₃ Pair Valid
   exact ⟨R.val, PowerlessRelativeClassSatisfactionAbsolute.spec_l K hω he hPairMap hPair hR,
     SecondOrderCanonicalOrderSyntax.step_ambient_l hΩ (step_l hΩ hP hStep)⟩
 
-#print axioms candidate_l
-#print axioms uniform_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalStepAmbient

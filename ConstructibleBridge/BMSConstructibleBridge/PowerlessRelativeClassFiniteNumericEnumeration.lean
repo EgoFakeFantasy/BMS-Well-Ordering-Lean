@@ -72,6 +72,4 @@ theorem exists_l {ω : type_l hℳ B} (hω : omega_l (ℳ := structure_l hℳ B 
     (hBase := hBase) hR hInjective heS
   exact ⟨S, hSClass, F, hF, hFOnto⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFiniteNumericEnumeration

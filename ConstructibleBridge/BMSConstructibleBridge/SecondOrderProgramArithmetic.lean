@@ -489,42 +489,9 @@ theorem mul_spec_l (hℳ : Theory.Models ℳ theory_m) {B : set_l ℳ}
 不得引入 `sorryAx` 或新公理。以下逐一打印本模块全部公开出口的公理依赖。 -/
 
 -- 数码与逐点关系助手
-#print axioms numeral_val_l
-#print axioms numeral_val_zero_l
-#print axioms numeral_val_succ_l
-#print axioms graph_point_l
-#print axioms zero_rel_l
-#print axioms succ_rel_l
-#print axioms left_rel_l
-#print axioms right_rel_l
-#print axioms pair_rel_l
-#print axioms comp_rel_l
 -- 由语义导出函数性
-#print axioms function_of_semantics_l
 -- 规格 (1)(2)
-#print axioms id_spec_l
-#print axioms const_spec_l
 -- 规格 (3) add
-#print axioms add_term_m
-#print axioms eval_add_term_l
-#print axioms add_step_m
-#print axioms add_step_rel_l
-#print axioms add_prec_eq_m
-#print axioms add_phi_m
-#print axioms add_phi_language_m
-#print axioms add_phi_syntax_l
-#print axioms add_spec_l
 -- 规格 (4) mul
-#print axioms mul_term_m
-#print axioms eval_mul_term_l
-#print axioms mul_inner_m
-#print axioms mul_step_m
-#print axioms mul_inner_rel_l
-#print axioms mul_step_rel_l
-#print axioms mul_prec_eq_m
-#print axioms mul_phi_m
-#print axioms mul_phi_language_m
-#print axioms mul_phi_syntax_l
-#print axioms mul_spec_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramArithmetic

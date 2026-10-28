@@ -269,11 +269,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m []
 
 end Quotient
 
-#print axioms closure_l
-#print axioms limit_closed_l
-#print axioms binary_exists_l
-#print axioms member_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteHullClosure

@@ -96,8 +96,4 @@ theorem take_full_l (hℳ : Theory.Models ℳ theory_m) {K L : set_l ℳ}
   have him : i < min n k := by rwa [min_eq_left (show n ≤ k from hk)]
   exact (take_lookup_l hℳ hK hL hE hn hy him z).mp hz
 
-#print axioms take_lookup_l
-#print axioms take_lookup_past_l
-#print axioms take_full_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTakeIndices

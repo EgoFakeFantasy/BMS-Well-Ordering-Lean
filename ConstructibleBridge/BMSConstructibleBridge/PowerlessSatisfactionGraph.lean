@@ -69,8 +69,4 @@ theorem derives_m {Δ : SortContext ℒ} (ω A S F G : Term ℒ [] Δ .set) :
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m ω A S F G)) :=
   PowerlessRelativeClassRelation.derives_m (matrix_delta_l ω A S F G)
 
-#print axioms matrix_delta_l
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionGraph

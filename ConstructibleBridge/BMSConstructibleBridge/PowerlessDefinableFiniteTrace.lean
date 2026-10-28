@@ -233,11 +233,4 @@ theorem exists_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
     rw [← hSEq]
     exact extend_l K φ η (n := (numberCode_l K i).val) (numberCode_l K i).property hF hTotal
 
-#print axioms trace_formula_l
-#print axioms induction_derives_m
-#print axioms step_bound_l
-#print axioms extension_l
-#print axioms extend_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessDefinableFiniteTrace

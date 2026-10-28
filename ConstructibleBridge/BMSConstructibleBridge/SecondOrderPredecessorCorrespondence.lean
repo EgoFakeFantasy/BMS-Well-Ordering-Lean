@@ -74,7 +74,4 @@ theorem limit_iff_l {R R' I : set_l ℳ} (h : spec_l R R' I)
     {n m : num_l ℳ} (hnm : relation_l I n m) : limit_l R n ↔ limit_l R' m := by
   exact and_congr (not_congr (minimal_iff_l h hnm)) (not_congr (successor_iff_l h hnm))
 
-#print axioms immediate_iff_l
-#print axioms limit_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPredecessorCorrespondence

@@ -163,11 +163,4 @@ theorem derives_m {Δ : SortContext ℒ}
   SecondOrderAxioms.interpretation_m _
     (fun _ hℳ => models_l hℳ ω e t₁ t₂ t₃ P N F Q U G z r)
 
-#print axioms formula_l
-#print axioms satisfaction_l
-#print axioms image_l
-#print axioms point_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedHistoryDataReading

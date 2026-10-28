@@ -50,7 +50,4 @@ theorem formula_l (C : source_coding_l hM)
     (PowerlessArithmeticTranslation.formula_m w z ρ τ φ).satisfies η ↔ φ.satisfies ξ :=
   PowerlessArithmeticTranslation.formula_of_unique_l (unique_l C) ξ η w z ρ τ hw hz hρ hτ φ
 
-#print axioms unique_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientTranslation

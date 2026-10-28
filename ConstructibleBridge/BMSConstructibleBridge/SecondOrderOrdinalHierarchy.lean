@@ -49,6 +49,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) (A : SecondOrderGraph.code_
   obtain ⟨S, hS⟩ := SecondOrderRelativeHierarchy.exists_l hℳ B R hWf hTrans hIrrefl
   exact ⟨Q, D, R, S, h, hS, SecondOrderRelativeHierarchy.rows_wf_l hℳ hB hWf hS⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalHierarchy

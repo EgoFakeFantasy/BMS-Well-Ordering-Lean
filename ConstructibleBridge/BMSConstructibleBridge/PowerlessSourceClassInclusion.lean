@@ -76,6 +76,4 @@ theorem formula_l {Γ Δ : SortContext ℒ} (hIP : ∀ x, I x → P x)
   rw [hη] at h₀
   exact h₀.trans h₁
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceClassInclusion

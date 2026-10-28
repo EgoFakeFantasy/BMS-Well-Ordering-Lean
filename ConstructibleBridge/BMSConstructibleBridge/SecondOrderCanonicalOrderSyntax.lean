@@ -119,8 +119,4 @@ theorem step_ambient_l {ω A P R D E : PowerlessRelativeClassStructure.type_l h�
   obtain ⟨L, hL, hGraph⟩ := h
   exact ⟨L.val, candidate_ambient_l hΩ hL, hGraph⟩
 
-#print axioms candidate_formula_l
-#print axioms step_formula_l
-#print axioms step_ambient_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalOrderSyntax

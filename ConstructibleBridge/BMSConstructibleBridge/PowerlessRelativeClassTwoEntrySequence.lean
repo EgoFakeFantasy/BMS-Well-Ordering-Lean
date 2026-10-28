@@ -43,6 +43,4 @@ theorem exists_l {e one two X a b : type_l hℳ B}
   exact ⟨g, hg, (hExtend e a).mpr (Or.inl ((hRead e a).mpr ⟨heOne, rfl⟩)),
     (hExtend one b).mpr (Or.inr ⟨rfl, rfl⟩)⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassTwoEntrySequence

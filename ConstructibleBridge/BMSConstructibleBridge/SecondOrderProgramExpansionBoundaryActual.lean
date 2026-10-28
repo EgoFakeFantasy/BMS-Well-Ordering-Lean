@@ -82,6 +82,4 @@ theorem member_congr_l (hℳ : Theory.Models ℳ theory_m)
     hℳ hX hW hP hI hS hT hZ hB hL hE hD hJ hAsc hM hO
       hx hmax hlast hparent hd hbad hy hv htrim hz hk row hrow t i ht hi
 
-#print axioms member_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryActual

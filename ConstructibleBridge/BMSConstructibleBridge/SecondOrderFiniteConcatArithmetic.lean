@@ -164,12 +164,4 @@ theorem order_l (K : source_coding_l hℳ) (a : num_l ℳ) {e F j k i l : type_l
   rw [← hsEq, ← htEq, hiEq, hlEq, numberCode_mem_iff_lt_l, numberCode_mem_iff_lt_l]
   exact (add_lt_add_iff_left a).symm
 
-#print axioms read_l
-#print axioms segment_l
-#print axioms lower_l
-#print axioms cancel_l
-#print axioms prefix_l
-#print axioms shifted_l
-#print axioms order_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteConcatArithmetic

@@ -226,8 +226,4 @@ theorem bounded_l (K : source_coding_l hℳ)
       (fun b hb => (hFormula b).mp (ih b hb))))
   exact fun a => (hFormula a).mp (hAll a)
 
-#print axioms point_formula_l
-#print axioms step_l
-#print axioms bounded_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderBudgetInduction

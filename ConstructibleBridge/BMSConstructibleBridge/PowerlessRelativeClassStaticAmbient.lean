@@ -68,6 +68,4 @@ theorem reading_l (K : source_coding_l hℳ) {ω e t₁ t₂ t₃ P N F : M}
     · simpa only [hω, he'] using hm
     · simpa only [hω, he'] using hRaw
 
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassStaticAmbient

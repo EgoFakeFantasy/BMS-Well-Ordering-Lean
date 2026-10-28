@@ -86,6 +86,4 @@ theorem exists_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omeg
       hx hz hlast hparent hd hy ht hT hc hc₀ hN hbound hheight hG
     exact ⟨_, α, f, hασ, hf⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSStrictDescent

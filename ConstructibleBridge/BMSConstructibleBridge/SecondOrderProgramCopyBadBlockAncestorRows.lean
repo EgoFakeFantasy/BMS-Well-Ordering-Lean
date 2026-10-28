@@ -74,6 +74,4 @@ theorem member_congr_l (hℳ : Theory.Models ℳ theory_m)
   exact (SecondOrderProgramBadBlockAncestor.member_l
     hℳ hG hL hE hD hJ hM hx hp hd hb r q i hq).mp hiq
 
-#print axioms member_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyBadBlockAncestorRows

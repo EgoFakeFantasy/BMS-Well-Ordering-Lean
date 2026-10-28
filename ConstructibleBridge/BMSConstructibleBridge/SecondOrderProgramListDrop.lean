@@ -83,10 +83,4 @@ theorem drop_length_l (hℳ : Theory.Models ℳ theory_m) {I L D : set_l ℳ}
   · rw [drop_empty_l hℳ hI hL hn ht hk]
     exact (length_rel_l hℳ hL hI _ _).mpr ((length_zero_l hℳ hI _).mpr rfl)
 
-#print axioms drop_compose_l
-#print axioms drop_lookup_l
-#print axioms drop_length_add_l
-#print axioms drop_empty_l
-#print axioms drop_length_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListDrop

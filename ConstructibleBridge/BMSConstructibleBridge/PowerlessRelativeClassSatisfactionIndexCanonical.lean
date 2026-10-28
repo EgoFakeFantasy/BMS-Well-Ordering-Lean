@@ -129,7 +129,4 @@ theorem exists_l {ω A P : type_l hℳ B} (hω : omega_l (ℳ := 𝒞) ω)
         (PowerlessRelativeClassFunctionAbsolute.value_l U p' q'))
   exact ⟨S, I, J, U, ⟨hS, hI, hJ, hProper, N, T, K, hNRead, hTRead, hKRead, hNewRead⟩, hOrder⟩
 
-#print axioms unique_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSatisfactionIndexCanonical

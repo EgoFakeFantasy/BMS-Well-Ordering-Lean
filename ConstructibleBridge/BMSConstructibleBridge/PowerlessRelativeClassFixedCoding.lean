@@ -88,7 +88,4 @@ theorem satisfaction_l (K : source_coding_l hℳ) {ω A e t₁ t₂ t₃ T Valid
     (PowerlessRelativeClassSequenceAbsolute.spec_l hΩ hSystem.2.2.2.1)
     hValid hSystem he hMap hSpec hV⟩
 
-#print axioms triangular_l
-#print axioms satisfaction_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFixedCoding

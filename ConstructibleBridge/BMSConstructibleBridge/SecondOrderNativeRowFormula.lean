@@ -166,8 +166,4 @@ theorem exists_unique_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .se
   have hUY : setRel_l K U Y := (SecondOrderRealTraceSyntax.reading_l K B' hB' Y).mp hB'Y
   exact PowerlessBMSQuotientReals.trace_unique_l K (hUT ▸ hUY) hW
 
-#print axioms pure_m
-#print axioms formula_l
-#print axioms exists_unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderNativeRowFormula

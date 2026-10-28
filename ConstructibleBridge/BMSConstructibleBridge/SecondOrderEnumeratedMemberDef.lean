@@ -141,8 +141,4 @@ theorem represents_l (C : source_coding_l hℳ) {X Y f : SecondOrderQuotient.typ
   have hY := compare_l C A a ha P' P
   exact ⟨A, a, ha, V', E', D', Q', R', U, G, H, rfl, P', hY.symm⟩
 
-#print axioms compare_l
-#print axioms exists_l
-#print axioms represents_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderEnumeratedMemberDef

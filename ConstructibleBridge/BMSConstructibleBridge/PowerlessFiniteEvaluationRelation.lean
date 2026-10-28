@@ -96,7 +96,4 @@ theorem derives_m {Δ : SortContext ℒ} (C ω e N T A S t₁ t₂ t₃ Q : Term
   PowerlessRelativeClassRelativization.derives_m _ (fun _ hℳ B hBase =>
     models_l hℳ B hBase C ω e N T A S t₁ t₂ t₃ Q)
 
-#print axioms exists_ambient_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteEvaluationRelation

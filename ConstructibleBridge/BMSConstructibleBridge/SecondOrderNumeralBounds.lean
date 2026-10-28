@@ -143,9 +143,5 @@ theorem lt_numeral_iff_l :
 /-! ## 公理审计
 
 新出口只应继承已复编模块的可信基，不得引入 `sorryAx` 或新公理。 -/
-#print axioms not_lt_zero_l
-#print axioms numeral_val_injective_l
-#print axioms numeral_lt_numeral_l
-#print axioms lt_numeral_iff_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderNumeralBounds

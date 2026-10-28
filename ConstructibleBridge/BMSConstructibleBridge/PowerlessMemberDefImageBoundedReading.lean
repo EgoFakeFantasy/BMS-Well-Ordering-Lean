@@ -248,9 +248,4 @@ theorem checkeriff_l
       exact Or.inr ⟨fun hEmpty => hEmpty b hb, Sat, hSatW, Seq.val, hSeqW, Idx.val, hIdxW,
         I.val, hIW, Q.val, hQW, hG, hData, hFamily⟩
 
-#print axioms product_spec_l
-#print axioms data_of_spec_l
-#print axioms indices_spec_l
-#print axioms checkeriff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefImageBoundedReading

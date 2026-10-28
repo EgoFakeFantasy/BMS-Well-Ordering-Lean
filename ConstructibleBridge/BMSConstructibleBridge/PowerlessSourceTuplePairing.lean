@@ -204,16 +204,4 @@ theorem level_l
 
 end Level
 
-#print axioms pair_coordinates_l
-#print axioms ordered_coordinates_l
-#print axioms ordered_exists_l
-#print axioms pair_l
-#print axioms code_exists_l
-#print axioms formula_l
-#print axioms closure_l
-#print axioms bounded_member_l
-#print axioms predicate_code_l
-#print axioms predicate_closure_l
-#print axioms level_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceTuplePairing

@@ -79,7 +79,4 @@ theorem exists_ambient_l {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .s
       ⟨x, PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase X.property hx⟩
       ⟨y, PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase Y.property hy⟩).mpr ⟨hx, hy, hBody⟩
 
-#print axioms exists_l
-#print axioms exists_ambient_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassRelationalGraph

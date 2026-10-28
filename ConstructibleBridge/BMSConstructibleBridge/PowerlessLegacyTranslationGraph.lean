@@ -115,8 +115,4 @@ theorem derives_m {Δ : SortContext ℒ} (ω e N T t₁ t₂ t₃ t₄ G : Term 
       (GraphTranslation.form_m (sentence_m ω e N T t₁ t₂ t₃ t₄ G)) :=
   PowerlessRelativeClassRelation.derives_m (matrix_delta_l ω e N T t₁ t₂ t₃ t₄ G)
 
-#print axioms matrix_delta_l
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyTranslationGraph

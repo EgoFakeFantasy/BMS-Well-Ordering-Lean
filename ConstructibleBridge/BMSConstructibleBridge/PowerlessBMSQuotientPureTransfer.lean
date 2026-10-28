@@ -85,8 +85,4 @@ noncomputable def correspondence_of_operations_l
     rw [hCode] at h
     exact h
 
-#print axioms arithmeticStructure_l
-#print axioms setRel_total_l
-#print axioms correspondence_of_operations_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientPureTransfer

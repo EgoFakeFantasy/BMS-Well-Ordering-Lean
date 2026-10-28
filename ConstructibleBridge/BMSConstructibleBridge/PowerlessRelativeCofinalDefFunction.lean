@@ -115,7 +115,4 @@ theorem exists_l
   exact PowerlessMemberDefImageBoundedReading.checkeriff_l
     hBase K hLimit hW hKωW hCoding hAW
 
-#print axioms exists_for_reading_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCofinalDefFunction

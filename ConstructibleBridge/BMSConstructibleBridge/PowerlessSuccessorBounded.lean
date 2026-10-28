@@ -45,6 +45,4 @@ theorem formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : SortCo
   · intro h
     exact ⟨(h _).mpr (Or.inr rfl), fun z hz => (h z).mpr (Or.inl hz), fun z => (h z).mp⟩
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSuccessorBounded

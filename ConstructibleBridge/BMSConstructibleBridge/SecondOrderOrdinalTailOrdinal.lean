@@ -76,6 +76,4 @@ theorem ordinal_l (hℳ : Theory.Models ℳ theory_m) {S G : set_l ℳ} {r : num
     exact SecondOrderOrdinalSuccessor.ordinal_l hℳ _ _ hn
       (SecondOrderOrdinalTailMembers.successor_l hℳ hG hS n)
 
-#print axioms ordinal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalTailOrdinal

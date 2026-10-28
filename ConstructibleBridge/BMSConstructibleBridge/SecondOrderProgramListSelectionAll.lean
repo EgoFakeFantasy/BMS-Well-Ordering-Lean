@@ -88,8 +88,4 @@ theorem slice_all_l (hℳ : Theory.Models ℳ theory_m) {T L E D S : set_l ℳ}
     · exact False.elim ((not_lt_of_ge (zero_le_l hℳ j)) hjd)
   exact hx (add_l s j) hsn a ((slice_lookup_l hℳ hT hL hE hD hn hd hy hj a).mp ha)
 
-#print axioms append_all_l
-#print axioms take_all_l
-#print axioms slice_all_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListSelectionAll

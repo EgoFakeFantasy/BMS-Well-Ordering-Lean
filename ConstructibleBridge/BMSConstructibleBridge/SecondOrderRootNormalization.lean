@@ -62,6 +62,4 @@ theorem normal_exists_l (hℳ : Theory.Models ℳ theory_m) (A : SecondOrderGrap
   obtain ⟨P, W, h⟩ := exists_l hℳ A.real A.root
   exact ⟨W, root_l hℳ A h, eq_l hℳ A h⟩
 
-#print axioms normal_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRootNormalization

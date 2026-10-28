@@ -78,6 +78,4 @@ theorem step_l {ω n m X R L P Q : type_l hℳ B}
   exact (PowerlessRelativeClassFunctionAbsolute.value_l T f' g').symm.trans
     ((hEquality f' hf g' hg).trans (PowerlessRelativeClassFunctionAbsolute.value_l L f' g'))
 
-#print axioms step_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceOrderStepAmbient

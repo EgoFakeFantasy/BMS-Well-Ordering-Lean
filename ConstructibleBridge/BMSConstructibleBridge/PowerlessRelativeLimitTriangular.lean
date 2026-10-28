@@ -89,7 +89,4 @@ theorem exists_l (K : source_coding_l hℳ) (hLimit : limit_l hℳ β) (hC : lev
   rw [hω] at hMap
   exact ⟨T, member_l (hBase := hBase) K hLimit hC hωC heC hNC hω he hN hMap hSpec, hT, hMap, hSpec⟩
 
-#print axioms member_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitTriangular

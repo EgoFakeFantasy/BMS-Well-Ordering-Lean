@@ -40,6 +40,4 @@ theorem formula_l (C : source_coding_l hℳ)
       (PowerlessBMSQuotientMultiplication.correspondence_l C)
       (PowerlessBMSQuotientArithmeticTransfer.coverage_l C) φ hφ ξ ξ' hRelated)
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientParameterTransfer

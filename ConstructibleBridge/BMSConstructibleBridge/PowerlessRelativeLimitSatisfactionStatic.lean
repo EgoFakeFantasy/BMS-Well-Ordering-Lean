@@ -66,6 +66,4 @@ theorem exists_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.sign
     hStatic.2.1 hMap hSpec hN (PowerlessRelativeClassSequenceAbsolute.spec_l hω hS) hV hFC hF
   exact ⟨R, hRC, hSat⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitSatisfactionStatic

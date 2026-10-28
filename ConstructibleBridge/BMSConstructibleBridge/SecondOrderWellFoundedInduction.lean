@@ -113,8 +113,4 @@ theorem derives_m {Δ : SortContext signature_m} (φ : Formula signature_m [] (.
   intro η
   exact models_l hℳ φ hφ η
 
-#print axioms induction_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderWellFoundedInduction

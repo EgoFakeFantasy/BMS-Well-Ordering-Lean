@@ -132,8 +132,4 @@ theorem exists_l (K : source_coding_l hℳ) (ω e S : type_l hℳ B)
   obtain ⟨T, hT, _⟩ := exists_spec_l K ω e S hω he hS
   exact ⟨T, hT⟩
 
-#print axioms absolute_l
-#print axioms exists_spec_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassTriangular

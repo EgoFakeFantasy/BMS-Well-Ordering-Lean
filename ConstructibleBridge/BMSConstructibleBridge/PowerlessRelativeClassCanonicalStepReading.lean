@@ -139,10 +139,4 @@ theorem uniform_l {ω A P e t₁ t₂ t₃ Pair Valid D E : M}
   obtain ⟨R, hR, hStep⟩ := h
   exact ⟨R, hR, step_l hStep⟩
 
-#print axioms query_l
-#print axioms comparison_l
-#print axioms candidate_l
-#print axioms step_l
-#print axioms uniform_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalStepReading

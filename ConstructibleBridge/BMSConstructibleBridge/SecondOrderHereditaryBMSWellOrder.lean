@@ -31,7 +31,4 @@ theorem derives_m (H : Nat) :
   PowerlessBMSNonemptyTransfer.derives_m H (fun hℳ X =>
     SecondOrderHereditaryCandidateSource.exists_l hℳ X)
 
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderHereditaryBMSWellOrder

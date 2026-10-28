@@ -106,7 +106,4 @@ theorem induct_l (hℳ : Theory.Models ℳ theory_m)
         Env.pushFree, Assignment.push]
     · exact hstep row ih
 
-#print axioms agreement_formula_l
-#print axioms induct_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramPrefixBlockAgreement

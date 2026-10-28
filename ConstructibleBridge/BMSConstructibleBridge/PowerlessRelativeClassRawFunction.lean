@@ -84,7 +84,4 @@ theorem exists_l {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set :: Δ
       PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase Y.property hy⟩
     exact (hClassRead x' y').mpr ⟨hx, hy, hxy⟩
 
-#print axioms env_pushFree_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassRawFunction

@@ -88,7 +88,4 @@ theorem same_l (K : source_coding_l hℳ) (U : M)
     (fun i z => (hSpec i z).trans (hJ i z).symm)
   exact ⟨V, hVHC, hV, hEq ▸ hVTrace⟩
 
-#print axioms coded_l
-#print axioms same_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryFamilyNormalization

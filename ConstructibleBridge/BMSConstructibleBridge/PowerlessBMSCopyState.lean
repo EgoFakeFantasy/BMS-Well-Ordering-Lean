@@ -216,7 +216,4 @@ theorem bounded_induction_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) 
         ((hφ copy).mp hI (Or.inl hak)))
   exact (hφ k).mp (hI k.val k.property) (Or.inr rfl)
 
-#print axioms formula_l
-#print axioms bounded_induction_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyState

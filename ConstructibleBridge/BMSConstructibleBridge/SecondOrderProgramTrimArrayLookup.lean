@@ -61,7 +61,4 @@ theorem entry_l (hℳ : Theory.Models ℳ theory_m) {T H L E : set_l ℳ}
   exact SecondOrderProgramTakeIndices.take_lookup_l hℳ hK hL hE hm
     ((column_l hℳ hT hH hK hL hE hy hh hn hj hs t).mp ht)
 
-#print axioms column_l
-#print axioms entry_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTrimArrayLookup

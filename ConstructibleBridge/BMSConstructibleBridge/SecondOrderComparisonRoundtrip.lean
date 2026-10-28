@@ -109,8 +109,4 @@ theorem decode_encode_l (K : source_coding_l hℳ) {C f P Q : type_l hℳ}
     obtain ⟨x, y, hx, hy, hxy⟩ := hBound p hp
     exact ⟨x, y, (read_spec_l K hf hOnto hR x y).mpr ⟨hx, hy, p, hp, hxy⟩, hxy⟩
 
-#print axioms compatible_spec_l
-#print axioms encode_decode_l
-#print axioms decode_encode_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonRoundtrip

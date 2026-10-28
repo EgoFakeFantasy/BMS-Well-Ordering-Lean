@@ -93,6 +93,4 @@ theorem omega_l (w : type_l hℳ B) :
     intro i hi z hz
     exact hw.2 i.val ((inductive_l (hBase := hBase) i).mp hi) z.val hz
 
-#print axioms omega_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassOmegaAbsolute

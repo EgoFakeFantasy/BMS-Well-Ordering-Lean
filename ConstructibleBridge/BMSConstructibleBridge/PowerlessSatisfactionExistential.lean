@@ -77,7 +77,4 @@ theorem equation_l (K : source_coding_l hℳ) {V : SecondOrderModel.set_l ℳ}
   exact (read_class_l K hωEq hS hF hR hc hL hValid hMap).trans
     (hEquation.trans (transfer_l hMap (fun g hg => (read_class_l K hωEq hS hF hR hb hL hk hg).symm)))
 
-#print axioms transfer_l
-#print axioms equation_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionExistential

@@ -96,7 +96,4 @@ theorem some_iff_l (hℳ : Theory.Models ℳ theory_m) {P M : set_l ℳ}
   ⟨some_transfer_l hℳ hP hM hinside,
     some_transfer_l hℳ hP hM (fun q hq => (hinside q hq).symm)⟩
 
-#print axioms some_transfer_l
-#print axioms some_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentInternalCongruence

@@ -94,7 +94,4 @@ theorem derives_m {Δ : SortContext ℒ} (f D A i a : Term ℒ [] Δ .set) :
       (GraphTranslation.form_m (PowerlessRelativeClassRelativization.guarded_m (sentence_m f D A i a))) :=
   PowerlessRelativeClassRelativization.derives_m _ (fun _ hℳ B hBase => models_l hℳ B hBase f D A i a)
 
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassAssignmentUpdate

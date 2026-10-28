@@ -199,10 +199,4 @@ theorem class_l (K : source_coding_l hℳ) {B D W A Q a δ C f : type_l hℳ}
     PowerlessRelativeClassCorrespondence.member_l hℳ B f :=
   ⟨δ, C, hC, bounded_l hℳ K hBase hRead hBudget a δ C f hQ hC hf⟩
 
-#print axioms point_formula_l
-#print axioms cases_l
-#print axioms step_l
-#print axioms bounded_l
-#print axioms class_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyLightHistoryBudgetInduction

@@ -105,7 +105,4 @@ theorem budget_formula_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
   · intro h
     exact ⟨h.domain_ordinal, h.source, h.total, h.output_ordinal, h.layers⟩
 
-#print axioms layers_formula_l
-#print axioms budget_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyLightHistoryBudgetSyntax

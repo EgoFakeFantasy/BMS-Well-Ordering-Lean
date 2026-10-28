@@ -72,6 +72,4 @@ theorem exists_l (K : source_coding_l hℳ)
   · intro a X P hX hP
     exact hOrder a X P ((hRead a X).mp hX).2 ((hp.2 a P).mp hP).2
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderPrefixEquations

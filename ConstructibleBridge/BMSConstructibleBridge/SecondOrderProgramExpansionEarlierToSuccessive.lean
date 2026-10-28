@@ -76,6 +76,4 @@ theorem member_congr_l
         hℳ hX hW hP hI hS hT hZ hB hL hE hD hJ hAsc hM hO
         hx hmax hlast hsourceParent hd hy hnextCopies hnextBound hi hq).symm
 
-#print axioms member_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierToSuccessive

@@ -68,9 +68,4 @@ theorem ordered_exists_l (hTrans : ∀ x, P x → ∀ z, member_l 𝒱 z x → P
     (hPair _ _ _ a.property b.property ht) hp
   exact ⟨⟨p, hPp⟩, ordered_class_l hTrans hPair ⟨s, t, hs, ht, hp⟩⟩
 
-#print axioms pair_l
-#print axioms ordered_raw_l
-#print axioms ordered_class_l
-#print axioms ordered_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceClassPairing

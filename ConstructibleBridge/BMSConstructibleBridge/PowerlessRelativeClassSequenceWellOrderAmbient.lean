@@ -100,7 +100,4 @@ theorem exists_l {ω X R : type_l hℳ B}
   obtain ⟨L, hRead⟩ := PowerlessRelativeClassSequenceOrderGraph.exists_l (R := R) hS
   exact ⟨S, L, hS, of_graph_l hω hR hS hRead, hRead⟩
 
-#print axioms of_graph_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceWellOrderAmbient

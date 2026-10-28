@@ -104,6 +104,4 @@ theorem spec_formula_l {ℳ₀ : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ :
     omegaRead_formula_l, shortlexRead_formula_l, lexRead_formula_l, up, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms spec_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalIndexSyntax

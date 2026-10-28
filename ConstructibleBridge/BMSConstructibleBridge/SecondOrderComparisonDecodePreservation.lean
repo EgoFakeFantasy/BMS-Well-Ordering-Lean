@@ -62,8 +62,4 @@ theorem extension_l (K : source_coding_l hℳ) {C f A P D E Q : type_l hℳ}
     exact hExtension.2.2 x y hx hy ((values_l K hf hOnto hE hQ (hDC y hy)
       (hDC x (hExtension.1 x hx))).mp hyx)
 
-#print axioms values_l
-#print axioms wellOrder_l
-#print axioms extension_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonDecodePreservation

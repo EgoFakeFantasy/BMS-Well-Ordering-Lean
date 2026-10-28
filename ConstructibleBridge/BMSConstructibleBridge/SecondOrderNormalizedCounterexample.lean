@@ -55,6 +55,4 @@ theorem arrays_l (hℳ : Theory.Models ℳ theory_m) {D X H L E : set_l ℳ}
   rw [hη] at hb
   exact SecondOrderProgramGeneratedFiniteRows.columns_finite_l hℳ hD hH hL hE n hc hb
 
-#print axioms arrays_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderNormalizedCounterexample

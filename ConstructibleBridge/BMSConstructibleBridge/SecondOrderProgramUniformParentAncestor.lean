@@ -67,8 +67,4 @@ theorem member_state_l (hℳ : Theory.Models ℳ theory_m) {M N R : set_l ℳ}
     SecondOrderProgramParentTable.parent_m hP hQ hM hN (value_l x r) s
     (parent_state_l hℳ hP hQ hR hs) t i y
 
-#print axioms parent_state_l
-#print axioms chain_state_l
-#print axioms member_state_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentAncestor

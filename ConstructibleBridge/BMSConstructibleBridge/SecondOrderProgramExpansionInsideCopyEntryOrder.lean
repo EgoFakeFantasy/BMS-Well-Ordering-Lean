@@ -277,8 +277,4 @@ theorem entry_order_of_below_l (hℳ : Theory.Models ℳ theory_m)
   exact entry_order_congr_l hℳ hX hW hP hI hS hT hZ hB hL hE hD hJ hAsc
     hx hmax hlast hparent hd hb hy hcopy hi hq hflags
 
-#print axioms entry_order_congr_l
-#print axioms entry_value_congr_of_zero_l
-#print axioms entry_order_of_below_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionInsideCopyEntryOrder

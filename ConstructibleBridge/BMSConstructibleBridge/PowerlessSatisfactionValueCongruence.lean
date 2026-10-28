@@ -90,10 +90,4 @@ theorem spec_l (ω A e t₁ t₂ t₃ T F R Q : carrier_l 𝒩)
   exact and_congr (domain_l ω A F R Q hValue)
     (and_congr (zero_l e R Q hValue) (equations_l ω A e t₁ t₂ t₃ T F R Q hValue))
 
-#print axioms exists_l
-#print axioms domain_l
-#print axioms zero_l
-#print axioms equations_l
-#print axioms spec_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionValueCongruence

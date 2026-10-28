@@ -115,13 +115,4 @@ theorem output_budget_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {R L : 
   have hsu := function_value_unique_l (function_of_semantics_l hℳ (repeat_m (step_m c)) hR) hs hu
   exact ⟨t, v, m, hsu.symm.trans he.symm, hl, hm⟩
 
-#print axioms state_m
-#print axioms state_syntax_l
-#print axioms budget_l
-#print axioms budget_m
-#print axioms budget_language_m
-#print axioms budget_syntax_l
-#print axioms budget_invariant_l
-#print axioms output_budget_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorBudget

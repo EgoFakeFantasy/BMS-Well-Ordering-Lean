@@ -59,6 +59,4 @@ theorem models_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.sign
 theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m sentence_m) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ)
 
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitFiniteRangeDerives

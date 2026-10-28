@@ -250,6 +250,4 @@ theorem formula_l {Γ Δ : SortContext ℒ} (ζ : Env ℳ Γ Δ)
     · exact (point_read_l ζ W B ω x hIW hW₀ hExt B₀ ω₀ x₀ hB hω hx
         a y A U D f e t₁ t₂ t₃ t₄ P N F V Q G).mpr hPoint
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedHistoryCaptureSyntax

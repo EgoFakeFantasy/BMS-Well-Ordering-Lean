@@ -240,10 +240,4 @@ theorem derives_m {Δ : SortContext ℒ} (Φ : List (Formula ℒ [] (.set :: .se
   SecondOrderAxioms.interpretation_m _
     (fun _ h𝒩 => models_l h𝒩 Φ ω e t₁ t₂ t₃ Pair Valid B P₀ s t)
 
-#print axioms separate_class_l
-#print axioms upper_class_l
-#print axioms separate_l
-#print axioms upper_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassHullRequests

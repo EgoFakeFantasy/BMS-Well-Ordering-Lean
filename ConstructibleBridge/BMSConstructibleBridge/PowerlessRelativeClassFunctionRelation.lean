@@ -57,6 +57,4 @@ theorem exists_l {Δ : SortContext ℒ} {φ : Formula ℒ [] (.set :: .set :: Δ
     rintro z ⟨hz, hxz⟩
     exact hUnique z ⟨hz, ((hValue x z).mp hxz).2.2⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFunctionRelation

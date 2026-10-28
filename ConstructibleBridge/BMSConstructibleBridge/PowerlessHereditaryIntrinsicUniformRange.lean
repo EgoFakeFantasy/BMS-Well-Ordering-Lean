@@ -98,7 +98,6 @@ theorem hereditary_l (K : source_coding_l hℳ)
     have hXEq : PowerlessHereditaryIntrinsicRelativization.lift_l (hBase := hBase) X₀ = X := Subtype.ext rfl
     exact ⟨X₀, hXC, (formula_l φ η x X₀).mp (hXEq.symm ▸ hxEq ▸ hφ)⟩
 
-#print axioms formula_l
 /-- 原弱接口仍返回相同请求的覆盖集合，不删除已有公共签名。 -/
 theorem exists_l (K : source_coding_l hℳ)
     (hB : PowerlessHereditaryClass.member_l hℳ B B) (hNonempty : ∃ d, mem_l hℳ d B)
@@ -114,8 +113,5 @@ theorem exists_l (K : source_coding_l hℳ)
   obtain ⟨U, hU, H, hTrace, C, _hCHC, hRange, hCover⟩ :=
     hereditary_l K hB hNonempty φ η hSome
   exact ⟨U, hU, H, hTrace, C, hRange, hCover⟩
-
-#print axioms hereditary_l
-#print axioms exists_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryIntrinsicUniformRange

@@ -175,9 +175,4 @@ theorem exists_complete_l : ∃ T : type_l hℳ B,
       using (PowerlessRelativeClassFunctionAbsolute.map_l (hBase := hBase) T ω ω).mp hT.1
   exact ⟨T, hMap, hSpec, exists_canonical_l K hω hωEq hMap hSpec⟩
 
-#print axioms holds_iff_l
-#print axioms exists_l
-#print axioms exists_canonical_l
-#print axioms exists_complete_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassLegacyTranslation

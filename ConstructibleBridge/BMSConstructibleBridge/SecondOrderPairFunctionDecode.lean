@@ -131,11 +131,4 @@ theorem guarded_derives_m : Derives theory_m []
     (SecondOrderArithmetic.comprehension_m (SecondOrderRelations.formula_m guarded_formula_m)) :=
   SecondOrderRelations.comprehension_m guarded_formula_m guarded_pure_m
 
-#print axioms formula_l
-#print axioms paired_formula_l
-#print axioms exists_l
-#print axioms derives_m
-#print axioms exists_guarded_l
-#print axioms guarded_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPairFunctionDecode

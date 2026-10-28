@@ -65,6 +65,4 @@ theorem member_l
         hBody.mpr ⟨x, y, hx, hy, hxy, hφxy⟩⟩)
   exact hEq ▸ hRC
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitFunctionRelation

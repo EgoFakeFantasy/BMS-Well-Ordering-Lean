@@ -184,8 +184,4 @@ theorem result_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
     refine ⟨y, (run_open_l K φ η B C ω w e t₀ t₁ t₂ a n k y).mp ?_⟩
     simpa only [step_m, ξ, t, PowerlessSourceRebinding.term_l] using hy
 
-#print axioms prefix_formula_l
-#print axioms output_formula_l
-#print axioms result_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramBoundOutput

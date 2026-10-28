@@ -42,6 +42,4 @@ theorem strong_induct_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
   exact SecondOrderListInduction.strong_induct_l hℳ (GraphTranslation.form_m φ)
     (GraphTranslation.form_pure_m φ) ξ P hφ hStep
 
-#print axioms strong_induct_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientStrongInduction

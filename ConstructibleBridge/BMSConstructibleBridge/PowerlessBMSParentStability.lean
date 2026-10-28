@@ -63,6 +63,4 @@ theorem exists_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omeg
   obtain ⟨n, hn, hstable⟩ := hG.edge_l k hk row hnum p last hancestor α β hα hβ
   exact ⟨α, β, k, n, hk, hnum, hn, hα, hβ, hG.labels_l p.val α hα, hG.labels_l last.val β hβ, hstable⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSParentStability

@@ -48,6 +48,4 @@ theorem maximal_lt_height_l (hℳ : Theory.Models ℳ theory_m)
   exact SecondOrderProgramRectangularEntry.row_lt_of_some_l
     hℳ hJ hO hL hE hx (SecondOrderOrder.trans_l hℳ hpj (lt_own_succ_l hℳ j)) ha
 
-#print axioms maximal_lt_height_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramMaximalParentHeight

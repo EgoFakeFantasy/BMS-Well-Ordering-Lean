@@ -54,6 +54,4 @@ theorem cases_l (hℳ : Theory.Models ℳ theory_m) (β : SecondOrderGraph.code_
       · exact hβ.transitive (SecondOrderQuotient.mk_l hℳ γ) hγ (SecondOrderQuotient.mk_l hℳ X) hXγ
       · exact (SecondOrderGraph.mem_congr_l hℳ hXγ (SecondOrderGraph.refl_l hℳ β)).mpr hγ
 
-#print axioms cases_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalCases

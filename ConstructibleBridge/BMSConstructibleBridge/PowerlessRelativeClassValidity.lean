@@ -78,8 +78,4 @@ theorem exists_for_coding_l : ∃ N F : type_l hℳ B,
   obtain ⟨F, hF⟩ := exists_l K hω hωEq he ht hT hSpec hV hN
   exact ⟨N, F, hN, hF⟩
 
-#print axioms query_iff_l
-#print axioms exists_l
-#print axioms exists_for_coding_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassValidity

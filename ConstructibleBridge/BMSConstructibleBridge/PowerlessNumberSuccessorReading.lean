@@ -29,6 +29,4 @@ theorem successor_l (K : source_coding_l hℳ) (n : SecondOrderModel.num_l ℳ)
   · rintro rfl
     exact PowerlessBMSQuotientSuccessor.successor_l K n
 
-#print axioms successor_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessNumberSuccessorReading

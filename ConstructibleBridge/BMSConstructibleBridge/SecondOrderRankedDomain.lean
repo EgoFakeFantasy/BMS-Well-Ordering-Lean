@@ -39,6 +39,4 @@ theorem wf_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} signature_m}
       intro b hb
       exact (hEdge a ha b hb).elim (hBase b) (ih b)
 
-#print axioms wf_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRankedDomain

@@ -106,7 +106,4 @@ theorem exists_l (K : source_coding_l hℳ)
   refine ⟨X, A, hA, hX, ?_⟩
   exact (formula_l K _ _ _ _ _ _ A B X Y n rfl rfl rfl rfl rfl hA hB).mpr hX
 
-#print axioms formula_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSecondOrderSections

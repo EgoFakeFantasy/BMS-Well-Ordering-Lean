@@ -76,7 +76,4 @@ theorem right_l (V : set_l ℳ) (j : num_l ℳ) (hj : SecondOrderLegalFormulaInd
   obtain ⟨c, hc, h⟩ := SecondOrderAssignmentTransport.exists_reverse_l hℳ C.powers K C.right_total d l hd
   exact ⟨index_l p l c, ⟨p, l, c, rfl, hc, hV⟩, row_l hℳ C p l c d hc hd h⟩
 
-#print axioms left_l
-#print axioms right_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderDefinableFamilyTransport

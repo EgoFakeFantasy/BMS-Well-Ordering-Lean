@@ -75,6 +75,4 @@ theorem members_l (K : source_coding_l hℳ) {ω A Seq Sat I Y : type_l hℳ B}
   have hZY := (hFamily Z).mpr ⟨number_l hBase K ω hω l, t, hNumberMem l, htI, hSlice⟩
   exact ⟨hEq.symm ▸ Z.property, hEq.symm ▸ hZY⟩
 
-#print axioms members_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyMemberDefInclusion

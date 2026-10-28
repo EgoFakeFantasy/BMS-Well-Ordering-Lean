@@ -230,9 +230,4 @@ theorem derives_m {Δ : SortContext ℒ} (actual : Bool) (φ : Formula ℒ [] (.
   SecondOrderAxioms.interpretation_m _
     (fun _ h𝒩 => models_l h𝒩 actual φ B β C W ω Q e t₀ t₁ t₂ a p y)
 
-#print axioms matrix_delta_l
-#print axioms matrix_member_l
-#print axioms matrix_formula_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramEvaluationBounded

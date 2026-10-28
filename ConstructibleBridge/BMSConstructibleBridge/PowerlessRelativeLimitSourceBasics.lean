@@ -148,8 +148,4 @@ theorem derives_m (φ : Sentence ℒ)
 theorem basic_derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (guarded_m basic_m)) :=
   derives_m _ (fun _ _ _ _ _ _ hBase hC hLimit hω hωC => basic_l hBase hLimit hC hω hωC)
 
-#print axioms basic_l
-#print axioms derives_m
-#print axioms basic_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitSourceBasics

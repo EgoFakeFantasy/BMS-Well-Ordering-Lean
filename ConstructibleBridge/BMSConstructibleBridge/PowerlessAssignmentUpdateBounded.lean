@@ -94,8 +94,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.
   exact (formula_l η _ _ _ _ _ _).trans
     ((update_iff_l hℳ hf' hg' hi ha).trans (PowerlessAssignmentUpdate.update_formula_l η _ _ _ _).symm)
 
-#print axioms delta_l
-#print axioms update_iff_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessAssignmentUpdateBounded

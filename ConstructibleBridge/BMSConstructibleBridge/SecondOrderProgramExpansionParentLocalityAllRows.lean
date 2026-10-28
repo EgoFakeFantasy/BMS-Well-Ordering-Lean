@@ -122,6 +122,4 @@ theorem all_rows_l
       · exact Or.inr ⟨fun h => SecondOrderOrder.irrefl_l hℳ _
           (SecondOrderOrder.trans_l hℳ hafter h), hend⟩
 
-#print axioms all_rows_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionParentLocalityAllRows

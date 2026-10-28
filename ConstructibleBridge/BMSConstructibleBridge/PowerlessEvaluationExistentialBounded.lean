@@ -92,8 +92,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.
   exact (formula_l η _ _ _ _ _ _ _).trans
     ((exists_iff_l hℳ hS').trans (PowerlessEvaluationClause.exists_formula_l η _ _ _ _ _ _).symm)
 
-#print axioms delta_l
-#print axioms exists_iff_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessEvaluationExistentialBounded

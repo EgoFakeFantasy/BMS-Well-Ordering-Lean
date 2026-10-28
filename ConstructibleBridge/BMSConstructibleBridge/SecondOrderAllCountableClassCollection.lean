@@ -114,7 +114,4 @@ theorem exists_l (K : source_coding_l hℳ) {t₁ t₂ t₃ Pair Valid P₀ S : 
       (SecondOrderOmegaOrdinal.ordinal_l hℳ K.omega_spec), fun x hx => ?_⟩
     exact False.elim (hNonempty ⟨x, hx⟩)
 
-#print axioms pullback_formula_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderAllCountableClassCollection

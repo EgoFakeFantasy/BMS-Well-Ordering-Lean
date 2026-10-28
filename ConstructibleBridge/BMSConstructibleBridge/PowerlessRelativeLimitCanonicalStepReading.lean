@@ -128,6 +128,4 @@ theorem reading_l {β C E : SecondOrderQuotient.type_l hℳ}
   exact ⟨L', ⟨S', I', J', U', Q', Y', hIndex₀, hRaw.queryRead,
     hFamily, hRaw.rowGraph, hRaw.subset, hYOrder₀⟩, hRaw.extension⟩
 
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitCanonicalStepReading

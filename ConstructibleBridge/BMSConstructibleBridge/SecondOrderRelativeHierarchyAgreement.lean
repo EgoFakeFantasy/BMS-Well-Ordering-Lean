@@ -78,15 +78,8 @@ theorem formula_arguments_l {Γ Δ : SortContext signature_m} (η : Env ℳ Γ �
       ((((Env.empty (M := ℳ)).pushFree (T.eval η)).pushFree (S.eval η)).pushFree (I.eval η)).pushFree (n.eval η) := by
     apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => cases v with
-            | here => rfl
-            | there v => nomatch v
+      rcases v with _ | _ | _ | _ | v
+      all_goals first | rfl | nomatch v
   rw [hEnv]
   exact formula_l _ _ _ _
 
@@ -106,7 +99,5 @@ theorem agree_l (hℳ : Theory.Models ℳ theory_m) {B B' R R' I S T : set_l ℳ
   apply (formula_l I S T k).mpr
   exact SecondOrderRelativeHierarchyAgreementStep.step_l hℳ hBB' hI hAsymm hS hT
     (fun i hi => (formula_l I S T i).mp (hPast i hi))
-
-#print axioms agree_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyAgreement

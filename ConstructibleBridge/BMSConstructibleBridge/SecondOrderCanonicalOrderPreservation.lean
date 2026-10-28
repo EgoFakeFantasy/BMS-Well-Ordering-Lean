@@ -34,6 +34,4 @@ theorem extension_l {ω A P e t₁ t₂ t₃ Pair Valid D E : SecondOrderQuotien
     fun x y hx _ hyx => SecondOrderWellOrderEndExtension.initial_l
       (hℳ := hℳ) (C := A) (D := D) (R := P) (S := L) (L := E) hRead hx hyx⟩
 
-#print axioms extension_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalOrderPreservation

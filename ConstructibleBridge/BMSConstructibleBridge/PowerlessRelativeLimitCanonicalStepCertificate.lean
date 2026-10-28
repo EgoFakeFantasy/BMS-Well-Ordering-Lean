@@ -147,6 +147,4 @@ theorem exists_l {β C : SecondOrderQuotient.type_l hℳ}
   have hEEq : E' = E := Subtype.ext hEq
   exact ⟨E, hEC, hBounded, hEEq ▸ hStep, hOrder⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitCanonicalStepCertificate

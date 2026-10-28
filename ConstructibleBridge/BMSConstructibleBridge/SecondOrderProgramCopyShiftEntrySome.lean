@@ -77,6 +77,4 @@ theorem entry_shift_l (hℳ : Theory.Models ℳ theory_m)
   exact (SecondOrderProgramEntrySpecification.optional_some_l hℳ hO hL hE
     (hbr.2 i hi col hcol) r (add_l v (mul_l k gap))).mpr ⟨hr, hshift⟩
 
-#print axioms entry_shift_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyShiftEntrySome

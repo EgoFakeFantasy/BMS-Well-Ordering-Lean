@@ -99,8 +99,4 @@ theorem transfer_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
     (PowerlessFunction.value_mem_l hℳ h.map_l ha).1
     (PowerlessFunction.value_mem_l hℳ h.map_l hb).1 hit) a b ha hb
 
-#print axioms formula_l
-#print axioms restrict_l
-#print axioms transfer_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixRepresentation

@@ -72,6 +72,4 @@ theorem reading_l (K : source_coding_l hℳ) {ω e t₁ t₂ t₃ T N F : type_l
   exact PowerlessRelativeClassValidityAbsolute.reading_l K hω hωEq he hStatic.1
     hT hPair hV hN hStatic.2.2.2.2
 
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassStaticCodingReading

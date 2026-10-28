@@ -58,8 +58,4 @@ theorem level_l (hℳ : Theory.Models ℳ theory_m) (B : set_l ℳ)
   exact ⟨β, C', hC', SecondOrderRelativeLevelMonotonicity.members_l hℳ
     (SecondOrderGraph.refl_l hℳ ⟨B, zero_l ℳ, hB⟩) hαβ hC hC'⟩
 
-#print axioms transitive_l
-#print axioms base_l
-#print axioms level_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeClass

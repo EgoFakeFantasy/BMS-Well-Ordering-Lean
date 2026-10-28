@@ -118,10 +118,4 @@ theorem equality_derives_m {Δ : SortContext ℒ} (A I E T H C D F G : Term ℒ 
       (GraphTranslation.form_m (equality_sentence_m A I E T H C D F G)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => equality_models_l hℳ A I E T H C D F G)
 
-#print axioms recodomain_l
-#print axioms limit_l
-#print axioms graph_eq_l
-#print axioms derives_m
-#print axioms equality_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationalCollapseTransport

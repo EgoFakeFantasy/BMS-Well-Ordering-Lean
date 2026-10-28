@@ -104,9 +104,4 @@ theorem success_width_l (hℳ : Theory.Models ℳ theory_m) {S B L : set_l ℳ}
   have hcl := copied_width_l hℳ hC hB hL hb hw hc
   exact append_length_l hℳ hA hL hgl hcl ha
 
-#print axioms good_rel_l
-#print axioms copied_rel_l
-#print axioms copied_width_l
-#print axioms success_width_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionSuccessShape

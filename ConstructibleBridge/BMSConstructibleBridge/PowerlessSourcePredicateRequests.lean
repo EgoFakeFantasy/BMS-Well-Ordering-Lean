@@ -254,12 +254,4 @@ theorem member_l {I W : carrier_l ℳ}
       rw [hz₀] at h₂
       exact hψ (h₂.mpr (hφ z₀))
 
-#print axioms subset_l
-#print axioms truth_formula_l
-#print axioms bounded_l
-#print axioms witness_l
-#print axioms formula_l
-#print axioms family_l
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourcePredicateRequests

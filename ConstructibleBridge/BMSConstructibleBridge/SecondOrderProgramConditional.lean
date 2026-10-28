@@ -136,16 +136,4 @@ theorem branch_rel_l (hℳ : Theory.Models ℳ theory_m) (test yes no : code_m)
     · obtain ⟨a, ha, _⟩ := function_of_semantics_l hℳ no hN x
       exact ⟨a, z, k, ha, hy, ht, (select_rel_l hℳ hS a z k z).mpr (Or.inr ⟨hne, rfl⟩)⟩
 
-#print axioms select_step_m
-#print axioms select_m
-#print axioms branch_m
-#print axioms select_eval_l
-#print axioms branch_eval_l
-#print axioms select_step_rel_l
-#print axioms select_zero_l
-#print axioms select_succ_l
-#print axioms select_rel_l
-#print axioms branch_bridge_l
-#print axioms branch_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramConditional

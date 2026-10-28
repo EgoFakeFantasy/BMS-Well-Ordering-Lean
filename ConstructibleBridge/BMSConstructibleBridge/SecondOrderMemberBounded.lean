@@ -58,6 +58,4 @@ theorem ordinal_l (hTrans : ∀ x, mem_l hℳ x (mk_l hℳ A) → ∀ y, mem_l h
   rw [formula_l hTrans (PowerlessOrdinalBounded.ordinal_delta_l t) η,
     SecondOrderOrdinalBounded.formula_l hℳ, term_l]
 
-#print axioms ordinal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberBounded

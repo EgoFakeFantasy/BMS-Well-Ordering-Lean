@@ -84,6 +84,4 @@ theorem formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortContext signa
     (SecondOrderInterpretation.source_l hℳ ρ τ) (fun _ => SecondOrderQuotient.mk_l hℳ C)).trans
     (SetTheory.Definitional.Project.Formula.satisfies_isOrdinal_iff _ SetTheory.Definitional.Term.newest)
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderGraphOrdinalFormula

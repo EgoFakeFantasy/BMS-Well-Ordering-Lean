@@ -127,7 +127,4 @@ theorem entry_not_lt_of_no_ancestor_l (hℳ : Theory.Models ℳ theory_m)
     hℳ hP hM hparent
   exact hmember (hforbidden found hmiddleFound hfoundTarget)
 
-#print axioms parent_at_or_after_l
-#print axioms entry_not_lt_of_no_ancestor_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentCandidate

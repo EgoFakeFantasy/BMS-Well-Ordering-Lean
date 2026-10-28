@@ -106,6 +106,4 @@ theorem extension_l (K : source_coding_l hℳ) {Θ Δ : SortContext ℒ}
         (fun w => (hf (σ w)).trans (hσ w)) ((hf B).trans hB) ((hf W).trans hW) hClass'
         (fun w hw => by simpa only [hf] using hT w (by simp [hw])) hTags' h
 
-#print axioms extension_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeSourceFamilyExtension

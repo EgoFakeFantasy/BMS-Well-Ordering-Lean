@@ -150,7 +150,4 @@ theorem member_congr_of_shape_l (hℳ : Theory.Models ℳ theory_m) {P M : set_l
       or_iff_right hneLeft, or_iff_right hneRight]
     exact hprefix q hq
 
-#print axioms shape_l
-#print axioms member_congr_of_shape_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentBlockCongruence

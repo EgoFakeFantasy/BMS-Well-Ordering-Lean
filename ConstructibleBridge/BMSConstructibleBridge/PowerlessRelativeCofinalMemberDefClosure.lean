@@ -120,6 +120,4 @@ theorem member_l
     exact PowerlessRelativeLimitSelectedSatisfactionRows.member_l
       hBase hLimit hW ω AClass Seq Idx Sat I hωW hAW hSeqW hIdxW hSatW hIW hImage
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCofinalMemberDefClosure

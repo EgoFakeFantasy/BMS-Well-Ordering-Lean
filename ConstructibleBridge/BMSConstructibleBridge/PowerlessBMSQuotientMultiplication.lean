@@ -166,10 +166,4 @@ noncomputable def correspondence_l (C : source_coding_l hM) :
     (fun x => numberEquiv_numberCode_l C (SecondOrderModel.succ_l (numberEquiv_l C x)))
     (numberEquiv_addNumbers_l C) (numberEquiv_mulNumbers_l C)
 
-#print axioms operator_exists_l
-#print axioms multiplicationInstance_l
-#print axioms multiplication_iff_l
-#print axioms operations_l
-#print axioms correspondence_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientMultiplication

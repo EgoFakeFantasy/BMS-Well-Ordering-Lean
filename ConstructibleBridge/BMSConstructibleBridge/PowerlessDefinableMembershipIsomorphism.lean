@@ -333,10 +333,4 @@ theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: �
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m φ C A D T H)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 φ C A D T H)
 
-#print axioms edge_l
-#print axioms same_l
-#print axioms injective_l
-#print axioms member_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessDefinableMembershipIsomorphism

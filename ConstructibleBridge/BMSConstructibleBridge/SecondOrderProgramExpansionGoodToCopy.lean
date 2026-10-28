@@ -107,8 +107,4 @@ theorem member_iff_of_adjacent_l (hℳ : Theory.Models ℳ theory_m) {X M L E : 
   exact member_iff_of_root_l hℳ hX hM hL hE hx hy hpj hgood
     (SecondOrderProgramExpansionCopyBoundaryIteration.first_to_l hℳ hM hadjacent hs)
 
-#print axioms member_iff_of_root_l
-#print axioms member_iff_of_adjacent_l
-#print axioms member_iff_of_two_roots_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToCopy

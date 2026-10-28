@@ -56,7 +56,4 @@ theorem base_object_l (hℳ : Theory.Models ℳ theory_m) {B : type_l hℳ}
   rw [← hWB]
   exact (iff_l hℳ hTrans ⟨W, zero_l ℳ, hW⟩).mpr (SecondOrderRelativeLevelZero.base_object_l hℳ W hW hTrans)
 
-#print axioms iff_l
-#print axioms transitive_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCorrespondence

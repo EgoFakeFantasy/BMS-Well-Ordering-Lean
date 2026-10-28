@@ -46,6 +46,4 @@ theorem member_l (K : source_coding_l hℳ) (A H : type_l hℳ B) {a F : SecondO
     (hLift A.val (hParams _ .here)) (hLift H.val (hParams _ (.there .here))) ha
     ((PowerlessRelativeClassFunctionAbsolute.map_l (hBase := hBase) H A A).mp hH) hF⟩
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFunctionIteration

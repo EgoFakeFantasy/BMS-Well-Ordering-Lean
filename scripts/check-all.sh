@@ -41,6 +41,7 @@ printf '检查 BMS 可构造模型桥接及最终定理公理依赖\n'
   lake env lean BMSTools/Audit.lean
   lake env lean BMSConstructibleBridge/AxiomAudit.lean
   lake env lean BMSConstructibleBridge/SecondOrderHereditaryBMSAxiomAudit.lean
+  lake env lean BMSConstructibleBridge/SecondOrderCoreAxiomAudit.lean
   lake env lean BMSConstructibleBridge/FiniteBoundaryAudit.lean
   lake env lean BMSConstructibleBridge/SecondOrderAudit.lean
   lake env lean BMSConstructibleBridge/ThirdOrderAudit.lean

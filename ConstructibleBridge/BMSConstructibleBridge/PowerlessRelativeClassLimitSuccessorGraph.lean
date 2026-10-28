@@ -84,7 +84,4 @@ theorem exists_l (C : type_l hℳ B) (hC : Ordinal C.val)
   exact ⟨H, hH, fun x y => (hValue x y).trans
     (and_congr Iff.rfl (and_congr Iff.rfl (hRead x y)))⟩
 
-#print axioms successor_below_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassLimitSuccessorGraph

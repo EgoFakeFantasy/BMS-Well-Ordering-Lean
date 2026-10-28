@@ -72,7 +72,4 @@ theorem unique_l (hℳ : Theory.Models ℳ theory_m) {R F G H : set_l ℳ} {r : 
     (hG : spec_l R F r G) (hH : spec_l R F r H) : G = H :=
   SecondOrderRelations.ext_l hℳ G H (fun c d => (hG c d).trans (hH c d).symm)
 
-#print axioms exists_l
-#print axioms layer_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalSubsetLayer

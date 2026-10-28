@@ -125,6 +125,4 @@ theorem exists_l {Δ : SortContext ℒ} (η : Env (structure_l hℳ B hBase) [] 
   refine ⟨C', Q, G, hQ, ?_⟩
   simpa only [hLift, hCValue, hQValue, ξ, w, Term.eval_weakenFree] using And.intro hG (And.intro hRaw hClass)
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassEvaluationClosure

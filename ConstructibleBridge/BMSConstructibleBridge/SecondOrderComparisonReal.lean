@@ -85,7 +85,4 @@ theorem values_l (K : source_coding_l hℳ) {C f P Q : type_l hℳ}
     exact hA ▸ hB ▸ hValue
   exact (read P hP).symm.trans (read Q hQ)
 
-#print axioms exists_unique_l
-#print axioms values_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonReal

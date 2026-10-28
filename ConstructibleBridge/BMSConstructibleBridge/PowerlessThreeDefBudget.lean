@@ -134,6 +134,4 @@ theorem of_tail_l {Δ : SortContext ℒ} (η : Env 𝒱 [] Δ) {B ξ Cstart Q : 
       (PowerlessRelativeOrdinalBudgetReading.earlier_l hℳ A hQ hD hRel hG hS i n hi hn hIndex k z)
       hE hC₀
 
-#print axioms of_tail_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessThreeDefBudget

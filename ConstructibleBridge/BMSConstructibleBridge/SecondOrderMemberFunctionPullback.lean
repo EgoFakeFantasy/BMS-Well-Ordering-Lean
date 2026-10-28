@@ -59,6 +59,4 @@ theorem exists_l (K : source_coding_l hℳ) (A : SecondOrderGraph.code_l ℳ)
     SecondOrderMemberNormalizer.code_l, numberCode_l, SecondOrderNaturalGraph.code_l,
     SecondOrderGraph.child_l] using h
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberFunctionPullback

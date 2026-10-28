@@ -88,9 +88,4 @@ theorem unique_l (K : source_coding_l hℳ) {A T F S R R' : SecondOrderQuotient.
     (hClean' : holds_l (𝒩 := RawModel) K.omega S R') : R = R' :=
   ext_l hClean hClean' (PowerlessSatisfactionUnique.values_l K hT hPair hV hF hR hR')
 
-#print axioms delta_l
-#print axioms formula_l
-#print axioms ext_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionGraphClean

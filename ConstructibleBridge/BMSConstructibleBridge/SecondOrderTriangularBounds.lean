@@ -50,8 +50,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
   intro n t ht
   exact ⟨lower_l hℳ ht, fun v hv => growth_l hℳ ht hv⟩
 
-#print axioms lower_l
-#print axioms growth_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderTriangularBounds

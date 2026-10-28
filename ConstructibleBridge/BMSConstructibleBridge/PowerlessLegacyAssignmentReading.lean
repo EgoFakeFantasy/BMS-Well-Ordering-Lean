@@ -96,8 +96,4 @@ theorem membership_l
     obtain ⟨b, hb, hby⟩ := (point_l K hLength hj hLink y).mp hy
     exact ⟨a, b, ha, hb, (hR a b x y hax hby).mpr hMem⟩
 
-#print axioms point_l
-#print axioms equality_l
-#print axioms membership_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyAssignmentReading

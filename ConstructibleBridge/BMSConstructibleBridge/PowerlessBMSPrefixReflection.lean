@@ -112,7 +112,4 @@ theorem exists_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omeg
   exact ⟨Λ, Θ, s, h, u, v, hΛ, hΘ, hΛ₀, hΘ₀, hstep,
     image_l hℳ hω hOld hgraph hf hg hstep hΛ hΛ₀⟩
 
-#print axioms image_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixReflection

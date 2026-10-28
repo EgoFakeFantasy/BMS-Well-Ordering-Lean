@@ -156,8 +156,4 @@ theorem all_rows_of_step_l (hℳ : Theory.Models ℳ theory_m) {M : set_l ℳ}
             (add_l p (add_l (mul_l d t) i))) (zero_l ℳ)))
     (rows_syntax_l M x y j p d k h) hstep
 
-#print axioms sync_m
-#print axioms sync_formula_l
-#print axioms all_rows_of_step_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundarySync

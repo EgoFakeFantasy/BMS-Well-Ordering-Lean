@@ -132,12 +132,4 @@ theorem parent_terminal_l (hℳ : Theory.Models ℳ theory_m) (r : Nat) {R P : s
   output_terminal_l hℳ (SecondOrderProgramParentSuccessor.parent_m r) hR hP
     (fun _ _ hp => SecondOrderProgramParentOrder.parent_lt_l hℳ r hP hp) hu
 
-#print axioms fuel_l
-#print axioms fuel_m
-#print axioms fuel_language_m
-#print axioms fuel_syntax_l
-#print axioms fuel_invariant_l
-#print axioms output_terminal_l
-#print axioms parent_terminal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorTermination

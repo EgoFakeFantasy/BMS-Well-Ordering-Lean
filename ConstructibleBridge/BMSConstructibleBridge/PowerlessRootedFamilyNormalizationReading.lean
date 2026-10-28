@@ -126,7 +126,4 @@ theorem body_l (K : source_coding_l hℳ) {S U : SecondOrderQuotient.type_l hℳ
       (edge_l K hS hU hTrace i a b).mpr hEdge⟩
     exact congrArg (fun n => (numberCode_l K n).val) hPair.symm
 
-#print axioms edge_l
-#print axioms body_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRootedFamilyNormalizationReading

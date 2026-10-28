@@ -88,7 +88,4 @@ theorem monotone_formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortCont
       | .there (.there .here) => exact Term.eval_weakenBound η n R
   rw [hEnv, SecondOrderRelativeHierarchyMonotonicity.formula_l hℳ]
 
-#print axioms transitive_formula_l
-#print axioms monotone_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyClosedFormula

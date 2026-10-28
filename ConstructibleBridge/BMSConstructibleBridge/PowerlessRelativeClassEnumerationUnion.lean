@@ -105,6 +105,4 @@ theorem exists_l {ω G H U V W : type_l hℳ B}
       (ℳ := structure_l hℳ B hBase) ω).mp hω.1).2 t ht.1
     exact ⟨n, hn, (hValue n y).mpr ⟨hn, Or.inr ⟨i, t, hi, ht.1, ht.2, htn, hiy⟩⟩⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassEnumerationUnion

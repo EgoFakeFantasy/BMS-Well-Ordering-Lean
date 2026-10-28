@@ -115,6 +115,4 @@ theorem packet_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
     hTrans hTargetClosed B₁ ω₁ x₁ a y A U D f e t₁ t₂ t₃ t₄ P N F V Q G hω h
   exact ⟨a, y, A, U, D, f, e, t₁, t₂, t₃, t₄, P, N, F, V, Q, G, hωEq ▸ hRaw⟩
 
-#print axioms packet_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessWholeCollapseCodedCoverage

@@ -145,7 +145,4 @@ theorem reloc_ge_zero_l (hℳ : Theory.Models ℳ theory_m)
     intro h
     exact (hmax _ hpq hqj) ((hel q' j hqw hj).mp h)
 
-#print axioms zero_eligible_agree_l
-#print axioms reloc_ge_zero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopiesBlockParentZero

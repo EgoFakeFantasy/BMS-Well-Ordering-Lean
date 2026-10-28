@@ -107,7 +107,4 @@ theorem cutoff_l (K : source_coding_l hℳ) {ω Ω W A : SecondOrderQuotient.typ
     (fun x hx => PowerlessRelativeLevelClosure.transitive_l hℳ hBase' hW A hAW x hx) φ η hSome
   exact ⟨R, J, hR, hJ, hRead⟩
 
-#print axioms exists_l
-#print axioms cutoff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeSourceLeastWitness

@@ -66,7 +66,4 @@ theorem exists_l (K : source_coding_l hℳ) (ω x P₀ : M)
   exact ⟨a, y, A, U, D, f, e, t₁, t₂, t₃, t₄, Pair, N, Valid, V, Q, G,
     g, R, P, hPoint, hMap, hEquations, hValue⟩
 
-#print axioms range_map_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalCodedCoverage

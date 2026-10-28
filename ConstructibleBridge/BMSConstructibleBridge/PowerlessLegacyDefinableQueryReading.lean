@@ -183,8 +183,4 @@ theorem reading_l (K : source_coding_l hℳ)
       htRaw, ?_⟩
     simpa only [hω, number_l, t'] using hSatRaw
 
-#print axioms translation_reading_l
-#print axioms satisfaction_query_absolute_l
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyDefinableQueryReading

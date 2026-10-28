@@ -69,7 +69,4 @@ theorem exists_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {B β
     SecondOrderFunctionAppend.map_l hℳ hf hc hd hS hp hRead,
     SecondOrderFunctionAppend.value_l hℳ hp hRead⟩
 
-#print axioms singleton_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitFunctionExtension

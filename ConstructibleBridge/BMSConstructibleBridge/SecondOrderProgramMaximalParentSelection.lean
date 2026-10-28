@@ -77,8 +77,4 @@ theorem width_parent_l (hℳ : Theory.Models ℳ theory_m) {M P L : set_l ℳ}
   · have he := (pred_succ_l hℳ hD n j).mp hd
     exact ⟨n, p, hn, he.symm ▸ hp, he.symm ▸ hlt⟩
 
-#print axioms parent_nonzero_l
-#print axioms parent_some_l
-#print axioms width_parent_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramMaximalParentSelection

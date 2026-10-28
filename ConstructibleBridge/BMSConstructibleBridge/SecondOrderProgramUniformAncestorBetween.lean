@@ -66,6 +66,4 @@ theorem member_between_l (hℳ : Theory.Models ℳ theory_m) {M J L : set_l ℳ}
       exact SecondOrderProgramUniformAncestorRecord.entry_lt_l
         hℳ hM hJ hi htB hit hie hte
 
-#print axioms member_between_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorBetween

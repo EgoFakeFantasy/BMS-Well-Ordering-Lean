@@ -121,16 +121,4 @@ theorem graph_total_l (hℳ : Theory.Models ℳ theory_m) (c : PrimitiveProgram.
 联合出口 `graph_total_l` 已把六个非递归构造与 `prec` 闭包全部纳入依赖；
 此处逐项列出各构造的 `_graph_l`、图理解助手与两个阶段 2 出口，便于单份日志复核。 -/
 
-#print axioms SecondOrderProgramConstructors.graph_comprehension_l
-#print axioms SecondOrderProgramConstructors.zero_graph_l
-#print axioms SecondOrderProgramConstructors.succ_graph_l
-#print axioms SecondOrderProgramConstructors.left_graph_l
-#print axioms SecondOrderProgramConstructors.right_graph_l
-#print axioms SecondOrderProgramConstructors.comp_graph_l
-#print axioms SecondOrderProgramConstructors.pair_graph_l
-#print axioms SecondOrderProgramRecursion.prec_history_exists_l
-#print axioms prec_rel_unique_l
-#print axioms prec_graph_l
-#print axioms graph_total_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTotality

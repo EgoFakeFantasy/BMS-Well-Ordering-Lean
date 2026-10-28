@@ -158,8 +158,4 @@ theorem formula_l {Γ Δ : SortContext ℒ} (φ : Formula ℒ Γ Δ) (ξ : Env (
   obtain ⟨c, N, hc, hN, hkN, _, h⟩ := formula_certified_l hω ht hConstruct φ ξ hk hξ
   exact ⟨c, N, hc, hN, hkN, h⟩
 
-#print axioms formula_l
-
-#print axioms formula_certified_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationalSourceCompilation

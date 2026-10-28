@@ -84,13 +84,4 @@ theorem positive_l (hℳ : Theory.Models ℳ theory_m) {N : set_l ℳ}
   obtain ⟨k, rfl⟩ := (predecessor_l hℳ x).resolve_left hx
   rw [bridge_l hℳ hR hN, rec_succ_l hℳ hR]
 
-#print axioms nonzero_rec_m
-#print axioms nonzero_m
-#print axioms nonzero_eval_l
-#print axioms rec_zero_l
-#print axioms rec_succ_l
-#print axioms bridge_l
-#print axioms zero_l
-#print axioms positive_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramNonzero

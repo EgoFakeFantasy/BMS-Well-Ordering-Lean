@@ -116,7 +116,4 @@ theorem exists_l (K : source_coding_l hℳ)
     hereditary_l K hB hNonempty φ χ hParams hSome
   exact ⟨U, hUHC, hU, H, hTrace, C, hRange, hCover⟩
 
-#print axioms hereditary_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryUniformRange

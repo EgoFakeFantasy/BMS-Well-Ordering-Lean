@@ -114,9 +114,4 @@ theorem exists_l (K : source_coding_l hℳ) (A : SecondOrderGraph.code_l ℳ)
   · intro i X hiX x hx
     exact (hC x).mpr ⟨X, (SecondOrderFunctionLaws.value_mem_l hℳ hT hiX).2, hx⟩
 
-#print axioms exists_l
-#print axioms predecessor_formula_l
-#print axioms predecessor_exists_l
-#print axioms limit_cover_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderStageLayerFunction

@@ -129,8 +129,4 @@ theorem formula_l {Γ Δ : SortContext ℒ} (η : Env 𝒩₀ Γ Δ)
     exact ⟨⟨T, h.1.1⟩, ⟨f, h.1.2.1⟩,
       ⟨r, PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase (ω.eval η).property h.2.2.2.1⟩, h⟩
 
-#print axioms reading_delta_m
-#print axioms body_formula_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryRealRequestIntrinsic

@@ -98,7 +98,4 @@ theorem exists_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omeg
     PowerlessBMSPrefixRestoration.step_l hℳ hω hX hW hP hI hS hTrim hZ hB hL hE hD hJ hAsc hM hO
       hx hmax hlast hparent hd hy hcopy hG hα hβ hOld hgraph hf hg hslice hstep hU hrowMax hΘ hΘ₀⟩
 
-#print axioms span_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSCopyStep

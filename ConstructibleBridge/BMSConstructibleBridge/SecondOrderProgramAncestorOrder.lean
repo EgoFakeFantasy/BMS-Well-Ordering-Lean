@@ -110,11 +110,4 @@ theorem output_order_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {R L E C
   have hsu := function_value_unique_l (function_of_semantics_l hℳ (repeat_m (step_m c)) hR) hs hu
   exact ⟨t, v, m, hsu.symm.trans he.symm, hl, ht, hb⟩
 
-#print axioms ordered_l
-#print axioms ordered_m
-#print axioms ordered_language_m
-#print axioms ordered_syntax_l
-#print axioms ordered_invariant_l
-#print axioms output_order_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorOrder

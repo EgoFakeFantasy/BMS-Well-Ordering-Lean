@@ -167,9 +167,4 @@ theorem range_l {C ω A t₀ t₁ t₂ q r : type_l hℳ}
       (SecondOrderFunctionProperties.value_mem_l hℳ hMap hi).2,
       (SecondOrderFunctionProperties.value_mem_l hℳ hMap hj).2, hs, hr⟩)
 
-#print axioms formula_l
-#print axioms unique_l
-#print axioms exists_l
-#print axioms range_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramRelocation

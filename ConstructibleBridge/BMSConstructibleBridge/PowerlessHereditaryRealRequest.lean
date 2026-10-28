@@ -164,7 +164,4 @@ theorem class_l {B ω e o S X V : SecondOrderQuotient.type_l hℳ}
   obtain ⟨_, _, _, h⟩ := h
   exact h.2.1
 
-#print axioms formula_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryRealRequest

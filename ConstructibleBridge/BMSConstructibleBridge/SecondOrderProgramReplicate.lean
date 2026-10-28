@@ -132,15 +132,4 @@ theorem past_end_l (hℳ : Theory.Models ℳ theory_m) {R E : set_l ℳ}
   have hn := (specification_l hℳ hR hL hE ha).1
   exact lookup_past_end_l hℳ hE hI ((length_rel_l hℳ hL hI a n).mp hn) i y hni
 
-#print axioms constant_l
-#print axioms constant_m
-#print axioms constant_syntax_l
-#print axioms invariant_m
-#print axioms invariant_language_m
-#print axioms invariant_syntax_l
-#print axioms exists_l
-#print axioms specification_l
-#print axioms entry_l
-#print axioms past_end_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramReplicate

@@ -70,6 +70,4 @@ theorem wf_l (C : source_coding_l hℳ) {Δ : SortContext ℒ}
   subst y'
   exact hMin z hzy ((hSeen z).mpr ⟨SecondOrderModel.succ_l i, c, hc, hz⟩)
 
-#print axioms wf_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSClassRelationDomain

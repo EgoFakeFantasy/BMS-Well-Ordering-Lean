@@ -119,6 +119,4 @@ theorem output_formula_l {Γ Δ : SortContext ℒ} (η : Env 𝒱 Γ Δ)
     up, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms output_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonStageSyntax

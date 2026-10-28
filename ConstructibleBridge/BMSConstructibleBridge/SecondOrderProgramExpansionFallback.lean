@@ -119,12 +119,4 @@ theorem expand_none_width_l (hℳ : Theory.Models ℳ theory_m) {E M L : set_l �
   have hvn := fallback_width_l hℳ hF hL hn ((raw_none_l hℳ hR hM hF hm k v).mp hv)
   exact SecondOrderProgramTrimArray.width_l hℳ hT hL v y n hy hvn
 
-#print axioms index_rel_l
-#print axioms fallback_rel_l
-#print axioms fallback_succ_l
-#print axioms fallback_width_l
-#print axioms raw_none_l
-#print axioms expand_rel_l
-#print axioms expand_none_width_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionFallback

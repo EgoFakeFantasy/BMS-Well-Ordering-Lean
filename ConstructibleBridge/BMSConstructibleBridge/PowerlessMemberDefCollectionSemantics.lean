@@ -64,6 +64,4 @@ theorem formula_l (C : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
   apply iff_congr Iff.rfl
   simpa only [up, Term.eval_weakenBound, Term.eval, Env.pushBound_bound_here] using hSlice Z i x
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefCollectionSemantics

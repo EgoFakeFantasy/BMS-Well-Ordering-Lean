@@ -59,6 +59,4 @@ def sentence_m : Sentence ℒ :=
     (.forallE .set (.existsE .set (spec_m (.bvar (.there (.there .here)))
       (.bvar (.there .here)) (.bvar .here)))))
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteSubsets

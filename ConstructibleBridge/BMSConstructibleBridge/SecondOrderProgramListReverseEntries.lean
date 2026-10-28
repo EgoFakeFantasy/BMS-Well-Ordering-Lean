@@ -145,10 +145,4 @@ theorem reverse_length_l (hℳ : Theory.Models ℳ theory_m) {T F L I : set_l �
 本模块公共声明仅允许既有标准公理集合（propext/Quot.sound/Classical.choice），
 无新增公理，亦不得有 `sorryAx`。审计置于命名空间内、`end` 之前。 -/
 
-#print axioms entries_length_m
-#print axioms entries_length_language_m
-#print axioms entries_length_syntax_l
-#print axioms fold_length_l
-#print axioms reverse_length_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListReverseEntries

@@ -64,6 +64,4 @@ theorem induct_l (K : source_coding_l hℳ) (A U R : SecondOrderQuotient.type_l 
     (.fvar .here)
     aE aC aT E C T n rfl rfl rfl rfl rfl hE hC hT rfl
 
-#print axioms induct_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyEvaluationRawInduction

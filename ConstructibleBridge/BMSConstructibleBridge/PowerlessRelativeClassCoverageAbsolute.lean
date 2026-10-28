@@ -113,9 +113,4 @@ theorem closed_l (U : M)
       · exact (hc ⟨z, PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase b.property hz⟩).mpr
           (Or.inr hz)
 
-#print axioms ordinal_l
-#print axioms numeric_l
-#print axioms history_l
-#print axioms closed_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCoverageAbsolute

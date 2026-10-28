@@ -98,7 +98,4 @@ theorem rule_l (K : source_coding_l hℳ) {N T f : type_l hℳ}
     · exact Or.inr (Or.inr (Or.inr (Or.inl ⟨a, b, hc, ha, hb⟩)))
     · exact Or.inr (Or.inr (Or.inr (Or.inr ⟨a, b, hc, ha, hb⟩)))
 
-#print axioms branch_l
-#print axioms rule_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFormulaValidityReading

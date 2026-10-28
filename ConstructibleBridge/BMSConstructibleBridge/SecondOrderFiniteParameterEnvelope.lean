@@ -49,6 +49,4 @@ theorem exists_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m)
       · exact hT p hpT x ((hp x).mpr (Or.inl rfl))
       · exact hT B hBT x (hS x hx)
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteParameterEnvelope

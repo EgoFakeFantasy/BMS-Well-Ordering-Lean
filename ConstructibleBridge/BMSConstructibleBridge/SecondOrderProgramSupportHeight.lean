@@ -104,12 +104,4 @@ theorem support_rel_l (hℳ : Theory.Models ℳ theory_m) {H L E : set_l ℳ}
   · intro hh
     exact ⟨n, hn, (SecondOrderProgramSupportCorrectness.scan_rel_l hℳ hR hE x n h).mpr hh⟩
 
-#print axioms support_append_l
-#print axioms scan_encode_l
-#print axioms support_input_m
-#print axioms support_m
-#print axioms support_encode_l
-#print axioms support_bridge_l
-#print axioms support_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSupportHeight

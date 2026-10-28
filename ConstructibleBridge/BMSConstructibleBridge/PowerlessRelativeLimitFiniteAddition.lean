@@ -143,6 +143,4 @@ theorem exists_l {ω e a : type_l hℳ B}
     obtain ⟨g, hgC, hg⟩ := (template_formula_l (hBase := hBase) (C := C) ω e a (N i)).mp hi
     exact extend_l hLimit hC hωC hω hnω hSucc hgC hg
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitFiniteAddition

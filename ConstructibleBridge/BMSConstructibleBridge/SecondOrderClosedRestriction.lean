@@ -96,7 +96,4 @@ theorem derives_m {Δ : SortContext signature_m} (R Q P : Term signature_m [] Δ
   intro η
   exact models_l hℳ η R Q P a
 
-#print axioms equal_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderClosedRestriction

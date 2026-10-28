@@ -201,11 +201,4 @@ theorem copies_entry_value_l (hℳ : Theory.Models ℳ theory_m)
   copy_entry_value_l hℳ hC hH hL hE hB hO hU hf hblk hw hj hs hn hr hv colj e
     ((block_read_last_l hℳ hR hC hL hE hw hblk hy hj colj).mp hcol)
 
-#print axioms parameter_decode_l
-#print axioms copy_entry_value_l
-#print axioms copy_entry_asis_l
-#print axioms copy_entry_shift_l
-#print axioms copies_entry_value_l
-#print axioms optional_present_not_none_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyShiftEntry

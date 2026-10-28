@@ -192,9 +192,4 @@ theorem parent_succ_l (hℳ : Theory.Models ℳ theory_m) {P R PN L : set_l ℳ}
 本模块公共声明仅允许既有标准公理集合（propext/Quot.sound/Classical.choice），无新增公理，
 亦不得有 `sorryAx`。审计置于命名空间内、`end` 之前。 -/
 
-#print axioms zero_table_lookup_l
-#print axioms next_table_lookup_l
-#print axioms parent_zero_l
-#print axioms parent_succ_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentLookup

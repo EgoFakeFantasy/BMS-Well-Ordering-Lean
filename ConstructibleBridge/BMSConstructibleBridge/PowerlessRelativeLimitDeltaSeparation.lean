@@ -98,6 +98,4 @@ theorem exists_l
     rw [hxn] at hxX hφx ⊢
     exact (hRead' n hn).mpr ⟨hxX, hφx⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitDeltaSeparation

@@ -133,8 +133,4 @@ theorem represents_l (hℳ : Theory.Models ℳ theory_m) (A : SecondOrderGraph.c
     obtain ⟨n, hn, _⟩ := hz
     exact hEmpty n hn
 
-#print axioms root_l
-#print axioms nonempty_l
-#print axioms represents_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalMemberDefSemantics

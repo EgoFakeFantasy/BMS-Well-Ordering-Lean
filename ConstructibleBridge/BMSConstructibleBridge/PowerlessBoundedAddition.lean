@@ -99,6 +99,4 @@ theorem instance_l (K : source_coding_l hℳ) {S : type_l hℳ}
     refine ⟨g, hgS, hg, (hRead _ _).mpr ⟨?_, hyEq ▸ hy.2⟩⟩
     exact (PowerlessBMSQuotientSuccessor.successor_l K j (numberCode_l K j).val).mpr (Or.inr rfl)
 
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBoundedAddition

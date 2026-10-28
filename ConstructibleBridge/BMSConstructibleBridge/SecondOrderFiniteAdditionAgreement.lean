@@ -107,6 +107,4 @@ theorem value_l (K : source_coding_l hℳ) {a F n g c : SecondOrderQuotient.type
   rw [hEq] at h
   exact h hc
 
-#print axioms value_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteAdditionAgreement

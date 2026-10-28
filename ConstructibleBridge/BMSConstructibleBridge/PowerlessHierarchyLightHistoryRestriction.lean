@@ -87,7 +87,4 @@ theorem successor_member_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theor
       · exact hd.2)
   exact hEq.symm ▸ hg'C
 
-#print axioms exists_l
-#print axioms successor_member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyLightHistoryRestriction

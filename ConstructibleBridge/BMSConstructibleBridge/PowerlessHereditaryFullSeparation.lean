@@ -117,8 +117,4 @@ theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: Δ)) :
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m φ)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 φ)
 
-#print axioms exists_l
-#print axioms source_models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryFullSeparation

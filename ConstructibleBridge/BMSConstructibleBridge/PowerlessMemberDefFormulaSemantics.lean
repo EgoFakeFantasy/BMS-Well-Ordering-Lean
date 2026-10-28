@@ -74,7 +74,4 @@ theorem atoms_formula_l (C : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
   rw [hEdge n m x y Q A q hQ hA, hEdge n m x y R B r hR hB, and_imp]
   rfl
 
-#print axioms onto_formula_l
-#print axioms atoms_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefFormulaSemantics

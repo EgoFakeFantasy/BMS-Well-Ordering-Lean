@@ -165,10 +165,4 @@ theorem zero_first_ancestor_of_earlier_copy_parent_l
   · rw [heq]
     exact hparentTarget
 
-#print axioms no_ancestor_after_parent_l
-#print axioms earlier_copy_column_lt_l
-#print axioms earlier_copy_parent_cut_l
-#print axioms earlier_copy_parent_ancestor_first_l
-#print axioms zero_first_ancestor_of_earlier_copy_parent_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionEarlierParentCut

@@ -139,6 +139,4 @@ theorem exists_l
     (PowerlessRelativeLevelClosure.class_l hℳ hBase hC) hE₀C⟩
   exact ⟨Y, L, E, hYC, hLC, hE₀C, hFamilyRaw, hGraph, hOrder, hEGraph, hEOrder⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitCanonicalRowExtension

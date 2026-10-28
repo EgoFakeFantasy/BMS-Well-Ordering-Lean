@@ -87,7 +87,4 @@ theorem exists_l {B f A D c d : type_l hℳ}
     SecondOrderFunctionAppend.map_l hℳ hfE hc ((hE d).mpr (Or.inr rfl)) hS hp hg,
     SecondOrderFunctionAppend.value_l hℳ hp hg⟩
 
-#print axioms adjoin_class_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFunctionAppend

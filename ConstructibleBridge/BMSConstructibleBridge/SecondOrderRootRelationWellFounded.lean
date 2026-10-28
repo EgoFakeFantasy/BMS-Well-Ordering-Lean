@@ -58,6 +58,4 @@ theorem wf_l (hℳ : Theory.Models ℳ theory_m) (A R : set_l ℳ)
     (SecondOrderBisimulation.symm_l hℳ A A d c hDC)
   exact hMin e he ((hP e).mpr ⟨succ_l i, d, hd, hED⟩)
 
-#print axioms wf_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRootRelationWellFounded

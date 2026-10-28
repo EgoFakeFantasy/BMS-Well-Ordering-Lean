@@ -74,6 +74,4 @@ theorem exists_l (K : source_coding_l hℳ)
   have hRaw := SecondOrderCanonicalOrderUniform.step_ambient_l K hω he hPairMap hPair hStep
   exact ⟨E.val, hRaw, hOrder, SecondOrderCanonicalOrderPreservation.extension_l hRaw hTrans hDef⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalOrderAmbientTotal

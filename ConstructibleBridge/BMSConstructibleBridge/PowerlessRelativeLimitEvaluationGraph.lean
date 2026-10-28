@@ -87,8 +87,4 @@ theorem zero_l {D ω e N T A S t₁ t₂ t₃ G : type_l hℳ}
     (f : type_l hℳ) : ¬value_l (ℳ := SecondOrderQuotient.structure_l hℳ) G e f :=
   PowerlessFiniteEvaluationZero.relation_l hω he hN hT hS hG f
 
-#print axioms exists_l
-#print axioms equations_l
-#print axioms zero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitEvaluationGraph

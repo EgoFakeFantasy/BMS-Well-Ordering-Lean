@@ -104,8 +104,6 @@ theorem exists_l {ω A P : type_l hℳ B}
     exact (hFamily Z).mpr ⟨t', (hJ t').mpr ⟨e, p, he, hp, ht'⟩,
       (hSlice he hp ht' Z).mpr hSliceZ⟩
 
-#print axioms exists_l
-
 /-- 全环境查询值相同，则所有规范载体和最终比较图同时唯一。 -/
 theorem unique_l {ω A P S I J U Q Y L S' I' J' U' Q' Y' L' : type_l hℳ B}
     (hIndex : PowerlessRelativeClassSatisfactionIndexCanonical.spec_l (ℳ₀ := 𝒞) ω A P S I J U)
@@ -139,8 +137,6 @@ theorem unique_l {ω A P S I J U Q Y L S' I' J' U' Q' Y' L' : type_l hℳ B}
   subst Y'
   exact ⟨rfl, rfl, rfl, rfl, rfl, Subtype.ext (PowerlessRelativeClassSatisfactionQueryUnique.orders_l hQ hGraph hGraph')⟩
 
-#print axioms unique_l
-
 /-- 固定一个合法编码包后，两张完整 Sat 产生同一行族及同一规范序。 -/
 theorem for_sat_l (K : PowerlessBMSQuotientCoding.source_coding_l hℳ)
     {ω A P e t₁ t₂ t₃ Pair Valid R R' S I J U Q Y L S' I' J' U' Q' Y' L' : type_l hℳ B}
@@ -172,7 +168,5 @@ theorem for_sat_l (K : PowerlessBMSQuotientCoding.source_coding_l hℳ)
   have hQ := PowerlessRelativeClassSatisfactionQueryUnique.queries_l
     K hω he hTags hPairMap hPair hV hValid hR hR' hRead hRead'
   exact (unique_l hIndex hIndex' hQ hFamily hFamily' hGraph hGraph').2.2.2.2
-
-#print axioms for_sat_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSatisfactionAllSlotsCanonical

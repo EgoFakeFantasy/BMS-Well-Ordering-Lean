@@ -97,7 +97,4 @@ theorem derives_m {Δ : SortContext ℒ} (ω e N T A S t₁ t₂ t₃ H n Y : Te
   exact (formula_l η ω e N T A S t₁ t₂ t₃ H n Y).trans
     ((step_iff_l hω' he' hN' hT' hS').trans (PowerlessEvaluationStep.step_formula_l η ω e T A t₁ t₂ t₃ S H n Y).symm)
 
-#print axioms delta_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessEvaluationStepBounded

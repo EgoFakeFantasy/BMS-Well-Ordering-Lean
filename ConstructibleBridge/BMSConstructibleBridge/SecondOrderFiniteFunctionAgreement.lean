@@ -114,6 +114,4 @@ theorem value_l (K : source_coding_l hℳ) {A H a F n g c : type_l hℳ}
   rw [hEq] at h
   exact h hc
 
-#print axioms value_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteFunctionAgreement

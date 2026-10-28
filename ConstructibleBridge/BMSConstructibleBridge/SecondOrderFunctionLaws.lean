@@ -31,7 +31,4 @@ theorem value_unique_l {f a b x y z : type_l hℳ} (hf : map_l hℳ f a b)
   obtain ⟨w, _, hw⟩ := hf.2 x hxy.1
   exact (hw y ⟨hxy.2, hy⟩).trans (hw z ⟨hxz.2, hz⟩).symm
 
-#print axioms value_mem_l
-#print axioms value_unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFunctionLaws

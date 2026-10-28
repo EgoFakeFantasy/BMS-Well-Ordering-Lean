@@ -43,6 +43,4 @@ theorem decreasing_iff_l (hℳ : Theory.Models ℳ theory_m) {E L : set_l ℳ}
         t (succ_l p) (le_of_not_gt ht)).mp hp
       exact False.elim (nonzero_l hℳ p hz.symm)
 
-#print axioms decreasing_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentTableEntries

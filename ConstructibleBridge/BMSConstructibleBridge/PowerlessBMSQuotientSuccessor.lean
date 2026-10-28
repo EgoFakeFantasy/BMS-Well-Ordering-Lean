@@ -130,9 +130,4 @@ theorem successorFunction_graph_l
   simpa only [successorFunction_l, hInv] using
     successor_l C (PowerlessBMSQuotientCoding.numberEquiv_l C a)
 
-#print axioms mem_numberCode_l
-#print axioms zero_l
-#print axioms successor_l
-#print axioms successorFunction_graph_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientSuccessor

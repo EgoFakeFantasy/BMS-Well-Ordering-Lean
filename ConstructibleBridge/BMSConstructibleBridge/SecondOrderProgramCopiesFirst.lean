@@ -108,10 +108,4 @@ theorem column_l (hℳ : Theory.Models ℳ theory_m) {R L E : set_l ℳ}
     exact hs
   · exact entries_l hℳ hR hL hE hb A l k y hy j hj a
 
-#print axioms first_m
-#print axioms first_language_m
-#print axioms first_syntax_l
-#print axioms entries_l
-#print axioms column_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopiesFirst

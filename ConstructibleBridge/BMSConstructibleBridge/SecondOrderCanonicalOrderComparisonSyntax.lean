@@ -104,9 +104,4 @@ theorem exists_unique_l (K : source_coding_l hℳ)
   have hOutput := (reading_l K S W hS A P t₁ t₂ t₃ Pair Valid D f).mpr hW
   exact ⟨S.val, hOutput, fun X hX => unique_l K ht₁ ht₂ ht₃ hPairMap hPair hV hValid hX hOutput⟩
 
-#print axioms output_formula_l
-#print axioms reading_l
-#print axioms unique_l
-#print axioms exists_unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalOrderComparisonSyntax

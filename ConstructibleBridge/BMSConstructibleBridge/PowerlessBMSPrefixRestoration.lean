@@ -155,6 +155,4 @@ theorem step_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omega_
         ((hgraph (add_l (ℳ := 𝒩) r₀ zi).val a).mpr (Or.inr ⟨i₀, F.add_graph_l r₀ zi, ha⟩))
         ((hgraph (add_l (ℳ := 𝒩) r₀ zt).val b).mpr (Or.inr ⟨t₀, F.add_graph_l r₀ zt, hb⟩))
 
-#print axioms step_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSPrefixRestoration

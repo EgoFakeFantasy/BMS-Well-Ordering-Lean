@@ -110,8 +110,4 @@ theorem exists_l {ω : type_l hℳ B} (hω : omega_l (ℳ := structure_l hℳ B 
   obtain ⟨R, hR⟩ := PowerlessSatisfactionGraph.exists_l (hBase := hBase) ω A S F G
   exact ⟨S, G, R, hSG, PowerlessRelativeClassSequenceAbsolute.spec_l hω hSG.2.2.2.1, hR⟩
 
-#print axioms read_l
-#print axioms read_iff_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSatisfaction

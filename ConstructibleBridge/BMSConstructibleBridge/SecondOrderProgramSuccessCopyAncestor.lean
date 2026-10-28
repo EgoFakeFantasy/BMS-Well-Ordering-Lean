@@ -115,6 +115,4 @@ theorem member_congr_l (hℳ : Theory.Models ℳ theory_m)
       (add_l (mul_l d t) i) hflat
   exact hbadCopy.trans (hflatCopy.symm.trans hsuccessFlat.symm)
 
-#print axioms member_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSuccessCopyAncestor

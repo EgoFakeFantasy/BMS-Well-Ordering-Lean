@@ -38,7 +38,4 @@ theorem closure_transitive_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.the
   PowerlessFiniteClosureProperties.transitive_of_l (x := ω) (SecondOrderWeakSetTheory.models_l hℳ)
     (fun _ hk _ hx => member_l hℳ hω hk hx) hc
 
-#print axioms member_l
-#print axioms closure_transitive_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOmegaTransitive

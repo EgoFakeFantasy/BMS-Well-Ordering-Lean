@@ -132,9 +132,4 @@ theorem certificate_iff_l {D : type_l hℳ}
     apply (PowerlessLegacyNumericReading.query_l K hN f.val n l).mpr
     exact (sound_l K hN hV n B hTrace n (Or.inl rfl) l hBound).mpr hValid
 
-#print axioms decode_l
-#print axioms sound_l
-#print axioms exists_l
-#print axioms certificate_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyValidityTrace

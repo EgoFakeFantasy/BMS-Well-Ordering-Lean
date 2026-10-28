@@ -58,8 +58,4 @@ theorem ancestor_output_l (hℳ : Theory.Models ℳ theory_m) {R L E : set_l ℳ
   exact output_order_l hℳ parent_zero_m hR hL hE hP
     (fun _ _ hp => parent_lt_l hℳ hP hp) hu
 
-#print axioms parent_lt_l
-#print axioms ancestor_order_l
-#print axioms ancestor_output_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentZeroOrder

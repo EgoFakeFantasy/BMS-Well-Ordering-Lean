@@ -202,6 +202,4 @@ theorem all_rows_l
         (fun h => h (SecondOrderProgramParentHeightBound.ancestor_none_l
           hℳ hM hE hzeroRows hrowAbove (add_l (add_l p (mul_l d copy)) i) good))
 
-#print axioms all_rows_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionGoodToLocalAllRows

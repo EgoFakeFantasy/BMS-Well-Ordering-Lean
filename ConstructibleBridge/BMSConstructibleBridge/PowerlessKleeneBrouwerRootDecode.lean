@@ -88,6 +88,4 @@ theorem hereditary_l (K : source_coding_l hℳ) {B A : Raw}
       (SecondOrderClosedRestriction.equal_l hℳ R Q P hPClosed hRestr r hrP)
   exact hSame.symm ▸ hHC
 
-#print axioms hereditary_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessKleeneBrouwerRootDecode

@@ -124,13 +124,4 @@ theorem optional_rel_l (hℳ : Theory.Models ℳ theory_m) {O L E : set_l ℳ}
       intro hz
       exact (not_le_of_gt hkn) ((range_zero_l hℳ hT hL hn k).mp (hz ▸ hq))
 
-#print axioms range_input_m
-#print axioms range_test_m
-#print axioms some_m
-#print axioms optional_m
-#print axioms optional_encode_l
-#print axioms range_input_rel_l
-#print axioms range_zero_l
-#print axioms optional_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramOptionalLookup

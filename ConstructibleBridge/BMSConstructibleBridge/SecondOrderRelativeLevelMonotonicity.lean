@@ -47,7 +47,4 @@ theorem subset_l (hℳ : Theory.Models ℳ theory_m) {B B' : set_l ℳ}
   exact SecondOrderRelativeLevelProperties.transitive_l hℳ hC' C X
     (members_l hℳ hBB' hαβ hC hC') hX
 
-#print axioms members_l
-#print axioms subset_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeLevelMonotonicity

@@ -135,6 +135,4 @@ theorem row_l (K : source_coding_l hℳ) (p : parameters_l ℳ)
       hSupport.onto hXC hCover U W hU hOutput hQ
     exact ⟨hOrder, hInitial, Or.inr (Or.inr ⟨hLimit, D, hD, hGraph⟩)⟩
 
-#print axioms row_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonBranchInvariant

@@ -366,12 +366,4 @@ theorem enumeration_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
   subst hSP
   exact ⟨n, f, hn, hf, hcover⟩
 
-#print axioms product_formula_l
-#print axioms cover_formula_l
-#print axioms sum_cases_l
-#print axioms concat_l
-#print axioms concat_graph_l
-#print axioms column_enum_l
-#print axioms enumeration_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteProduct

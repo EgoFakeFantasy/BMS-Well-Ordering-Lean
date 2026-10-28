@@ -35,7 +35,4 @@ theorem union_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {B X U
   exact ⟨b, d, hd, SecondOrderMemberDefBasicClosure.union_l hℳ hDef hXc
     (PowerlessRelativeLevelClosure.transitive_l hℳ hBase hc) hU⟩
 
-#print axioms empty_l
-#print axioms union_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassBasicClosure

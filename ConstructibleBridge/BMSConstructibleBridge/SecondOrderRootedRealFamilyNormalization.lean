@@ -157,8 +157,4 @@ theorem row_normal_l (hℳ : Theory.Models ℳ theory_m) {H K F R Y : set_l ℳ}
     · intro hEdge
       exact ⟨a, rfl, Or.inr ⟨b, rfl, hEdge⟩⟩
 
-#print axioms pure_m
-#print axioms exists_l
-#print axioms row_normal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRootedRealFamilyNormalization

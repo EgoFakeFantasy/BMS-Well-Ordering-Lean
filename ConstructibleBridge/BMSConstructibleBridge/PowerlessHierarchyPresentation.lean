@@ -39,14 +39,7 @@ theorem hierarchy_formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
   apply congrArg (fun η => (PowerlessOrdinalRecursion.recursion_m PowerlessEvaluationHierarchy.operator_m).satisfies η)
   apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
-    match s, v with
-    | .set, .here => rfl
-    | .set, .there .here => rfl
-    | .set, .there (.there .here) => rfl
-    | .set, .there (.there (.there .here)) => rfl
-    | .set, .there (.there (.there (.there .here))) => rfl
-    | .set, .there (.there (.there (.there (.there .here)))) => rfl
-    | .set, .there (.there (.there (.there (.there (.there .here))))) => rfl
-    | .set, .there (.there (.there (.there (.there (.there (.there .here)))))) => rfl
+    rcases v with _ | _ | _ | _ | _ | _ | _ | _ | v
+    all_goals first | rfl | nomatch v
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyPresentation

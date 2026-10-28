@@ -94,13 +94,4 @@ theorem member_nonzero_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {B A L
   obtain ⟨C, _, hC⟩ := graph_total_l hℳ contains_m
   rw [member_rel_of_value_l hℳ c hB hA hC hv, contains_nonzero_l hℳ hC hL hE hn]
 
-#print axioms input_m
-#print axioms values_m
-#print axioms member_m
-#print axioms input_eval_l
-#print axioms member_encode_l
-#print axioms input_rel_l
-#print axioms member_rel_of_value_l
-#print axioms member_nonzero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorMembership

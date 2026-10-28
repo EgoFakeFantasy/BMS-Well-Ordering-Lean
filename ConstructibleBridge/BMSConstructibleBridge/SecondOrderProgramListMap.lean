@@ -172,20 +172,4 @@ theorem map_graph_rel_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {T F E 
   · rintro ⟨v, s, hf, he, hr⟩
     exact ⟨s, ⟨v, hf, he⟩, hr⟩
 
-#print axioms map_call_m
-#print axioms map_p_m
-#print axioms map_i_m
-#print axioms map_acc_m
-#print axioms map_in_m
-#print axioms map_step_m
-#print axioms map_extract_m
-#print axioms map_m
-#print axioms map_step_eval_l
-#print axioms foldl_map_step_l
-#print axioms map_encode_l
-#print axioms map_step_rel_l
-#print axioms map_call_rel_l
-#print axioms map_extract_rel_l
-#print axioms map_graph_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListMap

@@ -44,13 +44,8 @@ theorem union_pure_m {Δ : SortContext signature_m} (φ : Formula signature_m [.
     · intro s v
       nomatch v
     · intro s v
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => cases s <;> rfl
+      rcases v with _ | _ | _ | v
+      all_goals first | rfl | cases s <;> rfl
   change (language_m (history_m φ) && _) = true
   rw [hHistory]
   rfl
@@ -70,13 +65,8 @@ theorem union_formula_l {Δ : SortContext signature_m} (φ : Formula signature_m
           from .map (fun v => nomatch v) insert_m) = (((η.pushFree H).pushFree R).pushFree n) := by
     apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => cases s <;> rfl
+      rcases v with _ | _ | _ | v
+      all_goals first | rfl | cases s <;> rfl
   rw [hEnv]
   exact SecondOrderWellFoundedHistorySyntax.formula_l φ η R H n
 
@@ -127,8 +117,5 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) {Δ : SortContext signature
       ((hKV n (Or.inl rfl) a).symm.trans (hAgree n (Or.inl rfl) a).symm)
   subst U
   exact ⟨S, hU, fun T hT => SecondOrderWellFoundedAgreement.unique_l hℳ P R hWf hTrans hLocal T S hT hU⟩
-
-#print axioms union_exists_l
-#print axioms exists_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderWellFoundedRecursion

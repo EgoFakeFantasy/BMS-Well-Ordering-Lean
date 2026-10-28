@@ -69,7 +69,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) (X : type_l hℳ) :
   obtain ⟨Y, hY⟩ := hExists
   exact ⟨Y, hY, fun Z hZ => unique_l hℳ hZ hY⟩
 
-#print axioms unique_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDef

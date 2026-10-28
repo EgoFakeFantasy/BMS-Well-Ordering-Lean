@@ -35,6 +35,4 @@ theorem exists_l
     hBase hLimit hC hAC (hParams .set .here) hf
   exact ⟨⟨R, ⟨ξ, C, hC, hRC⟩⟩, hR⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFunctionRange

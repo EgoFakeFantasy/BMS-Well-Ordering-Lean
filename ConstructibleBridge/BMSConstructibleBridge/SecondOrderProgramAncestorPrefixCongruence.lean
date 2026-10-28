@@ -135,8 +135,4 @@ theorem member_congr_l (hℳ : Theory.Models ℳ theory_m) (c d : code_m) {C D M
   exact (member_rel_of_value_l hℳ c hM hA hK hv i y).trans
     (member_rel_of_value_l hℳ d hN hB hK hv' i y).symm
 
-#print axioms common_state_l
-#print axioms chain_congr_l
-#print axioms member_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorPrefixCongruence

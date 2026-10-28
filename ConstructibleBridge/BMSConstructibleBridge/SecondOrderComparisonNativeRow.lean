@@ -141,8 +141,4 @@ theorem exists_unique_l (K : source_coding_l hℳ) (p : parameters_l ℳ)
       have hRow := (template_formula_l p _ _ _).mp hX
       simpa only [row_l, hω, he] using hRow
 
-#print axioms pure_m
-#print axioms formula_l
-#print axioms exists_unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonNativeRow

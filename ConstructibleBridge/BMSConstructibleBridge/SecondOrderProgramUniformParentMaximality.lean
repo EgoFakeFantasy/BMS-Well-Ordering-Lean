@@ -66,6 +66,4 @@ theorem no_better_middle_l (hℳ : Theory.Models ℳ theory_m)
       ⟨hbelow s (lt_own_succ_l hℳ s), a, b,
         hmiddleEntry, htargetEntry, hentryLess⟩
 
-#print axioms no_better_middle_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentMaximality

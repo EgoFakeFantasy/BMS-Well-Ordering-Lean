@@ -260,8 +260,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
     ((SecondOrderRecursiveRelation.operator_l formula_m Env.empty D D).mp hD n s).trans (h D n s))
   exact hDC ▸ Iff.rfl
 
-#print axioms exists_l
-#print axioms equation_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderLegacyFormulaTranslation

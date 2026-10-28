@@ -97,7 +97,4 @@ theorem stable_l (K : source_coding_l hℳ) {B β C e N T A S t₁ t₂ t₃ Q F
       (PowerlessEvaluationFiniteHistoryBounded.trace_iff_l K hBase hLimit hC hωC he hN hT hS hr).mpr hF,
       hQuery⟩
 
-#print axioms delta_l
-#print axioms stable_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteEvaluationQuery

@@ -91,6 +91,4 @@ theorem exists_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
       PowerlessRelativeFiniteProgramInstruction.computed_l,
       PowerlessRelativeFiniteProgramInstruction.good_l, prefix_formula_l] using hy
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramBoundPair

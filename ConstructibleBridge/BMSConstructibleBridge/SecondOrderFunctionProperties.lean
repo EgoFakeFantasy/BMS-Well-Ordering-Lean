@@ -31,6 +31,4 @@ theorem value_unique_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m)
   obtain ⟨w, _, hUnique⟩ := hf.2 x hxy.1
   exact (hUnique y ⟨hxy.2, hy⟩).trans (hUnique z ⟨hxz.2, hz⟩).symm
 
-#print axioms value_unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFunctionProperties

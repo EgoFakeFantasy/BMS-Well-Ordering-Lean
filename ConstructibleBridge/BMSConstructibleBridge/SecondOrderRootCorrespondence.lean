@@ -136,7 +136,4 @@ theorem correspondence_l (hℳ : Theory.Models ℳ theory_m) (A B : SecondOrderG
     obtain ⟨k, hk, hkj⟩ := forth_l hℳ B A hB hA hTransA hRev ((hJ m n).mpr hnm) hj
     exact ⟨k, hk, (hJ j k).mp hkj⟩
 
-#print axioms exists_l
-#print axioms correspondence_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRootCorrespondence

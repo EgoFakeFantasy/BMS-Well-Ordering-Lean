@@ -88,6 +88,4 @@ theorem read_l (K : source_coding_l hℳ) {ω A Seq Sat f t x : type_l hℳ B}
     exact (PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase)
       Sat (number_l hBase K ω hω q) g).mp hValue
 
-#print axioms read_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyDefinableRows

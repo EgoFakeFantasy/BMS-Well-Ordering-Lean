@@ -223,10 +223,4 @@ theorem capture_l {Δ Ε : SortContext ℒ} (ζ : Env ℳ [] Ε)
     (.bvar (.there (.there (.there (.there (.there (.there (.there (.there (.there .here)))))))))) (.bvar (.there (.there (.there (.there (.there (.there (.there (.there .here))))))))) (.bvar (.there (.there (.there (.there (.there (.there (.there .here)))))))) (.bvar (.there (.there (.there (.there (.there (.there .here))))))) (.bvar (.there (.there (.there (.there (.there .here))))))
     (.bvar (.there (.there (.there (.there .here))))) (.bvar (.there (.there (.there .here)))) (.bvar (.there (.there .here))) (.bvar (.there .here)) (.bvar .here)).mp hBack
 
-#print axioms exists_formula_l
-#print axioms matrix_formula_l
-#print axioms capture_formula_l
-#print axioms capture_env_l
-#print axioms capture_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteHullCodedCoverage

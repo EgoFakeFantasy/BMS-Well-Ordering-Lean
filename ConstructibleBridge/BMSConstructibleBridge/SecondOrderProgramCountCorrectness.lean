@@ -120,11 +120,4 @@ theorem count_encode_l (s : List Nat) (k : Nat) :
       · have hk : ¬s.length ≤ k := fun hk => h ((stops_encode_l s k).mpr hk)
         omega
 
-#print axioms count_invariant_m
-#print axioms count_invariant_language_m
-#print axioms count_invariant_syntax_l
-#print axioms count_invariant_l
-#print axioms count_at_bound_l
-#print axioms count_encode_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCountCorrectness

@@ -70,7 +70,4 @@ theorem member_l {R : set_l ℳ} {r a : num_l ℳ} (ha : spec_l R r a)
   · obtain ⟨b, hb⟩ := h
     exact False.elim (hEmpty b hb)
 
-#print axioms exists_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefault

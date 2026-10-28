@@ -77,9 +77,4 @@ theorem representative_unique_l (C : source_coding_l hℳ)
     rw [← hn'] at hx ⊢
     exact (hA n).mpr ((hB n).mp hx)
 
-#print axioms comprehension_l
-#print axioms trace_exists_l
-#print axioms trace_unique_l
-#print axioms representative_unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientReals

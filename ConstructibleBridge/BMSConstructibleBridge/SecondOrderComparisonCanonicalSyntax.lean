@@ -133,7 +133,4 @@ theorem history_formula_l {Γ Δ : SortContext ℒ} (η : Env 𝒱 Γ Δ)
     up, Arguments.eval, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms branch_formula_l
-#print axioms history_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonCanonicalSyntax

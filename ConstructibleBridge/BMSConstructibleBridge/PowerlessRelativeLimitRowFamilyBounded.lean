@@ -124,8 +124,4 @@ theorem exists_l
   exact ⟨Y, member_l (hBase := hBase) (Y := Y.val)
     (PowerlessRelativeLevelClosure.transitive_l hℳ hBase hW) hCD hDE hIW hAW hQW hY, hY⟩
 
-#print axioms body_delta_l
-#print axioms member_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitRowFamilyBounded

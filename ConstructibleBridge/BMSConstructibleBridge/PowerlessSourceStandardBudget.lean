@@ -334,10 +334,5 @@ theorem reflect_budget_l {Γ Δ : SortContext ℒ} (φ : Formula ℒ Γ Δ) :
 
 /- 公理审计：外部预算的新出口只应继承已复编模块的可信基，
 不得引入 `sorryAx` 或新公理。 -/
-#print axioms budget_m
-#print axioms peel_succ_l
-#print axioms numeral_le_subset_l
-#print axioms bound_budget_l
-#print axioms reflect_budget_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceStandardBudget

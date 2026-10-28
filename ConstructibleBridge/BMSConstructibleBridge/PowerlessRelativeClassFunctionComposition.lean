@@ -71,6 +71,4 @@ theorem exists_l {F G A D E : type_l hℳ B}
   exact ⟨H, hH, fun x y => (hRead x y).trans
     (and_congr Iff.rfl (and_congr Iff.rfl (formula_l F G D x y)))⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFunctionComposition

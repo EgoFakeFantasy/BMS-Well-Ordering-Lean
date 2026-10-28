@@ -214,8 +214,4 @@ theorem reading_l (K : source_coding_l hℳ) {ω e t₁ t₂ t₃ P N F : type_l
   rw [hω, he, ht₁, ht₂, ht₃] at hF
   exact hF.trans (validity_l K hN hP hSpec hV c l)
 
-#print axioms triangular_l
-#print axioms tags_l
-#print axioms reading_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRawStaticCodingReading

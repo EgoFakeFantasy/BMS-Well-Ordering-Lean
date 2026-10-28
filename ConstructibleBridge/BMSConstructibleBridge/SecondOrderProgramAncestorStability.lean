@@ -88,10 +88,4 @@ theorem parent_chain_ge_l (hℳ : Theory.Models ℳ theory_m) (r : Nat) {A : set
   exact chain_ge_l hℳ (parent_m r) hA hP x b n y
     (fun _ _ hp => SecondOrderProgramParentOrder.parent_lt_l hℳ r hP hp) hn
 
-#print axioms repeat_budget_l
-#print axioms chain_budget_l
-#print axioms chain_ge_l
-#print axioms parent_chain_budget_l
-#print axioms parent_chain_ge_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorStability

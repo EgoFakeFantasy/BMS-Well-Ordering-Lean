@@ -73,6 +73,4 @@ theorem hereditary_l (K : source_coding_l hℳ) {B V : Raw}
       exact hRow.mp ((hFormula a b).mp ((hA _ _).mp hab).2.2)
   exact PowerlessKleeneBrouwerRootDecode.hereditary_l K hBase A.property R r hRead hRoot
 
-#print axioms hereditary_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassRealRootDecode

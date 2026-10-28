@@ -147,10 +147,4 @@ theorem member_congr_l (hℳ : Theory.Models ℳ theory_m) {M L J : set_l ℳ}
     (fun _ _ hp => SecondOrderProgramUniformParentOrder.parent_lt_l hℳ hP hp)
     (parent_congr_l hℳ hP hL hJ hx hz hbx hbz horder r) ht i q
 
-#print axioms entry_order_l
-#print axioms zero_congr_l
-#print axioms succ_congr_l
-#print axioms parent_congr_l
-#print axioms member_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentComparison

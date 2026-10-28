@@ -90,8 +90,4 @@ theorem copy_zero_l (hℳ : Theory.Models ℳ theory_m) {C : set_l ℳ}
   rw [← hbz] at hz
   exact ⟨fun hy => function_value_unique_l hCf hz hy, fun hy => hy ▸ hz⟩
 
-#print axioms parameter_l
-#print axioms column_zero_l
-#print axioms copy_zero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyZero

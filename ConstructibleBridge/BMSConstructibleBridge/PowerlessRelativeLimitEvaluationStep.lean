@@ -76,8 +76,4 @@ theorem unique_l {ω e T A t₁ t₂ t₃ S H n Y Z : type_l hℳ}
       ω e T A t₁ t₂ t₃ S H n Z) : Y = Z :=
   SecondOrderQuotient.ext_l hℳ Y Z (fun f => (hY f).trans (hZ f).symm)
 
-#print axioms matrix_delta_l
-#print axioms exists_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitEvaluationStep

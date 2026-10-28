@@ -153,6 +153,4 @@ theorem countable_l (K : source_coding_l hℳ) {S G : SecondOrderModel.set_l ℳ
     ((PowerlessRelativeClassFunctionAbsolute.map_l J' O D).mp hJ')
     ((PowerlessRelativeClassFunctionAbsolute.onto_l J' O D).mp hOnto)
 
-#print axioms countable_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCountableTailLimit

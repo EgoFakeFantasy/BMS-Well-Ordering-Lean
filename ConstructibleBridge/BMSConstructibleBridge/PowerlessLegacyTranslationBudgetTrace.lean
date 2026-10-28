@@ -69,7 +69,4 @@ theorem legal_l (K : source_coding_l hℳ) {ω : type_l hℳ D}
     ⟨fun h => h.elim (fun h => h.2) (fun h => (h.1 hValid).elim),
       fun h => Or.inl ⟨hValid, h⟩⟩
 
-#print axioms exists_l
-#print axioms legal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyTranslationBudgetTrace

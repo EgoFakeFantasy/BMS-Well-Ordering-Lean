@@ -69,7 +69,4 @@ theorem member_l (K : PowerlessBMSQuotientCoding.source_coding_l hℳ)
   have hEq : Y = Z := SecondOrderQuotient.ext_l hℳ Y Z (fun x => (hY x).trans (hZ x).symm)
   exact hEq.symm ▸ hZH
 
-#print axioms exists_l
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefFiniteAssignment

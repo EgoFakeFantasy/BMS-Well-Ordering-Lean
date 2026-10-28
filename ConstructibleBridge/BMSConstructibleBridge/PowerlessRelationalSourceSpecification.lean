@@ -124,7 +124,4 @@ theorem universal_l {b k N : type_l hℳ B} {ξ : Env (structure_l hℳ B hBase)
   obtain ⟨c, hc, _, h⟩ := universal_certified_l hConstruct ht₂ ht₃ hk hξ hb hN h
   exact ⟨c, hc, h⟩
 
-#print axioms existential_certified_l
-#print axioms universal_certified_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationalSourceSpecification

@@ -42,11 +42,8 @@ theorem pure_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: Δ)) :
   have hBody : SecondOrderArithmetic.language_m (body_m φ) = true := by
     apply SecondOrderFormulaParameters.pure_m _ _ (GraphTranslation.form_pure_m φ)
     intro s v
-    cases v with
-    | here => rfl
-    | there v => cases v with
-      | here => rfl
-      | there v => cases s <;> rfl
+    rcases v with _ | _ | v
+    all_goals first | rfl | cases s <;> rfl
   let R : Term signature_m [.num, .set] (.set :: .set :: GraphTranslation.context_m Δ) .set := .bvar (.there .here)
   let a : Term signature_m [.num, .set] (.set :: .set :: GraphTranslation.context_m Δ) .num := .bvar .here
   let less : Term signature_m [.num, .set] (.set :: .set :: GraphTranslation.context_m Δ) .set := .fvar (.there .here)
@@ -153,10 +150,5 @@ theorem exists_unique_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: Δ)
   obtain ⟨U, hU, hBody⟩ := (reading_l φ K τ hGuard Y).mp hY
   have hUT : U = T := Subtype.ext (hOnly U.val hBody)
   exact PowerlessBMSQuotientReals.trace_unique_l K (hUT ▸ hU) hX
-
-#print axioms pure_m
-#print axioms formula_l
-#print axioms reading_l
-#print axioms exists_unique_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRealRowFormula

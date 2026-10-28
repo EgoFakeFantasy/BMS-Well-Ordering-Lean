@@ -141,7 +141,4 @@ theorem derives_m {Δ : SortContext signature_m} (φ : Formula signature_m [.set
   intro η
   exact models_l hℳ φ hφ η
 
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderWellFoundedRecursionTheorem

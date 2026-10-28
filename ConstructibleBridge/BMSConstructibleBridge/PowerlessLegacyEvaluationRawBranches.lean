@@ -136,9 +136,4 @@ theorem conjunction_l (hW : SecondOrderTriangularFormulaSyntax.spec_l W)
   exact (SecondOrderEvaluationEquations.conjunction_l hℳ E D Q R T hT l c p q hc).trans
     ((and_congr hLeft hRight).trans hNN.symm)
 
-#print axioms equality_l
-#print axioms membership_l
-#print axioms negation_l
-#print axioms conjunction_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyEvaluationRawBranches

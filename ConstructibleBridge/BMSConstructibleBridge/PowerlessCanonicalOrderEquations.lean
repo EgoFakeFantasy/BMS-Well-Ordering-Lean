@@ -124,7 +124,4 @@ theorem raw_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.signatu
       t₁ t₂ t₃ Pair Valid B P₀ f g ↔
     PowerlessCanonicalOrderOrdinalRestriction.equations_l K t₁ t₂ t₃ Pair Valid B P₀ f g := Iff.rfl
 
-#print axioms formula_l
-#print axioms raw_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderEquations

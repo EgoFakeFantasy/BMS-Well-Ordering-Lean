@@ -111,7 +111,4 @@ theorem from_equations_l (K : source_coding_l hℳ)
   · exact Or.inr (Or.inr ⟨hUnion.1,
       (PowerlessHierarchyLightHistory.union_reading_l hℳ hg).mpr hUnion.2.2⟩)
 
-#print axioms hierarchy_def_l
-#print axioms from_equations_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderLightHistoryOriginal

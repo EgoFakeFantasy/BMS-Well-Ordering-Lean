@@ -97,7 +97,4 @@ theorem exists_l {ω G X : type_l hℳ B}
   exact ⟨R, hR, fun x i => (hRead x i).trans
     (and_congr Iff.rfl (and_congr Iff.rfl (formula_l G x i)))⟩
 
-#print axioms minimum_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassEnumerationSection

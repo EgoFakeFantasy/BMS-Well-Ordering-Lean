@@ -71,7 +71,4 @@ theorem formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : SortCo
     Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms delta_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyNumericSyntax

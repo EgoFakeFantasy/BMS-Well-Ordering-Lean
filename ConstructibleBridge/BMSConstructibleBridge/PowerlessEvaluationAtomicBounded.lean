@@ -112,8 +112,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.
     (member_formula_l η _ _ _ _).trans
       ((member_iff_l hℳ hf').trans (PowerlessEvaluationClause.member_formula_l η _ _ _).symm)⟩
 
-#print axioms equal_delta_l
-#print axioms member_delta_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessEvaluationAtomicBounded

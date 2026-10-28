@@ -105,7 +105,4 @@ theorem derives_m {Δ : SortContext ℒ} (B β C ω e N T A S t₁ t₂ t₃ Q F
   exact (PowerlessFiniteEvaluationQuery.formula_l η C ω e N T A S t₁ t₂ t₃ Q n f).trans
     (hEquation.trans (and_congr Iff.rfl (PowerlessFiniteEvaluationClause.formula_l η C ω e N T A S t₁ t₂ t₃ Q n f).symm))
 
-#print axioms equation_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteEvaluationEquation

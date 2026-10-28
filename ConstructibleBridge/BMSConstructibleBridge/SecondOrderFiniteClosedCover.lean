@@ -73,7 +73,4 @@ theorem exists_l (C : source_coding_l hℳ) (x : SecondOrderQuotient.type_l hℳ
     (hik.symm ▸ hf) (hik.symm ▸ hCover) (fun y hy => (hRange y).mp (hd y hy))
   exact (hRange d).mpr ⟨_, hc.symm⟩
 
-#print axioms range_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteClosedCover

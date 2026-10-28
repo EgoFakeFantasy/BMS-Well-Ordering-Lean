@@ -125,7 +125,4 @@ theorem exists_l
   exact ⟨L, SecondOrderWellOrderCoherentUnion.of_graph_l
     hJ hF hG hCompatible hStages hCover hRead, hRead⟩
 
-#print axioms edgeBounded_formula_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassWellOrderUnion

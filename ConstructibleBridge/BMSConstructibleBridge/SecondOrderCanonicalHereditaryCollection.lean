@@ -94,7 +94,4 @@ theorem exists_l (K : source_coding_l hℳ) {t₁ t₂ t₃ Pair Valid B P₀ S 
   obtain ⟨C, _, hC⟩ := range_l K hCoding hGuard hS φ η hSome
   exact ⟨C, hC⟩
 
-#print axioms range_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalHereditaryCollection

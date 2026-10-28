@@ -95,7 +95,4 @@ theorem exists_l {f A D S c d : type_l hℳ B}
       (fun h => (hMem x y h).2) (fun h => h.2.symm ▸ hd)
     exact ⟨hx, hy, (hRead x y).mpr h⟩
 
-#print axioms constant_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFunctionExtension

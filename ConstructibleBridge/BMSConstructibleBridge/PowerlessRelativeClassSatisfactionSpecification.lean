@@ -104,9 +104,4 @@ theorem instance_l (K : source_coding_l hℳ) {V : SecondOrderModel.set_l ℳ}
     exact PowerlessSatisfactionExistential.equation_l K hωEq hS hF hR hSystem he hT hSpec hV
       hc ha hb hL hCode hi ((validity_l K hF hb hL).mp hj) hMap
 
-#print axioms validity_l
-#print axioms domain_l
-#print axioms zero_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSatisfactionSpecification

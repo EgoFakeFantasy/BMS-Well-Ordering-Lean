@@ -101,6 +101,4 @@ theorem exists_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: Δ
       SecondOrderGraph.child_mem_l hℳ A n hn, SecondOrderGraph.child_mem_l hℳ B m hm, hφ⟩
     exact ⟨n, m, h, hp⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderDefinableRelationImage

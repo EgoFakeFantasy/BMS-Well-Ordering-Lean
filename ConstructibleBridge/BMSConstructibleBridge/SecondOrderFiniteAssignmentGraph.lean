@@ -95,6 +95,4 @@ theorem exists_l (K : source_coding_l hℳ) {E : set_l ℳ} {c l : num_l ℳ}
     obtain ⟨j', hij', hy'⟩ := (hNumber i y).mp (hi'.symm ▸ hy)
     exact hy'.trans (congrArg (fun j => (numberCode_l K j).val) (hUnique j' hij'))
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteAssignmentGraph

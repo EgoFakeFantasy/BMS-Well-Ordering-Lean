@@ -123,6 +123,4 @@ theorem crossing_l
     (SecondOrderProgramUniformAncestorRows.row_le_l hℳ hM hmaxLe hatRoot)
   exact (not_lt_of_ge hfoundBound) hgood
 
-#print axioms crossing_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCrossing

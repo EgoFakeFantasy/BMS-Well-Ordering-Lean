@@ -106,8 +106,4 @@ theorem cover_l (n : type_l hℳ) (hn : mem_l hℳ n K.omega) :
     rw [ha', hq]
     exact PowerlessBMSQuotientSuccessor.successor_l K _
 
-#print axioms even_unique_l
-#print axioms disjoint_l
-#print axioms cover_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderDoublingPartition

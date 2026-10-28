@@ -176,9 +176,4 @@ theorem derives_m {Δ : SortContext ℒ} (θ : Formula ℒ [] (.set :: .set :: �
   SecondOrderAxioms.interpretation_m _
     (fun _ h𝒩 => models_l h𝒩 θ Φ ω e t₁ t₂ t₃ Pair Valid B P₀ C s t)
 
-#print axioms query_l
-#print axioms witness_l
-#print axioms closed_formula_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessVirtualHullRequests

@@ -83,7 +83,4 @@ theorem collection_l (B : SecondOrderGraph.code_l ℳ) : SecondOrderGraph.mem_l 
   intro C
   exact iff_congr Iff.rfl (slice_l hℳ A a ha P i C)
 
-#print axioms respect_l
-#print axioms collection_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderLegalMemberExact

@@ -96,8 +96,4 @@ theorem point_l (K : source_coding_l hℳ)
     (PowerlessRelativeClassCoverageAbsolute.history_l B₀ D A U f).mp hLight,
     finite_l ω U (hω.symm ▸ K.omega_spec) hFinite, hRawTrans, closed_l U hClosed⟩
 
-#print axioms finite_l
-#print axioms closed_l
-#print axioms point_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCodedHistoryReading

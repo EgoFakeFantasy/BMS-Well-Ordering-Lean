@@ -192,12 +192,4 @@ theorem prec_graph_succ_l (hℳ : Theory.Models ℳ theory_m) {f g : Nat → Nat
 任务25 的新出口只应继承已复编模块的可信基（`propext / Classical.choice / Quot.sound`），
 不得引入 `sorryAx` 或新公理。 -/
 
-#print axioms prec_history_zero_l
-#print axioms prec_history_succ_forward_l
-#print axioms prec_history_succ_backward_l
-#print axioms prec_history_succ_eq_l
-#print axioms prec_graph_bridge_l
-#print axioms prec_graph_zero_l
-#print axioms prec_graph_succ_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRecurrence

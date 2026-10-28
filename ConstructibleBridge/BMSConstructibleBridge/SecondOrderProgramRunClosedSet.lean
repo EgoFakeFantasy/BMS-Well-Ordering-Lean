@@ -59,9 +59,4 @@ theorem run_mem_l (hℳ : Theory.Models ℳ theory_m) {R X S : set_l ℳ}
       exact ih w y (hclosed v i w hv hw) ht
   exact hall t v y hv hy
 
-#print axioms kept_m
-#print axioms kept_language_m
-#print axioms kept_syntax_l
-#print axioms run_mem_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRunClosedSet

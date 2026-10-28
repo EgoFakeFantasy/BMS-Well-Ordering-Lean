@@ -96,11 +96,4 @@ theorem limit_codomain_l {B ξ C G q α f : type_l hℳ}
   exact PowerlessRelativeLimitFunctionRange.value_member_l hBase hLimitC hC hβC hpC hp.1
     ((hp.2 a P).mpr ⟨haβ, hGP⟩)
 
-#print axioms formula_l
-#print axioms exists_l
-#print axioms unique_l
-#print axioms subset_l
-#print axioms codomain_l
-#print axioms limit_codomain_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderRawPrefix

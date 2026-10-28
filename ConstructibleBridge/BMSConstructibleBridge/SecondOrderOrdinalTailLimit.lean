@@ -103,6 +103,4 @@ theorem properties_l (hℳ : Theory.Models ℳ theory_m) {S G : SecondOrderModel
         (hTailRead _ (T n)).mpr (Or.inr (Or.inr ⟨n,
           (SecondOrderOrdinalTailMembers.lt_succ_l hℳ n n).mpr (Or.inr rfl), rfl⟩))⟩
 
-#print axioms properties_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalTailLimit

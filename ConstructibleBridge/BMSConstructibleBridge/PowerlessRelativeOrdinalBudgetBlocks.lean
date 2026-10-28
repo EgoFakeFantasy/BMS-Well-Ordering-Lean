@@ -246,9 +246,4 @@ theorem exists_l (K : source_coding_l hℳ)
   change map_l (ℳ := 𝒱) F (mk_l hℳ A) Y at hF
   exact ⟨Y, F, hF, class_l hℳ A hQ hN hRel hG hS K hBase hA hξ hLimit hF hRead, hRead⟩
 
-#print axioms next_l
-#print axioms union_l
-#print axioms class_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeOrdinalBudgetBlocks

@@ -38,6 +38,4 @@ theorem exists_l {ω : SecondOrderQuotient.type_l hℳ} (hω : omega_l (ℳ := �
   exact ⟨K, e.val, t₁.val, t₂.val, t₃.val, Pair.val, Valid.val, hωEq, he,
     ht₁, ht₂, ht₃, hPairMap, hPair, V, hV, hValid⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonCoding

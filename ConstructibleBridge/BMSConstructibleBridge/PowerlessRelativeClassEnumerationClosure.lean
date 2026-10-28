@@ -83,7 +83,4 @@ theorem adjoin_l {ω X G : type_l hℳ B} (hω : omega_l (ℳ := 𝒩) ω)
     hω hG hJ hOnto hJOnto hY
   exact ⟨Y, F, fun x => (hY x).trans (or_congr Iff.rfl (hT x)), hF, hFOnto⟩
 
-#print axioms singleton_enumeration_l
-#print axioms adjoin_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassEnumerationClosure

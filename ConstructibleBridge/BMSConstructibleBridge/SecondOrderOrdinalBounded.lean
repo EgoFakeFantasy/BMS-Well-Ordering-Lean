@@ -75,6 +75,4 @@ theorem formula_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {Γ 
       · exact Or.inl hxy
       · exact Or.inr (Or.inr hyx)
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalBounded

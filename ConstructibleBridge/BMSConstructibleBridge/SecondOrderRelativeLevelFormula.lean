@@ -100,22 +100,10 @@ theorem formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortContext signa
         |>.pushFree (α.eval η) |>.pushFree (B.eval η)) := by
     apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => cases v with
-            | here => rfl
-            | there v => cases v with
-              | here => rfl
-              | there v => nomatch v
+      rcases v with _ | _ | _ | _ | _ | v
+      all_goals first | rfl | nomatch v
   rw [hEnv]
   exact template_formula_l hℳ (B.eval η) hB
     ⟨α.eval η, rα.eval η, hα⟩ ⟨C.eval η, rC.eval η, hC⟩
-
-#print axioms template_formula_l
-#print axioms formula_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeLevelFormula

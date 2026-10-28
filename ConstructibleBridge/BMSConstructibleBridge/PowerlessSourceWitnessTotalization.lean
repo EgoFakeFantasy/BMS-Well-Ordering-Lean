@@ -111,9 +111,4 @@ theorem total_l {Δ : SortContext ℒ}
     exact ⟨y, (formula_l φ η d x y).mpr (Or.inl hy)⟩
   · exact ⟨d, (formula_l φ η d x d).mpr (Or.inr ⟨h, rfl⟩)⟩
 
-#print axioms formula_l
-#print axioms agrees_l
-#print axioms fallback_l
-#print axioms total_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceWitnessTotalization

@@ -88,7 +88,4 @@ theorem fallback_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : om
     PowerlessBMSPrefixRepresentation.complete_l hg
       ((PowerlessBMSRepresentation.width_graph_l hL y j).mpr hwidth), hV⟩
 
-#print axioms initial_l
-#print axioms fallback_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSExpansionInitialLabels

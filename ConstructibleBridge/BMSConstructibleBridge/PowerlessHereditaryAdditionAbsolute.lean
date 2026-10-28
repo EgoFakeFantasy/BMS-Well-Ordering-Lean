@@ -100,7 +100,4 @@ theorem instance_l (K : source_coding_l hℳ) {i j : SecondOrderModel.num_l ℳ}
     exact (PowerlessBMSQuotientArithmetic.additionValue_iff_l K i S hS F hSpec j
       (SecondOrderModel.add_l i j)).mpr rfl
 
-#print axioms iteration_to_ambient_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryAdditionAbsolute

@@ -45,6 +45,4 @@ theorem closed_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m)
       · exact Or.inl hzy
       · exact Or.inr hzy
 
-#print axioms closed_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitOperationClosure

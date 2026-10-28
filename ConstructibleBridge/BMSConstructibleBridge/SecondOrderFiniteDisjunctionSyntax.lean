@@ -222,8 +222,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
   obtain ⟨S, hS, _⟩ := exists_l hℳ
   exact ⟨S, (fixed_formula_l _ _).mpr hS, (total_formula_l _ _).mpr (total_l hℳ hS)⟩
 
-#print axioms exists_l
-#print axioms total_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteDisjunctionSyntax

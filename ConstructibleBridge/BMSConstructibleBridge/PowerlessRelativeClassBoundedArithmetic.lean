@@ -82,7 +82,4 @@ theorem multiplication_l (K : source_coding_l hℳ) {i j : SecondOrderModel.num_
   exact hAbs.trans ((PowerlessBoundedMultiplication.instance_l K hS i j c.val).trans
     (PowerlessRelativeClassMultiplicationAbsolute.instance_l K hω he ha hb).symm)
 
-#print axioms addition_l
-#print axioms multiplication_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassBoundedArithmetic

@@ -132,14 +132,4 @@ theorem chain_rel_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {A R T : se
   · rintro ⟨s, hs, ht⟩
     exact ⟨_, ⟨s, hs, rfl⟩, ht⟩
 
-#print axioms start_m
-#print axioms states_m
-#print axioms chain_m
-#print axioms start_eval_l
-#print axioms accumulator_eval_l
-#print axioms chain_encode_l
-#print axioms start_rel_l
-#print axioms states_rel_l
-#print axioms chain_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorChain

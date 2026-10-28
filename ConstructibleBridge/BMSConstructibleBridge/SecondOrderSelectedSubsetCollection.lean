@@ -100,7 +100,4 @@ theorem family_l (hℳ : Theory.Models ℳ theory_m) {Δ : SortContext signature
     exact ⟨i, hi, (SecondOrderGraph.ext_l hℳ B _).mpr
       (fun C => (h C).trans (SecondOrderSubsetLayer.mem_l hℳ A F G hG i C).symm)⟩
 
-#print axioms exists_l
-#print axioms family_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderSelectedSubsetCollection

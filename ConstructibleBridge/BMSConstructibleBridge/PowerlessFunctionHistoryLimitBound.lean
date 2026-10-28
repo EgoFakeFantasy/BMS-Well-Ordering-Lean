@@ -110,7 +110,4 @@ theorem member_l {X D W α C C₁ C₂ f : type_l hℳ}
   exact SecondOrderMemberDefBasicClosure.union_l hℳ hDef₂ hHC₁
     (fun x hx y hy => hTrans₁ x y hx hy) (union_l hℳ hD hα hLimit hf hRead hCover)
 
-#print axioms union_l
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFunctionHistoryLimitBound

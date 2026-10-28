@@ -93,6 +93,4 @@ theorem spec_l (K : source_coding_l hℳ) {ω A e t₁ t₂ t₃ T F R : type_l 
       exact hValue.trans (((hBranches a' b').2.2.2 hCtor' ha hb').trans
         (PowerlessRelativeClassEvaluationAbsolute.exists_l (hBase := hBase) ω A Seq R f' a' b' hSeq))
 
-#print axioms spec_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSatisfactionAbsolute

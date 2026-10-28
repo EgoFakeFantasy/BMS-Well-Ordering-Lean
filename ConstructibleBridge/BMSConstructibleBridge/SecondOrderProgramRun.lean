@@ -56,9 +56,4 @@ theorem run_cons_l (hℳ : Theory.Models ℳ theory_m) {R E : set_l ℳ}
       ∃ w, relation_l E (value_l v i) w ∧ relation_l R (value_l t w) y :=
   fold_cons_l hℳ expand_m hR hE i t v y
 
-#print axioms run_m
-#print axioms run_encode_l
-#print axioms run_zero_l
-#print axioms run_cons_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRun

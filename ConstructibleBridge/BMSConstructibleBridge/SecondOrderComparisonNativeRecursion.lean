@@ -85,8 +85,4 @@ theorem rows_l (K : source_coding_l hℳ) (p : parameters_l ℳ) {S : SecondOrde
     have hWX : W = X := (hOnly W hW).trans (hOnly X hX).symm
     exact hWX.symm ▸ hSection
 
-#print axioms total_l
-#print axioms exists_l
-#print axioms rows_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonNativeRecursion

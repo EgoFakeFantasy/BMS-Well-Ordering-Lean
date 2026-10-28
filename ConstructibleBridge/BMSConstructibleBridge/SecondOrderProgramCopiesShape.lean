@@ -79,10 +79,4 @@ theorem copies_width_l (hℳ : Theory.Models ℳ theory_m) {R L : set_l ℳ}
   obtain ⟨z, hz, hlz⟩ := width_exists_l hℳ hR hL hb A l n
   exact (function_value_unique_l (function_of_semantics_l hℳ copies_m hR) hz hy) ▸ hlz
 
-#print axioms width_m
-#print axioms width_language_m
-#print axioms width_syntax_l
-#print axioms width_exists_l
-#print axioms copies_width_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopiesShape

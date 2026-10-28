@@ -76,6 +76,4 @@ theorem eq_l (hℳ : Theory.Models ℳ theory_m)
     intro V U hV hU hVj hUi
     exact SecondOrderGraph.symm_l hℳ (hEq i j hij hi hj U V hU hV hUi hVj)
 
-#print axioms eq_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPredecessorUnionCongruence

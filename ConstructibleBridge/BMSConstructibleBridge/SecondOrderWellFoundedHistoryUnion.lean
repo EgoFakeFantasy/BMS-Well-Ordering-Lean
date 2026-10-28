@@ -45,13 +45,8 @@ theorem pure_m {Δ : SortContext signature_m} (φ : Formula signature_m [.set, .
     · intro s v
       nomatch v
     · intro s v
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => cases s <;> rfl
+      rcases v with _ | _ | _ | v
+      all_goals first | rfl | cases s <;> rfl
   change (language_m (GraphSyntax.edge_m (Γ := []) (Δ := .num :: .num :: .num :: .set :: Δ)
     (.fvar (.there (.there (.there .here)))) (.fvar .here) (.fvar (.there (.there .here)))) &&
     (language_m (history_m φ) && _)) = true
@@ -75,13 +70,8 @@ theorem formula_l {Δ : SortContext signature_m} (φ : Formula signature_m [.set
       (((η.pushFree H).pushFree R).pushFree m) := by
     apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => cases s <;> rfl
+      rcases v with _ | _ | _ | v
+      all_goals first | rfl | cases s <;> rfl
   rw [hEnv]
   exact SecondOrderWellFoundedHistorySyntax.formula_l φ η R H m
 
@@ -115,8 +105,5 @@ theorem agrees_l (hℳ : Theory.Models ℳ theory_m) (P : set_l ℳ → set_l �
     obtain ⟨H, hH⟩ := hExist m hmn
     exact (hS m a).mpr ⟨hmn, H, hH,
       (coherence_l hℳ P R hWf hTrans hLocal H K m k hH hK m (Or.inl rfl) hm a).mpr ha⟩
-
-#print axioms exists_l
-#print axioms agrees_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderWellFoundedHistoryUnion

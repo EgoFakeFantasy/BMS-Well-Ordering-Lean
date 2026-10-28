@@ -96,8 +96,4 @@ theorem height_eq_l (hℳ : Theory.Models ℳ theory_m) {T H L E : set_l ℳ}
   exact (coordinates_l hℳ hT hH hL hE hx hz hy hs ht r (zero_l ℳ)).mp
     ((trim_bound_iff_zero_rows_l hℳ hH hE hg g).mp (le_refl g) j t r ht hr)
 
-#print axioms rectangular_l
-#print axioms coordinates_l
-#print axioms height_eq_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTrimNormalized

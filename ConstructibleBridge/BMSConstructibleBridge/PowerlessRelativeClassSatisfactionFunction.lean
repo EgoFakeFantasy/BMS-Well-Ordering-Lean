@@ -128,6 +128,4 @@ theorem exists_l {Δ : SortContext ℒ} (K : source_coding_l hℳ)
       hℳ hBase (D.eval η).property hr⟩
     exact (hClassRead A R).mpr ⟨ha, hr, hNorm⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSatisfactionFunction

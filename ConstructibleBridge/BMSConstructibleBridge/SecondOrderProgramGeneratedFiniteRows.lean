@@ -63,7 +63,4 @@ theorem columns_finite_l (hℳ : Theory.Models ℳ theory_m) {D H L E : set_l �
   intro j a hj ha
   exact finite_decode_l hℳ hI k a ((length_rel_l hℳ hL hI a (numeral_val_l k)).mp (hyr.2 j hj a ha))
 
-#print axioms height_numeral_l
-#print axioms columns_finite_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramGeneratedFiniteRows

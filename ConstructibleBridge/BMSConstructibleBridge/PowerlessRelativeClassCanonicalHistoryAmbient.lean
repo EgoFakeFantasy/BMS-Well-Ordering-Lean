@@ -53,6 +53,4 @@ theorem step_l (K : source_coding_l hℳ) (ω e t₁ t₂ t₃ Pair N Valid B₀
       (PowerlessRelativeClassHierarchyBranches.union_l (hBase := hBase) F a X).mp hF,
       (PowerlessRelativeClassHierarchyBranches.union_l (hBase := hBase) g a P).mp hg⟩)
 
-#print axioms step_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalHistoryAmbient

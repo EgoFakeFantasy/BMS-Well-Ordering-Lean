@@ -78,6 +78,4 @@ theorem exists_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omeg
   · exact fun j hj row hr i t hit a b ha hb =>
       hInitial.edge_l j hj row hr i t hit a b (hsame i.val a ha) (hsame t.val b hb)
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSInitialSplit

@@ -99,7 +99,4 @@ theorem agree_l (K : source_coding_l hℳ)
         (hCanonical' a ha' j Y Q ⟨⟨hj, hjY, hjQ⟩, hja⟩)))
   exact fun a => (hPoint a).mp (hAll a)
 
-#print axioms point_formula_l
-#print axioms agree_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonHistoryAgreement

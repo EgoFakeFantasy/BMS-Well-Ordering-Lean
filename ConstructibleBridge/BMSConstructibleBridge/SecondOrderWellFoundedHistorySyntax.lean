@@ -56,7 +56,4 @@ theorem formula_l {Δ : SortContext signature_m} (φ : Formula signature_m [.set
   · intro s v
     rfl
 
-#print axioms pure_m
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderWellFoundedHistorySyntax

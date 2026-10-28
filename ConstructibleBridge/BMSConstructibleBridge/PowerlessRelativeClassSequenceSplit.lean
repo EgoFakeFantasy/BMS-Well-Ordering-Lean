@@ -108,7 +108,4 @@ theorem injective_l {n m X P f f' p : type_l hℳ B}
   exact fun i x => ⟨hForward hf hPrefix hPrefix' hLast hLast' i x,
     hForward hf' hPrefix' hPrefix hLast' hLast i x⟩
 
-#print axioms exists_unique_l
-#print axioms injective_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceSplit

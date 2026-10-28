@@ -51,6 +51,4 @@ theorem spec_l (hTrans : PowerlessNaturalOrder.transitive_l W)
   simpa only [φ, PowerlessLegacyNumericSyntax.formula_l, Term.eval,
     Env.pushFree_here, Env.pushFree_there, PowerlessRelativization.env_l, η] using h
 
-#print axioms spec_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberLegacyNumericAbsolute

@@ -164,9 +164,4 @@ theorem existential_l (ht₃ : t₃.val = (numberCode_l K (numeral_l ℳ 3)).val
     (constructor_l K hω he hP hPair ht₃ hCode) ((numberCode_mem_iff_lt_l K i L).mpr hi) (valid_l K hF hb)
   exact (PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) R (number_l (hBase := hBase) K n) f).symm.trans hEq
 
-#print axioms equality_l
-#print axioms membership_l
-#print axioms nand_l
-#print axioms existential_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyEvaluationTarget

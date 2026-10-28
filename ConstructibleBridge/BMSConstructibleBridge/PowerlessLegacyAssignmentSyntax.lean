@@ -186,7 +186,4 @@ theorem link_formula_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
     (by simpa only [Term.eval_weakenBound] using hL)
     (by simpa only [Term.eval_weakenBound] using hz) rfl rfl
 
-#print axioms padded_formula_l
-#print axioms link_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyAssignmentSyntax

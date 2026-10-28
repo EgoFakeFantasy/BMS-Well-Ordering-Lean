@@ -92,8 +92,4 @@ theorem coding_exists_l {ω : type_l hℳ B} (hΩ : omega_l (ℳ := 𝒞) ω) :
   exact ⟨R, PowerlessRelativeClassSatisfactionSpecification.instance_l
     hRead K hω hSeq hValid hSystem he hPairMap hPair hV⟩
 
-#print axioms unique_l
-#print axioms exists_unique_l
-#print axioms coding_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCanonicalOrderUniform

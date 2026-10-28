@@ -56,10 +56,4 @@ theorem function_l {X D Y : set_l ℳ}
   have hba : b = a := hua b hb
   exact huu v (hba ▸ hv)
 
-#print axioms composition_m
-#print axioms composition_language_m
-#print axioms composition_syntax_l
-#print axioms exists_l
-#print axioms function_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFunctionComposition

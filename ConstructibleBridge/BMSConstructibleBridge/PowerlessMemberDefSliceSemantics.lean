@@ -46,6 +46,4 @@ theorem formula_l (C : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
   intro n
   exact and_congr (hEdge n) Iff.rfl
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefSliceSemantics

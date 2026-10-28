@@ -59,7 +59,4 @@ theorem exists_l {f A D S c d : type_l hℳ B} (hf : map_l (ℳ := 𝒞) f A D)
     hNew hc ((hMembers d).mpr (Or.inr rfl)) hS
   exact ⟨W, g, hMembers, hg, hRead⟩
 
-#print axioms codomain_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFunctionRangeExtension

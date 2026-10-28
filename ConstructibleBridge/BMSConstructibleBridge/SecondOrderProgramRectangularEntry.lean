@@ -91,8 +91,4 @@ theorem offset_exists_l (hℳ : Theory.Models ℳ theory_m) {J O L E : set_l ℳ
   · exact lt_of_lt_of_le ((add_lt_add_iff_left p).mpr hi) hpw'
   · exact lt_of_lt_of_le hr hh'
 
-#print axioms exists_l
-#print axioms row_lt_of_some_l
-#print axioms offset_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRectangularEntry

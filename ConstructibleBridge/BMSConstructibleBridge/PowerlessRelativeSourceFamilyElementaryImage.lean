@@ -468,11 +468,4 @@ theorem derives_m {Θ Δ : SortContext ℒ} (Φ : PowerlessRelativeFiniteElement
   SecondOrderAxioms.interpretation_m _
     (fun _ hℳ => models_l hℳ Φ B β C W ω Q G e t₀ t₁ t₂ a S P R τ)
 
-#print axioms seed_l
-#print axioms terminal_formula_l
-#print axioms transport_l
-#print axioms transport_closed_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeSourceFamilyElementaryImage

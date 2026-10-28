@@ -61,10 +61,4 @@ theorem rectangular_iff_all_l {L E S : set_l ℳ} {x n h : num_l ℳ}
     rectangular_l L E x n h ↔ relation_l L x n ∧ all_l E S x n := by
   simp only [rectangular_l, all_l, hS]
 
-#print axioms rectangular_l
-#print axioms rectangular_m
-#print axioms rectangular_syntax_l
-#print axioms length_set_l
-#print axioms rectangular_iff_all_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRectangular

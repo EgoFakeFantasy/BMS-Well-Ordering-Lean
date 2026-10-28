@@ -61,6 +61,4 @@ theorem row_lt_l (hℳ : Theory.Models ℳ theory_m) {Z J O L E : set_l ℳ}
     function_value_unique_l (function_of_semantics_l hℳ lookup_m hE) heval hzero
   exact (ne_of_lt ha) hae.symm
 
-#print axioms row_lt_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTrimPositiveEntry

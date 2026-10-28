@@ -39,6 +39,4 @@ theorem seed_rectangular_l (hℳ : Theory.Models ℳ theory_m) {S L E : set_l �
   exact all_cons_l hℳ hE ((hT a).mpr ha)
     (all_cons_l hℳ hE ((hT b).mpr hb) (all_zero_l hℳ E T (zero_l ℳ)))
 
-#print axioms seed_rectangular_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSeedRectangular

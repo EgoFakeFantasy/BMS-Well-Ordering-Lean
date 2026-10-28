@@ -66,7 +66,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.
     (PowerlessEvaluationClause.query_formula_l η (.fvar .here) (.fvar (.there .here))
       (.fvar (.there (.there .here)))).symm
 
-#print axioms delta_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessEvaluationQueryBounded

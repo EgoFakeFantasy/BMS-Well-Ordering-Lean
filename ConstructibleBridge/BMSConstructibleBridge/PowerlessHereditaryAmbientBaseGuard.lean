@@ -105,7 +105,4 @@ theorem derives_m {Δ : SortContext ℒ} (B ω : Term ℒ [] Δ .set) :
       (GraphTranslation.form_m (Metatheory.Formula.forall_close (schema_m B ω))) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 B ω)
 
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryAmbientBaseGuard

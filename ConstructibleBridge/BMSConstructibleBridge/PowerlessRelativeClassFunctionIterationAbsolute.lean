@@ -59,7 +59,4 @@ theorem from_ambient_l {ω e A H a F : type_l hℳ B}
       ((PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) F n x).mp hx)
       ((PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) F m y).mp hy))
 
-#print axioms to_ambient_l
-#print axioms from_ambient_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFunctionIterationAbsolute

@@ -96,13 +96,4 @@ theorem width_l (hℳ : Theory.Models ℳ theory_m) {T L : set_l ℳ}
   obtain ⟨h, _, hm⟩ := (trim_rel_l hℳ hT hH hM x y).mp ht
   exact SecondOrderProgramMapConsequences.map_length_l hℳ column_m hM hL h x y n hm hn
 
-#print axioms column_m
-#print axioms input_m
-#print axioms trim_m
-#print axioms column_encode_l
-#print axioms array_encode_correct_l
-#print axioms column_rel_l
-#print axioms trim_rel_l
-#print axioms width_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramTrimArray

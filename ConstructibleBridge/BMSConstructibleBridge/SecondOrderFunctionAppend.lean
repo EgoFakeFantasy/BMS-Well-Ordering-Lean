@@ -84,7 +84,4 @@ theorem singleton_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {f
     exact ⟨d, ⟨hd, (hValue x d).mpr ⟨hxc, rfl⟩⟩,
       fun y hy => ((hValue x y).mp hy.2).2⟩
 
-#print axioms map_l
-#print axioms singleton_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFunctionAppend

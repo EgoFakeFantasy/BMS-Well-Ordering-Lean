@@ -124,10 +124,4 @@ theorem counterexample_l (hℳ : Theory.Models ℳ theory_m) {H C : set_l ℳ}
   rw [matrix_rel_l hℳ hH hC]
   simp only [Classical.not_imp, not_exists, not_and, not_forall, Classical.not_not]
 
-#print axioms graph_rel_l
-#print axioms bounds_rel_l
-#print axioms stop_rel_l
-#print axioms matrix_rel_l
-#print axioms counterexample_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderConcreteSemantics

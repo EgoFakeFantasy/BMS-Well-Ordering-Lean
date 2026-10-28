@@ -214,8 +214,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.
   simp only [Term.eval, hωEq, heEq]
   exact constructor_iff_l K hS'' hT''
 
-#print axioms delta_l
-#print axioms constructor_iff_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFormulaConstructorBounded

@@ -94,6 +94,4 @@ theorem member_l (K : source_coding_l hℳ)
         exact ⟨a, P, ha, ((hRead a P).mp hP).2, hy⟩
     exact PowerlessRelativeLimitFunctionRange.union_member_l hBase hLimit hC hbC hpC hp hUnionP
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderLastOutput

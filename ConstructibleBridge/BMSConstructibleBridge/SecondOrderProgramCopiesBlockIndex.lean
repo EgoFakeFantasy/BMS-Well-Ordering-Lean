@@ -195,10 +195,4 @@ theorem block_read_index_l (hℳ : Theory.Models ℳ theory_m) {R C L E : set_l 
   rw [← ht] at hy
   exact block_read_shift_l hℳ hR hC hL hE hb hblk hi hy a
 
-#print axioms relocation_m
-#print axioms relocation_language_m
-#print axioms relocation_syntax_l
-#print axioms block_read_shift_l
-#print axioms block_read_index_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopiesBlockIndex

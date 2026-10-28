@@ -118,20 +118,4 @@ theorem next_encode_l (a : BMSArray) (r t : Nat) :
   · rw [if_pos (Nat.sub_eq_zero_of_le (Nat.le_of_not_lt ht)), BMS.parent, if_neg ht]
     rfl
 
-#print axioms array_input_m
-#print axioms range_m
-#print axioms compare_input_m
-#print axioms compare_row_m
-#print axioms test_m
-#print axioms search_m
-#print axioms next_m
-#print axioms array_input_eval_l
-#print axioms range_eval_l
-#print axioms compare_input_eval_l
-#print axioms compare_encode_l
-#print axioms test_nonzero_eval_l
-#print axioms test_encode_l
-#print axioms search_encode_l
-#print axioms next_encode_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramRuntimeParent

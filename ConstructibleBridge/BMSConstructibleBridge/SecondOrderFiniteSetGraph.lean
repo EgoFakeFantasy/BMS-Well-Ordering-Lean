@@ -88,8 +88,4 @@ theorem range_l (hℳ : Theory.Models ℳ theory_m) {E : set_l ℳ}
   refine ⟨H, fun B => (hH B).trans ?_⟩
   exact exists_congr (fun n => and_iff_right (hAll n))
 
-#print axioms wf_l
-#print axioms bounded_l
-#print axioms range_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFiniteSetGraph

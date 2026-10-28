@@ -190,7 +190,4 @@ theorem below_l (K : source_coding_l hℳ) {S G : SecondOrderModel.set_l ℳ}
   exact ⟨PowerlessRelativeCountableOrdinalBound.below_l (hBase := hBase) K K.omega_spec hOrd hCount hΩ,
     hαC, hLimit, hCofinal⟩
 
-#print axioms countable_l
-#print axioms below_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCountableDoubleTail

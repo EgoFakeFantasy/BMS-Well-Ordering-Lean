@@ -95,6 +95,4 @@ theorem readings_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
     apply (run_open_l K φ η B C ω v e t₀ t₁ t₂ a c l y).mp
     simpa only [step_m, ψ, ξ, t, ht] using hRun
 
-#print axioms readings_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramConcatBoundRead

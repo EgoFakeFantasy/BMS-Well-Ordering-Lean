@@ -155,8 +155,4 @@ theorem family_l {P : carrier_l 𝒱 → Prop} {hP : ∃ x, P x} {Δ Θ : SortCo
   exact closure_l D n φ ν ξ η hν hD I hI e he hPair hClosed
     (h _ (List.mem_map.mpr ⟨⟨n, φ⟩, hφ, rfl⟩))
 
-#print axioms formula_l
-#print axioms closure_l
-#print axioms family_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassPackedRequests

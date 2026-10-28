@@ -70,7 +70,4 @@ theorem constructor_l (K : source_coding_l hℳ) {T : type_l hℳ}
     exact ⟨(numberCode_l K a).property, (numberCode_l K b).property, (numberCode_l K p).val,
       (pairing_l K hT hSpec a b p).mpr hp, (node_l K hT hSpec t p n).mpr hn⟩
 
-#print axioms pairing_l
-#print axioms constructor_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientTriangularSyntax

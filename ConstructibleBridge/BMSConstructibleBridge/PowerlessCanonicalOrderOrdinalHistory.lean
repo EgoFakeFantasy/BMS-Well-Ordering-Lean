@@ -220,11 +220,4 @@ theorem unique_l {Pord Qord : type_l hℳ}
   intro p
   exact ⟨hForward hP hReadP hReadQ p, hForward hQ hReadQ hReadP p⟩
 
-#print axioms body_delta_l
-#print axioms body_unique_l
-#print axioms level_read_l
-#print axioms canonical_read_l
-#print axioms exists_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderOrdinalHistory

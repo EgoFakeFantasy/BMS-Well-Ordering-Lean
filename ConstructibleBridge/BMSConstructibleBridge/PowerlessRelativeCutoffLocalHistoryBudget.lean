@@ -285,11 +285,4 @@ theorem derives_m {Θ Δ : SortContext ℒ} (B ω Ω W X A : Term ℒ [] Θ .set
       (GraphTranslation.form_m (sentence_m B ω Ω W X A τ)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ B ω Ω W X A τ)
 
-#print axioms exists_l
-#print axioms models_l
-#print axioms elementary_formula_l
-#print axioms capture_formula_l
-#print axioms history_formula_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCutoffLocalHistoryBudget

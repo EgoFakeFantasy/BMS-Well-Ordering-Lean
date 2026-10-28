@@ -154,9 +154,4 @@ theorem block_compare_agree_l (hℳ : Theory.Models ℳ theory_m) {R C O L E J :
     refine ⟨a, b, (block_entry_agree_l hℳ hR hC hO hL hE hJ hb hk hblk hy hi).mpr h1,
       (block_entry_agree_l hℳ hR hC hO hL hE hJ hb hk hblk hy hj).mpr h2, hab⟩
 
-#print axioms flat_index_lt_l
-#print axioms block_column_agree_l
-#print axioms block_entry_agree_l
-#print axioms block_compare_agree_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopiesBlockEntry

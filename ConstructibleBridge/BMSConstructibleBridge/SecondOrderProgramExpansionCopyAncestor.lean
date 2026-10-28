@@ -82,6 +82,4 @@ theorem member_congr_l (hℳ : Theory.Models ℳ theory_m)
       (add_l p (add_l (mul_l d t) i)) (zero_l ℳ)
   exact hsuccess.trans (not_congr htrimmed)
 
-#print axioms member_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyAncestor

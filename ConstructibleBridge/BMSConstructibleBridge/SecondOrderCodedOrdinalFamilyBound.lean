@@ -104,9 +104,4 @@ theorem level_exists_l (hℳ : Theory.Models ℳ theory_m)
     fun D hD => ⟨hBound D hD, PowerlessRelativeOrdinalCoverage.covered_l hℳ K hBase δ L hL
       (mk_l hℳ D) (hBound D hD)⟩⟩
 
-#print axioms union_l
-#print axioms set_bound_l
-#print axioms exists_l
-#print axioms level_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCodedOrdinalFamilyBound

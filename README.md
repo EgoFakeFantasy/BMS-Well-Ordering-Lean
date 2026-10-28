@@ -106,6 +106,7 @@ StrictWellOrder GeneratedArray GeneratedStrictDescent
 | [AxiomAudit.lean](ConstructibleBridge/BMSConstructibleBridge/AxiomAudit.lean) | 最终定理的机器可检查公理守卫 |
 | [SecondOrderHereditaryBMSWellOrder.lean](ConstructibleBridge/BMSConstructibleBridge/SecondOrderHereditaryBMSWellOrder.lean) | 原 Z₂ 中每个固定外部高度的原闭句推导 |
 | [SecondOrderHereditaryBMSAxiomAudit.lean](ConstructibleBridge/BMSConstructibleBridge/SecondOrderHereditaryBMSAxiomAudit.lean) | Z₂ 最终接口的机器公理守卫 |
+| [SecondOrderCoreAxiomAudit.lean](ConstructibleBridge/BMSConstructibleBridge/SecondOrderCoreAxiomAudit.lean) | 两个终局导入闭包内全部桥接声明的集中公理守卫 |
 
 2026-09-10 精简版本的 BMS Lean 源码为 **44,989 行、165 个文件**。
 统计包含组合层、桥接层、入口及公理审计；不含上游其他源码、第三方依赖、Lake 配置、文档与构建缓存。
@@ -138,6 +139,7 @@ cd ConstructibleBridge
 lake build BMSConstructibleBridge
 lake env lean BMSConstructibleBridge/AxiomAudit.lean
 lake env lean BMSConstructibleBridge/SecondOrderHereditaryBMSAxiomAudit.lean
+lake env lean BMSConstructibleBridge/SecondOrderCoreAxiomAudit.lean
 ```
 
 仅在根目录运行 `lake build` 不等于验证了桥接层的最终定理。
@@ -160,6 +162,10 @@ propext, Classical.choice, Quot.sound
 `#guard_msgs` 检查实际的 `#print axioms` 输出；公理集合变化会导致检查失败。
 [SecondOrderHereditaryBMSAxiomAudit.lean](ConstructibleBridge/BMSConstructibleBridge/SecondOrderHereditaryBMSAxiomAudit.lean)
 独立守卫 Z₂ 最终接口；`#print axioms` 不显示定理参数，不能单靠公理清单判定对象理论强度。
+[SecondOrderCoreAxiomAudit.lean](ConstructibleBridge/BMSConstructibleBridge/SecondOrderCoreAxiomAudit.lean)
+逐个检查两个终局导入闭包内全部 `BMSConstructibleBridge` 模块声明，越界依赖即构建失败，
+并以 `#guard_msgs` 自检“去掉 `Classical.choice` 时必拒绝已知使用选择的终局”；
+它取代了原先散布在中间模块末尾、只打印不失败的 `#print axioms`。
 [Lean CI](https://github.com/EgoFakeFantasy/BMS-Well-Ordering-Lean/actions/workflows/lean_action_ci.yml)
 在隔离的 runner 中分别检查根工程与桥接工程，并对桥接声明及最终定理进行公理审计。
 

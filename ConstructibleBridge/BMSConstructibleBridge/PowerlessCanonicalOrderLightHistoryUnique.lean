@@ -150,7 +150,4 @@ theorem unique_l {C C' W ω F G P₀ α δ g g' : type_l hℳ}
     have hEq := hAgree a ⟨ha, ha⟩ Q E ⟨hQ.2, hE'⟩
     exact hEq ▸ hQ.2
 
-#print axioms agreement_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderLightHistoryUnique

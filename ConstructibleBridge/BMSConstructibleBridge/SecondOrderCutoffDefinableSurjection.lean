@@ -56,6 +56,4 @@ theorem impossible_l (K : source_coding_l hℳ)
   exact ⟨x.val, hx, (SecondOrderMemberDefSourceRelation.value_l hℳ (Exists.intro ω hωC)
     φ η O hRead x ⟨y, hyC⟩).mpr ⟨hx, hφ⟩⟩
 
-#print axioms impossible_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCutoffDefinableSurjection

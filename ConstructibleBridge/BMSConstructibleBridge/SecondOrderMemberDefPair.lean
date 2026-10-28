@@ -61,6 +61,4 @@ theorem member_l (hℳ : Theory.Models ℳ theory_m) {C D x y p : type_l hℳ}
       exact (hRead' n hn).mpr ((hp _).mp hw)
   exact hzp ▸ hz
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefPair

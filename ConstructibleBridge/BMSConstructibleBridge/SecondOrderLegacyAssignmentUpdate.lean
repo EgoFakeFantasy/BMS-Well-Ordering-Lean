@@ -120,7 +120,4 @@ theorem exists_l (K : source_coding_l hℳ) {ω A x : type_l hℳ B}
   · intro i y
     exact (hGRead i y).trans (exists_congr (fun j => and_congr (hQRead i j) Iff.rfl))
 
-#print axioms of_numbers_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderLegacyAssignmentUpdate

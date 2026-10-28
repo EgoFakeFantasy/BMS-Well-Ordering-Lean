@@ -85,8 +85,4 @@ theorem finite_models_l (H : Nat) :
   obtain ⟨S⟩ := finite_m H
   exact ⟨S.sentences, S.subset, S.derivation.semantically_entails⟩
 
-#print axioms derives_m
-#print axioms finite_m
-#print axioms finite_models_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSObjectProof

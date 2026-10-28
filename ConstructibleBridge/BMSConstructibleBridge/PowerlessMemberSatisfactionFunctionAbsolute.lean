@@ -112,8 +112,4 @@ theorem coverage_l (hTrans : PowerlessNaturalOrder.transitive_l W) (ω U : M)
   obtain ⟨n, hn, hf⟩ := h
   exact hCoverage a.val ha f.val ⟨n.val, hn, (PowerlessSourceGraphAbsolute.map_l hTrans).mp hf⟩
 
-#print axioms graph_l
-#print axioms graph_formula_l
-#print axioms coverage_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberSatisfactionFunctionAbsolute

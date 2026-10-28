@@ -117,7 +117,4 @@ theorem derives_m {Δ : SortContext ℒ} (C D ω e T A S t₁ t₂ t₃ F G n : 
     (PowerlessEvaluationFiniteHistory.original_l
       ((PowerlessEvaluationFiniteHistory.formula_l η D ω e T A t₁ t₂ t₃ S G n).mp hG))
 
-#print axioms unique_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessEvaluationHistoryUniqueness

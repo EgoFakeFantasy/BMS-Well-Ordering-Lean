@@ -48,6 +48,4 @@ theorem expand_normalized_l (hℳ : Theory.Models ℳ theory_m) {X H L E : set_l
   rw [hgz] at hg
   exact ⟨m, z, SecondOrderProgramTrimNormalized.rectangular_l hℳ hT hH hL hE hvr hz ht, hg⟩
 
-#print axioms expand_normalized_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionNormalized

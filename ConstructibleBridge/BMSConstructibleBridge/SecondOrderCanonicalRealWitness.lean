@@ -107,7 +107,4 @@ theorem real_family_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set 
   · intro hm
     exact ⟨y, hy, hm⟩
 
-#print axioms range_l
-#print axioms real_family_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalRealWitness

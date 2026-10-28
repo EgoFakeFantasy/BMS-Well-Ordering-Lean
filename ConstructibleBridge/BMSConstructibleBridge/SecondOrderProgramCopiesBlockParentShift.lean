@@ -131,10 +131,6 @@ theorem shift_prefix_syntax_l (P : set_l ℳ) (out blk K w r : num_l ℳ) :
     Term.eval, Arguments.eval, Env.pushBound, Env.pushFree, Assignment.push]
   rfl
 
-#print axioms shift_prefix_m
-#print axioms shift_prefix_language_m
-#print axioms shift_prefix_syntax_l
-
 /-!
 ## 正确的行归纳载体：`≥ K` 段父输出逐字跟踪局部块父输出
 
@@ -172,10 +168,6 @@ theorem reloc_ge_syntax_l (P : set_l ℳ) (out blk K w r : num_l ℳ) :
     Term.eval, Arguments.eval, Env.pushBound, Env.pushFree, Assignment.push]
   rfl
 
-#print axioms reloc_ge_m
-#print axioms reloc_ge_language_m
-#print axioms reloc_ge_syntax_l
-
 /-- 平坦目标 `K+j` 的父若为 `succ c`，而本副本段存在合格候选 `K+q`（`q < j`），则该父列
 不可能落在跨块段 `[0, K)`：`K+q` 的指标已压过任何 `< K` 的候选，与最大性支矛盾。
 这是修正后的联合下降所依赖的「指标支配」核心引理，只用 `parent_succ_some_l` 的最大性与内部数序。 -/
@@ -199,8 +191,6 @@ theorem flat_parent_within_dominates_l (hℳ : Theory.Models ℳ theory_m)
   have hKq : K ≤ add_l K q := (le_iff_l hℳ _ _).mpr ⟨q, rfl⟩
   exact absurd hel (hmax (add_l K q) (lt_of_lt_of_le hck hKq) (lt_add_left_l hℳ hqj))
 
-#print axioms flat_parent_within_dominates_l
-
 /-- 弱化平移 `hge`（块内列 `K+k` 的 `≥K` 段父输出逐字跟踪局部父）把该列的任一平坦父输出
 `succ c` 分解为两支：要么 `c = K + p` 且局部父正是 `succ p`（链仍在本副本段内），要么
 `c < K`（链已跳到更早副本 / 好前缀，出界后由于父列严格降列不再回到 `[K,K+w)`）。这是
@@ -221,8 +211,6 @@ theorem reloc_ge_target_cases_l (hℳ : Theory.Models ℳ theory_m) {P : set_l �
   · obtain ⟨p, hp⟩ := (le_iff_l hℳ K c).mp (le_of_not_gt hlt)
     rw [← hp] at hc
     exact Or.inl ⟨p, hp.symm, (hge p).mp hc⟩
-
-#print axioms reloc_ge_target_cases_l
 
 /-- 父列平移对应 `hpp` 的 some 支在块内列上逐值等价：给定本行候选合格性 `hagree`
 （在 `K+q ↔ q` 下一致）、局部块宽界 `j < w` 与平坦界 `K + j < m`，某后继行局部父边
@@ -251,8 +239,6 @@ theorem parent_some_congr_l (hℳ : Theory.Models ℳ theory_m)
   constructor
   · exact fun h => parent_local_to_flat_l hℳ hP hL hM hJ hw hm hfm hagree h
   · exact fun h => parent_flat_to_local_l hℳ hP hL hM hJ hw hm hjw hagree h
-
-#print axioms parent_some_congr_l
 
 /-- 由本行候选合格性 `hagree` 与更早候选不合格 `hbefore` 一次给出父列平移对应 `hpp` 于
 后继行标签 `succ r`：块内列 `K + j`（`K = mul w kc`、`j < w`、`K + j < m`）的实际父图输出
@@ -303,7 +289,5 @@ theorem hpp_succ_l (hℳ : Theory.Models ℳ theory_m)
     · rw [parent_none_congr_l hℳ hP hL hM hJ hw hm hjw hfm hagree hbefore]
       exact hz
     · exact parent_local_to_flat_l hℳ hP hL hM hJ hw hm hfm hagree hq
-
-#print axioms hpp_succ_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopiesBlockParentShift

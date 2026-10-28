@@ -30,6 +30,4 @@ theorem eq_l (hℳ : Theory.Models ℳ theory_m) (A B : SecondOrderGraph.code_l 
   rw [hInput] at hDef
   exact (SecondOrderQuotient.eq_iff_l hℳ _ _).mp (SecondOrderMemberDef.unique_l hℳ hDef hDef')
 
-#print axioms eq_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalMemberDefCongruence

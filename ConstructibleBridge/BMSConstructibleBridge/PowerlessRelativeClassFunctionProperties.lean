@@ -50,7 +50,4 @@ theorem domain_unique_l {f D E A C : type_l hℳ B}
     obtain ⟨y, hy, _⟩ := hg.2 x hx
     exact (value_mem_l hf hy.2).1
 
-#print axioms value_unique_l
-#print axioms domain_unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFunctionProperties

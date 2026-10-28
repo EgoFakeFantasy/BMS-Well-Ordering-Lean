@@ -73,7 +73,4 @@ theorem instance_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.si
     apply (PowerlessBoundedAddition.instance_l K hS j j _).mpr
     exact congrArg (fun q => (numberCode_l K q).val) hRelation.symm
 
-#print axioms delta_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBoundedTriangular

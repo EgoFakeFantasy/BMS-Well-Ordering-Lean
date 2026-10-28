@@ -138,10 +138,4 @@ theorem derives_m {Δ : SortContext ℒ}
       (GraphTranslation.form_m (sentence_m W ω e N F A R S P J Q)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ W ω e N F A R S P J Q)
 
-#print axioms formula_l
-#print axioms reading_l
-#print axioms collapse_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefImageCoverage

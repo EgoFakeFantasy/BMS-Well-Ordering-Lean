@@ -342,12 +342,4 @@ theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: �
       (GraphTranslation.form_m (sentence_m φ B C ω w N Q e t₀ t₁ t₂)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 φ B C ω w N Q e t₀ t₁ t₂)
 
-#print axioms record_coordinates_l
-#print axioms good_exists_l
-#print axioms good_unique_l
-#print axioms exists_unique_l
-#print axioms initial_l
-#print axioms transition_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramStep

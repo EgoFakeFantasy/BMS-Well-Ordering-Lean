@@ -116,6 +116,4 @@ theorem order_l (K : source_coding_l hℳ) (p : parameters_l ℳ)
   intro i Y R hi hEarlier
   exact hInitial i Y R ((hStage i Y R).mpr ⟨(hD i).mpr hEarlier, hi.2.1, hi.2.2⟩)
 
-#print axioms order_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonLimitInvariant

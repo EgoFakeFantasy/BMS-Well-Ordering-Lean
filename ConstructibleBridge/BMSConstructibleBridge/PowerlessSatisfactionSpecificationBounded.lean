@@ -233,8 +233,4 @@ theorem guarded_iff_l {ω A e N T S t₁ t₂ t₃ F R : type_l hℳ}
   rw [heEq]
   exact spec_iff_l K hN hT hS
 
-#print axioms delta_l
-#print axioms spec_iff_l
-#print axioms guarded_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionSpecificationBounded

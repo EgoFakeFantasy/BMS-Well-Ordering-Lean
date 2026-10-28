@@ -80,6 +80,4 @@ theorem all_rows_l (hℳ : Theory.Models ℳ theory_m)
       hx hmax hlast hparent hd hy hearlier hcopy hlocal hq
     simpa only [hindex, add_assoc_l hℳ] using h
 
-#print axioms all_rows_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionPrefixToSuccessive

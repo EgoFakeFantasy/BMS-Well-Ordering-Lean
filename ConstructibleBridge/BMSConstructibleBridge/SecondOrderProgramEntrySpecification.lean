@@ -65,8 +65,4 @@ theorem entry_column_l (hℳ : Theory.Models ℳ theory_m) {J O : set_l ℳ}
   · intro hy
     exact Or.inr ⟨c, hc, hy⟩
 
-#print axioms optional_some_l
-#print axioms optional_none_l
-#print axioms entry_column_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramEntrySpecification

@@ -84,14 +84,4 @@ theorem parent_rel_l (hℳ : Theory.Models ℳ theory_m) {P E : set_l ℳ}
   rw [comp_rel_l hℳ (graph_m lookup_m) (graph_m input_m) E I hE hI hP]
   simp only [input_rel_l hℳ hI, exists_eq_left']
 
-#print axioms table_l
-#print axioms input_m
-#print axioms parent_m
-#print axioms input_eval_l
-#print axioms parent_eval_l
-#print axioms parent_encode_l
-#print axioms member_encode_l
-#print axioms input_rel_l
-#print axioms parent_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentTable

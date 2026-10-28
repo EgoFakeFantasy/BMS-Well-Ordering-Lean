@@ -144,17 +144,4 @@ theorem entry_rel_l (hℳ : Theory.Models ℳ theory_m) {J O : set_l ℳ}
     · have hc' := (column_rel_l hℳ hC hO a i r _).mpr hc
       exact Or.inr ⟨succ_l c, nonzero_l hℳ c, hc', (present_rel_l hℳ hS hC hO hc' y).mpr hy⟩
 
-#print axioms column_input_m
-#print axioms column_m
-#print axioms row_m
-#print axioms row_input_m
-#print axioms present_m
-#print axioms entry_m
-#print axioms column_encode_l
-#print axioms present_encode_l
-#print axioms entry_encode_l
-#print axioms column_rel_l
-#print axioms present_rel_l
-#print axioms entry_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramEntry

@@ -82,13 +82,4 @@ theorem decode_rel_l (hℳ : Theory.Models ℳ theory_m) {D S R : set_l ℳ}
   rw [hd hD]
   simp only [hs hS, hr hR, exists_eq_left']
 
-#print axioms input_m
-#print axioms decode_m
-#print axioms input_surj_l
-#print axioms decode_present_l
-#print axioms input_encode_l
-#print axioms decode_encode_l
-#print axioms decode_eval_l
-#print axioms decode_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramGeneratedDecode

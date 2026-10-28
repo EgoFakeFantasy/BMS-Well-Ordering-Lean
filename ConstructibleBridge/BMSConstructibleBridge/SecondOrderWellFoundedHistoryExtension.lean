@@ -79,7 +79,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) (P : set_l ℳ → set_l �
     exact (hBelow m hm a).trans ((hAgree m (Or.inl rfl) a).trans
       ((hKU m (Or.inl rfl) a).trans (hLocal H K W U hW hU m hPre a).symm))
 
-#print axioms patch_exists_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderWellFoundedHistoryExtension

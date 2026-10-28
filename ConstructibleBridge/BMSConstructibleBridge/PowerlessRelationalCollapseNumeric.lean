@@ -107,8 +107,4 @@ theorem derives_m {Δ : SortContext ℒ} (B β C A I T H ω x X : Term ℒ [] Δ
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m B β C A I T H ω x X)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ B β C A I T H ω x X)
 
-#print axioms enumeration_l
-#print axioms hereditary_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationalCollapseNumeric

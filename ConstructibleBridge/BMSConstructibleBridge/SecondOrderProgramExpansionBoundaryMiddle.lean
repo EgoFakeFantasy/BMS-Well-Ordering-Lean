@@ -93,8 +93,4 @@ theorem source_middle_output_l (hℳ : Theory.Models ℳ theory_m)
     exact (add_lt_add_iff_left p).mpr
       ((add_lt_add_iff_left (mul_l d t)).mpr hqd)
 
-#print axioms middle_local_l
-#print axioms source_middle_local_l
-#print axioms source_middle_output_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryMiddle

@@ -104,6 +104,4 @@ theorem formula_l {Γ Δ : SortContext signature_m} (C : correspondence_l (M := 
 termination_by φ.size
 decreasing_by all_goals simp only [Formula.size]; omega
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFullTransfer

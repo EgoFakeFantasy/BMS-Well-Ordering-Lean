@@ -120,15 +120,4 @@ theorem scan_succ_l (hℳ : Theory.Models ℳ theory_m) {R E : set_l ℳ}
   rw [prec_graph_succ_l hℳ (graph_m .zero) (graph_m scan_step_m) Z S hZ hS R hR hZf hSf]
   simp only [scan_step_rel_l hℳ hS hE]
 
-#print axioms scan_input_m
-#print axioms scan_query_m
-#print axioms scan_positive_m
-#print axioms scan_step_m
-#print axioms scan_m
-#print axioms scan_step_eval_l
-#print axioms query_rel_l
-#print axioms scan_step_rel_l
-#print axioms scan_zero_l
-#print axioms scan_succ_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSupportScan

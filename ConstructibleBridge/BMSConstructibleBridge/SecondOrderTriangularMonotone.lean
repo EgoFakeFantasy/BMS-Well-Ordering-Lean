@@ -80,7 +80,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
   intro η
   exact (formula_l η).mpr (fun _ _ _ ht hv hn => monotone_l hℳ ht hv hn)
 
-#print axioms monotone_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderTriangularMonotone

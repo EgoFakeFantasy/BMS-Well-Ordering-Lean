@@ -181,9 +181,4 @@ theorem relation_derives_m {Δ : SortContext ℒ} (B X Y R : Term ℒ [] Δ .set
       (GraphTranslation.form_m (Metatheory.Formula.forall_close (relation_schema_m B X Y R))) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩₀ => relation_models_l h𝒩₀ B X Y R)
 
-#print axioms member_l
-#print axioms relation_l
-#print axioms derives_m
-#print axioms relation_derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryProduct

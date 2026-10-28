@@ -162,6 +162,4 @@ theorem step_l
     · exact False.elim (PowerlessRelativeHierarchyStep.successor_not_limit_l hℳ hα hb hLimit)
     · exact limit_equal_l h h' hG hG' ha ha' hD hD' hPast hGraph hGraph'
 
-#print axioms step_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonHistoryAgreementStep

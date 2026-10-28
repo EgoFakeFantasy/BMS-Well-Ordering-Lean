@@ -74,8 +74,4 @@ theorem constructor_injective_l (K : source_coding_l hℳ) {T t a b s d f n : ty
   obtain ⟨hts, hpq⟩ := node_injective_l K hT hSpec hn hm
   exact ⟨hts, pairing_injective_l K hT hSpec ha hb hd hf (hpq ▸ hp) hq⟩
 
-#print axioms representation_l
-#print axioms pairing_injective_l
-#print axioms constructor_injective_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientConstructorInjective

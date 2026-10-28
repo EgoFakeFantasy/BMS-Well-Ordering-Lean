@@ -111,9 +111,4 @@ theorem greatest_some_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {R C : 
     exact ⟨(succ_le_iff_l hℳ i k).mpr hi,
       fun j hjk hij => hz j ((succ_le_iff_l hℳ i j).mp hij) hjk, Or.inr ⟨i, rfl, hc⟩⟩
 
-#print axioms invariant_l
-#print axioms greatest_rel_l
-#print axioms greatest_none_l
-#print axioms greatest_some_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramGreatestCorrectness

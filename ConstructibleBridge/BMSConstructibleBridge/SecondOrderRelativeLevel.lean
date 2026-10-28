@@ -97,8 +97,4 @@ theorem exists_zero_l (hℳ : Theory.Models ℳ theory_m) (B : set_l ℳ)
   obtain ⟨W, hW, hWC⟩ := SecondOrderRootNormalization.normal_exists_l hℳ C
   exact ⟨W, hW, transfer_l hℳ (SecondOrderGraph.refl_l hℳ α) (SecondOrderGraph.symm_l hℳ hWC) hC⟩
 
-#print axioms exists_l
-#print axioms unique_l
-#print axioms exists_zero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeLevel

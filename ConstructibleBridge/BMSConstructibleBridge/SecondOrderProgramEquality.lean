@@ -101,10 +101,4 @@ theorem equal_nonzero_l (hℳ : Theory.Models ℳ theory_m) {E : set_l ℳ}
   rw [equal_rel_l hℳ hE]
   simp only [nonzero_l hℳ (zero_l ℳ), and_false, false_or, and_true, not_not]
 
-#print axioms backward_m
-#print axioms equal_m
-#print axioms equal_eval_l
-#print axioms equal_rel_l
-#print axioms equal_nonzero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramEquality

@@ -136,17 +136,4 @@ theorem copy_rel_l (hℳ : Theory.Models ℳ theory_m) {C M P : set_l ℳ}
   rw [hv]
   simp only [hf hP, hg hM, exists_eq_left']
 
-#print axioms column_input_m
-#print axioms column_m
-#print axioms parameter_m
-#print axioms copy_input_m
-#print axioms copy_m
-#print axioms column_input_eval_l
-#print axioms column_encode_l
-#print axioms head_array_encode_l
-#print axioms copy_input_encode_l
-#print axioms copy_encode_l
-#print axioms column_rel_l
-#print axioms copy_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyBlock

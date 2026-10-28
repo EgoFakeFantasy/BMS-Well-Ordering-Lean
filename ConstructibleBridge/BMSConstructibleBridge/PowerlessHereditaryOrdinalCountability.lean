@@ -130,8 +130,4 @@ theorem models_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) : sen
 theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m sentence_m) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ)
 
-#print axioms countable_of_hereditary_l
-#print axioms hereditary_of_countable_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryOrdinalCountability

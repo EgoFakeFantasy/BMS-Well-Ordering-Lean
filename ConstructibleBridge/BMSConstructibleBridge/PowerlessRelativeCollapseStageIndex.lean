@@ -100,9 +100,4 @@ theorem ordinal_l {B T J : type_l hℳ}
     · exact Or.inl h
     · exact Or.inr (Or.inr h)
 
-#print axioms point_formula_l
-#print axioms spec_formula_l
-#print axioms exists_l
-#print axioms ordinal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCollapseStageIndex

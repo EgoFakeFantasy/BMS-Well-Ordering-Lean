@@ -166,7 +166,4 @@ theorem member_iff_of_middle_transport_l (hℳ : Theory.Models ℳ theory_m)
       exact heq.mpr (hrecord m' e' hcm' hmb'
         (fun s hs => (hmid s hs).mp (hlow' s hs)) hme')
 
-#print axioms member_iff_record_all_l
-#print axioms member_iff_of_middle_transport_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorRecordAllRows

@@ -63,6 +63,4 @@ theorem step_l (hℳ : Theory.Models ℳ theory_m) {B B' R R' I S T : set_l ℳ}
         (hI.forth n m hnm) (hI.back n m hnm)
         (fun k j hkj hk _ U V hU hV hUk hVj => hPast k hk j hkj U V hU hV hUk hVj)
 
-#print axioms step_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyAgreementStep

@@ -295,14 +295,4 @@ theorem reverse_indices_l (hℳ : Theory.Models ℳ theory_m) {T F L E I : set_l
 本模块公共声明仅允许既有标准公理集合（propext/Quot.sound/Classical.choice），
 无新增公理，亦不得有 `sorryAx`。审计置于命名空间内、`end` 之前。 -/
 
-#print axioms entries_back_m
-#print axioms entries_back_language_m
-#print axioms entries_back_syntax_l
-#print axioms fold_back_l
-#print axioms entries_front_m
-#print axioms entries_front_language_m
-#print axioms entries_front_syntax_l
-#print axioms fold_front_l
-#print axioms reverse_indices_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListReverseIndices

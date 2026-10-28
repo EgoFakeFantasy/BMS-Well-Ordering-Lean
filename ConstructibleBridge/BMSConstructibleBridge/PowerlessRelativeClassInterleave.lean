@@ -130,6 +130,4 @@ theorem exists_l {ω D G H U V W : type_l hℳ B}
   exact ⟨fun h => ⟨h.1, (hRead n y).mp h.2.2⟩,
     fun h => ⟨h.1, hRange n y h.2, (hRead n y).mpr h.2⟩⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassInterleave

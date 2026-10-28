@@ -88,7 +88,4 @@ theorem member_formula_l {Γ Δ : SortContext signature_m} (η : Env ℳ Γ Δ)
       | .there (.there .here) => exact Term.eval_weakenBound η n R
   rw [hEnv, SecondOrderRelativeHierarchyMembership.formula_l]
 
-#print axioms base_formula_l
-#print axioms member_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyStrongFormula

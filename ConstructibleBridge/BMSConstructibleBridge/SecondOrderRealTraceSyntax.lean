@@ -88,10 +88,4 @@ theorem representative_l (K : source_coding_l hℳ) (X : SecondOrderModel.set_l 
     exact hS
   exact ⟨A, hSubset, (reading_l K A hSubset X).mpr hT⟩
 
-#print axioms pure_m
-#print axioms formula_l
-#print axioms reading_l
-#print axioms exists_unique_l
-#print axioms representative_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRealTraceSyntax

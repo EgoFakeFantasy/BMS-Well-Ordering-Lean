@@ -73,6 +73,4 @@ theorem read_l (K : source_coding_l hℳ) {ω A Seq Sat f t x : type_l hℳ}
     exact ⟨hD v, hc, d, hd, (hPreservation p (succ_l l) d q L z g
       ⟨hd.1, hQuery, hBound⟩ hg hNewLink).mpr hValue⟩
 
-#print axioms read_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyDefinableRawRows

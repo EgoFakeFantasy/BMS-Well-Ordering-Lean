@@ -163,9 +163,4 @@ theorem request_mem_m {Γ Δ : SortContext ℒ} {Φ : List (Formula ℒ Γ Δ)}
       (.truth : Formula ℒ [] (.set :: Δ)) ψ)
   exact List.mem_flatMap.mpr ⟨φ, hφ, hp⟩
 
-#print axioms formula_l
-#print axioms term_l
-#print axioms tags_nodup_m
-#print axioms entry_mem_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceRequestParameters

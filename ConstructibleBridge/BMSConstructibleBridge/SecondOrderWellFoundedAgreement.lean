@@ -97,7 +97,4 @@ theorem unique_l (hℳ : Theory.Models ℳ theory_m) (P : set_l ℳ → set_l �
   exact coherence_l hℳ P R hWf hTrans hLocal H K n n
     ⟨H, hH, fun _ _ _ => Iff.rfl⟩ ⟨K, hK, fun _ _ _ => Iff.rfl⟩ n (Or.inl rfl) (Or.inl rfl) a
 
-#print axioms coherence_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderWellFoundedAgreement

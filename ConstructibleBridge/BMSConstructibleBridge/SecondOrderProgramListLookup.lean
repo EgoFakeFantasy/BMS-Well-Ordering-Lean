@@ -88,12 +88,4 @@ theorem lookup_past_end_l (hℳ : Theory.Models ℳ theory_m) {E I : set_l ℳ}
   · intro hy
     exact ⟨zero_l ℳ, hi, (head_zero_l hℳ hH y).mpr hy⟩
 
-#print axioms lookup_m
-#print axioms lookup_encode_l
-#print axioms lookup_rel_l
-#print axioms lookup_zero_l
-#print axioms lookup_cons_zero_l
-#print axioms lookup_cons_succ_l
-#print axioms lookup_past_end_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListLookup

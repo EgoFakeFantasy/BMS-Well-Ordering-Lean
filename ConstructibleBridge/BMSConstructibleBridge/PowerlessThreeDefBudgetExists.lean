@@ -55,6 +55,4 @@ theorem exists_l (K : source_coding_l hℳ) {B A : type_l hℳ}
     hQnum hN hRel hG hStartEq hLimit hC hParams hCodeStart hRead
   exact ⟨Q, hAcode ▸ hBudget⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessThreeDefBudgetExists

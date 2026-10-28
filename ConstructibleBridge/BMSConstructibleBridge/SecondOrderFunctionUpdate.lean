@@ -120,9 +120,4 @@ theorem derives_m {Δ : SortContext ℒ} (f D A i a : Term ℒ [] Δ .set) :
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m f D A i a)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ f D A i a)
 
-#print axioms exists_l
-#print axioms length_unique_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFunctionUpdate

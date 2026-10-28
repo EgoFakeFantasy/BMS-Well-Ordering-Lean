@@ -114,13 +114,4 @@ theorem length_cons_l (hℳ : Theory.Models ℳ theory_m) {I : set_l ℳ}
     · exact h.2 i ((SecondOrderOrder.succ_iff_l hℳ i k).mp hj)
         ((hshift i (zero_l ℳ)).mp hz)
 
-#print axioms output_m
-#print axioms output_syntax_l
-#print axioms shift_m
-#print axioms shift_language_m
-#print axioms shift_syntax_l
-#print axioms common_output_l
-#print axioms shift_l
-#print axioms length_cons_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListShift

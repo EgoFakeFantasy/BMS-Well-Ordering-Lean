@@ -114,6 +114,4 @@ theorem exists_l {X Y F R : type_l hℳ B}
     subst b'
     exact hMin c ((hVRead c).mpr ⟨hc, z, hz, hzc⟩) hcb
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassWellOrderPullbackAmbient

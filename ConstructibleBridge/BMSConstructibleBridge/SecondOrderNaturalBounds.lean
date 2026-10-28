@@ -52,7 +52,4 @@ theorem bound_l (K : source_coding_l hℳ) {n : type_l hℳ} (hn : mem_l hℳ n 
     · subst a
       exact Or.inr (PowerlessBMSQuotientRecursion.successor_unique_l hb hSucc)
 
-#print axioms induction_derives_m
-#print axioms bound_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderNaturalBounds

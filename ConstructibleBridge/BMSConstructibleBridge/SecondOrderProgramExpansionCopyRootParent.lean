@@ -89,6 +89,4 @@ theorem parent_in_copy_l (hℳ : Theory.Models ℳ theory_m)
     hℳ hP houtputParent
   exact ⟨hlower, SecondOrderOrder.trans_l hℳ hfoundTarget htargetEnd⟩
 
-#print axioms parent_in_copy_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyRootParent

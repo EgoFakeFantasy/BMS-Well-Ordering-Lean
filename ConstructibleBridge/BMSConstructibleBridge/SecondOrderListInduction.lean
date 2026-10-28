@@ -76,8 +76,4 @@ theorem list_induct_l (hℳ : Theory.Models ℳ theory_m) {Δ : SortContext sign
   · obtain ⟨a, t, rfl⟩ := SecondOrderUnpairing.surjective_l hℳ p
     exact hcons a t (ih t (coordinates_lt_cons_l hℳ a t).2)
 
-#print axioms strong_induct_l
-#print axioms strong_induct_below_l
-#print axioms list_induct_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderListInduction

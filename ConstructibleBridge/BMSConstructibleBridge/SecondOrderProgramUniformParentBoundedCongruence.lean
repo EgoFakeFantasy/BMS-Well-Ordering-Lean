@@ -145,7 +145,4 @@ theorem member_congr_of_query_l (hℳ : Theory.Models ℳ theory_m) {P M : set_l
   · exact (SecondOrderProgramUniformAncestorStructure.member_some_l hℳ hP hM hq).trans
       (SecondOrderProgramUniformAncestorStructure.member_some_l hℳ hP hM hr).symm
 
-#print axioms query_congr_l
-#print axioms member_congr_of_query_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformParentBoundedCongruence

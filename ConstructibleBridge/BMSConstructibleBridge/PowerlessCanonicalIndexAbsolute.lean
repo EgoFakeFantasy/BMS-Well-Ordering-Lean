@@ -134,9 +134,4 @@ theorem spec_absolute_l {ω A P S I J U : type_l hℳ B} (hΩ : omega_l (ℳ := 
     proper_absolute_l hProper, N.val, T.val, K.val, omegaRead_l hN, shortlexRead_l hΩ hS hT,
     lexRead_l hI hK, lexRead_l hJ hU⟩
 
-#print axioms product_absolute_l
-#print axioms shortlexRead_l
-#print axioms lexRead_l
-#print axioms spec_absolute_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalIndexAbsolute

@@ -82,6 +82,4 @@ theorem exists_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.sign
     (by simpa only [w, ξ, Term.eval_weakenFree] using hStatic)
   exact ⟨R, hRC, by simpa only [w, ξ, Term.eval_weakenFree] using hSat⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCofinalSatisfaction

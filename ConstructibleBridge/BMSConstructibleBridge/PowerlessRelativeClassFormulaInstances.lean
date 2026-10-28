@@ -79,7 +79,4 @@ theorem instance_l (K : source_coding_l hℳ) {Δ Γ Θ : SortContext ℒ}
   rw [hEnv]
   exact PowerlessRelativeClassRelativization.formula_l K φ ξ
 
-#print axioms members_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFormulaInstances

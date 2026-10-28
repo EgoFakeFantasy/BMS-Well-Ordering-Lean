@@ -46,6 +46,4 @@ theorem slice_lookup_l (hℳ : Theory.Models ℳ theory_m) {S L E D : set_l ℳ}
   have hvd := drop_length_l hℳ hI hL hD hn hv hd
   exact (take_lookup_l hℳ hK hL hE hvd hvy hj z).trans (drop_lookup_l hℳ hI hE hv j z)
 
-#print axioms slice_lookup_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSliceIndices

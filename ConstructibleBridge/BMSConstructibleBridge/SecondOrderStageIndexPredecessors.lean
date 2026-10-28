@@ -63,7 +63,4 @@ theorem exists_l (K : source_coding_l hℳ) (A : SecondOrderGraph.code_l ℳ)
   obtain ⟨J, hJ, hOnto, hInject, hRead⟩ := SecondOrderStageIndexFunction.exists_l K A h I hI
   exact ⟨J, hJ, hOnto, hInject, relation_l K A h hRead⟩
 
-#print axioms relation_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderStageIndexPredecessors

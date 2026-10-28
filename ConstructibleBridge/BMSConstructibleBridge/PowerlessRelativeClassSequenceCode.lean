@@ -81,8 +81,4 @@ theorem unique_l (K : source_coding_l hℳ) {ω e S one two n c f g : type_l h�
   rw [hω] at hf₀ hg₀ hcf₀ hcg₀
   exact Subtype.ext (PowerlessBoundedSequenceCode.unique_l K (hω ▸ hn) hf₀ hg₀ hcf₀ hcg₀)
 
-#print axioms absolute_l
-#print axioms exists_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceCode

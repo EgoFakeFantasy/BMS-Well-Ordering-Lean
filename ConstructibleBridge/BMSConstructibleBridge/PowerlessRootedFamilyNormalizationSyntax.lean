@@ -135,7 +135,4 @@ theorem body_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : S
     edge_formula_l, Arguments.eval, up, Term.eval_weakenBound, Term.eval]
   rfl
 
-#print axioms body_delta_m
-#print axioms body_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRootedFamilyNormalizationSyntax

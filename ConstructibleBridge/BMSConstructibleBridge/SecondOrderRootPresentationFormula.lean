@@ -137,6 +137,4 @@ theorem formula_l {Γ Δ : SortContext signature_m} (η : Env ℳ Γ Δ) (A : Te
   simp only [formula_m, Formula.satisfies, equality_formula_l, representatives_formula_l, predecessors_formula_l]
   exact ⟨fun h => ⟨h.1, h.2.1, h.2.2⟩, fun h => ⟨h.equality, h.representatives, h.predecessors⟩⟩
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRootPresentationFormula

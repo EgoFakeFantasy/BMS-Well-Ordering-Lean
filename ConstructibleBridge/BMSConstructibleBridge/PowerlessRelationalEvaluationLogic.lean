@@ -168,8 +168,4 @@ theorem existential_l (ht₃ : member_l 𝒩 t₃ ω) {i b : carrier_l 𝒩}
   obtain ⟨c, hc, _, h⟩ := Certified.existential_l hConstruct ht₃ hi hb
   exact ⟨c, hc, h⟩
 
-#print axioms Certified.nand_l
-#print axioms Certified.biconditional_l
-#print axioms Certified.existential_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationalEvaluationLogic

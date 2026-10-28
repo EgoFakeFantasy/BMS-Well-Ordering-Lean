@@ -216,6 +216,4 @@ theorem exists_l (K : source_coding_l hℳ) {B ω Ω W x : type_l hℳ}
     ω₀, e₀, t₁₀, t₂₀, t₃₀, P₀, N₀, F₀, Q₀, G₀, t₄₀, V₀,
     C, rfl, hCoding, hStatic, hSat, hDef, hNumeric, hAMember, hLightMember, hFinite⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCutoffHistoryCodedCoverage

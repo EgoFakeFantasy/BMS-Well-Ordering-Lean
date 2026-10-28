@@ -137,8 +137,4 @@ theorem bound_independent_l {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set ::
     obtain ⟨q, hq, hPair'⟩ := (hF.2 x y).mpr ((hG.2 x y).mp ⟨p, hp, hPair⟩)
     exact (SecondOrderPairObjects.ordered_unique_l hℳ hPair' hPair) ▸ hq
 
-#print axioms bounded_l
-#print axioms exists_unique_l
-#print axioms bound_independent_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderBoundedCanonicalWitness

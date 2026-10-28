@@ -76,6 +76,4 @@ theorem read_l (K : source_coding_l hℳ) {ω A Seq Sat f t : type_l hℳ B}
       (PowerlessLegacyDefinableQueryReading.satisfaction_query_absolute_l (hBase := hBase)
         ω A Seq (number_l hBase K ω hω l) Sat t x').mp hQueryClass⟩
 
-#print axioms read_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyDefinableRowImage

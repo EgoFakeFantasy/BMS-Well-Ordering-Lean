@@ -51,6 +51,4 @@ theorem exists_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omeg
     · exact Or.inl (hG.order_l p.val t α a hpt hα ha)
     · exact Or.inr (PowerlessFunction.value_unique_l hℳ hG.map_l hα (hpt.symm ▸ ha))
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSLabelBlock

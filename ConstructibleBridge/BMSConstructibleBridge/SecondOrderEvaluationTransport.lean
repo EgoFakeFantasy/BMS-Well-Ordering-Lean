@@ -142,6 +142,4 @@ theorem transport_l (hℳ : Theory.Models ℳ theory_m) {E : set_l ℳ}
   by_contra h
   exact hMin j hj ((h₁ j).mpr h)
 
-#print axioms transport_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderEvaluationTransport

@@ -134,15 +134,4 @@ theorem scan_rel_l (hℳ : Theory.Models ℳ theory_m) {R E : set_l ℳ}
   · intro hh
     exact (unique_l hℳ hs hh) ▸ hv
 
-#print axioms support_l
-#print axioms support_m
-#print axioms support_syntax_l
-#print axioms invariant_m
-#print axioms invariant_language_m
-#print axioms invariant_syntax_l
-#print axioms invariant_l
-#print axioms minimal_l
-#print axioms unique_l
-#print axioms scan_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramSupportCorrectness

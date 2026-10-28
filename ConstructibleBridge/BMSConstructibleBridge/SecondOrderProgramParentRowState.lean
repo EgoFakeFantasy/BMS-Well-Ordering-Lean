@@ -118,13 +118,4 @@ theorem step_width_l (hℳ : Theory.Models ℳ theory_m) {S L : set_l ℳ}
   obtain ⟨w, hw, hy⟩ := (step_rel_l hℳ hS hN x r v y).mp hy
   exact ⟨w, hy.symm, next_width_l hℳ hN hL hw hn⟩
 
-#print axioms zero_table_rel_l
-#print axioms next_table_rel_l
-#print axioms zero_width_l
-#print axioms next_width_l
-#print axioms initial_rel_l
-#print axioms step_rel_l
-#print axioms initial_width_l
-#print axioms step_width_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentRowState

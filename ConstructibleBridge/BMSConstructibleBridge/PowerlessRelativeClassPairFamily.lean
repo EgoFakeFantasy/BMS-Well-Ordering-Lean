@@ -73,6 +73,4 @@ theorem exists_l (X : type_l hℳ B) : ∃ Q : type_l hℳ B, ∀ p : type_l h�
     have htp := pair_unique_l ht hp
     exact ⟨r', hrP, (hrPair p).mpr (Or.inr htp.symm)⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassPairFamily

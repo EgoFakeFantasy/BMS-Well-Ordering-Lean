@@ -246,7 +246,4 @@ theorem exists_l
       hBase hLimit hW ω A Seq Idx Sat I hωW ha hsW hIdxW hr hIW
     exact ⟨hr, Seq, Idx, I, Q, hsW, hIdxW, hIW, hQW, hSeq, hIdx, hI, hQ⟩
 
-#print axioms sat_class_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCofinalDefCoding

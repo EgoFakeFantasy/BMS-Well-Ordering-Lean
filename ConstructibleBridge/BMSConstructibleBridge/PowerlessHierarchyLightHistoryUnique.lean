@@ -129,12 +129,4 @@ theorem unique_l {B D W α C R f g : type_l hℳ}
     (hg : PowerlessHierarchyLightHistory.history_l hℳ B D α C g) : f = g :=
   original_unique_l hℳ hRead hα (to_original_l hℳ hRead hf) hg
 
-#print axioms to_original_l
-#print axioms from_original_l
-#print axioms iff_original_l
-#print axioms original_agreement_l
-#print axioms agreement_l
-#print axioms original_unique_l
-#print axioms unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyLightHistoryUnique

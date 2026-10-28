@@ -92,9 +92,4 @@ theorem member_entries_lt_l (hℳ : Theory.Models ℳ theory_m) {M J : set_l ℳ
     obtain ⟨a, ha, hab⟩ := member_entry_lt_l hℳ hP hM hJ hb hi
     exact ⟨a, b, ha, hb, hab⟩
 
-#print axioms below_m
-#print axioms below_syntax_l
-#print axioms member_entry_lt_l
-#print axioms member_entries_lt_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramUniformAncestorEntries

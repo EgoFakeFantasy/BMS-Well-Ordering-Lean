@@ -106,8 +106,4 @@ theorem derives_m {Δ : SortContext ℒ} (C ω e T A S t₁ t₂ t₃ F r n f : 
     ((equation_l hF' hn (fun t a b h => hBounds' t a b (n.eval η) h)).trans
       (and_congr Iff.rfl (PowerlessEvaluationClause.clause_formula_l η ω e T A t₁ t₂ t₃ F n f)).symm)
 
-#print axioms clause_congr_l
-#print axioms equation_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessEvaluationPrefixEquation

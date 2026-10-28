@@ -96,7 +96,4 @@ theorem identify_l {H : type_l hℳ} (hNonempty : ∃ x, mem_l hℳ x A)
       (fun Z => (hRows Z).trans (hImage Z).symm)
     exact hEq.symm ▸ hOriginal
 
-#print axioms original_image_l
-#print axioms identify_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberDefImageRawReading

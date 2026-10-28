@@ -133,16 +133,4 @@ theorem update_some_l (hℳ : Theory.Models ℳ theory_m) {U D : set_l ℳ}
   simpa [nonzero_l hℳ f, nonzero_l hℳ l, pred_succ_l hℳ hP] using
     increase_rel_l hℳ hI hD v k f l y
 
-#print axioms first_m
-#print axioms last_m
-#print axioms input_m
-#print axioms present_m
-#print axioms update_m
-#print axioms options_eval_l
-#print axioms present_eval_l
-#print axioms update_encode_l
-#print axioms update_rel_l
-#print axioms update_none_l
-#print axioms update_some_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyOptional

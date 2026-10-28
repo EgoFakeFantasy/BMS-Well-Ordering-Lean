@@ -31,6 +31,4 @@ theorem spec_l {ℳ : FirstOrder.Structure.{0, 0, 0, u} SecondOrderSyntax.signat
   rw [hEq]
   exact hRaw
 
-#print axioms spec_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceAbsolute

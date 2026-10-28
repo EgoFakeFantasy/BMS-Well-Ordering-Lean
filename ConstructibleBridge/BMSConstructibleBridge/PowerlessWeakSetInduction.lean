@@ -123,8 +123,4 @@ theorem second_order_derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m φ)) :=
   SecondOrderWeakSetTheory.derives_m (derives_m φ)
 
-#print axioms derives_m
-#print axioms second_order_derives_m
-#print axioms minimum_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessWeakSetInduction

@@ -82,6 +82,4 @@ theorem exists_l {I J A : type_l hℳ}
     ((hRead (lift I' i hi) (lift I' j hj)).trans
       ((and_iff_right hi).trans ((and_iff_right hj).trans (hCompare _ _))))
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderStageIndexOrder

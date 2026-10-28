@@ -70,7 +70,4 @@ theorem validity_l (K : source_coding_l hℳ) {ω : type_l hℳ C}
   obtain ⟨f, hf, hRead⟩ := exists_l K hω hωEq V B
   exact ⟨f, hf, fun n l hB => (hRead n l hB).trans (hV n l)⟩
 
-#print axioms exists_l
-#print axioms validity_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessLegacyValidityBudgetTrace

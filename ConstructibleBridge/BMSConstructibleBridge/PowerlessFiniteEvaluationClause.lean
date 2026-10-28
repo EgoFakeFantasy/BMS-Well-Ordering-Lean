@@ -115,7 +115,4 @@ theorem congr_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ}
     intro g
     exact and_congr Iff.rfl (and_congr Iff.rfl (hQuery b (hBounds t₃ i b hConstructor).2 g))
 
-#print axioms formula_l
-#print axioms congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFiniteEvaluationClause

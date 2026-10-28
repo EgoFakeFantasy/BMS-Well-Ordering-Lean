@@ -75,7 +75,4 @@ theorem exists_l {ω e a : type_l hℳ B}
         ((PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) F' n x).mp hx)
         ((PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) F' m y).mp hy))
 
-#print axioms member_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassAdditionGraph

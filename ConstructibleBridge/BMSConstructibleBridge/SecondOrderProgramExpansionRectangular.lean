@@ -89,7 +89,4 @@ theorem expand_rectangular_l (hℳ : Theory.Models ℳ theory_m) {X L E : set_l 
   exact ⟨m, min h z, SecondOrderProgramTrimRectangular.trim_rectangular_l hℳ hT hH hL hE hvr hz ht,
     min_le_left h z⟩
 
-#print axioms raw_rectangular_l
-#print axioms expand_rectangular_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionRectangular

@@ -151,7 +151,4 @@ lemma good_label_code_l (k : Nat) : ∃ c N, member_l ℳ c ω.val ∧ member_l 
         Theory.Models (structure_l A hA₀) (Theory.ofList (PowerlessStabilitySupport.basis_m k))) :=
   PowerlessCodedStageTheory.code_l hℳ hω ht hT (PowerlessStabilitySupport.basis_m k)
 
-#print axioms holds_source_l
-#print axioms good_label_code_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCodedStageSource

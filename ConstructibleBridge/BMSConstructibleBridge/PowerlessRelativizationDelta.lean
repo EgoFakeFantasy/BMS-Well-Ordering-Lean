@@ -39,7 +39,4 @@ theorem instance_l {Γ Δ Θ : SortContext ℒ} (φ : Formula ℒ [] Γ)
       | .set => match v with | .here => A | .there v => f v)
     (formula_l φ)
 
-#print axioms formula_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativizationDelta

@@ -113,10 +113,4 @@ theorem constructor_l (K : source_coding_l hℳ)
       (by simpa only [hω, he] using h) (by simpa only [hω, he] using hRaw)
     exact (Subtype.ext hEq).symm ▸ hn'
 
-#print axioms addition_raw_l
-#print axioms code_raw_l
-#print axioms constructor_raw_l
-#print axioms unique_l
-#print axioms constructor_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeMemberConstructorAbsolute

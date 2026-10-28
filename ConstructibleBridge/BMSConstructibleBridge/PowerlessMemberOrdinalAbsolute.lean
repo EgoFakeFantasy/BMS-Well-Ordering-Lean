@@ -91,8 +91,4 @@ theorem source_l (hTrans : PowerlessNaturalOrder.transitive_l W)
     · exact Or.inr h
     · exact False.elim (hMinimal b hb h)
 
-#print axioms ordinal_l
-#print axioms source_l
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberOrdinalAbsolute

@@ -265,8 +265,4 @@ theorem reading_formula_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory
       history_l hℳ (B.eval η) (D.eval η) (α.eval η) (C.eval η) (f.eval η) :=
   (formula_l η B D α C f).trans (reading_l hℳ)
 
-#print axioms delta_l
-#print axioms reading_l
-#print axioms reading_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHierarchyLightHistory

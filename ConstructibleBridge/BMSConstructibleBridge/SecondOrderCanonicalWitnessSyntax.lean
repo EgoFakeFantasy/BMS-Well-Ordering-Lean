@@ -154,7 +154,4 @@ theorem output_formula_l (K : source_coding_l hℳ) {Δ : SortContext ℒ}
   rw [hEnv]
   exact relation_formula_l K φ η ω e t₁ t₂ t₃ Pair Valid B P₀ x y
 
-#print axioms relation_formula_l
-#print axioms output_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalWitnessSyntax

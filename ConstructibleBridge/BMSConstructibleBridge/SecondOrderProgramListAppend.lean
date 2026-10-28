@@ -122,13 +122,4 @@ theorem append_right_l (hℳ : Theory.Models ℳ theory_m) {A L E : set_l ℳ}
   exact fold_back_l hℳ hF hL hE hI v y z n m i w hvz
     (reverse_length_l hℳ hT hF hL hI x v n hv hx) hy hi
 
-#print axioms input_m
-#print axioms append_m
-#print axioms append_encode_l
-#print axioms input_rel_l
-#print axioms append_rel_l
-#print axioms append_length_l
-#print axioms append_left_l
-#print axioms append_right_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListAppend

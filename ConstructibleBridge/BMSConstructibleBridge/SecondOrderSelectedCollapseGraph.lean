@@ -62,8 +62,4 @@ theorem graph_l (hℳ : Theory.Models ℳ theory_m) (R S P : set_l ℳ)
   · rintro ⟨n, hn, hp⟩
     exact ⟨n, n, (hT n n).mpr ⟨hn, rfl⟩, hp⟩
 
-#print axioms range_l
-#print axioms identity_l
-#print axioms graph_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderSelectedCollapseGraph

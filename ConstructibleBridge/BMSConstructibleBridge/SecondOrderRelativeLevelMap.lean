@@ -47,6 +47,4 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) (B : set_l ℳ)
       (SecondOrderGraph.refl_l hℳ ⟨B, zero_l ℳ, hB⟩) hx hY hC,
     (SecondOrderRelativeLevelRelation.quotient_code_l hℳ X Y).mpr hY⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeLevelMap

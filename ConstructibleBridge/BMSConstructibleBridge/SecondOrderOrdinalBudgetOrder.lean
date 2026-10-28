@@ -171,8 +171,4 @@ theorem ordinal_l (n m : num_l ℳ) (hn : SecondOrderModel.mem_l n D) :
       · exact (hEnds i n hi).1
       · exact hn
 
-#print axioms members_l
-#print axioms ordinal_l
-#print axioms earlier_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderOrdinalBudgetOrder

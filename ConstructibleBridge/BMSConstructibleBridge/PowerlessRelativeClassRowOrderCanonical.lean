@@ -195,7 +195,4 @@ theorem exists_unique_l (I A Q U : type_l hℳ B) (hU : wellOrder_l (ℳ := 𝒱
     fun T hT => Subtype.ext (graph_unique_l hT.1 hGraph)⟩,
     fun Z hZ => family_unique_l hZ.1 hFamily⟩
 
-#print axioms exists_l
-#print axioms exists_unique_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassRowOrderCanonical

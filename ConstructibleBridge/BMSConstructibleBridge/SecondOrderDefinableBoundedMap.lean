@@ -54,6 +54,4 @@ theorem exists_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {Δ :
     obtain ⟨_, hz', hφ'⟩ := (hRead x z).mp hz.2
     exact hUnique x hx z y hz' hy hφ' hφ
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderDefinableBoundedMap

@@ -256,11 +256,4 @@ theorem derives_m {Δ : SortContext ℒ} (m : Nat) (ω e : Term ℒ [] Δ .set) 
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m m ω e)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 m ω e)
 
-#print axioms injective_l
-#print axioms numeral_l
-#print axioms parameters_l
-#print axioms distinct_l
-#print axioms exists_formula_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteNumeralTags

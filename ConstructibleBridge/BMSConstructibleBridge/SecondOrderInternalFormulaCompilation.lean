@@ -106,9 +106,6 @@ theorem assignment_l (hℳ : Theory.Models ℳ theory_m) {V E D : set_l ℳ}
   obtain ⟨y, hy, _⟩ := hη t
   exact hc.2 _ y hy
 
-#print axioms formula_l
-#print axioms assignment_l
-
 theorem extension_l (hℳ : Theory.Models ℳ theory_m) {V E D : set_l ℳ}
     (hV : spec_l V) (f : num_l ℳ → 𝒩.Carrier .set) {Γ Δ : SortContext ℒ}
     (η : Env 𝒩 Γ Δ) {l c : num_l ℳ} (hc : SecondOrderAssignmentSyntax.valid_l E c l)
@@ -119,7 +116,5 @@ theorem extension_l (hℳ : Theory.Models ℳ theory_m) {V E D : set_l ℳ}
   intro t
   obtain ⟨y, hy, _⟩ := hη t
   exact hc.2 _ y hy
-
-#print axioms extension_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderInternalFormulaCompilation

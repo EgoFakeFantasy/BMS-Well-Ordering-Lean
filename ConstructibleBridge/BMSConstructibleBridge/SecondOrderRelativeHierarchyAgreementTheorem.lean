@@ -70,6 +70,4 @@ theorem models_l (hℳ : Theory.Models ℳ theory_m) : sentence_m.TrueIn ℳ := 
 theorem derives_m : Derives theory_m [] sentence_m :=
   SecondOrderCompleteness.derives_m (fun _ hℳ => models_l hℳ)
 
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyAgreementTheorem

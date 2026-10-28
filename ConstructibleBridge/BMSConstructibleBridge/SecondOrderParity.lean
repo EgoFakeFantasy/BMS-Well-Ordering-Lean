@@ -80,8 +80,4 @@ theorem derives_m : Derives theory_m [] sentence_m := by
   simp only [sentence_m, Formula.TrueIn, Formula.satisfies, Formula.satisfies_substitute, formula_m]
   exact exists_l h𝒩
 
-#print axioms exists_l
-#print axioms disjoint_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderParity

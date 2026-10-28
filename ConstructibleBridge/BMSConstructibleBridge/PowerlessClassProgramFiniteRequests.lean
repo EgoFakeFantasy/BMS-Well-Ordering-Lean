@@ -122,7 +122,4 @@ theorem requests_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
     ⟨B.eval ξ, PowerlessRelativeClassCorrespondence.base_object_l hℳ hB⟩
     (hSeed _ hBC) hPairClass hClosed hCaptured
 
-#print axioms domain_formula_l
-#print axioms requests_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassProgramFiniteRequests

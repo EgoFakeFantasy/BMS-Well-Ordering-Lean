@@ -166,8 +166,4 @@ theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: �
       (GraphTranslation.form_m (sentence_m φ B β W ω e a n)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 φ B β W ω e a n)
 
-#print axioms induction_derives_m
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitDefinableFiniteTrace

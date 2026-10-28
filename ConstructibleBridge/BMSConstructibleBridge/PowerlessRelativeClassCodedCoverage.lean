@@ -114,7 +114,4 @@ theorem exists_l (K : source_coding_l hℳ) (ω x : type_l hℳ B)
     hPoint, _hCoding, _hA, _hHistory⟩ := witnesses_l (hBase := hBase) K ω x hω
   exact ⟨a, y, A, U, D, f, e, t₁, t₂, t₃, t₄, P, N, F, V, Q, G, hPoint⟩
 
-#print axioms witnesses_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassCodedCoverage

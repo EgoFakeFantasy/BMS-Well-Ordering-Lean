@@ -60,6 +60,4 @@ theorem entry_l (hℳ : Theory.Models ℳ theory_m) {B L E D J : set_l ℳ}
       (fun a => SecondOrderProgramExpansionBadBlock.bad_lookup_l
         hℳ hB hL hE hD hx (Or.inr hpj) hd hb hi a) row q
 
-#print axioms entry_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramBadBlockEntry

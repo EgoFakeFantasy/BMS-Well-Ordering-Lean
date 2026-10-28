@@ -173,8 +173,4 @@ theorem derives_m {Δ : SortContext ℒ} (B ω D F t₀ t₁ t₂ : Term ℒ [] 
       (GraphTranslation.form_m (sentence_m B ω D F t₀ t₁ t₂)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ h𝒩 => models_l h𝒩 B ω D F t₀ t₁ t₂)
 
-#print axioms exists_l
-#print axioms packet_formula_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessClassProgramEnvelopeDomain

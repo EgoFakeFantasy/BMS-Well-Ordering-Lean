@@ -167,8 +167,4 @@ theorem derives_m {Δ : SortContext ℒ}
       (GraphTranslation.form_m (sentence_m B β L A I E T H C G x y)) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ B β L A I E T H C G x y)
 
-#print axioms adjoin_exists_l
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelationalCollapseLimitExtension

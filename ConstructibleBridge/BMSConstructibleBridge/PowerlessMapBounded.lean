@@ -70,6 +70,4 @@ theorem formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ : SortCo
       obtain ⟨y, hy, hUnique⟩ := hValues x hx
       exact ⟨y, hy.1, hy.2, fun z hz hxy => hUnique z ⟨hz, hxy⟩⟩
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMapBounded

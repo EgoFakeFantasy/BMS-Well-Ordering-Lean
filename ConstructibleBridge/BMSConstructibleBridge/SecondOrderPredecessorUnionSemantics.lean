@@ -66,7 +66,4 @@ theorem mem_l (hℳ : Theory.Models ℳ theory_m) {R H G P W : set_l ℳ} {n : n
     refine ⟨value_l i a, (h.selection _).mpr ⟨i, a, hi, rfl, (hY _).mp hEdge⟩, ?_⟩
     exact SecondOrderBisimulation.trans_l hℳ B.real Y.real G B.root a (value_l i a) hB hTag
 
-#print axioms root_l
-#print axioms mem_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderPredecessorUnionSemantics

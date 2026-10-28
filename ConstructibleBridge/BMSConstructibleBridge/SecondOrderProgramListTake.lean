@@ -144,14 +144,4 @@ theorem take_length_min_l (hℳ : Theory.Models ℳ theory_m) {K L : set_l ℳ}
         (Or.inl ((SecondOrderNumbers.add_comm_l hℳ d k).trans hd)))
       ((SecondOrderProgramSubtraction.sub_rel_l hℳ hD n d k).mpr (Or.inl hd))
 
-#print axioms input_m
-#print axioms take_m
-#print axioms input_encode_l
-#print axioms take_encode_l
-#print axioms take_array_encode_l
-#print axioms input_rel_l
-#print axioms take_rel_l
-#print axioms take_length_l
-#print axioms take_length_min_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListTake

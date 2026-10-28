@@ -170,17 +170,4 @@ theorem reverse_zero_l (hℳ : Theory.Models ℳ theory_m) {T F : set_l ℳ}
 本模块公共声明仅允许既有标准公理集合（propext/Quot.sound/Classical.choice），无新增公理，
 亦不得有 `sorryAx`。审计置于命名空间内、`end` 之前。 -/
 
-#print axioms reverse_step_m
-#print axioms reverse_input_m
-#print axioms reverse_m
-#print axioms reverse_step_eval_l
-#print axioms reverse_foldl_succ_l
-#print axioms reverse_fold_encode_l
-#print axioms reverse_encode_l
-#print axioms reverse_step_rel_l
-#print axioms reverse_fold_zero_l
-#print axioms reverse_fold_cons_l
-#print axioms reverse_bridge_l
-#print axioms reverse_zero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListReverse

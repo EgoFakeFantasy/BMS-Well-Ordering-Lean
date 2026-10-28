@@ -105,6 +105,4 @@ theorem entry_order_congr_l (hℳ : Theory.Models ℳ theory_m)
     ((SecondOrderProgramEntryOrderTransport.entry_order_some_l hℳ hJ hai hbq).trans
       (SecondOrderProgramEntryOrderTransport.entry_order_some_l hℳ hJ haCopy hbCopy).symm)
 
-#print axioms entry_order_congr_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionUnshiftedEntryOrder

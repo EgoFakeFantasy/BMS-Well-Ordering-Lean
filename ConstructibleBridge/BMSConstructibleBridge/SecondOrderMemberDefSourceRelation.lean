@@ -200,9 +200,4 @@ theorem derives_m {Δ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: �
     Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m (sentence_m φ)) :=
   SecondOrderMemberDefSourceSlice.derives_m (body_m φ)
 
-#print axioms exists_l
-#print axioms value_l
-#print axioms map_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefSourceRelation

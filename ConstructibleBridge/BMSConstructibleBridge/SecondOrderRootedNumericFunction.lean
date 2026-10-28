@@ -75,6 +75,4 @@ theorem exists_l (K : source_coding_l hℳ) (R : SecondOrderModel.set_l ℳ)
     subst j
     exact hyj
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRootedNumericFunction

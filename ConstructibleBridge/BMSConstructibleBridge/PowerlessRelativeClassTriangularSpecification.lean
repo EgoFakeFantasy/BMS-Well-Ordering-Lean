@@ -119,7 +119,4 @@ theorem spec_l (K : source_coding_l hℳ) {ω e N T : type_l hℳ B}
   exact (PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) T n t).symm.trans
     (hRead.trans ((PowerlessRelativeClassFunctionAbsolute.value_l (hBase := hBase) U n t).trans (hSpecU i j)))
 
-#print axioms agreement_l
-#print axioms spec_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassTriangularSpecification

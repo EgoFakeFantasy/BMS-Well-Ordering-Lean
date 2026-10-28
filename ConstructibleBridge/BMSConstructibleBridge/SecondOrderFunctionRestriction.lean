@@ -49,6 +49,4 @@ theorem exists_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) {f A 
     intro z hz
     exact hUnique z ⟨hz.1, ((hValue x z).mp hz.2).2⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderFunctionRestriction

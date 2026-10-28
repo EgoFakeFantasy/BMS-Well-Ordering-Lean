@@ -128,10 +128,4 @@ theorem restricted_l (K : source_coding_l hℳ) (R Q : SecondOrderModel.set_l �
   · exact SecondOrderDomain.leaf_l Q a
       (fun b hba => ha ((hE _ _).mp ((hQ b a).mp hba)).2.1)
 
-#print axioms value_iff_l
-#print axioms decode_l
-#print axioms values_l
-#print axioms reachable_l
-#print axioms restricted_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessKleeneBrouwerCodedRootTransport

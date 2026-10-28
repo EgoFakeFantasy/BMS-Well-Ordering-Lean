@@ -64,6 +64,4 @@ theorem step_l (hℳ : Theory.Models ℳ theory_m) {B R S : set_l ℳ} {n : num_
     exact (SecondOrderPredecessorUnionSemantics.mem_l hℳ hUnion hRows X).mpr
       ⟨i, ⟨U, zero_l ℳ, hU⟩, hi, hUi, rfl, hx⟩
 
-#print axioms step_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeHierarchyMonotonicityStep

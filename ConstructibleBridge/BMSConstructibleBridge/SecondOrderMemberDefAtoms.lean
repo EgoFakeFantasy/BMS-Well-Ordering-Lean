@@ -125,7 +125,4 @@ theorem membership_formula_l (A : set_l ℳ) (r a n m : num_l ℳ) : membership_
   · intro h
     exact ⟨_, _, rfl, rfl, h⟩
 
-#print axioms equality_formula_l
-#print axioms membership_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefAtoms

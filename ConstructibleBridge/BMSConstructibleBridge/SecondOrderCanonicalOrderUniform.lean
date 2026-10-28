@@ -104,8 +104,4 @@ theorem class_total_l {ω : type_l hℳ B} (hΩ : omega_l (ℳ := 𝒞) ω) :
   have hRaw := step_ambient_l K hω he hPairMap hPair hStep
   exact ⟨E, hRaw, hOrder, fun E' hE' => unique_l K hω he ht₁ ht₂ ht₃ hPairMap hPair hV hValid hE' hRaw⟩
 
-#print axioms step_formula_l
-#print axioms unique_l
-#print axioms class_total_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderCanonicalOrderUniform

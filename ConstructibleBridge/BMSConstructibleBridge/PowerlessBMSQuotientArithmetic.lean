@@ -468,21 +468,4 @@ theorem multiplication_succ_addition_l (C : PowerlessBMSQuotientCoding.source_co
   rw [← SecondOrderModel.mul_succ_l hM a n] at h
   exact h
 
-#print axioms additionIteration_l
-#print axioms additionIteration_exists_l
-#print axioms additionInstance_l
-#print axioms additionGraph_l
-#print axioms numberEquiv_addNumbers_l
-#print axioms addRightFormula_pure_m
-#print axioms rightAdditionGraph_l
-#print axioms rightAdditionValue_addition_l
-#print axioms multiplication_succ_addition_l
-#print axioms numberEquiv_numberCode_l
-#print axioms numberCode_succ_val_l
-#print axioms addFormula_pure_m
-#print axioms additionRelation_exists_l
-#print axioms additionMapGraph_l
-#print axioms multiplicationRelation_exists_l
-#print axioms multiplicationMapGraph_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientArithmetic

@@ -171,11 +171,4 @@ theorem def_l (K : source_coding_l hℳ) {T B x r : Raw}
   have hrU := (SecondOrderFunctionProperties.value_mem_l hℳ hGraph.1 hValue).2
   exact hTrans U.val r U.property hrU
 
-#print axioms packet_l
-#print axioms ext_l
-#print axioms coverage_l
-#print axioms class_l
-#print axioms stage_l
-#print axioms def_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeCodedHistoryCollapseReading

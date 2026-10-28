@@ -51,6 +51,4 @@ theorem induction_l (C : PowerlessBMSQuotientCoding.source_coding_l hM)
   exact SecondOrderModel.induct_l hM (GraphTranslation.form_m φ)
     (GraphTranslation.form_pure_m φ) ξ _ hφ h₀ h₁
 
-#print axioms induction_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientInduction

@@ -35,6 +35,4 @@ theorem formula_l {𝒱 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Δ : SortConte
   · intro _ v; nomatch v
   · intro _ _; rfl
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceFreeBinding

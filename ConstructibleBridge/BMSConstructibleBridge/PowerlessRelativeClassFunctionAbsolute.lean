@@ -107,7 +107,4 @@ theorem onto_l (f a b : type_l hℳ B) :
     let x' : type_l hℳ B := ⟨x, PowerlessRelativeClassCorrespondence.transitive_l hℳ hBase a.property hx⟩
     exact ⟨x', hx, (value_l f x' y).mpr hxy⟩
 
-#print axioms map_l
-#print axioms onto_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFunctionAbsolute

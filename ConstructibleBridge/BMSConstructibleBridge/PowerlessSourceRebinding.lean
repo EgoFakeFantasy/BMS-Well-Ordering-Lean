@@ -74,7 +74,4 @@ theorem term_l {Γ Δ : SortContext ℒ} (t : Term ℒ Γ Δ .set) (η : Env �
     exact PowerlessSourceOpening.skip_l (PowerlessSourceClass.free_l η)
       Γ.length (PowerlessSourceOpening.values_l η) v
 
-#print axioms formula_l
-#print axioms term_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSourceRebinding

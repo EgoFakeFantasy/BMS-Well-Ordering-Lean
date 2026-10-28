@@ -120,9 +120,4 @@ theorem sentence_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} :
   simp only [sentence_m, Formula.TrueIn, Formula.satisfies, omega_formula_l, existence_formula_l, Term.eval]
   rfl
 
-#print axioms static_formula_l
-#print axioms body_formula_l
-#print axioms existence_formula_l
-#print axioms sentence_formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessSatisfactionExistenceSyntax

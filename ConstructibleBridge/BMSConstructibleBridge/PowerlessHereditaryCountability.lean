@@ -68,8 +68,4 @@ theorem derives_m : Derives SecondOrderArithmetic.theory_m []
       (PowerlessHereditaryRelativization.guarded_m SecondOrderCountabilityAxiom.formula_m)) :=
   PowerlessHereditaryRelativization.derives_m _ (fun _ h𝒩 B hBase => models_l h𝒩 B hBase)
 
-#print axioms exists_l
-#print axioms models_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryCountability

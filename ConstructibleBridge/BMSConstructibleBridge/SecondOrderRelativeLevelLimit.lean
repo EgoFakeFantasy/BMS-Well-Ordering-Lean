@@ -93,6 +93,4 @@ theorem value_l (hℳ : Theory.Models ℳ theory_m) {B : set_l ℳ}
     exact ⟨i, L, him, hV, rfl,
       (SecondOrderGraph.mem_congr_l hℳ (SecondOrderGraph.refl_l hℳ X) hYL).mp hXY⟩
 
-#print axioms value_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeLevelLimit

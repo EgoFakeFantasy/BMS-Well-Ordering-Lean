@@ -63,10 +63,4 @@ theorem tail_rel_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {R C : set_l
   · exact function_value_unique_l (function_of_semantics_l hℳ (repeat_m c) hR) h
   · exact fun he => he ▸ h
 
-#print axioms tail_m
-#print axioms tail_language_m
-#print axioms tail_syntax_l
-#print axioms tail_l
-#print axioms tail_rel_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramIterationTail

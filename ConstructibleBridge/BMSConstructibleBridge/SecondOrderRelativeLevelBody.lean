@@ -86,6 +86,4 @@ theorem formula_l (hℳ : Theory.Models ℳ theory_m) {Γ Δ : SortContext signa
       (SecondOrderSections.formula_l η S W n).mpr hRow,
       (SecondOrderInterpretation.eq_l η C W rC (Term.app (σ := signature_m) .zero .nil)).mpr hOutput⟩
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderRelativeLevelBody

@@ -54,6 +54,4 @@ theorem member_l (hℳ : Theory.Models ℳ theory_m) {A L E J M : set_l ℳ}
   exact SecondOrderProgramOffsetParentAncestor.ancestor_l
     hℳ hL hE hJ hP hM hzlen hy hbound hentry r j q hj
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAppendRightAncestor

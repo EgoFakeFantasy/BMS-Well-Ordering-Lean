@@ -94,7 +94,4 @@ theorem exists_l {ω X G : type_l hℳ B}
   obtain ⟨i, hi, hia⟩ := hFOnto a haN
   exact ⟨i, hi, (hRead i y).mpr ⟨hi, hy, (hφ i y).mpr ⟨a, haN, hia, haComp⟩⟩⟩
 
-#print axioms delta_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassFiniteSequenceEnumeration

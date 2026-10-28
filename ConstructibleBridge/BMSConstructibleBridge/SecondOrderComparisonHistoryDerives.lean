@@ -52,21 +52,8 @@ theorem output_formula_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ} {Γ Δ :
   apply congrArg (fun ξ => SecondOrderComparisonHistoryDecode.formula_m.satisfies ξ)
   apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
-    cases v with
-    | here => rfl
-    | there v => cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => cases v with
-            | here => rfl
-            | there v => cases v with
-              | here => rfl
-              | there v => cases v with
-                | here => rfl
-                | there v => nomatch v
+    rcases v with _ | _ | _ | _ | _ | _ | _ | v
+    all_goals first | rfl | nomatch v
 
 def history_l {𝒩 : FirstOrder.Structure.{0, 0, 0, u} ℒ}
     (ω e H f C b g : 𝒩.Carrier .set) : Prop :=
@@ -163,8 +150,5 @@ theorem models_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m) : sen
 
 theorem derives_m : Derives SecondOrderArithmetic.theory_m [] (GraphTranslation.form_m sentence_m) :=
   SecondOrderAxioms.interpretation_m _ (fun _ hℳ => models_l hℳ)
-
-#print axioms exists_l
-#print axioms derives_m
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonHistoryDerives

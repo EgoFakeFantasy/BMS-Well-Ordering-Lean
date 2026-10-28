@@ -104,8 +104,4 @@ theorem models_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m) (hω : omeg
   intro X
   exact matrix_l hℳ hω H _ rfl
 
-#print axioms no_chain_l
-#print axioms matrix_l
-#print axioms models_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSWellOrder

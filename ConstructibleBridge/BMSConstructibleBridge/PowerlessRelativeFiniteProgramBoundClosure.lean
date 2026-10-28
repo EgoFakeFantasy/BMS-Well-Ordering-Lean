@@ -132,8 +132,4 @@ theorem call_l (K : source_coding_l hℳ) {Γ Δ : SortContext ℒ}
     (by simpa only [ht', ψ, ξ] using hy')
   simpa only [ht', ψ, ξ, prefix_run_l] using h
 
-#print axioms PowerlessRelativeFiniteProgramBoundOutput.prefix_run_l
-#print axioms pair_l
-#print axioms call_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeFiniteProgramBoundClosure

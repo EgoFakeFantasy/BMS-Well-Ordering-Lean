@@ -102,7 +102,4 @@ theorem instance_l (K : source_coding_l hℳ) {S : type_l hℳ}
       apply (PowerlessBoundedAddition.instance_l K hS (SecondOrderModel.add_l (SecondOrderModel.mul_l i i) i) j c).mpr
       simpa only [SecondOrderPairing.value_l, if_neg hLt] using hc
 
-#print axioms delta_l
-#print axioms instance_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBoundedNumericPairing

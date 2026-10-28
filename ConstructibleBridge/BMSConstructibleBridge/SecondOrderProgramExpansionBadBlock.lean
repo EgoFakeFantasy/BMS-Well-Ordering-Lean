@@ -107,8 +107,4 @@ theorem bad_lookup_l (hℳ : Theory.Models ℳ theory_m) {B L E D : set_l ℳ}
     exact hi
   exact slice_lookup_l hℳ hS hL hE hD (j := i) hn (width_difference_l hℳ hD hp hd) hs hmin w
 
-#print axioms bad_rel_l
-#print axioms bad_width_l
-#print axioms bad_lookup_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBadBlock

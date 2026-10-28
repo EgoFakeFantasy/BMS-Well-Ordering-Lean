@@ -107,8 +107,4 @@ theorem lift_l {ω X G f : type_l hℳ B}
     have hzy := PowerlessRelativeClassFunctionComposition.value_unique_l hG (hLift k j z hkj hkz) hjy
     exact hzy ▸ hkz
 
-#print axioms unique_l
-#print axioms exists_l
-#print axioms lift_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSequenceComposition

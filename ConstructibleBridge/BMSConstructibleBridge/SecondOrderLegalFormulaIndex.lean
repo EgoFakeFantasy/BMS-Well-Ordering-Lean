@@ -57,6 +57,4 @@ theorem index_l (hℳ : Theory.Models ℳ theory_m) (V E : set_l ℳ) (p l c : n
   · rintro ⟨hc, hV⟩
     exact ⟨p, l, c, rfl, hc, hV⟩
 
-#print axioms index_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderLegalFormulaIndex

@@ -43,11 +43,8 @@ theorem binding_formula_l {Γ : SortContext ℒ}
   · intro _ v
     nomatch v
   · intro s v
-    cases v with
-    | here => rfl
-    | there v => cases v with
-      | here => rfl
-      | there v => cases v <;> rfl
+    rcases v with _ | _ | v
+    all_goals first | rfl | cases v <;> rfl
 
 def pair_m {Γ : SortContext ℒ} (φ : Formula ℒ [] (.set :: .set :: .set :: Γ)) :
     Formula ℒ [] (.set :: .set :: Γ) :=

@@ -56,7 +56,4 @@ theorem entry_zero_l (hℳ : Theory.Models ℳ theory_m) {R : set_l ℳ}
       obtain ⟨last, hl, _⟩ := hOf (value_l l r)
       exact Or.inr ⟨hb, first, last, hf, hl, (update_zero_l hℳ hU v first last y).mpr hy⟩
 
-#print axioms update_zero_l
-#print axioms entry_zero_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramCopyZeroEntry

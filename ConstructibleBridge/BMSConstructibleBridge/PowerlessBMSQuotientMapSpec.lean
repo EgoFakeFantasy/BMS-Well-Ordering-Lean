@@ -150,7 +150,4 @@ theorem value_iff_relation_l
     exact ⟨p, (hSpec p).mpr ⟨a, b, hab, hpair⟩,
       (ordered_iff_l _ _ _).mp hpair⟩
 
-#print axioms exists_map_with_spec_l
-#print axioms value_iff_relation_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessBMSQuotientFunctions

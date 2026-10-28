@@ -99,8 +99,4 @@ theorem exists_l
   obtain ⟨R, hRC, hRead⟩ := exists_member_l hBase hLimit hC hφ η hX hY hParams
   exact ⟨R, hRC, values_of_members_l hRead⟩
 
-#print axioms exists_member_l
-#print axioms values_of_members_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitRelationalGraph

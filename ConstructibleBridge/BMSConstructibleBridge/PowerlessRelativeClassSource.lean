@@ -54,6 +54,4 @@ theorem formula_l {Γ Δ : SortContext ℒ} (ψ : Formula ℒ Γ Δ) (η : Env �
   exact PowerlessSourceRelationalIsomorphism.formula_l R hTotal hOnto hEq hMem
     ψ (env_l (hBase := hBase) η) η ⟨fun _ => rfl, fun _ => rfl⟩
 
-#print axioms formula_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeClassSource

@@ -76,6 +76,4 @@ theorem member_l (hℳ : Theory.Models ℳ SecondOrderArithmetic.theory_m)
         exact (hRead' n hn).mpr hy'.2
     exact hEq ▸ hz
 
-#print axioms member_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderMemberDefBoundedSlice

@@ -55,8 +55,4 @@ theorem relativized_l
   rw [← hξ]
   exact (PowerlessRelativization.formula_l φ ξ).trans (formula_l h hφ ξ)
 
-#print axioms embedding_l
-#print axioms formula_l
-#print axioms relativized_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessMemberBounded

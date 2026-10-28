@@ -122,8 +122,4 @@ theorem agreement_l {X D A A' f g C C' : type_l hℳ}
         (hf.2 a y ⟨haA, hy⟩) (hg.2 a z ⟨haA', hz⟩)))
   exact fun a => (PowerlessRelativeHierarchyAgreement.induction_formula_l hℳ A A' f g a).mp (hAll a)
 
-#print axioms functional_formula_l
-#print axioms step_l
-#print axioms agreement_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessFunctionHistoryAgreement

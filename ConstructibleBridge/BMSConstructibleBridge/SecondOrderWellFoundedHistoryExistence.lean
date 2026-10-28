@@ -38,13 +38,8 @@ theorem pure_m {Δ : SortContext signature_m} (φ : Formula signature_m [.set, .
   · intro s v
     nomatch v
   · intro s v
-    cases v with
-    | here => rfl
-    | there v => cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases s <;> rfl
+    rcases v with _ | _ | _ | v
+    all_goals first | rfl | cases s <;> rfl
 
 theorem formula_l {Δ : SortContext signature_m} (φ : Formula signature_m [.set, .set] Δ)
     (η : Env ℳ [] Δ) (R : set_l ℳ) (n : num_l ℳ) :
@@ -60,13 +55,8 @@ theorem formula_l {Δ : SortContext signature_m} (φ : Formula signature_m [.set
           from .map (fun v => nomatch v) insert_m) = (((η.pushFree H).pushFree R).pushFree n) := by
     apply Env.ext (bound := []) (fun {_} v => nomatch v)
     · intro s v
-      cases v with
-      | here => rfl
-      | there v => cases v with
-        | here => rfl
-        | there v => cases v with
-          | here => rfl
-          | there v => cases s <;> rfl
+      rcases v with _ | _ | _ | v
+      all_goals first | rfl | cases s <;> rfl
   rw [hEnv]
   exact SecondOrderWellFoundedHistorySyntax.formula_l φ η R H n
 
@@ -89,7 +79,5 @@ theorem exists_l (hℳ : Theory.Models ℳ theory_m) {Δ : SortContext signature
   obtain ⟨H, hH⟩ := SecondOrderWellFoundedHistoryExtension.exists_l hℳ
     (SecondOrderSetOperator.relation_l φ η) R hWf hTrans hIrrefl hLocal hTotal k S hExist hS
   exact (formula_l φ η R k).mpr ⟨H, hH⟩
-
-#print axioms exists_l
 
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderWellFoundedHistoryExistence

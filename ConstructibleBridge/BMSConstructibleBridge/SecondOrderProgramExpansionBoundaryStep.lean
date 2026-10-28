@@ -179,6 +179,4 @@ theorem member_iff_of_below_l (hℳ : Theory.Models ℳ theory_m)
     have hrowz' : SecondOrderOrder.lt_l row z' := by simpa only [hzeq] using hrowz
     exact hcompare hrowz'
 
-#print axioms member_iff_of_below_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryStep

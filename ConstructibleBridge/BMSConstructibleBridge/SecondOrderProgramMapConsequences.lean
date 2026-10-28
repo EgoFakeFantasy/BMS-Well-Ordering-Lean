@@ -67,7 +67,4 @@ theorem map_zero_iff_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {M : set
   · intro h
     exact (hz y).mp (map_length_l hℳ c hM hL p x y (zero_l ℳ) hm ((hz x).mpr h))
 
-#print axioms map_length_l
-#print axioms map_zero_iff_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramMapConsequences

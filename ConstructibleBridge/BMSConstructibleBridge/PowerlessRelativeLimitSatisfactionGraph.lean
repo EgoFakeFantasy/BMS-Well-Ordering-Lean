@@ -64,7 +64,4 @@ theorem derives_m {Δ : SortContext ℒ} (ω A S F G : Term ℒ [] Δ .set) :
       (PowerlessRelativeLimitRelationalGraphDerives.sentence_m (PowerlessSatisfactionGraph.matrix_m ω A S F G))) :=
   PowerlessRelativeLimitRelationalGraphDerives.derives_m (PowerlessSatisfactionGraph.matrix_delta_l ω A S F G)
 
-#print axioms exists_l
-#print axioms derives_m
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeLimitSatisfactionGraph

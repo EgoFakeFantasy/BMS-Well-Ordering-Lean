@@ -111,7 +111,4 @@ theorem history_exists_l (K : source_coding_l hℳ) (p : parameters_l ℳ)
   exact ⟨S, ⟨hS, SecondOrderComparisonNativeRecursion.rows_l K p hS hRows⟩,
     fun X hX => hOnly X hX.1⟩
 
-#print axioms exists_l
-#print axioms history_exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderComparisonNativeConfiguration

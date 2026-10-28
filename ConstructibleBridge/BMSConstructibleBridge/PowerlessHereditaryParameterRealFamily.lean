@@ -110,7 +110,4 @@ theorem exists_l (K : source_coding_l hℳ)
   obtain ⟨V, hVHC, hV, hRow⟩ := hRows n
   exact ⟨V, hVHC, (formula_l φ χ B₀ O P₀ _ V).mp hV, hRow⟩
 
-#print axioms formula_l
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryParameterRealFamily

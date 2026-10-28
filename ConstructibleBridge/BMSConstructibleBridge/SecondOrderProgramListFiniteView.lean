@@ -128,13 +128,4 @@ theorem lookup_at_internal_l (hℳ : Theory.Models ℳ theory_m) {E : set_l ℳ}
   rw [hj, lookup_finite_l hℳ hE, List.getElem?_eq_getElem hk]
   rfl
 
-#print axioms encode_l
-#print axioms encode_injective_l
-#print axioms length_spec_encode_l
-#print axioms finite_decode_l
-#print axioms finite_decode_iff_l
-#print axioms finite_decode_unique_l
-#print axioms lookup_finite_l
-#print axioms lookup_at_internal_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramListFiniteView

@@ -150,13 +150,4 @@ theorem member_mem_l (hℳ : Theory.Models ℳ theory_m) (c : code_m) {M C S : s
   obtain ⟨j, hj, hji⟩ := (member_nonzero_l hℳ c hM hA hL hE hv hn i).mp hi
   exact chain_all_l hℳ c hA hL hE hC hparent hv hn j hj i hji
 
-#print axioms kept_l
-#print axioms kept_m
-#print axioms kept_language_m
-#print axioms kept_syntax_l
-#print axioms kept_invariant_l
-#print axioms output_kept_l
-#print axioms chain_all_l
-#print axioms member_mem_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramAncestorClosedSet

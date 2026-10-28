@@ -190,9 +190,4 @@ theorem limit_l (K : source_coding_l hℳ)
       exact (hGraph p).mpr ⟨x, y,
         ⟨i, Y, R, ⟨(hD i).mpr ⟨b, hib, hb⟩, hiY, hiR⟩, hx, hy, hxy⟩, hPair⟩
 
-#print axioms zero_l
-#print axioms successor_l
-#print axioms bounded_l
-#print axioms limit_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessCanonicalOrderOrdinalRecursion

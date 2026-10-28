@@ -68,17 +68,8 @@ theorem presentation_l {Γ Δ : SortContext ℒ} (η : Env ℳ Γ Δ)
   apply congrArg (fun η => (PowerlessOrdinalRecursion.recursion_m operator_m).satisfies η)
   apply Env.ext (bound := []) (fun {_} v => nomatch v)
   · intro s v
-    match s, v with
-    | .set, .here => rfl
-    | .set, .there .here => rfl
-    | .set, .there (.there .here) => rfl
-    | .set, .there (.there (.there .here)) => rfl
-    | .set, .there (.there (.there (.there .here))) => rfl
-    | .set, .there (.there (.there (.there (.there .here)))) => rfl
-    | .set, .there (.there (.there (.there (.there (.there .here))))) => rfl
-    | .set, .there (.there (.there (.there (.there (.there (.there .here)))))) => rfl
-    | .set, .there (.there (.there (.there (.there (.there (.there (.there .here))))))) => rfl
-    | .set, .there (.there (.there (.there (.there (.there (.there (.there (.there .here)))))))) => rfl
+    rcases v with _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | v
+    all_goals first | rfl | nomatch v
 
 theorem prefix_formula_l (hℳ : Theory.Models ℳ PowerlessTheory.theory_m)
     {Γ Δ : SortContext ℒ} (η : Env ℳ Γ Δ) (ω e T A t₁ t₂ t₃ S F m : Term ℒ Γ Δ .set) :

@@ -172,9 +172,4 @@ theorem spec_l (K : source_coding_l hℳ)
             (class_l hW c) (class_l hW l)).trans
               (query_l hTrans ω e N T t₁ t₂ t₃ c l).symm)))
 
-#print axioms query_l
-#print axioms sequences_l
-#print axioms class_l
-#print axioms spec_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessRelativeMemberStaticAbsolute

@@ -92,8 +92,4 @@ theorem success_rectangular_l (hℳ : Theory.Models ℳ theory_m) {S B L E : set
     (take_rectangular_l hℳ hK hL hE hx ((good_rel_l hℳ hG hK x k r p g).mp hg))
     (copied_rectangular_l hℳ hC hB hL hE hb hbr hc) ha
 
-#print axioms bad_rectangular_l
-#print axioms copied_rectangular_l
-#print axioms success_rectangular_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionSuccessRectangular

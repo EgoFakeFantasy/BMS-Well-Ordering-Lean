@@ -49,7 +49,4 @@ theorem first_entry_increases_l (hℳ : Theory.Models ℳ theory_m)
   rw [← hgap]
   exact lt_add_of_pos_right first hpos
 
-#print axioms previous_to_next_entry_l
-#print axioms first_entry_increases_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionBoundaryArithmetic

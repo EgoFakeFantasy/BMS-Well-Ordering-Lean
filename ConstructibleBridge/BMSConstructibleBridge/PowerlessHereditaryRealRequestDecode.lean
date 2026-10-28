@@ -55,6 +55,4 @@ theorem exists_l (K : source_coding_l hℳ) {B S X V : SecondOrderQuotient.type_
   exact ⟨fun h => numberCode_injective_l K (Subtype.ext h),
     fun h => congrArg (fun i => (numberCode_l K i).val) h⟩
 
-#print axioms exists_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.PowerlessHereditaryRealRequestDecode

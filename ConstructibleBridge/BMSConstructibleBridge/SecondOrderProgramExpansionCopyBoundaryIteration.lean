@@ -116,9 +116,4 @@ theorem first_to_l (hℳ : Theory.Models ℳ theory_m) {M : set_l ℳ}
         (hadjacent (succ_l t) ht) (ih htk)
   exact h s hs
 
-#print axioms connected_m
-#print axioms connected_language_m
-#print axioms connected_syntax_l
-#print axioms first_to_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramExpansionCopyBoundaryIteration

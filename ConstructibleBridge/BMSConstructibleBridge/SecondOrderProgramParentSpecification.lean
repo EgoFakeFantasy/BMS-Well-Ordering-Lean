@@ -108,8 +108,4 @@ theorem successor_none_l (hℳ : Theory.Models ℳ theory_m) (r : Nat) (c : code
       · exact Or.inl ht
       · exact Or.inr ⟨lt_of_not_ge ht, h⟩
 
-#print axioms successor_rel_l
-#print axioms successor_some_l
-#print axioms successor_none_l
-
 end YesMetaZFC.BMS.ConstructibleBridge.SecondOrderProgramParentSpecification
